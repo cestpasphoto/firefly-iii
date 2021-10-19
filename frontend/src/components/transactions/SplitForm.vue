@@ -156,6 +156,15 @@
                     :payment-date="transaction.payment_date"
                     :process-date="transaction.process_date"
                 />
+
+                <TransactionBudget
+                    v-if="!('Transfer' === transactionType || 'Deposit' === transactionType)"
+                    v-model="transaction.budget_id"
+                    v-on="$listeners"
+                    :errors="transaction.errors.budget"
+                    :index="index"
+                />
+
               </div>
             </div>
 
@@ -165,63 +174,6 @@
       </div>
     </div> <!-- end of basic card -->
 
-    <!-- card for meta -->
-    <div class="row">
-      <div class="col">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">
-              {{ $t('firefly.transaction_journal_meta') }}
-              <span v-if="count > 1">({{ index + 1 }} / {{ count }}) </span>
-            </h3>
-          </div>
-          <div class="card-body">
-            <!-- start of body -->
-            <!-- meta -->
-            <div class="row">
-              <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12">
-                <TransactionBudget
-                    v-if="!('Transfer' === transactionType || 'Deposit' === transactionType)"
-                    v-model="transaction.budget_id"
-                    v-on="$listeners"
-                    :errors="transaction.errors.budget"
-                    :index="index"
-                />
-                <TransactionCategory
-                    v-model="transaction.category"
-                    v-on="$listeners"
-                    :errors="transaction.errors.category"
-                    :index="index"
-                />
-              </div>
-              <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12">
-                <TransactionBill
-                    v-if="!('Transfer' === transactionType || 'Deposit' === transactionType)"
-                    v-model="transaction.bill_id"
-                    v-on="$listeners"
-                    :errors="transaction.errors.bill"
-                    :index="index"
-                />
-                <TransactionTags
-                    v-model="transaction.tags"
-                    v-on="$listeners"
-                    :errors="transaction.errors.tags"
-                    :index="index"
-                />
-                <TransactionPiggyBank
-                    v-if="!('Withdrawal' === transactionType || 'Deposit' === transactionType)"
-                    v-model="transaction.piggy_bank_id"
-                    v-on="$listeners"
-                    :errors="transaction.errors.piggy_bank"
-                    :index="index"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- end card for meta -->
     <!-- card for extra -->
     <div v-if="hasMetaFields" class="row">
       <div class="col">

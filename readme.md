@@ -15,3 +15,4 @@ Based on the great repo https://github.com/firefly-iii/firefly-iii with the foll
 ### What if I want such features in my docker
 
 Edit configuration in `./patch_docker.sh`, then run it where your .yml is
+This file runs the toolchain if any updates on .js files.
