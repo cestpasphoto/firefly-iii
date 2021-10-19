@@ -79,7 +79,7 @@ const actions = {
                       }
                       if (viewRange === oldViewRange) {
                           // console.log('Restore view range dates');
-                          context.dispatch('restoreViewRangeDates');
+                          context.dispatch('setDatesFromViewRange');
                       }
                   }
             ).catch(() => {
