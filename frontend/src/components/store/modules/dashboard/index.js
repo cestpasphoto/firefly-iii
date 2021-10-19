@@ -27,6 +27,8 @@ import startOfQuarter from 'date-fns/startOfQuarter';
 import endOfQuarter from 'date-fns/endOfQuarter';
 import endOfMonth from "date-fns/endOfMonth";
 import startOfMonth from 'date-fns/startOfMonth';
+import subDays from 'date-fns/subDays';
+import addDays from 'date-fns/addDays';
 
 const state = () => (
     {
@@ -129,14 +131,14 @@ const actions = {
                 end = endOfDay(today);
                 break;
             case '1W':
-                // this week:
-                start = startOfDay(startOfWeek(today, {weekStartsOn: 1}));
-                end = endOfDay(endOfWeek(today, {weekStartsOn: 1}));
+                // last 14 days
+                start = startOfDay(subDays(today, 14))
+                end = endOfDay(today);
                 break;
             case '1M':
-                // this month:
-                start = startOfDay(startOfMonth(today));
-                end = endOfDay(endOfMonth(today));
+                // last 20 days + next 10 days
+                start = startOfDay(subDays(today, 20));
+                end = endOfDay(addDays(today, 10));
                 break;
             case '3M':
                 // this quarter

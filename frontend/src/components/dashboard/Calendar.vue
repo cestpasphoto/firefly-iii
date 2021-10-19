@@ -243,39 +243,45 @@ export default {
     },
     generateMonthly: function () {
       let today = new Date(this.range.start);
-      // previous month
-      let start = startOfDay(startOfMonth(subMonths(today, 1)));
-      let end = endOfDay(endOfMonth(subMonths(today, 1)));
+      let start = startOfDay(today)
+      let end = endOfDay(addDays(start, 30));
+
+      // previous period
+      let periodStart = startOfDay(subDays(start, 30));
+      let periodEnd   =   endOfDay(subDays(end  , 30));
+      let titleStart = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodStart);
+      let titleEnd   = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodEnd);
+      this.periods.push(
+          {
+            start: periodStart.toDateString(),
+            end: periodEnd.toDateString(),
+            title: titleStart + ' - ' + titleEnd
+          }
+      );
+
+      // this period
+      titleStart = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(start);
+      titleEnd   = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(end);
       this.periods.push(
           {
             start: start.toDateString(),
             end: end.toDateString(),
-            title: new Intl.DateTimeFormat(this.locale, {year: 'numeric', month: 'long'}).format(start)
+            title: titleStart + ' - ' + titleEnd
           }
       );
 
-      // this month
-      start = startOfDay(startOfMonth(today));
-      end = endOfDay(endOfMonth(today));
+      // next period
+      periodStart = startOfDay(addDays(start, 30));
+      periodEnd   =   endOfDay(addDays(end  , 30));
+      titleStart = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodStart);
+      titleEnd   = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodEnd);
       this.periods.push(
           {
-            start: start.toDateString(),
-            end: end.toDateString(),
-            title: new Intl.DateTimeFormat(this.locale, {year: 'numeric', month: 'long'}).format(start)
+            start: periodStart.toDateString(),
+            end: periodEnd.toDateString(),
+            title: titleStart + ' - ' + titleEnd
           }
       );
-
-      // next month
-      start = startOfDay(startOfMonth(addMonths(today, 1)));
-      end = endOfDay(endOfMonth(addMonths(today, 1)));
-      this.periods.push(
-          {
-            start: start.toDateString(),
-            end: end.toDateString(),
-            title: new Intl.DateTimeFormat(this.locale, {year: 'numeric', month: 'long'}).format(start)
-          }
-      );
-
     },
     generateQuarterly: function () {
       let today = new Date(this.range.start);
