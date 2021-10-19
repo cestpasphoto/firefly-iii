@@ -133,4 +133,7 @@
         var indexUri = '{{ indexUri }}';
     </script>
     <script src="v1/js/ff/accounts/reconcile.js?v={{ FF_VERSION }}" type="text/javascript" nonce="{{ JS_NONCE }}"></script>
+    <script type="text/javascript" nonce="{{ JS_NONCE }}">
+        document.addEventListener('DOMContentLoaded', startReconcile, false);
+    </script>      
 {% endblock %}
