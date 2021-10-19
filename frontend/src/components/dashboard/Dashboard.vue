@@ -20,7 +20,6 @@
 
 <template>
   <div>
-    <top-boxes/>
     <div class="row">
       <div class="col">
         <main-account/>
