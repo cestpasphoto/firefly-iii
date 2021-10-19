@@ -59,6 +59,16 @@
                 </a>
             </div>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('transactions.create', 'withdrawal') }}">
+                <span class="fas fa-long-arrow-alt-left nav-icon"></span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('transactions.create', 'transfer') }}">
+                <span class="fas fa-exchange-alt nav-icon"></span>
+            </a>
+        </li>
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
                 <span class="far fa-plus-square"></span>
@@ -105,7 +115,7 @@
         <!-- here be dragons -->
         <li class="nav-item">
             <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button" title="{{ 'here_be_dragons'|_ }}">
-                <span class="fas fa-dragon"></span>
+                <span class="far fa-calendar-alt"></span>
             </a>
         </li>
     </ul>
