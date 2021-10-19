@@ -58,6 +58,7 @@
             <span :class="parseFloat(account.current_balance) < 0 ? 'text-danger' : 'text-success'">
             {{ Intl.NumberFormat(locale, {style: 'currency', currency: account.currency_code}).format(parseFloat(account.current_balance)) }}
               </span>
+              <a class="fas fa-check" :href="account.reconcile_url"></a>
             </div>
           </div>
           <div class="card-body table-responsive p-0">
@@ -138,6 +139,7 @@ export default {
                                id: accountIds[key],
                                title: '',
                                url: '',
+                               reconcile_url: '',
                                include: false,
                                current_balance: '0',
                                currency_code: 'EUR',
@@ -157,6 +159,7 @@ export default {
                     this.accounts[key].current_balance = account.attributes.current_balance;
                     this.accounts[key].currency_code = account.attributes.currency_code;
                     this.accounts[key].include = true;
+                    this.accounts[key].reconcile_url = './accounts/reconcile/' + account.id + '/index';
                     this.loadTransactions(key, accountId);
                   }
                 }
