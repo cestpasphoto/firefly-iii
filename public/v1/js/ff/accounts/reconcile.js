@@ -71,6 +71,43 @@ $(function () {
 
 });
 
+// Change status of el to targetState and update all variables
+// If targetState is null, then assumes that state is alreay changed and only update variables
+function changeReconciledBoxAndUpdate(el, targetState) {
+    var amount = parseFloat(el.val());
+    var journalId = parseInt(el.data('id'));
+    var identifier = 'checked_' + journalId;
+    console.log('in changeReconciledBoxAndUpdate(' + journalId + ') with amount ' + amount + ' and selected amount ' + selectedAmount);
+
+    if (targetState != null) {
+        // do nothing if line is already in target state
+        console.log('debug targetState not null');
+        targetState = Boolean(targetState);
+        if (el.prop('checked') === targetState) {
+            console.log('do nothing, already in good state');
+            return;
+        }
+        console.log('need to change status');
+        el.prop('checked', targetState);
+    }
+
+    // if checked, add to selected amount
+    if (el.prop('checked') === true && el.data('younger') === false) {
+        selectedAmount = selectedAmount - amount;
+        //console.log('checked = true and younger = false so selected amount = ' + selectedAmount);
+        localStorage.setItem(identifier, 'true');
+    }
+    // if unchecked, substract from selected amount
+    if (el.prop('checked') === false && el.data('younger') === false) {
+        selectedAmount = selectedAmount + amount;
+        //console.log('checked = false and younger = false so selected amount = ' + selectedAmount);
+        localStorage.setItem(identifier, 'false');
+    }
+    difference = balanceDifference - selectedAmount;
+    //console.log('Difference is now ' + difference);
+    updateDifference();
+}
+
 function selectAllReconcile(e) {
     // loop all, check.
     var el = $(e.target);
@@ -85,29 +122,7 @@ function selectAllReconcile(e) {
 
     $('.reconcile_checkbox').each(function (i, v) {
         var check = $(v);
-        var amount = parseFloat(check.val());
-        var journalId = parseInt(check.data('id'));
-        var identifier = 'checked_' + journalId;
-        console.log('in selectAllReconcile(' + journalId + ') with amount ' + amount + ' and selected amount ' + selectedAmount);
-
-        // do nothing if line is already in target state
-        if (check.prop('checked') === doCheck )
-            return;
-    
-        check.prop('checked', doCheck);
-        // if checked, add to selected amount
-        if (doCheck === true && check.data('younger') === false) {
-            selectedAmount = selectedAmount - amount;
-            //console.log('checked = true and younger = false so selected amount = ' + selectedAmount);
-            localStorage.setItem(identifier, 'true');
-        }
-        if (doCheck === false && check.data('younger') === false) {
-            selectedAmount = selectedAmount + amount;
-            //console.log('checked = false and younger = false so selected amount = ' + selectedAmount);
-            localStorage.setItem(identifier, 'false');
-        }
-        difference = balanceDifference - selectedAmount;
-        //console.log('Difference is now ' + difference);
+        changeReconciledBoxAndUpdate(check, doCheck);
     });
 
     updateDifference();
@@ -155,26 +170,7 @@ function storeReconcile() {
  * @param e
  */
 function checkReconciledBox(e) {
-
-    var el = $(e.target);
-    var amount = parseFloat(el.val());
-    var journalId = parseInt(el.data('id'));
-    var identifier = 'checked_' + journalId;
-    //console.log('in checkReconciledBox(' + journalId + ') with amount ' + amount + ' and selected amount ' + selectedAmount);
-    // if checked, add to selected amount
-    if (el.prop('checked') === true && el.data('younger') === false) {
-        selectedAmount = selectedAmount - amount;
-        //console.log('checked = true and younger = false so selected amount = ' + selectedAmount);
-        localStorage.setItem(identifier, 'true');
-    }
-    if (el.prop('checked') === false && el.data('younger') === false) {
-        selectedAmount = selectedAmount + amount;
-        //console.log('checked = false and younger = false so selected amount = ' + selectedAmount);
-        localStorage.setItem(identifier, 'false');
-    }
-    difference = balanceDifference - selectedAmount;
-    //console.log('Difference is now ' + difference);
-    updateDifference();
+    changeReconciledBoxAndUpdate($(e.target), null);
 }
 
 
