@@ -9,9 +9,9 @@ DOCKER_COMPOSE="/var/www/firefly/docker-compose.yml"
 apply_patch () {
   # Local patch or local patches or remote patch file ?
   if [[ -f "frontend.patch" ]]; then
-    cat frontend.patch resources.patch app.patch > global.patch
-    if [[ -f "public.patch" ]]; then
-      cat public.patch >> global.patch
+    cat frontend.patch resources.patch app.patch public_v1.patch > global.patch
+    if [[ -f "public_v2.patch" ]]; then
+      cat public_v2.patch >> global.patch
     fi
   elif [[ -f "global.patch" ]]; then
     :
@@ -55,12 +55,13 @@ build () {
     cd frontend ; npm run prod ; cd /var/www/html/
 
     # Create patches
-    diff -Naur public.backup/       public/       > public.patch
+    diff -Naur public.backup/v1/    public/v1/    > public_v1.patch
+    diff -Naur public.backup/v2/    public/v2/    > public_v2.patch
     diff -Naur frontend.backup/src/ frontend/src/ > frontend.patch
     diff -Naur resources.backup/    resources/    > resources.patch
     diff -Naur app.backup/          app/          > app.patch
-    cat public.patch frontend.patch resources.patch app.patch > global.patch
-    rm  public.patch frontend.patch resources.patch app.patch
+    cat public_v1.patch public_v2.patch frontend.patch resources.patch app.patch > global.patch
+    #rm  public_v1.patch public_v2.patch frontend.patch resources.patch app.patch
   '
 
   # Get the patch on host
@@ -72,7 +73,7 @@ build () {
 #clean_docker
 #install_env
 #apply_patch
-#build
+build
 
 ###clean_docker
 ###apply_patch
