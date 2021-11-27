@@ -244,11 +244,11 @@ export default {
     generateMonthly: function () {
       let today = new Date(this.range.start);
       let start = startOfDay(today)
-      let end = endOfDay(addDays(start, 30));
+      let end = endOfDay(addDays(start, 21));
 
       // previous period
-      let periodStart = startOfDay(subDays(start, 30));
-      let periodEnd   =   endOfDay(subDays(end  , 30));
+      let periodStart = startOfDay(subDays(start, 21));
+      let periodEnd   =   endOfDay(subDays(end  , 21));
       let titleStart = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodStart);
       let titleEnd   = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodEnd);
       this.periods.push(
@@ -271,8 +271,8 @@ export default {
       );
 
       // next period
-      periodStart = startOfDay(addDays(start, 30));
-      periodEnd   =   endOfDay(addDays(end  , 30));
+      periodStart = startOfDay(addDays(start, 21));
+      periodEnd   =   endOfDay(addDays(end  , 21));
       titleStart = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodStart);
       titleEnd   = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodEnd);
       this.periods.push(

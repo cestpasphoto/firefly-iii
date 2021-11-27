@@ -30,6 +30,7 @@ apply_patch () {
 clean_docker () {
   sudo docker container stop ${DOCKER_CONTAINER}
   sudo docker container rm ${DOCKER_CONTAINER}
+  #sudo docker-compose pull
   sudo docker-compose -f ${DOCKER_COMPOSE} up -d
 }
 
@@ -43,7 +44,7 @@ install_env () {
     cp -a app       app.backup
 
     # install nodejs and npm, and update to latest version, install laravel mix, and compile
-    apt-get update ; apt-get install -y npm ; npm cache clean -f ; npm install -g n ; n lts ; PATH="$PATH"
+    apt-get update ; apt-get install -y npm nano ; npm cache clean -f ; npm install -g n ; n lts ; PATH="$PATH"
     cd frontend ; npm install ; cd /var/www/html/
   '
 }
@@ -61,7 +62,7 @@ build () {
     diff -Naur resources.backup/    resources/    > resources.patch
     diff -Naur app.backup/          app/          > app.patch
     cat public_v1.patch public_v2.patch frontend.patch resources.patch app.patch > global.patch
-    #rm  public_v1.patch public_v2.patch frontend.patch resources.patch app.patch
+    rm  public_v1.patch public_v2.patch frontend.patch resources.patch app.patch
   '
 
   # Get the patch on host
@@ -70,10 +71,18 @@ build () {
 
 ###############################################################################
 
-#clean_docker
-#install_env
-#apply_patch
-build
+
+# If firefly version updated, follow these steps:
+#   be sure that "docker-compose pull" command is uncommented in clean_docker()
+#   run clean_docker, install_env, apply_patch
+#   resolve merging conflicts
+#   run build and get global.patch
+#   comment the "docker-compose pull" command
+
+clean_docker
+install_env
+apply_patch
+#build
 
 ###clean_docker
 ###apply_patch

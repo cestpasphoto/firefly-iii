@@ -67,6 +67,7 @@ export default {
   },
   created() {
     this.chartOptions = DefaultLineOptions.methods.getDefaultOptions();
+    this.chartOptions.scales.y.max = 5000;
     this.ready = true;
   },
   computed: {

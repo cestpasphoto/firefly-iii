@@ -131,14 +131,14 @@ const actions = {
                 end = endOfDay(today);
                 break;
             case '1W':
-                // last 14 days
-                start = startOfDay(subDays(today, 14))
-                end = endOfDay(today);
+                // last 7 days + next 3 days
+                start = startOfDay(subDays(today, 7))
+                end = endOfDay(addDays(today, 3));
                 break;
             case '1M':
-                // last 20 days + next 10 days
-                start = startOfDay(subDays(today, 20));
-                end = endOfDay(addDays(today, 10));
+                // last 14 days + next 7 days
+                start = startOfDay(subDays(today, 14));
+                end = endOfDay(addDays(today, 7));
                 break;
             case '3M':
                 // this quarter

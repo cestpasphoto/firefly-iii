@@ -38,17 +38,17 @@
       </td>
       <td style="text-align:right;">
                 <span v-for="tr in transaction.attributes.transactions">
-                     <span v-if="'withdrawal' === tr.type" class="text-danger">
-                        {{ Intl.NumberFormat(locale, {style: 'currency', currency: tr.currency_code}).format(tr.amount * -1) }}<br>
-                     </span>
-                    <span v-if="'deposit' === tr.type" class="text-success">
-                        {{ Intl.NumberFormat(locale, {style: 'currency', currency: tr.currency_code}).format(tr.amount) }}<br>
-                     </span>
-                    <span v-if="'transfer' === tr.type && parseInt(tr.source_id) === account_id" class="text-info">
-                        {{ Intl.NumberFormat(locale, {style: 'currency', currency: tr.currency_code}).format(tr.amount * -1) }}<br>
+                    <span v-if="new Date(tr.date) > new Date()" class="text-secondary">
+                        {{ formatted_amount(tr, account_id, locale) }}<br>
                     </span>
-                    <span v-if="'transfer' === tr.type && parseInt(tr.destination_id) === account_id" class="text-info">
-                        {{ Intl.NumberFormat(locale, {style: 'currency', currency: tr.currency_code}).format(tr.amount) }}<br>
+                    <span v-else-if="'withdrawal' === tr.type" class="text-danger">
+                        {{ formatted_amount(tr, account_id, locale) }}<br>
+                    </span>
+                    <span v-else-if="'deposit' === tr.type" class="text-success">
+                        {{ formatted_amount(tr, account_id, locale) }}<br>
+                    </span>
+                    <span v-else-if="'transfer' === tr.type" class="text-info">
+                        {{ formatted_amount(tr, account_id, locale) }}<br>
                     </span>
                 </span>
       </td>
@@ -68,7 +68,15 @@ export default {
   created() {
     this.locale = localStorage.locale ?? 'en-US';
   },
-  methods: {},
+  methods: {
+    formatted_amount(tr, account_id, locale) {
+      let amount = tr.amount;
+      if ( 'withdrawal' === tr.type || ('transfer' === tr.type && parseInt(tr.source_id) === account_id) ) {
+        amount = -amount;
+      }
+      return Intl.NumberFormat(locale, {style: 'currency', currency: tr.currency_code}).format(amount);
+    }
+  },
   props: {
     transactions: {
       type: Array,
