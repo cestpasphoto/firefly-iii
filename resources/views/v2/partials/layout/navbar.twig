@@ -54,7 +54,7 @@
                     <span class="fas fa-fw fa-cogs mr-2"></span> {{ 'preferences'|_ }}
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="{{ route('logout') }}" class="dropdown-item">
+                <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                     <span class="fas fa-sign-out-alt mr-2"></span> {{ 'logout'|_ }}
                 </a>
             </div>
@@ -115,7 +115,7 @@
         <!-- here be dragons -->
         <li class="nav-item">
             <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button" title="{{ 'here_be_dragons'|_ }}">
-                <span class="far fa-calendar-alt"></span>
+                <span class="fas fa-dragon"></span>
             </a>
         </li>
     </ul>

@@ -168,7 +168,7 @@ return [
     'all_journals_for_account'                            => 'Όλες οι συναλλαγές του λογαριασμού :name',
     'chart_all_journals_for_account'                      => 'Διάγραμμα όλων των συναλλαγών του λογαριασμού :name',
     'journals_in_period_for_account'                      => 'Όλες οι συναλλαγές του λογαριασμού :name μεταξύ :start και :end',
-    'journals_in_period_for_account_js'                   => 'All transactions for account {title} between {start} and {end}',
+    'journals_in_period_for_account_js'                   => 'Όλες οι συναλλαγές για τον λογαριασμό {title} μεταξύ {start} και {end}',
     'transferred'                                         => 'Μεταφέρθηκαν',
     'all_withdrawal'                                      => 'Όλες οι δαπάνες',
     'all_transactions'                                    => 'Όλες οι συναλλαγές',
@@ -232,7 +232,9 @@ return [
 
     // API access
     'authorization_request'                               => 'Αίτημα Εξουσιοδότησης Firefly III v:version',
-    'authorization_request_intro'                         => 'Ο <strong>:client</strong> αιτείται άδεια πρόσβασης στην οικονομική σας διαχείριση. Θέλετε να εξουσιοδοτήσετε τον <strong>:client</strong> ώστε να έχει πρόσβαση σε αυτές τις εγγραφές;',
+    'authorization_request_intro'                         => 'Η εφαρμογή "<strong>:client</strong>" ζητά άδεια πρόσβασης στην οικονομική σας διαχείριση. Θέλετε να εξουσιοδοτήσετε το <strong>:client</strong> να έχει πρόσβαση σε αυτές τις εγγραφές;',
+    'authorization_request_site'                          => 'Θα ανακατευθυνθείτε στο <code>:url</code> το οποίο στη συνέχεια θα έχει πρόσβαση στα δεδομένα σας Firefly III.',
+    'authorization_request_invalid'                       => 'Αυτό το αίτημα πρόσβασης δεν είναι έγκυρο. Παρακαλώ μην ακολουθήσετε ποτέ ξανά αυτόν τον σύνδεσμο.',
     'scopes_will_be_able'                                 => 'Αυτή η εφαρμογή θα είναι σε θέση να:',
     'button_authorize'                                    => 'Εξουσιοδότηση',
     'none_in_select_list'                                 => '(τίποτα)',

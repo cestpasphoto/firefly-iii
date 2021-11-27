@@ -221,9 +221,11 @@
             {% endif %}
         </ul>
     </li>
+
+
     {% if 'remote_user_guard' != authGuard or '' != logoutUri %}
         <li>
-            <a href="{{ route('logout') }}">
+            <a href="{{ route('logout') }}" class="logout-link">
                 <span class="fa fa-sign-out fa-fw"></span>
                 <span>{{ 'logout'|_ }}</span>
             </a>
