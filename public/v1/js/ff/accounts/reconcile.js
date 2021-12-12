@@ -107,7 +107,7 @@ function smart_reconcile_aux(amounts, nth_number, remain_to_take, current_sum, t
     // Try using current number
     let new_amount = amounts[nth_number];
     let new_sum = current_sum + new_amount;
-    if (Math.abs(new_sum - target_sum) < 0.01) return [true].concat(Array(amounts.length-nth_number-1).fill(false));
+    if (Math.abs(new_sum - target_sum) < 1e-8) return [true].concat(Array(amounts.length-nth_number-1).fill(false));
     result = smart_reconcile_aux(amounts, nth_number+1, remain_to_take-1, new_sum, target_sum);
     if (result) result.unshift(true);
     return result;
