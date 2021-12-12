@@ -23,7 +23,7 @@
     <alert :message="errorMessage" type="danger"/>
     <alert :message="successMessage" type="success"/>
     <form @submit="submitTransaction" autocomplete="off">
-      <SplitPills :transactions="transactions" :count="transactions.length"/>
+      <SplitPills ref="pills" :transactions="transactions" :count="transactions.length"/>
       <div class="tab-content">
         <SplitForm
             v-for="(transaction, index) in this.transactions"
@@ -221,6 +221,7 @@ export default {
                     ]
     ),
     addTransactionArray: function (event) {
+      // console.log('Record call to addTransactionArray');
       event.preventDefault();
       this.addTransaction();
     },
@@ -228,7 +229,9 @@ export default {
      * Removes a split from the array.
      */
     removeTransaction: function (payload) {
+      // console.log('Record call to removeTransaction');
       // console.log('Triggered to remove transaction ' + payload.index);
+      window.$('#tab_split_' + (payload.index - 1)).click();
       this.$store.commit('transactions/create/deleteTransaction', payload);
     },
     submitData: function (url, data) {
@@ -447,6 +450,10 @@ export default {
     },
     storeField: function (payload) {
       this.updateField(payload);
+      if('description' === payload.field) {
+        // jump to account
+        this.$refs.splitForms[payload.index].$refs.sourceAccount.giveFocus();
+      }
     },
     storeDate: function (payload) {
       this.date = payload.date;

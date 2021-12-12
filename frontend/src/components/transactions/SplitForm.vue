@@ -160,7 +160,6 @@
                     :payment-date="transaction.payment_date"
                     :process-date="transaction.process_date"
                 />
-
                 <TransactionBudget
                     v-if="!('Transfer' === transactionType || 'Deposit' === transactionType)"
                     v-model="transaction.budget_id"
@@ -168,16 +167,13 @@
                     :errors="transaction.errors.budget"
                     :index="index"
                 />
-
               </div>
             </div>
-
-            <!-- end of body -->
           </div>
         </div>
       </div>
-    </div> <!-- end of basic card -->
-
+    </div>
+    <!-- end card for meta -->
     <!-- card for extra -->
     <div v-if="hasMetaFields" class="row">
       <div class="col">
@@ -333,12 +329,13 @@ export default {
   methods: {
     removeTransaction: function () {
       // console.log('Will remove transaction ' + this.index);
+
       this.$emit('remove-transaction', {index: this.index});
     },
     triggerNextAccount: function(e) {
       //alert(e);
       if('source' === e) {
-        console.log('Jump to destination!');
+        // console.log('Jump to destination!');
         this.$refs.destinationAccount.giveFocus();
       }
     }
