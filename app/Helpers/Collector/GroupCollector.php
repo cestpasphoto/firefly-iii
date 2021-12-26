@@ -560,6 +560,15 @@ class GroupCollector implements GroupCollectorInterface
     }
 
     /**
+     *
+     */
+    public function dumpQueryInLogs(): void
+    {
+        Log::debug($this->query->select($this->fields)->toSql()) ;
+        Log::debug('Bindings',$this->query->getBindings());
+    }
+
+    /**
      * Convert a selected set of fields to arrays.
      *
      * @param array $array

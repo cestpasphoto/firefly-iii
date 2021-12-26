@@ -452,7 +452,7 @@ export default {
       this.updateField(payload);
       if('description' === payload.field) {
         // jump to account
-        this.$refs.splitForms[payload.index].$refs.sourceAccount.giveFocus();
+        //this.$refs.splitForms[payload.index].$refs.sourceAccount.giveFocus();
       }
     },
     storeDate: function (payload) {
