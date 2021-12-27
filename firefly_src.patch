@@ -1,0 +1,687 @@
+diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
+--- ../official/public/v1/js/ff/accounts/reconcile.js	2021-12-26 18:34:46.841306607 +0100
++++ ./public/v1/js/ff/accounts/reconcile.js	2021-12-12 15:39:49.134325060 +0100
+@@ -23,6 +23,7 @@
+ var balanceDifference = 0;
+ var difference = 0;
+ var selectedAmount = 0;
++var initialSelectedAmount = 0;
+ var reconcileStarted = false;
+ var changedBalances = false;
+ 
+@@ -43,6 +44,9 @@
+             difference = balanceDifference - selectedAmount;
+             updateDifference();
+ 
++            trigger_smart_reconcile();
++            difference = balanceDifference - selectedAmount;
++            updateDifference();
+         }
+         changedBalances = true;
+     });
+@@ -71,6 +75,98 @@
+ 
+ });
+ 
++function smart_reconcile(amounts, target_sum) {
++    let d_size = amounts.length;
++    let max_sum = amounts.reduce((a, b) => a + b);
++    // Define number of maximum items to uncheck in order to keep short computing time
++    // Here are some pre-computed values ensuring less than 1e7 combinations to explore
++    // 10 -> 10, 20 -> 20, 22 -> 22, 24 -> 12, 26 -> 9, 30 -> 8, 40 -> 6, 50 -> 5, 100 -> 4
++    // next line is a magic formula fitting these values
++    let max_nb_items = (d_size <= 22) ? d_size : Math.floor( 13*(d_size-22)**-0.3 );
++    console.log('debug smart_reconcile:', target_sum, max_sum, max_nb_items);
++    // Result is list of items NOT to check
++    let result = smart_reconcile_aux(amounts, 0, max_nb_items, 0, max_sum-target_sum);
++    return result;
++}
++
++// Recursive function, try to add the amounts after the 'nth' one to achieve 'target_sum'
++// without exceeding maximum number of items 'remain_to_take'
++// Returns null if not possible else boolean array listing which items to check
++function smart_reconcile_aux(amounts, nth_number, remain_to_take, current_sum, target_sum) {
++    // Stop if no more transactions can be checked
++    if (Math.abs(current_sum - target_sum) < 0.01) return Array(amounts.length-nth_number).fill(false);
++    if (remain_to_take == 0 || nth_number == amounts.length) return null;
++
++    // Try without using current number
++    let result = smart_reconcile_aux(amounts, nth_number+1, remain_to_take, current_sum, target_sum);
++    if (result) {
++        result.unshift(false);
++        return result;
++    }
++
++    // Try using current number
++    let new_amount = amounts[nth_number];
++    let new_sum = current_sum + new_amount;
++    if (Math.abs(new_sum - target_sum) < 1e-8) return [true].concat(Array(amounts.length-nth_number-1).fill(false));
++    result = smart_reconcile_aux(amounts, nth_number+1, remain_to_take-1, new_sum, target_sum);
++    if (result) result.unshift(true);
++    return result;
++}
++
++function trigger_smart_reconcile() {
++    // Gather all data
++    let amounts = [];
++    $('.reconcile_checkbox').each(function (i, v) {
++        var check = $(v);
++        amounts.push(parseFloat(check.val()));
++    });
++
++    // Call core function, better to serch for items to uncheck than the ones to check
++    var items_to_uncheck = smart_reconcile(amounts, initialSelectedAmount - balanceDifference);
++    if (items_to_uncheck) {
++        // Set checkboxes
++        $('.reconcile_checkbox').each(function (i, v) {
++            var check = $(v);
++            changeReconciledBoxAndUpdate(check, !items_to_uncheck[i]);
++        });
++    } else {
++        console.log('Cant find a solution for smart reconcile');
++    }
++}
++
++// Change status of el to targetState and update all variables
++// If targetState is null, then assumes that state is alreay changed and only update variables
++function changeReconciledBoxAndUpdate(el, targetState) {
++    var amount = parseFloat(el.val());
++    var journalId = parseInt(el.data('id'));
++    var identifier = 'checked_' + journalId;
++    console.log('in changeReconciledBoxAndUpdate(' + journalId + ') with amount ' + amount + ' selected amount ' + selectedAmount + ' and targetState=' + targetState);
++
++    if (targetState != null) {
++        // do nothing if line is already in target state
++        if (el.prop('checked') === targetState) {
++            return;
++        }
++        el.prop('checked', targetState);
++    }
++
++    // if checked, add to selected amount
++    if (el.prop('checked') === true && el.data('younger') === false) {
++        selectedAmount = selectedAmount - amount;
++        //console.log('checked = true and younger = false so selected amount = ' + selectedAmount);
++        localStorage.setItem(identifier, 'true');
++    }
++    // if unchecked, substract from selected amount
++    if (el.prop('checked') === false && el.data('younger') === false) {
++        selectedAmount = selectedAmount + amount;
++        //console.log('checked = false and younger = false so selected amount = ' + selectedAmount);
++        localStorage.setItem(identifier, 'false');
++    }
++    difference = balanceDifference - selectedAmount;
++    //console.log('Difference is now ' + difference);
++    updateDifference();
++}
++
+ function selectAllReconcile(e) {
+     // loop all, check.
+     var el = $(e.target);
+@@ -85,29 +181,7 @@
+ 
+     $('.reconcile_checkbox').each(function (i, v) {
+         var check = $(v);
+-        var amount = parseFloat(check.val());
+-        var journalId = parseInt(check.data('id'));
+-        var identifier = 'checked_' + journalId;
+-        console.log('in selectAllReconcile(' + journalId + ') with amount ' + amount + ' and selected amount ' + selectedAmount);
+-
+-        // do nothing if line is already in target state
+-        if (check.prop('checked') === doCheck )
+-            return;
+-    
+-        check.prop('checked', doCheck);
+-        // if checked, add to selected amount
+-        if (doCheck === true && check.data('younger') === false) {
+-            selectedAmount = selectedAmount - amount;
+-            //console.log('checked = true and younger = false so selected amount = ' + selectedAmount);
+-            localStorage.setItem(identifier, 'true');
+-        }
+-        if (doCheck === false && check.data('younger') === false) {
+-            selectedAmount = selectedAmount + amount;
+-            //console.log('checked = false and younger = false so selected amount = ' + selectedAmount);
+-            localStorage.setItem(identifier, 'false');
+-        }
+-        difference = balanceDifference - selectedAmount;
+-        //console.log('Difference is now ' + difference);
++        changeReconciledBoxAndUpdate(check, doCheck);
+     });
+ 
+     updateDifference();
+@@ -155,26 +229,7 @@
+  * @param e
+  */
+ function checkReconciledBox(e) {
+-
+-    var el = $(e.target);
+-    var amount = parseFloat(el.val());
+-    var journalId = parseInt(el.data('id'));
+-    var identifier = 'checked_' + journalId;
+-    //console.log('in checkReconciledBox(' + journalId + ') with amount ' + amount + ' and selected amount ' + selectedAmount);
+-    // if checked, add to selected amount
+-    if (el.prop('checked') === true && el.data('younger') === false) {
+-        selectedAmount = selectedAmount - amount;
+-        //console.log('checked = true and younger = false so selected amount = ' + selectedAmount);
+-        localStorage.setItem(identifier, 'true');
+-    }
+-    if (el.prop('checked') === false && el.data('younger') === false) {
+-        selectedAmount = selectedAmount + amount;
+-        //console.log('checked = false and younger = false so selected amount = ' + selectedAmount);
+-        localStorage.setItem(identifier, 'false');
+-    }
+-    difference = balanceDifference - selectedAmount;
+-    //console.log('Difference is now ' + difference);
+-    updateDifference();
++    changeReconciledBoxAndUpdate($(e.target), null);
+ }
+ 
+ 
+@@ -263,6 +318,7 @@
+ 
+     difference = balanceDifference - selectedAmount;
+     updateDifference();
++    initialSelectedAmount = selectedAmount;
+ 
+     // loop al placed checkboxes and check them if necessary.
+     restoreFromLocalStorage();
+@@ -328,12 +384,12 @@
+ }
+ 
+ function updateDifference() {
+-    console.log('in updateDifference()');
++    //console.log('in updateDifference()');
+     var addClass = 'text-info';
+-    if (difference > 0) {
++    if (difference > 0.01) {
+         addClass = 'text-success';
+     }
+-    if (difference < 0) {
++    if (difference < -0.01) {
+         addClass = 'text-danger';
+     }
+     $('#difference').addClass(addClass).text(accounting.formatMoney(difference));
+diff -Naur ../official/frontend/src/components/dashboard/Calendar.vue ./frontend/src/components/dashboard/Calendar.vue
+--- ../official/frontend/src/components/dashboard/Calendar.vue	2021-12-26 18:34:46.817306346 +0100
++++ ./frontend/src/components/dashboard/Calendar.vue	2021-11-27 23:54:45.302567105 +0100
+@@ -243,39 +243,45 @@
+     },
+     generateMonthly: function () {
+       let today = new Date(this.range.start);
+-      // previous month
+-      let start = startOfDay(startOfMonth(subMonths(today, 1)));
+-      let end = endOfDay(endOfMonth(subMonths(today, 1)));
++      let start = startOfDay(today)
++      let end = endOfDay(addDays(start, 21));
++
++      // previous period
++      let periodStart = startOfDay(subDays(start, 21));
++      let periodEnd   =   endOfDay(subDays(end  , 21));
++      let titleStart = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodStart);
++      let titleEnd   = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodEnd);
+       this.periods.push(
+           {
+-            start: start.toDateString(),
+-            end: end.toDateString(),
+-            title: new Intl.DateTimeFormat(this.locale, {year: 'numeric', month: 'long'}).format(start)
++            start: periodStart.toDateString(),
++            end: periodEnd.toDateString(),
++            title: titleStart + ' - ' + titleEnd
+           }
+       );
+ 
+-      // this month
+-      start = startOfDay(startOfMonth(today));
+-      end = endOfDay(endOfMonth(today));
++      // this period
++      titleStart = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(start);
++      titleEnd   = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(end);
+       this.periods.push(
+           {
+             start: start.toDateString(),
+             end: end.toDateString(),
+-            title: new Intl.DateTimeFormat(this.locale, {year: 'numeric', month: 'long'}).format(start)
++            title: titleStart + ' - ' + titleEnd
+           }
+       );
+ 
+-      // next month
+-      start = startOfDay(startOfMonth(addMonths(today, 1)));
+-      end = endOfDay(endOfMonth(addMonths(today, 1)));
++      // next period
++      periodStart = startOfDay(addDays(start, 21));
++      periodEnd   =   endOfDay(addDays(end  , 21));
++      titleStart = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodStart);
++      titleEnd   = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodEnd);
+       this.periods.push(
+           {
+-            start: start.toDateString(),
+-            end: end.toDateString(),
+-            title: new Intl.DateTimeFormat(this.locale, {year: 'numeric', month: 'long'}).format(start)
++            start: periodStart.toDateString(),
++            end: periodEnd.toDateString(),
++            title: titleStart + ' - ' + titleEnd
+           }
+       );
+-
+     },
+     generateQuarterly: function () {
+       let today = new Date(this.range.start);
+@@ -599,4 +605,4 @@
+ .dropdown-item:hover {
+   color: #212529;
+ }
+-</style>
+\ Pas de fin de ligne à la fin du fichier
++</style>
+diff -Naur ../official/frontend/src/components/dashboard/DashboardListSmall.vue ./frontend/src/components/dashboard/DashboardListSmall.vue
+--- ../official/frontend/src/components/dashboard/DashboardListSmall.vue	2021-12-26 18:34:46.817306346 +0100
++++ ./frontend/src/components/dashboard/DashboardListSmall.vue	2021-11-27 23:54:45.286567517 +0100
+@@ -38,17 +38,17 @@
+       </td>
+       <td style="text-align:right;">
+                 <span v-for="tr in transaction.attributes.transactions">
+-                     <span v-if="'withdrawal' === tr.type" class="text-danger">
+-                        {{ Intl.NumberFormat(locale, {style: 'currency', currency: tr.currency_code}).format(tr.amount * -1) }}<br>
+-                     </span>
+-                    <span v-if="'deposit' === tr.type" class="text-success">
+-                        {{ Intl.NumberFormat(locale, {style: 'currency', currency: tr.currency_code}).format(tr.amount) }}<br>
+-                     </span>
+-                    <span v-if="'transfer' === tr.type && parseInt(tr.source_id) === account_id" class="text-info">
+-                        {{ Intl.NumberFormat(locale, {style: 'currency', currency: tr.currency_code}).format(tr.amount * -1) }}<br>
++                    <span v-if="new Date(tr.date) > new Date()" class="text-secondary">
++                        {{ formatted_amount(tr, account_id, locale) }}<br>
+                     </span>
+-                    <span v-if="'transfer' === tr.type && parseInt(tr.destination_id) === account_id" class="text-info">
+-                        {{ Intl.NumberFormat(locale, {style: 'currency', currency: tr.currency_code}).format(tr.amount) }}<br>
++                    <span v-else-if="'withdrawal' === tr.type" class="text-danger">
++                        {{ formatted_amount(tr, account_id, locale) }}<br>
++                    </span>
++                    <span v-else-if="'deposit' === tr.type" class="text-success">
++                        {{ formatted_amount(tr, account_id, locale) }}<br>
++                    </span>
++                    <span v-else-if="'transfer' === tr.type" class="text-info">
++                        {{ formatted_amount(tr, account_id, locale) }}<br>
+                     </span>
+                 </span>
+       </td>
+@@ -68,7 +68,15 @@
+   created() {
+     this.locale = localStorage.locale ?? 'en-US';
+   },
+-  methods: {},
++  methods: {
++    formatted_amount(tr, account_id, locale) {
++      let amount = tr.amount;
++      if ( 'withdrawal' === tr.type || ('transfer' === tr.type && parseInt(tr.source_id) === account_id) ) {
++        amount = -amount;
++      }
++      return Intl.NumberFormat(locale, {style: 'currency', currency: tr.currency_code}).format(amount);
++    }
++  },
+   props: {
+     transactions: {
+       type: Array,
+diff -Naur ../official/frontend/src/components/dashboard/Dashboard.vue ./frontend/src/components/dashboard/Dashboard.vue
+--- ../official/frontend/src/components/dashboard/Dashboard.vue	2021-12-26 18:34:46.817306346 +0100
++++ ./frontend/src/components/dashboard/Dashboard.vue	2021-11-27 23:54:45.342566074 +0100
+@@ -20,7 +20,6 @@
+ 
+ <template>
+   <div>
+-    <top-boxes/>
+     <div class="row">
+       <div class="col">
+         <main-account/>
+@@ -35,11 +34,6 @@
+     </div>
+ 
+     <div class="row">
+-      <div class="col">
+-        <main-category-list/>
+-      </div>
+-    </div>
+-    <div class="row">
+       <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+         <main-debit-list/>
+       </div>
+@@ -48,14 +42,6 @@
+       </div>
+     </div>
+ 
+-    <div class="row">
+-      <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+-        <main-piggy-list/>
+-      </div>
+-      <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+-        <main-bills-list/>
+-      </div>
+-    </div>
+   </div>
+ </template>
+ 
+diff -Naur ../official/frontend/src/components/dashboard/MainAccountList.vue ./frontend/src/components/dashboard/MainAccountList.vue
+--- ../official/frontend/src/components/dashboard/MainAccountList.vue	2021-12-26 18:34:46.817306346 +0100
++++ ./frontend/src/components/dashboard/MainAccountList.vue	2021-11-27 23:54:45.366565456 +0100
+@@ -58,6 +58,7 @@
+             <span :class="parseFloat(account.current_balance) < 0 ? 'text-danger' : 'text-success'">
+             {{ Intl.NumberFormat(locale, {style: 'currency', currency: account.currency_code}).format(parseFloat(account.current_balance)) }}
+               </span>
++              <a class="fas fa-check" :href="account.reconcile_url"></a>
+             </div>
+           </div>
+           <div class="card-body table-responsive p-0">
+@@ -138,6 +139,7 @@
+                                id: accountIds[key],
+                                title: '',
+                                url: '',
++                               reconcile_url: '',
+                                include: false,
+                                current_balance: '0',
+                                currency_code: 'EUR',
+@@ -157,6 +159,7 @@
+                     this.accounts[key].current_balance = account.attributes.current_balance;
+                     this.accounts[key].currency_code = account.attributes.currency_code;
+                     this.accounts[key].include = true;
++                    this.accounts[key].reconcile_url = './accounts/reconcile/' + account.id + '/index';
+                     this.loadTransactions(key, accountId);
+                   }
+                 }
+diff -Naur ../official/frontend/src/components/dashboard/MainAccount.vue ./frontend/src/components/dashboard/MainAccount.vue
+--- ../official/frontend/src/components/dashboard/MainAccount.vue	2021-12-26 18:34:46.817306346 +0100
++++ ./frontend/src/components/dashboard/MainAccount.vue	2021-11-27 23:54:45.354565765 +0100
+@@ -67,6 +67,7 @@
+   },
+   created() {
+     this.chartOptions = DefaultLineOptions.methods.getDefaultOptions();
++    this.chartOptions.scales.y.max = 5000;
+     this.ready = true;
+   },
+   computed: {
+diff -Naur ../official/frontend/src/components/store/modules/dashboard/index.js ./frontend/src/components/store/modules/dashboard/index.js
+--- ../official/frontend/src/components/store/modules/dashboard/index.js	2021-12-26 18:34:46.817306346 +0100
++++ ./frontend/src/components/store/modules/dashboard/index.js	2021-11-27 23:54:44.930576708 +0100
+@@ -27,6 +27,8 @@
+ import endOfQuarter from 'date-fns/endOfQuarter';
+ import endOfMonth from "date-fns/endOfMonth";
+ import startOfMonth from 'date-fns/startOfMonth';
++import subDays from 'date-fns/subDays';
++import addDays from 'date-fns/addDays';
+ 
+ const state = () => (
+     {
+@@ -77,7 +79,7 @@
+                       }
+                       if (viewRange === oldViewRange) {
+                           // console.log('Restore view range dates');
+-                          context.dispatch('restoreViewRangeDates');
++                          context.dispatch('setDatesFromViewRange');
+                       }
+                   }
+             ).catch(() => {
+@@ -129,14 +131,14 @@
+                 end = endOfDay(today);
+                 break;
+             case '1W':
+-                // this week:
+-                start = startOfDay(startOfWeek(today, {weekStartsOn: 1}));
+-                end = endOfDay(endOfWeek(today, {weekStartsOn: 1}));
++                // last 7 days + next 3 days
++                start = startOfDay(subDays(today, 7))
++                end = endOfDay(addDays(today, 3));
+                 break;
+             case '1M':
+-                // this month:
+-                start = startOfDay(startOfMonth(today));
+-                end = endOfDay(endOfMonth(today));
++                // last 14 days + next 7 days
++                start = startOfDay(subDays(today, 14));
++                end = endOfDay(addDays(today, 7));
+                 break;
+             case '3M':
+                 // this quarter
+diff -Naur ../official/frontend/src/components/transactions/Create.vue ./frontend/src/components/transactions/Create.vue
+--- ../official/frontend/src/components/transactions/Create.vue	2021-12-26 18:34:46.817306346 +0100
++++ ./frontend/src/components/transactions/Create.vue	2021-12-27 09:45:28.340044164 +0100
+@@ -41,7 +41,7 @@
+             v-on:uploaded-attachments="uploadedAttachment($event)"
+             v-on:selected-attachments="selectedAttachment($event)"
+             v-on:set-marker-location="storeLocation($event)"
+-            v-on:set-account="storeAccountValue($event)"
++            v-on:set-account="storeAccountValue($event, transaction)"
+             v-on:set-date="storeDate($event)"
+             v-on:set-field="storeField($event)"
+             v-on:remove-transaction="removeTransaction($event)"
+@@ -71,7 +71,7 @@
+                     &nbsp;
+                   </div>
+                   <button type="button" class="btn btn-outline-primary btn-block" @click="addTransactionArray"><span class="far fa-clone"></span> {{
+-                      $t('firefly.add_another_split')
++                    $t('firefly.add_another_split')
+                     }}
+                   </button>
+                 </div>
+@@ -427,7 +427,7 @@
+     /**
+      * Responds to changed account.
+      */
+-    storeAccountValue: function (payload) {
++    storeAccountValue: function (payload, tr) {
+       this.updateField({index: payload.index, field: payload.direction + '_account_id', value: payload.id});
+       this.updateField({index: payload.index, field: payload.direction + '_account_type', value: payload.type});
+       this.updateField({index: payload.index, field: payload.direction + '_account_name', value: payload.name});
+@@ -443,6 +443,9 @@
+       if ('destination' === payload.direction && true === payload.user_selected) {
+         this.$refs.splitForms[payload.index].$refs.amount.giveFocus();
+       }
++      //if (!tr.description && tr.destination_account_name) {
++      //  tr.description = tr.destination_account_name;
++      //}
+     },
+     storeField: function (payload) {
+       this.updateField(payload);
+diff -Naur ../official/frontend/src/components/transactions/SplitForm.vue ./frontend/src/components/transactions/SplitForm.vue
+--- ../official/frontend/src/components/transactions/SplitForm.vue	2021-12-26 18:34:46.821306388 +0100
++++ ./frontend/src/components/transactions/SplitForm.vue	2021-12-26 18:38:06.462981309 +0100
+@@ -160,30 +160,6 @@
+                     :payment-date="transaction.payment_date"
+                     :process-date="transaction.process_date"
+                 />
+-              </div>
+-            </div>
+-
+-            <!-- end of body -->
+-          </div>
+-        </div>
+-      </div>
+-    </div> <!-- end of basic card -->
+-
+-    <!-- card for meta -->
+-    <div class="row">
+-      <div class="col">
+-        <div class="card">
+-          <div class="card-header">
+-            <h3 class="card-title">
+-              {{ $t('firefly.transaction_journal_meta') }}
+-              <span v-if="count > 1">({{ index + 1 }} / {{ count }}) </span>
+-            </h3>
+-          </div>
+-          <div class="card-body">
+-            <!-- start of body -->
+-            <!-- meta -->
+-            <div class="row">
+-              <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                 <TransactionBudget
+                     v-if="!('Transfer' === transactionType || 'Deposit' === transactionType)"
+                     v-model="transaction.budget_id"
+@@ -191,35 +167,6 @@
+                     :errors="transaction.errors.budget"
+                     :index="index"
+                 />
+-                <TransactionCategory
+-                    v-model="transaction.category"
+-                    v-on="$listeners"
+-                    :errors="transaction.errors.category"
+-                    :index="index"
+-                />
+-              </div>
+-              <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12">
+-                <TransactionBill
+-                    v-if="!('Transfer' === transactionType || 'Deposit' === transactionType)"
+-                    v-model="transaction.bill_id"
+-                    v-on="$listeners"
+-                    :errors="transaction.errors.bill"
+-                    :index="index"
+-                />
+-                <TransactionTags
+-                    v-model="transaction.tags"
+-                    v-on="$listeners"
+-                    ref="tags"
+-                    :errors="transaction.errors.tags"
+-                    :index="index"
+-                />
+-                <TransactionPiggyBank
+-                    v-if="!('Withdrawal' === transactionType || 'Deposit' === transactionType)"
+-                    v-model="transaction.piggy_bank_id"
+-                    v-on="$listeners"
+-                    :errors="transaction.errors.piggy_bank"
+-                    :index="index"
+-                />
+               </div>
+             </div>
+           </div>
+diff -Naur ../official/resources/views/v1/accounts/reconcile/index.twig ./resources/views/v1/accounts/reconcile/index.twig
+--- ../official/resources/views/v1/accounts/reconcile/index.twig	2021-12-26 18:34:47.013308481 +0100
++++ ./resources/views/v1/accounts/reconcile/index.twig	2021-11-27 23:54:40.054705872 +0100
+@@ -133,4 +133,7 @@
+         var indexUri = '{{ indexUri }}';
+     </script>
+     <script src="v1/js/ff/accounts/reconcile.js?v={{ FF_VERSION }}" type="text/javascript" nonce="{{ JS_NONCE }}"></script>
++    <script type="text/javascript" nonce="{{ JS_NONCE }}">
++        document.addEventListener('DOMContentLoaded', startReconcile, false);
++    </script>      
+ {% endblock %}
+diff -Naur ../official/resources/views/v2/partials/layout/navbar.twig ./resources/views/v2/partials/layout/navbar.twig
+--- ../official/resources/views/v2/partials/layout/navbar.twig	2021-12-26 18:34:47.021308568 +0100
++++ ./resources/views/v2/partials/layout/navbar.twig	2021-11-27 23:54:40.278699826 +0100
+@@ -46,17 +46,6 @@
+                 <a href="{{ route('export.index') }}" class="dropdown-item">
+                     <span class="fas fa-fw fa-upload mr-2"></span> {{ 'export_data_menu'|_ }}
+                 </a>
+-            </div>
+-        </li>
+-        <!-- Notifications Dropdown Menu -->
+-        <li class="nav-item dropdown">
+-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+-                <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+-            </form>
+-            <a class="nav-link" data-toggle="dropdown" href="#">
+-                <span class="far fa-user"></span>
+-            </a>
+-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                 <a href="{{ route('profile.index') }}" class="dropdown-item">
+                     <span class="fas fa-fw fa-user mr-2"></span> {{ 'profile'|_ }}
+                 </a>
+@@ -70,6 +59,16 @@
+                 </a>
+             </div>
+         </li>
++        <li class="nav-item">
++            <a class="nav-link" href="{{ route('transactions.create', 'withdrawal') }}">
++                <span class="fas fa-long-arrow-alt-left nav-icon"></span>
++            </a>
++        </li>
++        <li class="nav-item">
++            <a class="nav-link" href="{{ route('transactions.create', 'transfer') }}">
++                <span class="fas fa-exchange-alt nav-icon"></span>
++            </a>
++        </li>
+         <li class="nav-item dropdown">
+             <a class="nav-link" data-toggle="dropdown" href="#">
+                 <span class="far fa-plus-square"></span>
+@@ -116,7 +115,7 @@
+         <!-- here be dragons -->
+         <li class="nav-item">
+             <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button" title="{{ 'here_be_dragons'|_ }}">
+-                <span class="fas fa-dragon"></span>
++                <span class="far fa-calendar-alt"></span>
+             </a>
+         </li>
+     </ul>
+diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./app/Http/Controllers/Account/ReconcileController.php
+--- ../official/app/Http/Controllers/Account/ReconcileController.php	2021-12-26 18:34:46.785305996 +0100
++++ ./app/Http/Controllers/Account/ReconcileController.php	2021-11-27 23:53:20.691226721 +0100
+@@ -102,19 +102,15 @@
+         }
+         $currency = $this->accountRepos->getAccountCurrency($account) ?? app('amount')->getDefaultCurrency();
+ 
+-        // no start or end:
+-        $range = app('preferences')->get('viewRange', '1M')->data;
+-
+-        // get start and end
+-
++        // compute values of 'start' and 'end' whatever the preferred range is
+         if (null === $start && null === $end) {
+-
+-            /** @var Carbon $start */
+-            $start = clone session('start', app('navigation')->startOfPeriod(new Carbon, $range));
+-            /** @var Carbon $end */
+-            $end = clone session('end', app('navigation')->endOfPeriod(new Carbon, $range));
++           /** @var Carbon $start */
++           $start = clone (new Carbon)->subMonth();
++           /** @var Carbon $end */
++           $end = clone (new Carbon);
+         }
+         if (null === $end) {
++            $range = app('preferences')->get('viewRange', '1M')->data;
+             /** @var Carbon $end */
+             $end = app('navigation')->endOfPeriod($start, $range);
+         }
+diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/CreateRecurringTransactions.php
+--- ../official/app/Jobs/CreateRecurringTransactions.php	2021-12-26 18:34:46.789306040 +0100
++++ ./app/Jobs/CreateRecurringTransactions.php	2021-11-27 23:53:19.875328529 +0100
+@@ -87,6 +87,8 @@
+         $this->submitted         = 0;
+         $this->executed          = 0;
+         $this->created           = 0;
++        $this->days_max_late     = 3;
++        $this->days_max_early    = 8;
+ 
+         Log::debug(sprintf('Created new CreateRecurringTransactions("%s")', $this->date->format('Y-m-d')));
+     }
+@@ -306,10 +308,10 @@
+             );
+ 
+             // start looping from $startDate to today perhaps we have a hit?
+-            // add two days to $this->date so we always include the weekend.
+-            $includeWeekend = clone $this->date;
+-            $includeWeekend->addDays(2);
+-            $occurrences = $this->repository->getOccurrencesInRange($repetition, $recurrence->first_date, $includeWeekend);
++            // add few days to anticipate next occurrences
++            $endDate = clone $this->date;
++            $endDate->addDays($this->days_max_early);
++            $occurrences = $this->repository->getOccurrencesInRange($repetition, $recurrence->first_date, $endDate);
+ 
+             unset($includeWeekend);
+ 
+@@ -357,11 +359,18 @@
+     private function handleOccurrence(Recurrence $recurrence, RecurrenceRepetition $repetition, Carbon $date): ?TransactionGroup
+     {
+         $date->startOfDay();
+-        if ($date->ne($this->date)) {
+ 
++        // allow some margin in the future (to anticipate) and in the past (in case cron was not executed)
++        $datediff = $date->diffInDays($this->date);
++        if ($datediff > $this->days_max_early) {
++            //print "date too much in the future\n";
+             return null;
+         }
+-        Log::debug(sprintf('%s IS today (%s)', $date->format('Y-m-d'), $this->date->format('Y-m-d')));
++        if ($datediff < -$this->days_max_late) {
++            //print "date too much in the past\n";
++            return null;
++        }
++        Log::debug(sprintf('%s IS close to today (%s)', $date->format('Y-m-d'), $this->date->format('Y-m-d')));
+ 
+         // count created journals on THIS day.
+         $journalCount = $this->repository->getJournalCount($recurrence, $date, $date);

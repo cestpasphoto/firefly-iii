@@ -3,20 +3,19 @@
 ### Edit these variables
 DOCKER_CONTAINER="firefly_fireflyiii_1"
 DOCKER_COMPOSE="/var/www/firefly/docker-compose.yml"
-
+GITHUB_DOWNLOAD="https://github.com/cestpasphoto/firefly-iii/raw/main/"
+SRC_PATCH="firefly_src.patch"
+BIN_PATCH="firefly_bin.patch"
 
 ### Apply patch(es)
 apply_patch () {
-  # Local patch or local patches or remote patch file ?
-  if [[ -f "frontend.patch" ]]; then
-    cat frontend.patch resources.patch app.patch public_v1.patch > global.patch
-    if [[ -f "public_v2.patch" ]]; then
-      cat public_v2.patch >> global.patch
-    fi
-  elif [[ -f "global.patch" ]]; then
-    :
-  else
-    wget "https://github.com/cestpasphoto/firefly-iii/raw/main/global.patch"
+  # Download remote patch if locally missing
+  [[ -f ${SRC_PATCH} ]] || wget ${GITHUB_DOWNLOAD}${SRC_PATCH}
+  cp ${SRC_PATCH} global.patch
+  
+  if [[ "$1" == "src+bin" || "$1" == "" ]]; then
+    [[ -f ${BIN_PATCH} ]] || wget ${GITHUB_DOWNLOAD}${BIN_PATCH}
+    cat ${BIN_PATCH} >> global.patch
   fi
 
   sudo docker cp global.patch ${DOCKER_CONTAINER}:/var/www/html/
@@ -24,13 +23,16 @@ apply_patch () {
     patch -s -p0 < global.patch
     rm global.patch
   '
+  rm global.patch
 }
 
 ### Clean docker from previous patches (redownload image)
 clean_docker () {
   sudo docker container stop ${DOCKER_CONTAINER}
   sudo docker container rm ${DOCKER_CONTAINER}
-  #sudo docker-compose pull
+  if [[ "$1" == "pull" ]]; then
+    sudo docker-compose pull
+  fi
   sudo docker-compose -f ${DOCKER_COMPOSE} up -d
 }
 
@@ -56,33 +58,55 @@ build () {
     cd frontend ; npm run prod ; cd /var/www/html/
 
     # Create patches
-    diff -Naur public.backup/v1/    public/v1/    > public_v1.patch
-    diff -Naur public.backup/v2/    public/v2/    > public_v2.patch
-    diff -Naur frontend.backup/src/ frontend/src/ > frontend.patch
-    diff -Naur resources.backup/    resources/    > resources.patch
-    diff -Naur app.backup/          app/          > app.patch
-    cat public_v1.patch public_v2.patch frontend.patch resources.patch app.patch > global.patch
-    rm  public_v1.patch public_v2.patch frontend.patch resources.patch app.patch
+    find ./ -iname "*.rej" -delete ; find ./ -iname "*.orig" -delete
+    # diff -Naur public.backup/v1/    public/v1/    > public_v1.patch
+    # diff -Naur frontend.backup/src/ frontend/src/ > frontend.patch
+    # diff -Naur resources.backup/    resources/    > resources.patch
+    # diff -Naur app.backup/          app/          > app.patch
+
+    diff -Naur public.backup/v2/    public/v2/    > firefly_bin.patch
+    # cat public_v1.patch public_v2.patch frontend.patch resources.patch app.patch > global.patch
+    # rm  public_v1.patch public_v2.patch frontend.patch resources.patch app.patch
   '
 
   # Get the patch on host
-  sudo docker cp ${DOCKER_CONTAINER}:/var/www/html/global.patch .
+  sudo docker cp ${DOCKER_CONTAINER}:/var/www/html/firefly_bin.patch .
 }
 
 ###############################################################################
 
 
-# If firefly version updated, follow these steps:
-#   be sure that "docker-compose pull" command is uncommented in clean_docker()
-#   run clean_docker, install_env, apply_patch
-#   resolve merging conflicts
-#   run build and get global.patch
-#   comment the "docker-compose pull" command
+if [[ "$1" == "update" ]]; then
+  # Update docker based on firefly_src.patch
+  clean_docker "pull"
+  install_env
+  apply_patch "src"
 
-clean_docker
-install_env
-apply_patch
-#build
+  echo -en "\n\n => check above and type 'build' if no conflict during patching: "
+  read userans
+  if [[ "$userans" == "build" ]]; then
+    build
+  else
+    echo "so, solve such conflicts and then run ./patch_docker.sh build"
+  fi
 
-###clean_docker
-###apply_patch
+elif [[ "$1" == "build" ]]; then
+  # Just build and export firefly_bin.patch
+  build
+
+elif [[ "$1" == "patch" ]]; then
+  # Patch using src.patch + bin.patch
+  clean_docker
+  apply_patch "src+bin"
+
+elif [[ "$1" == "custom" ]]; then
+  clean_docker
+  apply_patch "src"
+
+else
+  echo "\
+Use one of these actions as argument:
+  update   (update docker, apply firefly_src.patch, then ask to build)
+  build    (build and export firefly_bin.patch)
+  patch    (clean and apply src+bin patches)"
+fi

@@ -428,7 +428,6 @@ export default {
      * Responds to changed account.
      */
     storeAccountValue: function (payload, tr) {
-      console.log(tr);
       this.updateField({index: payload.index, field: payload.direction + '_account_id', value: payload.id});
       this.updateField({index: payload.index, field: payload.direction + '_account_type', value: payload.type});
       this.updateField({index: payload.index, field: payload.direction + '_account_name', value: payload.name});
@@ -444,9 +443,9 @@ export default {
       if ('destination' === payload.direction && true === payload.user_selected) {
         this.$refs.splitForms[payload.index].$refs.amount.giveFocus();
       }
-      if (!tr.description && tr.destination_account_name) {
-        tr.description = tr.destination_account_name;
-      }
+      //if (!tr.description && tr.destination_account_name) {
+      //  tr.description = tr.destination_account_name;
+      //}
     },
     storeField: function (payload) {
       this.updateField(payload);
