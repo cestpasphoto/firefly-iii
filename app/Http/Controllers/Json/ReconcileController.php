@@ -83,14 +83,18 @@ class ReconcileController extends Controller
      *
      * @return JsonResponse
      */
-    public function overview(Request $request, Account $account, Carbon $start, Carbon $end): JsonResponse
+    public function overview(Request $request, Account $account = null, Carbon $start = null, Carbon $end = null): JsonResponse
     {
         $startBalance    = $request->get('startBalance');
         $endBalance      = $request->get('endBalance');
         $accountCurrency = $this->accountRepos->getAccountCurrency($account) ?? app('amount')->getDefaultCurrency();
         $amount          = '0';
         $clearedAmount   = '0';
+        $route           = '';
 
+        if (null === $start && null === $end) {
+            throw new FireflyException('Invalid dates submitted.');
+        }
         if ($end->lt($start)) {
             [$start, $end] = [$end, $start];
         }
@@ -137,7 +141,7 @@ class ReconcileController extends Controller
         $reconSum = bcadd(bcadd($startBalance, $amount), $clearedAmount);
 
         try {
-            $view = prefixView(
+            $view = view(
                 'accounts.reconcile.overview',
                 compact(
                     'account',
@@ -220,8 +224,11 @@ class ReconcileController extends Controller
      * @throws FireflyException
      * @throws JsonException
      */
-    public function transactions(Account $account, Carbon $start, Carbon $end)
+    public function transactions(Account $account, Carbon $start = null, Carbon $end = null)
     {
+        if (null === $start || null === $end) {
+            throw new FireflyException('Invalid dates submitted.');
+        }
         if ($end->lt($start)) {
             [$end, $start] = [$start, $end];
         }
@@ -249,7 +256,7 @@ class ReconcileController extends Controller
         $journals = $this->processTransactions($account, $array);
 
         try {
-            $html = prefixView(
+            $html = view(
                 'accounts.reconcile.transactions',
                 compact('account', 'journals', 'currency', 'start', 'end', 'selectionStart', 'selectionEnd')
             )->render();

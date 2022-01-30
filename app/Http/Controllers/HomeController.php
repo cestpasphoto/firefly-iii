@@ -103,7 +103,7 @@ class HomeController extends Controller
     public function index(AccountRepositoryInterface $repository): mixed
     {
         if ('v3' === config('firefly.layout')) {
-            return view('pwa');
+            die('Please set your layout to "v1".');
         }
         $types = config('firefly.accountTypesByIdentifier.asset');
         $count = $repository->count($types);
@@ -141,6 +141,6 @@ class HomeController extends Controller
         $user = auth()->user();
         event(new RequestedVersionCheckStatus($user));
 
-        return prefixView('index', compact('count', 'subTitle', 'transactions', 'billCount', 'start', 'end', 'today'));
+        return view('index', compact('count', 'subTitle', 'transactions', 'billCount', 'start', 'end', 'today'));
     }
 }
