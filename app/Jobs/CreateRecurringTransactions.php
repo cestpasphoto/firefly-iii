@@ -87,8 +87,6 @@ class CreateRecurringTransactions implements ShouldQueue
         $this->submitted         = 0;
         $this->executed          = 0;
         $this->created           = 0;
-        $this->days_max_late     = 3;
-        $this->days_max_early    = 8;
 
         Log::debug(sprintf('Created new CreateRecurringTransactions("%s")', $this->date->format('Y-m-d')));
     }
@@ -308,10 +306,10 @@ class CreateRecurringTransactions implements ShouldQueue
             );
 
             // start looping from $startDate to today perhaps we have a hit?
-            // add few days to anticipate next occurrences
-            $endDate = clone $this->date;
-            $endDate->addDays($this->days_max_early);
-            $occurrences = $this->repository->getOccurrencesInRange($repetition, $recurrence->first_date, $endDate);
+            // add two days to $this->date so we always include the weekend.
+            $includeWeekend = clone $this->date;
+            $includeWeekend->addDays(2);
+            $occurrences = $this->repository->getOccurrencesInRange($repetition, $recurrence->first_date, $includeWeekend);
 
             unset($includeWeekend);
 
@@ -359,18 +357,11 @@ class CreateRecurringTransactions implements ShouldQueue
     private function handleOccurrence(Recurrence $recurrence, RecurrenceRepetition $repetition, Carbon $date): ?TransactionGroup
     {
         $date->startOfDay();
+        if ($date->ne($this->date)) {
 
-        // allow some margin in the future (to anticipate) and in the past (in case cron was not executed)
-        $datediff = $date->diffInDays($this->date);
-        if ($datediff > $this->days_max_early) {
-            //print "date too much in the future\n";
             return null;
         }
-        if ($datediff < -$this->days_max_late) {
-            //print "date too much in the past\n";
-            return null;
-        }
-        Log::debug(sprintf('%s IS close to today (%s)', $date->format('Y-m-d'), $this->date->format('Y-m-d')));
+        Log::debug(sprintf('%s IS today (%s)', $date->format('Y-m-d'), $this->date->format('Y-m-d')));
 
         // count created journals on THIS day.
         $journalCount = $this->repository->getJournalCount($recurrence, $date, $date);

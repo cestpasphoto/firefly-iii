@@ -23,7 +23,6 @@
 var balanceDifference = 0;
 var difference = 0;
 var selectedAmount = 0;
-var initialSelectedAmount = 0;
 var reconcileStarted = false;
 var changedBalances = false;
 
@@ -44,9 +43,6 @@ $(function () {
             difference = balanceDifference - selectedAmount;
             updateDifference();
 
-            trigger_smart_reconcile();
-            difference = balanceDifference - selectedAmount;
-            updateDifference();
         }
         changedBalances = true;
     });
@@ -75,98 +71,6 @@ $(function () {
 
 });
 
-function smart_reconcile(amounts, target_sum) {
-    let d_size = amounts.length;
-    let max_sum = amounts.reduce((a, b) => a + b);
-    // Define number of maximum items to uncheck in order to keep short computing time
-    // Here are some pre-computed values ensuring less than 1e7 combinations to explore
-    // 10 -> 10, 20 -> 20, 22 -> 22, 24 -> 12, 26 -> 9, 30 -> 8, 40 -> 6, 50 -> 5, 100 -> 4
-    // next line is a magic formula fitting these values
-    let max_nb_items = (d_size <= 22) ? d_size : Math.floor( 13*(d_size-22)**-0.3 );
-    console.log('debug smart_reconcile:', target_sum, max_sum, max_nb_items);
-    // Result is list of items NOT to check
-    let result = smart_reconcile_aux(amounts, 0, max_nb_items, 0, max_sum-target_sum);
-    return result;
-}
-
-// Recursive function, try to add the amounts after the 'nth' one to achieve 'target_sum'
-// without exceeding maximum number of items 'remain_to_take'
-// Returns null if not possible else boolean array listing which items to check
-function smart_reconcile_aux(amounts, nth_number, remain_to_take, current_sum, target_sum) {
-    // Stop if no more transactions can be checked
-    if (Math.abs(current_sum - target_sum) < 0.01) return Array(amounts.length-nth_number).fill(false);
-    if (remain_to_take == 0 || nth_number == amounts.length) return null;
-
-    // Try without using current number
-    let result = smart_reconcile_aux(amounts, nth_number+1, remain_to_take, current_sum, target_sum);
-    if (result) {
-        result.unshift(false);
-        return result;
-    }
-
-    // Try using current number
-    let new_amount = amounts[nth_number];
-    let new_sum = current_sum + new_amount;
-    if (Math.abs(new_sum - target_sum) < 1e-8) return [true].concat(Array(amounts.length-nth_number-1).fill(false));
-    result = smart_reconcile_aux(amounts, nth_number+1, remain_to_take-1, new_sum, target_sum);
-    if (result) result.unshift(true);
-    return result;
-}
-
-function trigger_smart_reconcile() {
-    // Gather all data
-    let amounts = [];
-    $('.reconcile_checkbox').each(function (i, v) {
-        var check = $(v);
-        amounts.push(parseFloat(check.val()));
-    });
-
-    // Call core function, better to serch for items to uncheck than the ones to check
-    var items_to_uncheck = smart_reconcile(amounts, initialSelectedAmount - balanceDifference);
-    if (items_to_uncheck) {
-        // Set checkboxes
-        $('.reconcile_checkbox').each(function (i, v) {
-            var check = $(v);
-            changeReconciledBoxAndUpdate(check, !items_to_uncheck[i]);
-        });
-    } else {
-        console.log('Cant find a solution for smart reconcile');
-    }
-}
-
-// Change status of el to targetState and update all variables
-// If targetState is null, then assumes that state is alreay changed and only update variables
-function changeReconciledBoxAndUpdate(el, targetState) {
-    var amount = parseFloat(el.val());
-    var journalId = parseInt(el.data('id'));
-    var identifier = 'checked_' + journalId;
-    console.log('in changeReconciledBoxAndUpdate(' + journalId + ') with amount ' + amount + ' selected amount ' + selectedAmount + ' and targetState=' + targetState);
-
-    if (targetState != null) {
-        // do nothing if line is already in target state
-        if (el.prop('checked') === targetState) {
-            return;
-        }
-        el.prop('checked', targetState);
-    }
-
-    // if checked, add to selected amount
-    if (el.prop('checked') === true && el.data('younger') === false) {
-        selectedAmount = selectedAmount - amount;
-        //console.log('checked = true and younger = false so selected amount = ' + selectedAmount);
-        localStorage.setItem(identifier, 'true');
-    }
-    // if unchecked, substract from selected amount
-    if (el.prop('checked') === false && el.data('younger') === false) {
-        selectedAmount = selectedAmount + amount;
-        //console.log('checked = false and younger = false so selected amount = ' + selectedAmount);
-        localStorage.setItem(identifier, 'false');
-    }
-    difference = balanceDifference - selectedAmount;
-    //console.log('Difference is now ' + difference);
-    updateDifference();
-}
-
 function selectAllReconcile(e) {
     // loop all, check.
     var el = $(e.target);
@@ -181,7 +85,29 @@ function selectAllReconcile(e) {
 
     $('.reconcile_checkbox').each(function (i, v) {
         var check = $(v);
-        changeReconciledBoxAndUpdate(check, doCheck);
+        var amount = parseFloat(check.val());
+        var journalId = parseInt(check.data('id'));
+        var identifier = 'checked_' + journalId;
+        console.log('in selectAllReconcile(' + journalId + ') with amount ' + amount + ' and selected amount ' + selectedAmount);
+
+        // do nothing if line is already in target state
+        if (check.prop('checked') === doCheck )
+            return;
+    
+        check.prop('checked', doCheck);
+        // if checked, add to selected amount
+        if (doCheck === true && check.data('younger') === false) {
+            selectedAmount = selectedAmount - amount;
+            //console.log('checked = true and younger = false so selected amount = ' + selectedAmount);
+            localStorage.setItem(identifier, 'true');
+        }
+        if (doCheck === false && check.data('younger') === false) {
+            selectedAmount = selectedAmount + amount;
+            //console.log('checked = false and younger = false so selected amount = ' + selectedAmount);
+            localStorage.setItem(identifier, 'false');
+        }
+        difference = balanceDifference - selectedAmount;
+        //console.log('Difference is now ' + difference);
     });
 
     updateDifference();
@@ -229,7 +155,26 @@ function storeReconcile() {
  * @param e
  */
 function checkReconciledBox(e) {
-    changeReconciledBoxAndUpdate($(e.target), null);
+
+    var el = $(e.target);
+    var amount = parseFloat(el.val());
+    var journalId = parseInt(el.data('id'));
+    var identifier = 'checked_' + journalId;
+    //console.log('in checkReconciledBox(' + journalId + ') with amount ' + amount + ' and selected amount ' + selectedAmount);
+    // if checked, add to selected amount
+    if (el.prop('checked') === true && el.data('younger') === false) {
+        selectedAmount = selectedAmount - amount;
+        //console.log('checked = true and younger = false so selected amount = ' + selectedAmount);
+        localStorage.setItem(identifier, 'true');
+    }
+    if (el.prop('checked') === false && el.data('younger') === false) {
+        selectedAmount = selectedAmount + amount;
+        //console.log('checked = false and younger = false so selected amount = ' + selectedAmount);
+        localStorage.setItem(identifier, 'false');
+    }
+    difference = balanceDifference - selectedAmount;
+    //console.log('Difference is now ' + difference);
+    updateDifference();
 }
 
 
@@ -323,7 +268,6 @@ function placeTransactions(data) {
 
     difference = balanceDifference - selectedAmount;
     updateDifference();
-    initialSelectedAmount = selectedAmount;
 
     // loop al placed checkboxes and check them if necessary.
     restoreFromLocalStorage();
@@ -389,12 +333,12 @@ function startReconcile() {
 }
 
 function updateDifference() {
-    //console.log('in updateDifference()');
+    console.log('in updateDifference()');
     var addClass = 'text-info';
-    if (difference > 0.01) {
+    if (difference > 0) {
         addClass = 'text-success';
     }
-    if (difference < -0.01) {
+    if (difference < 0) {
         addClass = 'text-danger';
     }
     $('#difference').addClass(addClass).text(accounting.formatMoney(difference));
