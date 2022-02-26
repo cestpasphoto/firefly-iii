@@ -134,4 +134,7 @@
         var selectRangeAndBalance = '{{ 'select_range_and_balance'|_|escape('js') }}';
     </script>
     <script src="v1/js/ff/accounts/reconcile.js?v={{ FF_VERSION }}" type="text/javascript" nonce="{{ JS_NONCE }}"></script>
+    <script type="text/javascript" nonce="{{ JS_NONCE }}">
+        document.addEventListener('DOMContentLoaded', startReconcile, false);
+    </script>
 {% endblock %}

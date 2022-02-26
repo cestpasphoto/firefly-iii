@@ -102,19 +102,15 @@ class ReconcileController extends Controller
         }
         $currency = $this->accountRepos->getAccountCurrency($account) ?? app('amount')->getDefaultCurrency();
 
-        // no start or end:
-        $range = app('preferences')->get('viewRange', '1M')->data;
-
-        // get start and end
-
+        // compute values of 'start' and 'end' whatever the preferred range is
         if (null === $start && null === $end) {
-
-            /** @var Carbon $start */
-            $start = clone session('start', app('navigation')->startOfPeriod(new Carbon, $range));
-            /** @var Carbon $end */
-            $end = clone session('end', app('navigation')->endOfPeriod(new Carbon, $range));
+           /** @var Carbon $start */
+           $start = clone (new Carbon)->subMonth();
+           /** @var Carbon $end */
+           $end = clone (new Carbon);
         }
         if (null === $end) {
+            $range = app('preferences')->get('viewRange', '1M')->data;
             /** @var Carbon $end */
             $end = app('navigation')->endOfPeriod($start, $range);
         }
