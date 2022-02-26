@@ -101,7 +101,7 @@ return [
         'webhooks'     => true,
         'handle_debts' => true,
     ],
-    'version'                      => '5.6.12',
+    'version'                      => '5.6.14',
     'api_version'                  => '1.5.5',
     'db_version'                   => 18,
 
@@ -168,7 +168,7 @@ return [
         // 'lt_LT' => ['name_locale' => 'Lietuvių', 'name_english' => 'Lithuanian'],
         'nb_NO' => ['name_locale' => 'Norsk', 'name_english' => 'Norwegian'],
         'nl_NL' => ['name_locale' => 'Nederlands', 'name_english' => 'Dutch'],
-        'pl_PL' => ['name_locale' => 'Polski', 'name_english' => 'Polish '],
+        'pl_PL' => ['name_locale' => 'Polski', 'name_english' => 'Polish'],
         'pt_BR' => ['name_locale' => 'Português do Brasil', 'name_english' => 'Portuguese (Brazil)'],
         'pt_PT' => ['name_locale' => 'Português', 'name_english' => 'Portuguese'],
         'ro_RO' => ['name_locale' => 'Română', 'name_english' => 'Romanian'],
@@ -289,7 +289,7 @@ return [
     'credit_card_types'            => ['monthlyFull'],
 
     // "period must be in this list" values
-    'bill_periods'                 => ['weekly', 'monthly', 'quarterly', 'half-year', 'yearly'],
+    'bill_periods'                 => ['daily', 'weekly', 'monthly', 'quarterly', 'half-year', 'yearly'],
     'interest_periods'             => ['weekly', 'monthly', 'quarterly', 'half-year', 'yearly'],
 
     // settings to translate X to Y
