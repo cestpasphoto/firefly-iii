@@ -84,11 +84,22 @@
                         </span>
                     </li>
 
-                    <li class="dropdown user user-menu">
-                    <span style="cursor:default;color:#fff;padding: 15px;display: block;line-height: 20px;">
-                        <span class="hidden-xs">{{ Auth.user.email }}</span>
-                    </span>
+                    <li>
+                        <a href="{{ route('transactions.create', 'withdrawal') }}">
+                            <span class="fa fa-long-arrow-left bg-red" style="font-size:20px;border-radius:50%"></span>
+                        </a>
                     </li>
+                    <li>
+                        <a href="{{ route('transactions.create', 'deposit') }}">
+                            <span class="fa fa-long-arrow-right bg-green" style="font-size:20px;border-radius:50%"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('transactions.create', 'transfer') }}">
+                            <span class="fa fa-exchange bg-blue" style="font-size:20px;border-radius:50%"></span>
+                        </a>
+                    </li>
+
                     <li id="sidebar-toggle">
                         <a href="#" data-toggle="control-sidebar"><span class="fa fa-plus-circle"></span></a>
                     </li>

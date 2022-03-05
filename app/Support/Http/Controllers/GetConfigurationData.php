@@ -136,9 +136,10 @@ trait GetConfigurationData
         }
 
         // last seven days:
-        $seven          = Carbon::now()->subDays(7);
+        $custom_begin   = Carbon::now()->subDays(14);
+        $custom_end     = Carbon::now()->addDays(7);
         $index          = (string)trans('firefly.last_seven_days');
-        $ranges[$index] = [$seven, new Carbon];
+        $ranges[$index] = [$custom_begin, $custom_end];
 
         // last 30 days:
         $thirty         = Carbon::now()->subDays(30);
