@@ -1,6 +1,6 @@
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
---- ../official/public/v1/js/ff/accounts/reconcile.js	2021-12-26 18:34:46.841306607 +0100
-+++ ./public/v1/js/ff/accounts/reconcile.js	2021-12-27 09:59:46.226375357 +0100
+--- ../official/public/v1/js/ff/accounts/reconcile.js	2022-01-30 07:42:09.272120216 +0100
++++ ./public/v1/js/ff/accounts/reconcile.js	2022-03-05 07:19:10.665507109 +0100
 @@ -23,6 +23,7 @@
  var balanceDifference = 0;
  var difference = 0;
@@ -177,7 +177,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
  }
  
  
-@@ -263,6 +318,7 @@
+@@ -268,6 +323,7 @@
  
      difference = balanceDifference - selectedAmount;
      updateDifference();
@@ -185,7 +185,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
  
      // loop al placed checkboxes and check them if necessary.
      restoreFromLocalStorage();
-@@ -328,12 +384,12 @@
+@@ -333,12 +389,12 @@
  }
  
  function updateDifference() {
@@ -201,416 +201,207 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
          addClass = 'text-danger';
      }
      $('#difference').addClass(addClass).text(accounting.formatMoney(difference));
-diff -Naur ../official/frontend/src/components/dashboard/Calendar.vue ./frontend/src/components/dashboard/Calendar.vue
---- ../official/frontend/src/components/dashboard/Calendar.vue	2021-12-26 18:34:46.817306346 +0100
-+++ ./frontend/src/components/dashboard/Calendar.vue	2021-11-27 23:54:45.302567105 +0100
-@@ -243,39 +243,45 @@
-     },
-     generateMonthly: function () {
-       let today = new Date(this.range.start);
--      // previous month
--      let start = startOfDay(startOfMonth(subMonths(today, 1)));
--      let end = endOfDay(endOfMonth(subMonths(today, 1)));
-+      let start = startOfDay(today)
-+      let end = endOfDay(addDays(start, 21));
-+
-+      // previous period
-+      let periodStart = startOfDay(subDays(start, 21));
-+      let periodEnd   =   endOfDay(subDays(end  , 21));
-+      let titleStart = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodStart);
-+      let titleEnd   = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodEnd);
-       this.periods.push(
-           {
--            start: start.toDateString(),
--            end: end.toDateString(),
--            title: new Intl.DateTimeFormat(this.locale, {year: 'numeric', month: 'long'}).format(start)
-+            start: periodStart.toDateString(),
-+            end: periodEnd.toDateString(),
-+            title: titleStart + ' - ' + titleEnd
-           }
-       );
- 
--      // this month
--      start = startOfDay(startOfMonth(today));
--      end = endOfDay(endOfMonth(today));
-+      // this period
-+      titleStart = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(start);
-+      titleEnd   = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(end);
-       this.periods.push(
-           {
-             start: start.toDateString(),
-             end: end.toDateString(),
--            title: new Intl.DateTimeFormat(this.locale, {year: 'numeric', month: 'long'}).format(start)
-+            title: titleStart + ' - ' + titleEnd
-           }
-       );
- 
--      // next month
--      start = startOfDay(startOfMonth(addMonths(today, 1)));
--      end = endOfDay(endOfMonth(addMonths(today, 1)));
-+      // next period
-+      periodStart = startOfDay(addDays(start, 21));
-+      periodEnd   =   endOfDay(addDays(end  , 21));
-+      titleStart = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodStart);
-+      titleEnd   = new Intl.DateTimeFormat(this.locale, {day: 'numeric', month: 'short'}).format(periodEnd);
-       this.periods.push(
-           {
--            start: start.toDateString(),
--            end: end.toDateString(),
--            title: new Intl.DateTimeFormat(this.locale, {year: 'numeric', month: 'long'}).format(start)
-+            start: periodStart.toDateString(),
-+            end: periodEnd.toDateString(),
-+            title: titleStart + ' - ' + titleEnd
-           }
-       );
--
-     },
-     generateQuarterly: function () {
-       let today = new Date(this.range.start);
-@@ -599,4 +605,4 @@
- .dropdown-item:hover {
-   color: #212529;
- }
--</style>
-\ Pas de fin de ligne à la fin du fichier
-+</style>
-diff -Naur ../official/frontend/src/components/dashboard/DashboardListSmall.vue ./frontend/src/components/dashboard/DashboardListSmall.vue
---- ../official/frontend/src/components/dashboard/DashboardListSmall.vue	2021-12-26 18:34:46.817306346 +0100
-+++ ./frontend/src/components/dashboard/DashboardListSmall.vue	2021-11-27 23:54:45.286567517 +0100
-@@ -38,17 +38,17 @@
-       </td>
-       <td style="text-align:right;">
-                 <span v-for="tr in transaction.attributes.transactions">
--                     <span v-if="'withdrawal' === tr.type" class="text-danger">
--                        {{ Intl.NumberFormat(locale, {style: 'currency', currency: tr.currency_code}).format(tr.amount * -1) }}<br>
--                     </span>
--                    <span v-if="'deposit' === tr.type" class="text-success">
--                        {{ Intl.NumberFormat(locale, {style: 'currency', currency: tr.currency_code}).format(tr.amount) }}<br>
--                     </span>
--                    <span v-if="'transfer' === tr.type && parseInt(tr.source_id) === account_id" class="text-info">
--                        {{ Intl.NumberFormat(locale, {style: 'currency', currency: tr.currency_code}).format(tr.amount * -1) }}<br>
-+                    <span v-if="new Date(tr.date) > new Date()" class="text-secondary">
-+                        {{ formatted_amount(tr, account_id, locale) }}<br>
-                     </span>
--                    <span v-if="'transfer' === tr.type && parseInt(tr.destination_id) === account_id" class="text-info">
--                        {{ Intl.NumberFormat(locale, {style: 'currency', currency: tr.currency_code}).format(tr.amount) }}<br>
-+                    <span v-else-if="'withdrawal' === tr.type" class="text-danger">
-+                        {{ formatted_amount(tr, account_id, locale) }}<br>
-+                    </span>
-+                    <span v-else-if="'deposit' === tr.type" class="text-success">
-+                        {{ formatted_amount(tr, account_id, locale) }}<br>
-+                    </span>
-+                    <span v-else-if="'transfer' === tr.type" class="text-info">
-+                        {{ formatted_amount(tr, account_id, locale) }}<br>
-                     </span>
-                 </span>
-       </td>
-@@ -68,7 +68,15 @@
-   created() {
-     this.locale = localStorage.locale ?? 'en-US';
-   },
--  methods: {},
-+  methods: {
-+    formatted_amount(tr, account_id, locale) {
-+      let amount = tr.amount;
-+      if ( 'withdrawal' === tr.type || ('transfer' === tr.type && parseInt(tr.source_id) === account_id) ) {
-+        amount = -amount;
-+      }
-+      return Intl.NumberFormat(locale, {style: 'currency', currency: tr.currency_code}).format(amount);
-+    }
-+  },
-   props: {
-     transactions: {
-       type: Array,
-diff -Naur ../official/frontend/src/components/dashboard/Dashboard.vue ./frontend/src/components/dashboard/Dashboard.vue
---- ../official/frontend/src/components/dashboard/Dashboard.vue	2021-12-26 18:34:46.817306346 +0100
-+++ ./frontend/src/components/dashboard/Dashboard.vue	2021-11-27 23:54:45.342566074 +0100
-@@ -20,7 +20,6 @@
- 
- <template>
-   <div>
--    <top-boxes/>
-     <div class="row">
-       <div class="col">
-         <main-account/>
-@@ -35,11 +34,6 @@
-     </div>
- 
-     <div class="row">
--      <div class="col">
--        <main-category-list/>
--      </div>
--    </div>
--    <div class="row">
-       <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-         <main-debit-list/>
-       </div>
-@@ -48,14 +42,6 @@
-       </div>
-     </div>
- 
--    <div class="row">
--      <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
--        <main-piggy-list/>
--      </div>
--      <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
--        <main-bills-list/>
--      </div>
--    </div>
-   </div>
- </template>
- 
-diff -Naur ../official/frontend/src/components/dashboard/MainAccountList.vue ./frontend/src/components/dashboard/MainAccountList.vue
---- ../official/frontend/src/components/dashboard/MainAccountList.vue	2021-12-26 18:34:46.817306346 +0100
-+++ ./frontend/src/components/dashboard/MainAccountList.vue	2021-11-27 23:54:45.366565456 +0100
-@@ -58,6 +58,7 @@
-             <span :class="parseFloat(account.current_balance) < 0 ? 'text-danger' : 'text-success'">
-             {{ Intl.NumberFormat(locale, {style: 'currency', currency: account.currency_code}).format(parseFloat(account.current_balance)) }}
-               </span>
-+              <a class="fas fa-check" :href="account.reconcile_url"></a>
-             </div>
-           </div>
-           <div class="card-body table-responsive p-0">
-@@ -138,6 +139,7 @@
-                                id: accountIds[key],
-                                title: '',
-                                url: '',
-+                               reconcile_url: '',
-                                include: false,
-                                current_balance: '0',
-                                currency_code: 'EUR',
-@@ -157,6 +159,7 @@
-                     this.accounts[key].current_balance = account.attributes.current_balance;
-                     this.accounts[key].currency_code = account.attributes.currency_code;
-                     this.accounts[key].include = true;
-+                    this.accounts[key].reconcile_url = './accounts/reconcile/' + account.id + '/index';
-                     this.loadTransactions(key, accountId);
-                   }
-                 }
-diff -Naur ../official/frontend/src/components/dashboard/MainAccount.vue ./frontend/src/components/dashboard/MainAccount.vue
---- ../official/frontend/src/components/dashboard/MainAccount.vue	2021-12-26 18:34:46.817306346 +0100
-+++ ./frontend/src/components/dashboard/MainAccount.vue	2021-11-27 23:54:45.354565765 +0100
-@@ -67,6 +67,7 @@
-   },
-   created() {
-     this.chartOptions = DefaultLineOptions.methods.getDefaultOptions();
-+    this.chartOptions.scales.y.max = 5000;
-     this.ready = true;
-   },
-   computed: {
-diff -Naur ../official/frontend/src/components/store/modules/dashboard/index.js ./frontend/src/components/store/modules/dashboard/index.js
---- ../official/frontend/src/components/store/modules/dashboard/index.js	2021-12-26 18:34:46.817306346 +0100
-+++ ./frontend/src/components/store/modules/dashboard/index.js	2021-11-27 23:54:44.930576708 +0100
-@@ -27,6 +27,8 @@
- import endOfQuarter from 'date-fns/endOfQuarter';
- import endOfMonth from "date-fns/endOfMonth";
- import startOfMonth from 'date-fns/startOfMonth';
-+import subDays from 'date-fns/subDays';
-+import addDays from 'date-fns/addDays';
- 
- const state = () => (
-     {
-@@ -77,7 +79,7 @@
-                       }
-                       if (viewRange === oldViewRange) {
-                           // console.log('Restore view range dates');
--                          context.dispatch('restoreViewRangeDates');
-+                          context.dispatch('setDatesFromViewRange');
-                       }
-                   }
-             ).catch(() => {
-@@ -129,14 +131,14 @@
-                 end = endOfDay(today);
-                 break;
-             case '1W':
--                // this week:
--                start = startOfDay(startOfWeek(today, {weekStartsOn: 1}));
--                end = endOfDay(endOfWeek(today, {weekStartsOn: 1}));
-+                // last 7 days + next 3 days
-+                start = startOfDay(subDays(today, 7))
-+                end = endOfDay(addDays(today, 3));
-                 break;
-             case '1M':
--                // this month:
--                start = startOfDay(startOfMonth(today));
--                end = endOfDay(endOfMonth(today));
-+                // last 14 days + next 7 days
-+                start = startOfDay(subDays(today, 14));
-+                end = endOfDay(addDays(today, 7));
-                 break;
-             case '3M':
-                 // this quarter
-diff -Naur ../official/frontend/src/components/transactions/Create.vue ./frontend/src/components/transactions/Create.vue
---- ../official/frontend/src/components/transactions/Create.vue	2021-12-26 18:34:46.817306346 +0100
-+++ ./frontend/src/components/transactions/Create.vue	2021-12-27 09:45:28.340044164 +0100
-@@ -41,7 +41,7 @@
-             v-on:uploaded-attachments="uploadedAttachment($event)"
-             v-on:selected-attachments="selectedAttachment($event)"
-             v-on:set-marker-location="storeLocation($event)"
--            v-on:set-account="storeAccountValue($event)"
-+            v-on:set-account="storeAccountValue($event, transaction)"
-             v-on:set-date="storeDate($event)"
-             v-on:set-field="storeField($event)"
-             v-on:remove-transaction="removeTransaction($event)"
-@@ -71,7 +71,7 @@
-                     &nbsp;
-                   </div>
-                   <button type="button" class="btn btn-outline-primary btn-block" @click="addTransactionArray"><span class="far fa-clone"></span> {{
--                      $t('firefly.add_another_split')
-+                    $t('firefly.add_another_split')
-                     }}
-                   </button>
-                 </div>
-@@ -427,7 +427,7 @@
-     /**
-      * Responds to changed account.
-      */
--    storeAccountValue: function (payload) {
-+    storeAccountValue: function (payload, tr) {
-       this.updateField({index: payload.index, field: payload.direction + '_account_id', value: payload.id});
-       this.updateField({index: payload.index, field: payload.direction + '_account_type', value: payload.type});
-       this.updateField({index: payload.index, field: payload.direction + '_account_name', value: payload.name});
-@@ -443,6 +443,9 @@
-       if ('destination' === payload.direction && true === payload.user_selected) {
-         this.$refs.splitForms[payload.index].$refs.amount.giveFocus();
-       }
-+      //if (!tr.description && tr.destination_account_name) {
-+      //  tr.description = tr.destination_account_name;
-+      //}
-     },
-     storeField: function (payload) {
-       this.updateField(payload);
-diff -Naur ../official/frontend/src/components/transactions/SplitForm.vue ./frontend/src/components/transactions/SplitForm.vue
---- ../official/frontend/src/components/transactions/SplitForm.vue	2021-12-26 18:34:46.821306388 +0100
-+++ ./frontend/src/components/transactions/SplitForm.vue	2021-12-26 18:38:06.462981309 +0100
-@@ -160,30 +160,6 @@
-                     :payment-date="transaction.payment_date"
-                     :process-date="transaction.process_date"
-                 />
--              </div>
--            </div>
--
--            <!-- end of body -->
--          </div>
--        </div>
--      </div>
--    </div> <!-- end of basic card -->
--
--    <!-- card for meta -->
--    <div class="row">
--      <div class="col">
--        <div class="card">
--          <div class="card-header">
--            <h3 class="card-title">
--              {{ $t('firefly.transaction_journal_meta') }}
--              <span v-if="count > 1">({{ index + 1 }} / {{ count }}) </span>
--            </h3>
--          </div>
--          <div class="card-body">
--            <!-- start of body -->
--            <!-- meta -->
--            <div class="row">
--              <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12">
-                 <TransactionBudget
-                     v-if="!('Transfer' === transactionType || 'Deposit' === transactionType)"
-                     v-model="transaction.budget_id"
-@@ -191,35 +167,6 @@
-                     :errors="transaction.errors.budget"
-                     :index="index"
-                 />
--                <TransactionCategory
--                    v-model="transaction.category"
--                    v-on="$listeners"
--                    :errors="transaction.errors.category"
--                    :index="index"
--                />
--              </div>
--              <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12">
--                <TransactionBill
--                    v-if="!('Transfer' === transactionType || 'Deposit' === transactionType)"
--                    v-model="transaction.bill_id"
--                    v-on="$listeners"
--                    :errors="transaction.errors.bill"
--                    :index="index"
--                />
--                <TransactionTags
--                    v-model="transaction.tags"
--                    v-on="$listeners"
--                    ref="tags"
--                    :errors="transaction.errors.tags"
--                    :index="index"
--                />
--                <TransactionPiggyBank
--                    v-if="!('Withdrawal' === transactionType || 'Deposit' === transactionType)"
--                    v-model="transaction.piggy_bank_id"
--                    v-on="$listeners"
--                    :errors="transaction.errors.piggy_bank"
--                    :index="index"
--                />
-               </div>
-             </div>
-           </div>
-diff -Naur ../official/resources/views/v1/accounts/reconcile/index.twig ./resources/views/v1/accounts/reconcile/index.twig
---- ../official/resources/views/v1/accounts/reconcile/index.twig	2021-12-26 18:34:47.013308481 +0100
-+++ ./resources/views/v1/accounts/reconcile/index.twig	2021-11-27 23:54:40.054705872 +0100
-@@ -133,4 +133,7 @@
-         var indexUri = '{{ indexUri }}';
+diff -Naur ../official/resources/assets/js/components/transactions/CreateTransaction.vue ./resources/assets/js/components/transactions/CreateTransaction.vue
+--- ../official/resources/assets/js/components/transactions/CreateTransaction.vue	2022-01-30 07:42:09.276120228 +0100
++++ ./resources/assets/js/components/transactions/CreateTransaction.vue	2022-03-05 07:19:10.665507109 +0100
+@@ -134,35 +134,14 @@
+                       :transactionType="transactionType"
+                       v-bind:title="$t('form.foreign_amount')"
+                   ></foreign-amount>
+-                </div>
+-                <div id="optional-info" class="col-lg-4">
+                   <budget
+                       v-model="transaction.budget"
+                       :error="transaction.errors.budget_id"
+                       :no_budget="$t('firefly.none_in_select_list')"
+                       :transactionType="transactionType"
+                   ></budget>
+-                  <category
+-                      v-model="transaction.category"
+-                      :error="transaction.errors.category"
+-                      :transactionType="transactionType"
+-                  ></category>
+-                  <piggy-bank
+-                      v-model="transaction.piggy_bank"
+-                      :error="transaction.errors.piggy_bank"
+-                      :no_piggy_bank="$t('firefly.no_piggy_bank')"
+-                      :transactionType="transactionType"
+-                  ></piggy-bank>
+-                  <tags
+-                      v-model="transaction.tags"
+-                      :error="transaction.errors.tags"
+-                  ></tags>
+-                  <bill
+-                      v-model="transaction.bill"
+-                      :error="transaction.errors.bill_id"
+-                      :no_bill="$t('firefly.none_in_select_list')"
+-                      :transactionType="transactionType"
+-                  ></bill>
++                </div>
++                <div id="optional-info" class="col-lg-4">
+                   <custom-transaction-fields
+                       v-model="transaction.custom_fields"
+                       :error="transaction.errors.custom_errors"
+diff -Naur ../official/resources/views/accounts/reconcile/index.twig ./resources/views/accounts/reconcile/index.twig
+--- ../official/resources/views/accounts/reconcile/index.twig	2022-01-30 07:42:09.300120303 +0100
++++ ./resources/views/accounts/reconcile/index.twig	2022-03-05 07:19:10.689507343 +0100
+@@ -134,4 +134,7 @@
+         var selectRangeAndBalance = '{{ 'select_range_and_balance'|_|escape('js') }}';
      </script>
      <script src="v1/js/ff/accounts/reconcile.js?v={{ FF_VERSION }}" type="text/javascript" nonce="{{ JS_NONCE }}"></script>
 +    <script type="text/javascript" nonce="{{ JS_NONCE }}">
 +        document.addEventListener('DOMContentLoaded', startReconcile, false);
-+    </script>      
++    </script>
  {% endblock %}
-diff -Naur ../official/resources/views/v2/partials/layout/navbar.twig ./resources/views/v2/partials/layout/navbar.twig
---- ../official/resources/views/v2/partials/layout/navbar.twig	2021-12-26 18:34:47.021308568 +0100
-+++ ./resources/views/v2/partials/layout/navbar.twig	2021-11-27 23:54:40.278699826 +0100
-@@ -46,17 +46,6 @@
-                 <a href="{{ route('export.index') }}" class="dropdown-item">
-                     <span class="fas fa-fw fa-upload mr-2"></span> {{ 'export_data_menu'|_ }}
-                 </a>
--            </div>
--        </li>
--        <!-- Notifications Dropdown Menu -->
--        <li class="nav-item dropdown">
--            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
--                <input type="hidden" name="_token" value="{{ csrf_token() }}" />
--            </form>
--            <a class="nav-link" data-toggle="dropdown" href="#">
--                <span class="far fa-user"></span>
--            </a>
--            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                 <a href="{{ route('profile.index') }}" class="dropdown-item">
-                     <span class="fas fa-fw fa-user mr-2"></span> {{ 'profile'|_ }}
-                 </a>
-@@ -70,6 +59,16 @@
-                 </a>
+diff -Naur ../official/resources/views/index.twig ./resources/views/index.twig
+--- ../official/resources/views/index.twig	2022-01-30 07:42:09.300120303 +0100
++++ ./resources/views/index.twig	2022-03-05 07:19:10.693507382 +0100
+@@ -4,7 +4,6 @@
+     {{ Breadcrumbs.render }}
+ {% endblock %}
+ {% block content %}
+-    {% include 'partials.boxes' %}
+     <div class="row">
+         <div class="col-lg-8 col-md-12 col-sm-12">
+             {# ACCOUNTS #}
+@@ -36,22 +35,6 @@
+                     </a>
+                 </div>
              </div>
-         </li>
-+        <li class="nav-item">
-+            <a class="nav-link" href="{{ route('transactions.create', 'withdrawal') }}">
-+                <span class="fas fa-long-arrow-alt-left nav-icon"></span>
-+            </a>
-+        </li>
-+        <li class="nav-item">
-+            <a class="nav-link" href="{{ route('transactions.create', 'transfer') }}">
-+                <span class="fas fa-exchange-alt nav-icon"></span>
-+            </a>
-+        </li>
-         <li class="nav-item dropdown">
-             <a class="nav-link" data-toggle="dropdown" href="#">
-                 <span class="far fa-plus-square"></span>
-@@ -116,7 +115,7 @@
-         <!-- here be dragons -->
-         <li class="nav-item">
-             <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button" title="{{ 'here_be_dragons'|_ }}">
--                <span class="fas fa-dragon"></span>
-+                <span class="far fa-calendar-alt"></span>
-             </a>
-         </li>
-     </ul>
+-            {# CATEGORIES #}
+-            <div class="box">
+-                <div class="box-header with-border">
+-                    <h3 class="box-title"><a href="{{ route('categories.index') }}" title="{{ 'categories'|_ }}">{{ 'categories'|_ }}</a></h3>
+-
+-                </div>
+-                <div class="box-body">
+-                    <canvas id="categories-chart" style="width:100%;height:400px;" height="400" width="100%"></canvas>
+-                </div>
+-                <div class="box-footer">
+-                    <a href="{{ route('categories.index') }}" class="btn btn-default button-sm">
+-                        <span class="fa fa-bookmark"></span>
+-                        <span>{{ 'go_to_categories'|_ }}</span>
+-                    </a>
+-                </div>
+-            </div>
+         </div>
+         <div class="col-lg-4 col-md-6 col-sm-12">
+ 
+@@ -106,64 +89,6 @@
+                     </div>
+                 {% endfor %}
+             </div>
+-
+-            {% if billCount > 0 %}
+-                {# BILLS #}
+-                <div class="box">
+-                    <div class="box-header with-border">
+-                        <h3 class="box-title"><a href="{{ route('bills.index') }}" title="{{ 'bills'|_ }}">{{ 'bills'|_ }}</a></h3>
+-
+-                    </div>
+-                    <div class="box-body">
+-                        <div style="width:100%;margin:0 auto;">
+-                            <canvas id="bills-chart" style="width:100%;height:200px;" height="200"></canvas>
+-                        </div>
+-                    </div>
+-                    <div class="box-footer">
+-                        <a href="{{ route('bills.index') }}" class="btn btn-default button-sm"><span
+-                                    class="fa fa-calendar"></span> {{ 'go_to_bills'|_ }}</a>
+-                    </div>
+-                </div>
+-            {% endif %}
+-
+-            {# box for piggy bank data (JSON) #}
+-            <div id="piggy_bank_overview">
+-
+-            </div>
+-        </div>
+-    </div>
+-    <div class="row">
+-        <div class="col-lg-12 col-md-12 col-sm-12">
+-            {# EXPENSE ACCOUNTS #}
+-            <div class="box">
+-                <div class="box-header with-border">
+-                    <h3 class="box-title"><a href="{{ route('accounts.index',['expense']) }}"
+-                                             title="{{ 'expense_accounts'|_ }}">{{ 'expense_accounts'|_ }}</a>
+-                    </h3>
+-                </div>
+-                <div class="box-body">
+-                    <canvas id="expense-accounts-chart" style="width:100%;height:400px;" height="400" width="100%"></canvas>
+-                </div>
+-                <div class="box-footer">
+-                    <a href="{{ route('accounts.index', ['expense']) }}" class="btn btn-default button-sm"><span
+-                                class="fa fa-shopping-cart"></span> {{ 'go_to_expense_accounts'|_ }}</a>
+-                </div>
+-            </div>
+-            {# OPTIONAL REVENUE ACCOUNTS #}
+-            <div class="box">
+-                <div class="box-header with-border">
+-                    <h3 class="box-title"><a href="{{ route('accounts.index',['revenue']) }}"
+-                                             title="{{ 'revenue_accounts'|_ }}">{{ 'revenue_accounts'|_ }}</a></h3>
+-
+-                </div>
+-                <div class="box-body">
+-                    <canvas id="revenue-accounts-chart" style="width:100%;height:400px;" height="400" width="100%"></canvas>
+-                </div>
+-                <div class="box-footer">
+-                    <a href="{{ route('accounts.index', ['revenue']) }}" class="btn btn-default button-sm"><span
+-                                class="fa fa-download"></span> {{ 'go_to_revenue_accounts'|_ }}</a>
+-                </div>
+-            </div>
+         </div>
+     </div>
+ {% endblock %}
+diff -Naur ../official/resources/views/layout/default.twig ./resources/views/layout/default.twig
+--- ../official/resources/views/layout/default.twig	2022-01-30 07:42:09.300120303 +0100
++++ ./resources/views/layout/default.twig	2022-03-05 16:35:52.216790786 +0100
+@@ -84,11 +84,22 @@
+                         </span>
+                     </li>
+ 
+-                    <li class="dropdown user user-menu">
+-                    <span style="cursor:default;color:#fff;padding: 15px;display: block;line-height: 20px;">
+-                        <span class="hidden-xs">{{ Auth.user.email }}</span>
+-                    </span>
++                    <li>
++                        <a href="{{ route('transactions.create', 'withdrawal') }}">
++                            <span class="fa fa-long-arrow-left bg-red" style="font-size:20px;border-radius:50%"></span>
++                        </a>
+                     </li>
++                    <li>
++                        <a href="{{ route('transactions.create', 'deposit') }}">
++                            <span class="fa fa-long-arrow-right bg-green" style="font-size:20px;border-radius:50%"></span>
++                        </a>
++                    </li>
++                    <li>
++                        <a href="{{ route('transactions.create', 'transfer') }}">
++                            <span class="fa fa-exchange bg-blue" style="font-size:20px;border-radius:50%"></span>
++                        </a>
++                    </li>
++
+                     <li id="sidebar-toggle">
+                         <a href="#" data-toggle="control-sidebar"><span class="fa fa-plus-circle"></span></a>
+                     </li>
+diff -Naur ../official/resources/views/list/groups-tiny.twig ./resources/views/list/groups-tiny.twig
+--- ../official/resources/views/list/groups-tiny.twig	2022-01-30 07:42:09.304120315 +0100
++++ ./resources/views/list/groups-tiny.twig	2022-03-05 09:28:32.857200421 +0100
+@@ -7,7 +7,12 @@
+             {{ transaction.description }}
+ 
+             <span class="pull-right small">
+-          {% if transaction.transaction_type_type == 'Deposit' %}
++          {% if transaction.date > date('now') %}
++              {#  future transactions:  #}
++              <span class="text-secondary">
++                  {{ formatAmountBySymbol(transaction.amount|abs, transaction.currency_symbol, transaction.currency_decimal_places, false) }}
++              </span>
++          {% elseif transaction.transaction_type_type == 'Deposit' %}
+               {{ formatAmountBySymbol(transaction.amount*-1, transaction.currency_symbol, transaction.currency_decimal_places) }}
+               {% if null != transaction.foreign_amount %}
+                   ({{ formatAmountBySymbol(transaction.foreign_amount*-1, transaction.foreign_currency_symbol, transaction.foreign_currency_decimal_places) }})
 diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./app/Http/Controllers/Account/ReconcileController.php
---- ../official/app/Http/Controllers/Account/ReconcileController.php	2021-12-26 18:34:46.785305996 +0100
-+++ ./app/Http/Controllers/Account/ReconcileController.php	2021-11-27 23:53:20.691226721 +0100
+--- ../official/app/Http/Controllers/Account/ReconcileController.php	2022-01-30 07:42:09.264120191 +0100
++++ ./app/Http/Controllers/Account/ReconcileController.php	2022-03-05 07:18:21.524993027 +0100
 @@ -102,19 +102,15 @@
          }
          $currency = $this->accountRepos->getAccountCurrency($account) ?? app('amount')->getDefaultCurrency();
@@ -639,7 +430,7 @@ diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./ap
          }
 diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/CreateRecurringTransactions.php
 --- ../official/app/Jobs/CreateRecurringTransactions.php	2021-12-26 18:34:46.789306040 +0100
-+++ ./app/Jobs/CreateRecurringTransactions.php	2021-11-27 23:53:19.875328529 +0100
++++ ./app/Jobs/CreateRecurringTransactions.php	2022-03-05 07:18:21.528993072 +0100
 @@ -87,6 +87,8 @@
          $this->submitted         = 0;
          $this->executed          = 0;
@@ -685,3 +476,19 @@ diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/Creat
  
          // count created journals on THIS day.
          $journalCount = $this->repository->getJournalCount($recurrence, $date, $date);
+diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./app/Support/Http/Controllers/GetConfigurationData.php
+--- ../official/app/Support/Http/Controllers/GetConfigurationData.php	2021-12-26 18:34:46.801306170 +0100
++++ ./app/Support/Http/Controllers/GetConfigurationData.php	2022-03-05 16:12:29.151116646 +0100
+@@ -136,9 +136,10 @@
+         }
+ 
+         // last seven days:
+-        $seven          = Carbon::now()->subDays(7);
++        $custom_begin   = Carbon::now()->subDays(14);
++        $custom_end     = Carbon::now()->addDays(7);
+         $index          = (string)trans('firefly.last_seven_days');
+-        $ranges[$index] = [$seven, new Carbon];
++        $ranges[$index] = [$custom_begin, $custom_end];
+ 
+         // last 30 days:
+         $thirty         = Carbon::now()->subDays(30);
