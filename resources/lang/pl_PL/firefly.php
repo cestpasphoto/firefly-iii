@@ -566,6 +566,11 @@ return [
     'rule_trigger_journal_id'                             => 'ID dziennika transakcji to ":trigger_value"',
     'rule_trigger_no_external_url'                        => 'Transakcja nie ma zewnętrznego adresu URL',
     'rule_trigger_any_external_url'                       => 'Transakcja ma zewnętrzny adres URL',
+    'rule_trigger_any_external_url_choice'                => 'Transakcja ma zewnętrzny adres URL',
+    'rule_trigger_no_external_url_choice'                 => 'Transakcja nie ma zewnętrznego adresu URL',
+    'rule_trigger_id_choice'                              => 'Identyfikator transakcji to..',
+    'rule_trigger_id'                                     => 'Identyfikator transakcji to ":trigger_value"',
+
 
     // actions
     'rule_action_delete_transaction_choice'               => 'USUŃ transakcję (!)',
@@ -1106,6 +1111,7 @@ return [
     'make_new_revenue_account'                  => 'Utwórz nowe konto przychodów',
     'make_new_liabilities_account'              => 'Utwórz nowe zobowiązanie',
     'asset_accounts'                            => 'Konta aktywów',
+    'undefined_accounts'                        => 'Accounts',
     'asset_accounts_inactive'                   => 'Konta aktywów (nieaktywne)',
     'expense_accounts'                          => 'Konta wydatków',
     'expense_accounts_inactive'                 => 'Konto wydatków (nieaktywne)',
@@ -1897,7 +1903,7 @@ return [
     'deleted_object_group'            => 'Pomyślnie usunięto grupę ":title"',
     'object_group'                    => 'Grupa',
 
-
-    //
+    // other stuff
+    'placeholder'                     => '[Placeholder]',
 
 ];

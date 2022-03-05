@@ -88,7 +88,7 @@ return [
     'flash_error_multiple'                                => 'Es gibt einen Fehler|Es gibt :count Fehler',
     'net_worth'                                           => 'Eigenkapital',
     'help_for_this_page'                                  => 'Hilfe zu dieser Seite',
-    'help_for_this_page_body'                             => 'You can find more information about this page <a href="https://docs.firefly-iii.org/">in the documentation</a>.',
+    'help_for_this_page_body'                             => 'Weitere Informationen über diese Seite <a href="https://docs.firefly-iii.org/">finden Sie in unserer Dokumentation (engl.)</a>.',
     'two_factor_welcome'                                  => 'Hallo!',
     'two_factor_enter_code'                               => 'Um fortzufahren geben Sie bitte ihren Zwei-Faktor-Authentifizierungscode ein. Ihre Anwendung kann diesen für Sie generieren.',
     'two_factor_code_here'                                => 'Code hier eingeben',
@@ -108,7 +108,7 @@ return [
     'registered'                                          => 'Sie haben sich erfolgreich registriert!',
     'Default asset account'                               => 'Standard-Bestandskonto',
     'no_budget_pointer'                                   => 'Sie scheinen noch keine Kostenrahmen festgelegt zu haben. Sie sollten einige davon auf der Seite <a href="budgets">Kostenrahmen</a>- anlegen. Kostenrahmen können Ihnen dabei helfen, den Überblick über die Ausgaben zu behalten.',
-    'no_bill_pointer'                                     => 'Sie scheinen noch keine Verträge zu haben. Sie sollten einige auf der Seite <a href="bills">Verträge</a> erstellen. Anhand der Verträge können Sie den Überblick über Ihre Ausgaben behalten.',
+    'no_bill_pointer'                                     => 'Sie scheinen noch keine Rechnungen zu haben. Sie sollten einige auf der Seite <a href="bills">Rechnungen</a> erstellen. Anhand der Rechnungen können Sie den Überblick über Ihre Ausgaben behalten.',
     'Savings account'                                     => 'Sparkonto',
     'Credit card'                                         => 'Kreditkarte',
     'source_accounts'                                     => 'Quellkonto|Quellkonten',
@@ -123,7 +123,7 @@ return [
     'expenses_by_budget'                                  => 'Ausgaben nach Budget',
     'income_by_category'                                  => 'Einnahmen nach Kategorie',
     'expenses_by_asset_account'                           => 'Ausgaben nach Bestandskonto',
-    'expenses_by_expense_account'                         => 'Ausgaben nach Ausgabenkontno',
+    'expenses_by_expense_account'                         => 'Ausgaben nach Ausgabenkonto',
     'cannot_redirect_to_account'                          => 'Entschuldigen Sie bitte. Firefly III kann Sie nicht zur richtigen Seite weiterleiten.',
     'sum_of_expenses'                                     => 'Summe von Ausgaben',
     'sum_of_income'                                       => 'Summe von Einnahmen',
@@ -371,8 +371,8 @@ return [
     'repeat_freq_quarterly'                               => 'vierteljährlich',
     'repeat_freq_monthly'                                 => 'monatlich',
     'repeat_freq_weekly'                                  => 'wöchentlich',
-    'repeat_freq_daily'                                   => 'daily',
-    'daily'                                               => 'daily',
+    'repeat_freq_daily'                                   => 'täglich',
+    'daily'                                               => 'täglich',
     'weekly'                                              => 'wöchentlich',
     'quarterly'                                           => 'vierteljährlich',
     'half-year'                                           => 'halbjährlich',
@@ -566,6 +566,11 @@ return [
     'rule_trigger_journal_id'                             => 'Transaktions-Journal-ID ist „:trigger_value”',
     'rule_trigger_no_external_url'                        => 'Buchung hat keine externe URL',
     'rule_trigger_any_external_url'                       => 'Buchung hat eine externe URL',
+    'rule_trigger_any_external_url_choice'                => 'Transaction has an external URL',
+    'rule_trigger_no_external_url_choice'                 => 'Transaction has no external URL',
+    'rule_trigger_id_choice'                              => 'Buchungskennung lautet …',
+    'rule_trigger_id'                                     => 'Buchungskennung lautet „:trigger_value”',
+
 
     // actions
     'rule_action_delete_transaction_choice'               => 'Buchung löschen (!)',
@@ -1106,6 +1111,7 @@ return [
     'make_new_revenue_account'                  => 'Neues Einnahmenkonto anlegen',
     'make_new_liabilities_account'              => 'Neue Verbindlichkeit anlegen',
     'asset_accounts'                            => 'Bestandskonten',
+    'undefined_accounts'                        => 'Accounts',
     'asset_accounts_inactive'                   => 'Bestandskonten (inaktiv)',
     'expense_accounts'                          => 'Ausgabekonten',
     'expense_accounts_inactive'                 => 'Ausgabekonten (inaktiv)',
@@ -1390,7 +1396,7 @@ return [
     'piggyBanks'                                => 'Sparschweine',
     'piggy_banks'                               => 'Sparschweine',
     'amount_x_of_y'                             => '{current} von {total}',
-    'bills'                                     => 'Verträge',
+    'bills'                                     => 'Rechnungen',
     'withdrawal'                                => 'Ausgabe',
     'opening_balance'                           => 'Eröffnungsbilanz',
     'deposit'                                   => 'Einnahme',
@@ -1794,7 +1800,7 @@ return [
     'no_piggies_imperative_default'         => 'Haben Sie Dinge, auf die Sie sparen? Erstellen Sie eine Sparschwein und behalten Sie den Überblick:',
     'no_piggies_create_default'             => 'Ein neues Sparschwein erstellen',
     'no_bills_title_default'                => 'Lassen Sie uns nun eine Rechnung erstellen!',
-    'no_bills_intro_default'                => 'Du hast noch keine Verträge. Sie können Verträge erstellen, um die laufenden Ausgaben, wie zum Beispiel Ihre Versicherung oder Miete, nachzuverfolgen.',
+    'no_bills_intro_default'                => 'Du hast noch keine Rechnungen. Sie können Rechnungen erstellen, um die laufenden Ausgaben, wie zum Beispiel Ihre Versicherung oder Miete, nachzuverfolgen.',
     'no_bills_imperative_default'           => 'Haben Sie regelmäßige Rechnungen? Erstellen Sie eine Rechnung und verfolgen Sie Ihre Zahlungen:',
     'no_bills_create_default'               => 'Eine Rechnung erstellen',
 
@@ -1897,7 +1903,7 @@ return [
     'deleted_object_group'            => 'Gruppe „:title” erfolgreich entfernt',
     'object_group'                    => 'Gruppe',
 
-
-    //
+    // other stuff
+    'placeholder'                     => '[Placeholder]',
 
 ];

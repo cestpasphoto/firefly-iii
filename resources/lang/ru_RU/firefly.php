@@ -566,6 +566,11 @@ return [
     'rule_trigger_journal_id'                             => 'ID журнала транзакций ":trigger_value"',
     'rule_trigger_no_external_url'                        => 'Transaction has no external URL',
     'rule_trigger_any_external_url'                       => 'Transaction has an external URL',
+    'rule_trigger_any_external_url_choice'                => 'Transaction has an external URL',
+    'rule_trigger_no_external_url_choice'                 => 'Transaction has no external URL',
+    'rule_trigger_id_choice'                              => 'Transaction ID is..',
+    'rule_trigger_id'                                     => 'Transaction ID is ":trigger_value"',
+
 
     // actions
     'rule_action_delete_transaction_choice'               => 'УДАЛИТЬ транзакцию (!)',
@@ -1106,6 +1111,7 @@ return [
     'make_new_revenue_account'                  => 'Создать новый счёт дохода',
     'make_new_liabilities_account'              => 'Создать новый долговой счёт',
     'asset_accounts'                            => 'Основные счета',
+    'undefined_accounts'                        => 'Accounts',
     'asset_accounts_inactive'                   => 'Основной счёт (неактивный)',
     'expense_accounts'                          => 'Счета расходов',
     'expense_accounts_inactive'                 => 'Счёт расходов (неактивный)',
@@ -1897,7 +1903,7 @@ return [
     'deleted_object_group'            => 'Successfully deleted group ":title"',
     'object_group'                    => 'Группа',
 
-
-    //
+    // other stuff
+    'placeholder'                     => '[Placeholder]',
 
 ];

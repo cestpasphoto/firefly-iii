@@ -566,6 +566,11 @@ return [
     'rule_trigger_journal_id'                             => 'Transaction journal ID is ":trigger_value"',
     'rule_trigger_no_external_url'                        => 'Transaction has no external URL',
     'rule_trigger_any_external_url'                       => 'Transaction has an external URL',
+    'rule_trigger_any_external_url_choice'                => 'Transaction has an external URL',
+    'rule_trigger_no_external_url_choice'                 => 'Transaction has no external URL',
+    'rule_trigger_id_choice'                              => 'Transaction ID is..',
+    'rule_trigger_id'                                     => 'Transaction ID is ":trigger_value"',
+
 
     // actions
     'rule_action_delete_transaction_choice'               => 'XÓA giao dịch (!)',
@@ -1106,6 +1111,7 @@ return [
     'make_new_revenue_account'                  => 'Tạo một tài khoản doanh thu mới',
     'make_new_liabilities_account'              => 'Tạo một nợ mới',
     'asset_accounts'                            => 'tài khoản',
+    'undefined_accounts'                        => 'Accounts',
     'asset_accounts_inactive'                   => 'tài khoản (không hoạt động)',
     'expense_accounts'                          => 'Tài khoản chi phí',
     'expense_accounts_inactive'                 => 'Tài khoản chi tiêu (không hoạt động)',
@@ -1897,7 +1903,7 @@ return [
     'deleted_object_group'            => 'Successfully deleted group ":title"',
     'object_group'                    => 'Nhóm',
 
-
-    //
+    // other stuff
+    'placeholder'                     => '[Placeholder]',
 
 ];

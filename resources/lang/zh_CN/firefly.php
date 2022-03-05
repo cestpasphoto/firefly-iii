@@ -566,6 +566,11 @@ return [
     'rule_trigger_journal_id'                             => '交易日志 ID 为“:trigger_value”',
     'rule_trigger_no_external_url'                        => 'Transaction has no external URL',
     'rule_trigger_any_external_url'                       => 'Transaction has an external URL',
+    'rule_trigger_any_external_url_choice'                => 'Transaction has an external URL',
+    'rule_trigger_no_external_url_choice'                 => 'Transaction has no external URL',
+    'rule_trigger_id_choice'                              => 'Transaction ID is..',
+    'rule_trigger_id'                                     => 'Transaction ID is ":trigger_value"',
+
 
     // actions
     'rule_action_delete_transaction_choice'               => '删除交易 (!)',
@@ -1106,6 +1111,7 @@ return [
     'make_new_revenue_account'                  => '创建新收入账户',
     'make_new_liabilities_account'              => '创建新债务账户',
     'asset_accounts'                            => '资产账户',
+    'undefined_accounts'                        => 'Accounts',
     'asset_accounts_inactive'                   => '资产账户 (已停用)',
     'expense_accounts'                          => '支出账户',
     'expense_accounts_inactive'                 => '支出账户 (已停用)',
@@ -1897,7 +1903,7 @@ return [
     'deleted_object_group'            => 'Successfully deleted group ":title"',
     'object_group'                    => '组',
 
-
-    //
+    // other stuff
+    'placeholder'                     => '[Placeholder]',
 
 ];

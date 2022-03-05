@@ -1,0 +1,16 @@
+initial patch
+
+
+./public/v1/js/ff/accounts/reconcile.js							./public/v1/js/ff/accounts/reconcile.js
+./frontend/src/components/dashboard/Calendar.vue						(calcul des précédentes/prochaines sections 1M)
+./frontend/src/components/dashboard/DashboardListSmall.vue				(affichage en gris des transactions futures)
+./frontend/src/components/dashboard/Dashboard.vue				./resources/views/index.twig
+./frontend/src/components/dashboard/MainAccountList.vue			nothing	
+./frontend/src/components/dashboard/MainAccount.vue						(max 5k sur l'échelle du graphe)
+./frontend/src/components/store/modules/dashboard/index.js				(calcul des sections 1W/1M)
+./frontend/src/components/transactions/Create.vue				nothing
+./frontend/src/components/transactions/SplitForm.vue			./resources/assets/js/components/transactions/CreateTransaction.vue
+./resources/views/v1/accounts/reconcile/index.twig				./resources/views/v1/accounts/reconcile/index.twig						
+./resources/views/v2/partials/layout/navbar.twig						(affichage)
+./app/Http/Controllers/Account/ReconcileController.php			./app/Http/Controllers/Account/ReconcileController.php		
+./app/Jobs/CreateRecurringTransactions.php						./app/Jobs/CreateRecurringTransactions.php	

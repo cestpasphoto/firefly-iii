@@ -88,7 +88,7 @@ return [
     'flash_error_multiple'                                => 'Hay un error|Hay unos :count errores',
     'net_worth'                                           => 'Valor Neto',
     'help_for_this_page'                                  => 'Ayuda para esta página',
-    'help_for_this_page_body'                             => 'You can find more information about this page <a href="https://docs.firefly-iii.org/">in the documentation</a>.',
+    'help_for_this_page_body'                             => 'Puedes encontrar más información sobre esta página <a href="https://docs.firefly-iii.org/">en la documentación</a>.',
     'two_factor_welcome'                                  => '¡Hola!',
     'two_factor_enter_code'                               => 'Para continuar, introduce tu código de autenticación de dos pasos. La aplicación puede generarlo para usted.',
     'two_factor_code_here'                                => 'Ingresar código aquí',
@@ -371,8 +371,8 @@ return [
     'repeat_freq_quarterly'                               => 'trimestralmente',
     'repeat_freq_monthly'                                 => 'mensualmente',
     'repeat_freq_weekly'                                  => 'semanalmente',
-    'repeat_freq_daily'                                   => 'daily',
-    'daily'                                               => 'daily',
+    'repeat_freq_daily'                                   => 'diariamente',
+    'daily'                                               => 'diariamente',
     'weekly'                                              => 'semanalmente',
     'quarterly'                                           => 'trimestralmente',
     'half-year'                                           => 'cada medio año',
@@ -566,6 +566,11 @@ return [
     'rule_trigger_journal_id'                             => 'El ID del diario de transacciones es ":trigger_value"',
     'rule_trigger_no_external_url'                        => 'La transacción no tiene URL externa',
     'rule_trigger_any_external_url'                       => 'La transacción tiene una URL externa',
+    'rule_trigger_any_external_url_choice'                => 'La transacción tiene una URL externa',
+    'rule_trigger_no_external_url_choice'                 => 'La transacción no tiene URL externa',
+    'rule_trigger_id_choice'                              => 'La ID de la transacción es..',
+    'rule_trigger_id'                                     => 'La ID de la transacción es ":trigger_value"',
+
 
     // actions
     'rule_action_delete_transaction_choice'               => 'ELIMINAR transacción (!)',
@@ -1106,6 +1111,7 @@ return [
     'make_new_revenue_account'                  => 'Crear nueva cuenta de ingresos',
     'make_new_liabilities_account'              => 'Crear un nuevo pasivo',
     'asset_accounts'                            => 'Cuenta de activos',
+    'undefined_accounts'                        => 'Accounts',
     'asset_accounts_inactive'                   => 'Cuentas de activos (inactivas)',
     'expense_accounts'                          => 'Cuentas de gastos',
     'expense_accounts_inactive'                 => 'Cuentas de gastos (inactivas)',
@@ -1897,7 +1903,7 @@ return [
     'deleted_object_group'            => 'Grupo ":title" eliminado con éxito',
     'object_group'                    => 'Grupo',
 
-
-    //
+    // other stuff
+    'placeholder'                     => '[Placeholder]',
 
 ];

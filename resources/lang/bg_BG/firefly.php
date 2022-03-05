@@ -566,6 +566,11 @@ return [
     'rule_trigger_journal_id'                             => 'ID на транзакцията е ":trigger_value"',
     'rule_trigger_no_external_url'                        => 'Transaction has no external URL',
     'rule_trigger_any_external_url'                       => 'Transaction has an external URL',
+    'rule_trigger_any_external_url_choice'                => 'Transaction has an external URL',
+    'rule_trigger_no_external_url_choice'                 => 'Transaction has no external URL',
+    'rule_trigger_id_choice'                              => 'Transaction ID is..',
+    'rule_trigger_id'                                     => 'Transaction ID is ":trigger_value"',
+
 
     // actions
     'rule_action_delete_transaction_choice'               => 'ИЗТРИИ транзакция (!)',
@@ -1106,6 +1111,7 @@ return [
     'make_new_revenue_account'                  => 'Създай нова сметка за приходи',
     'make_new_liabilities_account'              => 'Създай ново задължение',
     'asset_accounts'                            => 'Сметки за активи',
+    'undefined_accounts'                        => 'Accounts',
     'asset_accounts_inactive'                   => 'Сметки за активи (деактивирани)',
     'expense_accounts'                          => 'Сметки за разходи',
     'expense_accounts_inactive'                 => 'Сметки за разходи (деактивирани)',
@@ -1897,7 +1903,7 @@ return [
     'deleted_object_group'            => 'Успешно изтрита група ":title"',
     'object_group'                    => 'Група',
 
-
-    //
+    // other stuff
+    'placeholder'                     => '[Placeholder]',
 
 ];

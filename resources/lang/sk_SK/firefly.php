@@ -566,6 +566,11 @@ return [
     'rule_trigger_journal_id'                             => 'ID denníka transakcií je ":trigger_value"',
     'rule_trigger_no_external_url'                        => 'Transaction has no external URL',
     'rule_trigger_any_external_url'                       => 'Transaction has an external URL',
+    'rule_trigger_any_external_url_choice'                => 'Transaction has an external URL',
+    'rule_trigger_no_external_url_choice'                 => 'Transaction has no external URL',
+    'rule_trigger_id_choice'                              => 'Transaction ID is..',
+    'rule_trigger_id'                                     => 'Transaction ID is ":trigger_value"',
+
 
     // actions
     'rule_action_delete_transaction_choice'               => 'ODSTRÁNIŤ transakciu (!)',
@@ -1106,6 +1111,7 @@ return [
     'make_new_revenue_account'                  => 'Vytvoriť nový príjmový účet',
     'make_new_liabilities_account'              => 'Vytvoriť nový záväzok',
     'asset_accounts'                            => 'Účty aktív',
+    'undefined_accounts'                        => 'Accounts',
     'asset_accounts_inactive'                   => 'Majetkový účet (neaktívny)',
     'expense_accounts'                          => 'Výdavkové účty',
     'expense_accounts_inactive'                 => 'Výdajový účet (neaktívny)',
@@ -1897,7 +1903,7 @@ return [
     'deleted_object_group'            => 'Skupina ":title" bola odstránená',
     'object_group'                    => 'Skupina',
 
-
-    //
+    // other stuff
+    'placeholder'                     => '[Placeholder]',
 
 ];
