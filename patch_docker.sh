@@ -41,32 +41,25 @@ install_env () {
   sudo docker exec -it ${DOCKER_CONTAINER} /bin/bash -c '
     # backup stuff
     cp -a public    public.backup
-    cp -a frontend  frontend.backup
     cp -a resources resources.backup
     cp -a app       app.backup
 
     # install nodejs and npm, and update to latest version, install laravel mix, and compile
     apt-get update ; apt-get install -y npm nano ; npm cache clean -f ; npm install -g n ; n lts ; PATH="$PATH"
-    cd frontend ; npm install ; cd /var/www/html/
+    npm install
   '
 }
 
 # Compile and generate patches
 build () {
   sudo docker exec -it ${DOCKER_CONTAINER} /bin/bash -c '
-    # Compile
-    cd frontend ; npm run prod ; cd /var/www/html/
+    # Fix some permissions and compile
+    chmod -R o+rwx public/v1/js/*.js public/mix-manifest.json
+    npm run prod
 
     # Create patches
     find ./ -iname "*.rej" -delete ; find ./ -iname "*.orig" -delete
-    # diff -Naur public.backup/v1/    public/v1/    > public_v1.patch
-    # diff -Naur frontend.backup/src/ frontend/src/ > frontend.patch
-    # diff -Naur resources.backup/    resources/    > resources.patch
-    # diff -Naur app.backup/          app/          > app.patch
-
-    diff -Naur public.backup/v2/    public/v2/    > firefly_bin.patch
-    # cat public_v1.patch public_v2.patch frontend.patch resources.patch app.patch > global.patch
-    # rm  public_v1.patch public_v2.patch frontend.patch resources.patch app.patch
+    diff -Naur -x reconcile.js public.backup/v1/ public/v1/ > firefly_bin.patch
   '
 
   # Get the patch on host
@@ -101,7 +94,7 @@ elif [[ "$1" == "patch" ]]; then
 
 elif [[ "$1" == "custom" ]]; then
   clean_docker
-  apply_patch "src"
+  # apply_patch "src"
 
 else
   echo "\
