@@ -1,7 +1,7 @@
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
---- ../official/public/v1/js/ff/accounts/reconcile.js	2022-01-30 07:42:09.272120216 +0100
-+++ ./public/v1/js/ff/accounts/reconcile.js	2022-03-05 07:19:10.665507109 +0100
-@@ -23,6 +23,7 @@
+--- ../official/public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:20:55.829339578 +0200
++++ ./public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:23:18.611086958 +0200
+@@ -21,6 +21,7 @@
  var balanceDifference = 0;
  var difference = 0;
  var selectedAmount = 0;
@@ -9,7 +9,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
  var reconcileStarted = false;
  var changedBalances = false;
  
-@@ -43,6 +44,9 @@
+@@ -41,6 +42,9 @@
              difference = balanceDifference - selectedAmount;
              updateDifference();
  
@@ -19,7 +19,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
          }
          changedBalances = true;
      });
-@@ -71,6 +75,98 @@
+@@ -69,6 +73,98 @@
  
  });
  
@@ -118,7 +118,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
  function selectAllReconcile(e) {
      // loop all, check.
      var el = $(e.target);
-@@ -85,29 +181,7 @@
+@@ -83,29 +179,7 @@
  
      $('.reconcile_checkbox').each(function (i, v) {
          var check = $(v);
@@ -149,7 +149,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
      });
  
      updateDifference();
-@@ -155,26 +229,7 @@
+@@ -153,26 +227,7 @@
   * @param e
   */
  function checkReconciledBox(e) {
@@ -177,7 +177,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
  }
  
  
-@@ -268,6 +323,7 @@
+@@ -266,6 +321,7 @@
  
      difference = balanceDifference - selectedAmount;
      updateDifference();
@@ -185,7 +185,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
  
      // loop al placed checkboxes and check them if necessary.
      restoreFromLocalStorage();
-@@ -333,12 +389,12 @@
+@@ -331,12 +387,12 @@
  }
  
  function updateDifference() {
@@ -243,8 +243,8 @@ diff -Naur ../official/resources/assets/js/components/transactions/CreateTransac
                        v-model="transaction.custom_fields"
                        :error="transaction.errors.custom_errors"
 diff -Naur ../official/resources/views/accounts/reconcile/index.twig ./resources/views/accounts/reconcile/index.twig
---- ../official/resources/views/accounts/reconcile/index.twig	2022-01-30 07:42:09.300120303 +0100
-+++ ./resources/views/accounts/reconcile/index.twig	2022-03-05 07:19:10.689507343 +0100
+--- ../official/resources/views/accounts/reconcile/index.twig	2022-05-06 16:20:55.873340118 +0200
++++ ./resources/views/accounts/reconcile/index.twig	2022-05-06 16:23:18.655087496 +0200
 @@ -134,4 +134,7 @@
          var selectRangeAndBalance = '{{ 'select_range_and_balance'|_|escape('js') }}';
      </script>
@@ -254,8 +254,8 @@ diff -Naur ../official/resources/views/accounts/reconcile/index.twig ./resources
 +    </script>
  {% endblock %}
 diff -Naur ../official/resources/views/index.twig ./resources/views/index.twig
---- ../official/resources/views/index.twig	2022-01-30 07:42:09.300120303 +0100
-+++ ./resources/views/index.twig	2022-03-05 07:19:10.693507382 +0100
+--- ../official/resources/views/index.twig	2022-05-06 16:20:55.873340118 +0200
++++ ./resources/views/index.twig	2022-05-06 16:23:18.655087496 +0200
 @@ -4,7 +4,6 @@
      {{ Breadcrumbs.render }}
  {% endblock %}
@@ -353,8 +353,8 @@ diff -Naur ../official/resources/views/index.twig ./resources/views/index.twig
      </div>
  {% endblock %}
 diff -Naur ../official/resources/views/layout/default.twig ./resources/views/layout/default.twig
---- ../official/resources/views/layout/default.twig	2022-01-30 07:42:09.300120303 +0100
-+++ ./resources/views/layout/default.twig	2022-03-05 16:35:52.216790786 +0100
+--- ../official/resources/views/layout/default.twig	2022-05-06 16:20:55.873340118 +0200
++++ ./resources/views/layout/default.twig	2022-05-06 16:23:18.655087496 +0200
 @@ -84,11 +84,22 @@
                          </span>
                      </li>
@@ -400,9 +400,9 @@ diff -Naur ../official/resources/views/list/groups-tiny.twig ./resources/views/l
                {% if null != transaction.foreign_amount %}
                    ({{ formatAmountBySymbol(transaction.foreign_amount*-1, transaction.foreign_currency_symbol, transaction.foreign_currency_decimal_places) }})
 diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./app/Http/Controllers/Account/ReconcileController.php
---- ../official/app/Http/Controllers/Account/ReconcileController.php	2022-01-30 07:42:09.264120191 +0100
-+++ ./app/Http/Controllers/Account/ReconcileController.php	2022-03-05 07:18:21.524993027 +0100
-@@ -102,19 +102,15 @@
+--- ../official/app/Http/Controllers/Account/ReconcileController.php	2022-05-06 16:20:55.797339186 +0200
++++ ./app/Http/Controllers/Account/ReconcileController.php	2022-05-06 16:23:18.575086520 +0200
+@@ -105,19 +105,15 @@
          }
          $currency = $this->accountRepos->getAccountCurrency($account) ?? app('amount')->getDefaultCurrency();
  
@@ -429,8 +429,8 @@ diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./ap
              $end = app('navigation')->endOfPeriod($start, $range);
          }
 diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/CreateRecurringTransactions.php
---- ../official/app/Jobs/CreateRecurringTransactions.php	2021-12-26 18:34:46.789306040 +0100
-+++ ./app/Jobs/CreateRecurringTransactions.php	2022-03-05 07:18:21.528993072 +0100
+--- ../official/app/Jobs/CreateRecurringTransactions.php	2022-05-06 16:20:55.801339234 +0200
++++ ./app/Jobs/CreateRecurringTransactions.php	2022-05-06 16:23:18.583086617 +0200
 @@ -87,6 +87,8 @@
          $this->submitted         = 0;
          $this->executed          = 0;
@@ -440,7 +440,7 @@ diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/Creat
  
          Log::debug(sprintf('Created new CreateRecurringTransactions("%s")', $this->date->format('Y-m-d')));
      }
-@@ -306,10 +308,10 @@
+@@ -309,10 +311,10 @@
              );
  
              // start looping from $startDate to today perhaps we have a hit?
@@ -455,7 +455,7 @@ diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/Creat
  
              unset($includeWeekend);
  
-@@ -357,11 +359,18 @@
+@@ -360,11 +362,18 @@
      private function handleOccurrence(Recurrence $recurrence, RecurrenceRepetition $repetition, Carbon $date): ?TransactionGroup
      {
          $date->startOfDay();
@@ -477,18 +477,94 @@ diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/Creat
          // count created journals on THIS day.
          $journalCount = $this->repository->getJournalCount($recurrence, $date, $date);
 diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./app/Support/Http/Controllers/GetConfigurationData.php
---- ../official/app/Support/Http/Controllers/GetConfigurationData.php	2021-12-26 18:34:46.801306170 +0100
-+++ ./app/Support/Http/Controllers/GetConfigurationData.php	2022-03-05 16:12:29.151116646 +0100
-@@ -136,9 +136,10 @@
+--- ../official/app/Support/Http/Controllers/GetConfigurationData.php	2022-05-06 16:20:55.813339381 +0200
++++ ./app/Support/Http/Controllers/GetConfigurationData.php	2022-05-06 16:24:34.696014301 +0200
+@@ -52,7 +52,7 @@
+             E_COMPILE_ERROR | E_RECOVERABLE_ERROR | E_ERROR | E_CORE_ERROR => 'E_COMPILE_ERROR|E_RECOVERABLE_ERROR|E_ERROR|E_CORE_ERROR',
+         ];
+ 
+-        return $array[$value] ?? (string) $value;
++        return $array[$value] ?? (string)$value;
+     }
+ 
+     /**
+@@ -72,7 +72,7 @@
+                 $currentStep = $options;
+ 
+                 // get the text:
+-                $currentStep['intro'] = (string) trans('intro.' . $route . '_' . $key);
++                $currentStep['intro'] = (string)trans('intro.' . $route . '_' . $key);
+ 
+                 // save in array:
+                 $steps[] = $currentStep;
+@@ -93,7 +93,7 @@
+      */
+     protected function getDateRangeConfig(): array // get configuration + get preferences.
+     {
+-        $viewRange = (string) app('preferences')->get('viewRange', '1M')->data;
++        $viewRange = (string)app('preferences')->get('viewRange', '1M')->data;
+         /** @var Carbon $start */
+         $start = session('start');
+         /** @var Carbon $end */
+@@ -134,31 +134,32 @@
+         /** @var Carbon $todayEnd */
+         $todayEnd = app('navigation')->endOfPeriod($todayStart, $viewRange);
+         if ($todayStart->ne($start) || $todayEnd->ne($end)) {
+-            $ranges[ucfirst((string) trans('firefly.today'))] = [$todayStart, $todayEnd];
++            $ranges[ucfirst((string)trans('firefly.today'))] = [$todayStart, $todayEnd];
          }
  
          // last seven days:
 -        $seven          = Carbon::now()->subDays(7);
+-        $index          = (string) trans('firefly.last_seven_days');
+-        $ranges[$index] = [$seven, new Carbon];
 +        $custom_begin   = Carbon::now()->subDays(14);
 +        $custom_end     = Carbon::now()->addDays(7);
-         $index          = (string)trans('firefly.last_seven_days');
--        $ranges[$index] = [$seven, new Carbon];
++        $index          = (string)trans('firefly.last_seven_days');
 +        $ranges[$index] = [$custom_begin, $custom_end];
  
          // last 30 days:
          $thirty         = Carbon::now()->subDays(30);
+-        $index          = (string) trans('firefly.last_thirty_days');
++        $index          = (string)trans('firefly.last_thirty_days');
+         $ranges[$index] = [$thirty, new Carbon];
+ 
+         // everything
+-        $index          = (string) trans('firefly.everything');
++        $index          = (string)trans('firefly.everything');
+         $ranges[$index] = [$first, new Carbon];
+ 
+         return [
+             'title'         => $title,
+             'configuration' => [
+-                'apply'       => (string) trans('firefly.apply'),
+-                'cancel'      => (string) trans('firefly.cancel'),
+-                'from'        => (string) trans('firefly.from'),
+-                'to'          => (string) trans('firefly.to'),
+-                'customRange' => (string) trans('firefly.customRange'),
++                'apply'       => (string)trans('firefly.apply'),
++                'cancel'      => (string)trans('firefly.cancel'),
++                'from'        => (string)trans('firefly.from'),
++                'to'          => (string)trans('firefly.to'),
++                'customRange' => (string)trans('firefly.customRange'),
+                 'start'       => $start->format('Y-m-d'),
+                 'end'         => $end->format('Y-m-d'),
+                 'ranges'      => $ranges,
+@@ -189,7 +190,7 @@
+                     $currentStep = $options;
+ 
+                     // get the text:
+-                    $currentStep['intro'] = (string) trans('intro.' . $route . '_' . $specificPage . '_' . $key);
++                    $currentStep['intro'] = (string)trans('intro.' . $route . '_' . $specificPage . '_' . $key);
+ 
+                     // save in array:
+                     $steps[] = $currentStep;
+@@ -207,7 +208,7 @@
+     protected function verifyRecurringCronJob(): void
+     {
+         $config   = app('fireflyconfig')->get('last_rt_job', 0);
+-        $lastTime = (int) $config->data;
++        $lastTime = (int)$config->data;
+         $now      = time();
+         Log::debug(sprintf('verifyRecurringCronJob: last time is %d ("%s"), now is %d', $lastTime, $config->data, $now));
+         if (0 === $lastTime) {
