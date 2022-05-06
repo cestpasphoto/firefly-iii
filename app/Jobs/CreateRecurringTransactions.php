@@ -252,6 +252,7 @@ class CreateRecurringTransactions implements ShouldQueue
     private function hasNotStartedYet(Recurrence $recurrence): bool
     {
         $startDate = $this->getStartDate($recurrence);
+        Log::debug(sprintf('Start date is %s', $startDate->format('Y-m-d')));
 
         return $startDate->gt($this->date);
     }
@@ -292,6 +293,8 @@ class CreateRecurringTransactions implements ShouldQueue
      * @param Recurrence $recurrence
      *
      * @return Collection
+     * @throws DuplicateTransactionException
+     * @throws FireflyException
      */
     private function handleRepetitions(Recurrence $recurrence): Collection
     {
@@ -438,7 +441,7 @@ class CreateRecurringTransactions implements ShouldQueue
                 'type'                  => strtolower($recurrence->transactionType->type),
                 'date'                  => $date,
                 'user'                  => $recurrence->user_id,
-                'currency_id'           => (int)$transaction->transaction_currency_id,
+                'currency_id'           => (int) $transaction->transaction_currency_id,
                 'currency_code'         => null,
                 'description'           => $transactions->first()->description,
                 'amount'                => $transaction->amount,
@@ -455,9 +458,9 @@ class CreateRecurringTransactions implements ShouldQueue
                 'foreign_amount'        => $transaction->foreign_amount,
                 'reconciled'            => false,
                 'identifier'            => $index,
-                'recurrence_id'         => (int)$recurrence->id,
+                'recurrence_id'         => (int) $recurrence->id,
                 'order'                 => $index,
-                'notes'                 => (string)trans('firefly.created_from_recurrence', ['id' => $recurrence->id, 'title' => $recurrence->title]),
+                'notes'                 => (string) trans('firefly.created_from_recurrence', ['id' => $recurrence->id, 'title' => $recurrence->title]),
                 'tags'                  => $this->repository->getTags($transaction),
                 'piggy_bank_id'         => $this->repository->getPiggyBank($transaction),
                 'piggy_bank_name'       => null,

@@ -34,6 +34,7 @@ use JsonException;
 use Log;
 use stdClass;
 use Str;
+use ValueError;
 
 /**
  * Class Steam.
@@ -44,58 +45,10 @@ class Steam
 {
 
     /**
-     * Returns the previous URL but refuses to send you to specific URLs.
-     *
-     * - outside domain
-     * - to JS files, API or JSON routes
-     *
-     * Uses the session's previousUrl() function as inspired by GitHub user @z1r0-
-     *
-     *  session()->previousUrl() uses getSafeUrl() so we can safely return it:
-     *
-     * @return string
-     */
-    public function getSafePreviousUrl(): string
-    {
-        //Log::debug(sprintf('getSafePreviousUrl: "%s"', session()->previousUrl()));
-        return session()->previousUrl() ?? route('index');
-    }
-
-    /**
-     * Make sure URL is safe.
-     *
-     * @param string $unknownUrl
-     * @param string $safeUrl
-     *
-     * @return string
-     */
-    public function getSafeUrl(string $unknownUrl, string $safeUrl): string
-    {
-        //Log::debug(sprintf('getSafeUrl(%s, %s)', $unknownUrl, $safeUrl));
-        $returnUrl   = $safeUrl;
-        $unknownHost = parse_url($unknownUrl, PHP_URL_HOST);
-        $safeHost    = parse_url($safeUrl, PHP_URL_HOST);
-
-        if (null !== $unknownHost && $unknownHost === $safeHost) {
-            $returnUrl = $unknownUrl;
-        }
-
-        // URL must not lead to weird pages
-        $forbiddenWords = ['jscript', 'json', 'debug', 'serviceworker', 'offline', 'delete', '/login', '/attachments/view'];
-        if (Str::contains($returnUrl, $forbiddenWords)) {
-            $returnUrl = $safeUrl;
-        }
-
-        return $returnUrl;
-    }
-
-
-    /**
      * @param Account $account
      * @param Carbon  $date
      *
      * @return string
-     * @throws JsonException
      */
     public function balanceIgnoreVirtual(Account $account, Carbon $date): string
     {
@@ -250,6 +203,7 @@ class Steam
      * @param TransactionCurrency|null $currency
      *
      * @return string
+     * @throws FireflyException
      * @throws JsonException
      */
     public function balance(Account $account, Carbon $date, ?TransactionCurrency $currency = null): string
@@ -299,7 +253,6 @@ class Steam
      * @param Carbon     $date
      *
      * @return array
-     * @throws FireflyException
      * @throws JsonException
      */
     public function balancesByAccounts(Collection $accounts, Carbon $date): array
@@ -364,7 +317,6 @@ class Steam
      * @param Carbon  $date
      *
      * @return array
-     * @throws JsonException
      */
     public function balancePerCurrency(Account $account, Carbon $date): array
     {
@@ -389,159 +341,6 @@ class Steam
         $cache->store($return);
 
         return $return;
-    }
-
-    /**
-     * @param array $accounts
-     *
-     * @return array
-     */
-    public function getLastActivities(array $accounts): array
-    {
-        $list = [];
-
-        $set = auth()->user()->transactions()
-                     ->whereIn('transactions.account_id', $accounts)
-                     ->groupBy(['transactions.account_id', 'transaction_journals.user_id'])
-                     ->get(['transactions.account_id', DB::raw('MAX(transaction_journals.date) AS max_date')]); // @phpstan-ignore-line
-
-        foreach ($set as $entry) {
-            $date = new Carbon($entry->max_date, config('app.timezone'));
-            $date->setTimezone(config('app.timezone'));
-            $list[(int) $entry->account_id] = $date;
-        }
-
-        return $list;
-    }
-
-    /**
-     * Get user's locale.
-     *
-     * @return string
-     * @throws FireflyException
-     */
-    public function getLocale(): string // get preference
-    {
-        $locale = app('preferences')->get('locale', config('firefly.default_locale', 'equal'))->data;
-        if ('equal' === $locale) {
-            $locale = $this->getLanguage();
-        }
-
-        // Check for Windows to replace the locale correctly.
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            $locale = str_replace('_', '-', $locale);
-        }
-
-        return $locale;
-    }
-
-    /**
-     * Get user's language.
-     *
-     * @return string
-     * @throws FireflyException
-     */
-    public function getLanguage(): string // get preference
-    {
-        $preference = app('preferences')->get('language', config('firefly.default_language', 'en_US'))->data;
-        if (!is_string($preference)) {
-            throw new FireflyException(sprintf('Preference "language" must be a string, but is unexpectedly a "%s".', gettype($preference)));
-        }
-        return $preference;
-    }
-
-    /**
-     * @param string $locale
-     *
-     * @return array
-     */
-    public function getLocaleArray(string $locale): array
-    {
-        return [
-            sprintf('%s.utf8', $locale),
-            sprintf('%s.UTF-8', $locale),
-        ];
-    }
-
-    /**
-     * @param string $amount
-     *
-     * @return string
-     */
-    public function negative(string $amount): string
-    {
-        if ('' === $amount) {
-            return '0';
-        }
-        if (1 === bccomp($amount, '0')) {
-            $amount = bcmul($amount, '-1');
-        }
-
-        return $amount;
-    }
-
-    /**
-     * @param string|null $amount
-     *
-     * @return string|null
-     */
-    public function opposite(string $amount = null): ?string
-    {
-        if (null === $amount) {
-            return null;
-        }
-
-        return bcmul($amount, '-1');
-    }
-
-    /**
-     * @param string $string
-     *
-     * @return int
-     */
-    public function phpBytes(string $string): int
-    {
-        $string = str_replace(['kb', 'mb', 'gb'], ['k', 'm', 'g'], strtolower($string));
-
-        if (false !== stripos($string, 'k')) {
-            // has a K in it, remove the K and multiply by 1024.
-            $bytes = bcmul(rtrim($string, 'k'), '1024');
-
-            return (int) $bytes;
-        }
-
-        if (false !== stripos($string, 'm')) {
-            // has a M in it, remove the M and multiply by 1048576.
-            $bytes = bcmul(rtrim($string, 'm'), '1048576');
-
-            return (int) $bytes;
-        }
-
-        if (false !== stripos($string, 'g')) {
-            // has a G in it, remove the G and multiply by (1024)^3.
-            $bytes = bcmul(rtrim($string, 'g'), '1073741824');
-
-            return (int) $bytes;
-        }
-
-        return (int) $string;
-    }
-
-    /**
-     * @param string $amount
-     *
-     * @return string
-     */
-    public function positive(string $amount): string
-    {
-        if ('' === $amount) {
-            return '0';
-        }
-        if (bccomp($amount, '0') === -1) {
-            $amount = bcmul($amount, '-1');
-        }
-
-        return $amount;
     }
 
     /**
@@ -601,5 +400,244 @@ class Steam
         ];
 
         return str_replace($search, '', $string);
+    }
+
+    /**
+     * @param array $accounts
+     *
+     * @return array
+     */
+    public function getLastActivities(array $accounts): array
+    {
+        $list = [];
+
+        $set = auth()->user()->transactions()
+                     ->whereIn('transactions.account_id', $accounts)
+                     ->groupBy(['transactions.account_id', 'transaction_journals.user_id'])
+                     ->get(['transactions.account_id', DB::raw('MAX(transaction_journals.date) AS max_date')]); // @phpstan-ignore-line
+
+        foreach ($set as $entry) {
+            $date = new Carbon($entry->max_date, config('app.timezone'));
+            $date->setTimezone(config('app.timezone'));
+            $list[(int) $entry->account_id] = $date;
+        }
+
+        return $list;
+    }
+
+    /**
+     * Get user's locale.
+     *
+     * @return string
+     * @throws FireflyException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function getLocale(): string // get preference
+    {
+        $locale = app('preferences')->get('locale', config('firefly.default_locale', 'equal'))->data;
+        if ('equal' === $locale) {
+            $locale = $this->getLanguage();
+        }
+
+        // Check for Windows to replace the locale correctly.
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $locale = str_replace('_', '-', $locale);
+        }
+
+        return $locale;
+    }
+
+    /**
+     * Get user's language.
+     *
+     * @return string
+     * @throws FireflyException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function getLanguage(): string // get preference
+    {
+        $preference = app('preferences')->get('language', config('firefly.default_language', 'en_US'))->data;
+        if (!is_string($preference)) {
+            throw new FireflyException(sprintf('Preference "language" must be a string, but is unexpectedly a "%s".', gettype($preference)));
+        }
+        return $preference;
+    }
+
+    /**
+     * @param string $locale
+     *
+     * @return array
+     */
+    public function getLocaleArray(string $locale): array
+    {
+        return [
+            sprintf('%s.utf8', $locale),
+            sprintf('%s.UTF-8', $locale),
+        ];
+    }
+
+    /**
+     * Returns the previous URL but refuses to send you to specific URLs.
+     *
+     * - outside domain
+     * - to JS files, API or JSON routes
+     *
+     * Uses the session's previousUrl() function as inspired by GitHub user @z1r0-
+     *
+     *  session()->previousUrl() uses getSafeUrl() so we can safely return it:
+     *
+     * @return string
+     */
+    public function getSafePreviousUrl(): string
+    {
+        //Log::debug(sprintf('getSafePreviousUrl: "%s"', session()->previousUrl()));
+        return session()->previousUrl() ?? route('index');
+    }
+
+    /**
+     * Make sure URL is safe.
+     *
+     * @param string $unknownUrl
+     * @param string $safeUrl
+     *
+     * @return string
+     */
+    public function getSafeUrl(string $unknownUrl, string $safeUrl): string
+    {
+        //Log::debug(sprintf('getSafeUrl(%s, %s)', $unknownUrl, $safeUrl));
+        $returnUrl   = $safeUrl;
+        $unknownHost = parse_url($unknownUrl, PHP_URL_HOST);
+        $safeHost    = parse_url($safeUrl, PHP_URL_HOST);
+
+        if (null !== $unknownHost && $unknownHost === $safeHost) {
+            $returnUrl = $unknownUrl;
+        }
+
+        // URL must not lead to weird pages
+        $forbiddenWords = ['jscript', 'json', 'debug', 'serviceworker', 'offline', 'delete', '/login', '/attachments/view'];
+        if (Str::contains($returnUrl, $forbiddenWords)) {
+            $returnUrl = $safeUrl;
+        }
+
+        return $returnUrl;
+    }
+
+    /**
+     * @param string $amount
+     *
+     * @return string
+     */
+    public function negative(string $amount): string
+    {
+        if ('' === $amount) {
+            return '0';
+        }
+        $amount = $this->floatalize($amount);
+
+        if (1 === bccomp($amount, '0')) {
+            $amount = bcmul($amount, '-1');
+        }
+
+        return $amount;
+    }
+
+    /**
+     * https://framework.zend.com/downloads/archives
+     *
+     * Convert a scientific notation to float
+     * Additionally fixed a problem with PHP <= 5.2.x with big integers
+     *
+     * @param string $value
+     * @return string
+     */
+    public function floatalize(string $value): string
+    {
+        $value = strtoupper($value);
+        if (!str_contains($value, 'E')) {
+            return $value;
+        }
+
+        $number = substr($value, 0, strpos($value, 'E'));
+        if (str_contains($number, '.')) {
+            $post   = strlen(substr($number, strpos($number, '.') + 1));
+            $mantis = substr($value, strpos($value, 'E') + 1);
+            if ($mantis < 0) {
+                $post += abs((int) $mantis);
+            }
+            return number_format((float) $value, $post, '.', '');
+        }
+        return number_format((float) $value, 0, '.', '');
+    }
+
+    /**
+     * @param string|null $amount
+     *
+     * @return string|null
+     */
+    public function opposite(string $amount = null): ?string
+    {
+        if (null === $amount) {
+            return null;
+        }
+
+        return bcmul($amount, '-1');
+    }
+
+    /**
+     * @param string $string
+     *
+     * @return int
+     */
+    public function phpBytes(string $string): int
+    {
+        $string = str_replace(['kb', 'mb', 'gb'], ['k', 'm', 'g'], strtolower($string));
+
+        if (false !== stripos($string, 'k')) {
+            // has a K in it, remove the K and multiply by 1024.
+            $bytes = bcmul(rtrim($string, 'k'), '1024');
+
+            return (int) $bytes;
+        }
+
+        if (false !== stripos($string, 'm')) {
+            // has a M in it, remove the M and multiply by 1048576.
+            $bytes = bcmul(rtrim($string, 'm'), '1048576');
+
+            return (int) $bytes;
+        }
+
+        if (false !== stripos($string, 'g')) {
+            // has a G in it, remove the G and multiply by (1024)^3.
+            $bytes = bcmul(rtrim($string, 'g'), '1073741824');
+
+            return (int) $bytes;
+        }
+
+        return (int) $string;
+    }
+
+    /**
+     * @param string $amount
+     *
+     * @return string
+     */
+    public function positive(string $amount): string
+    {
+        if ('' === $amount) {
+            return '0';
+        }
+        try {
+            if (bccomp($amount, '0') === -1) {
+                $amount = bcmul($amount, '-1');
+            }
+        } catch (ValueError $e) {
+            Log::error(sprintf('ValueError in Steam::positive("%s"): %s', $amount, $e->getMessage()));
+            Log::error($e->getTraceAsString());
+            return '0';
+        }
+
+        return $amount;
     }
 }

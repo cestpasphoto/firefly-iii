@@ -60,10 +60,10 @@ class UserUpdateRequest extends FormRequest
         }
 
         return [
-            'email'        => $this->string('email'),
+            'email'        => $this->convertString('email'),
             'blocked'      => $blocked,
-            'blocked_code' => $this->string('blocked_code'),
-            'role'         => $this->string('role'),
+            'blocked_code' => $this->convertString('blocked_code'),
+            'role'         => $this->convertString('role'),
         ];
     }
 
@@ -95,7 +95,7 @@ class UserUpdateRequest extends FormRequest
     {
         $current = $this->route()->parameter('user');
         $validator->after(
-            static function (Validator $validator) use($current) {
+            static function (Validator $validator) use ($current) {
                 $isAdmin = auth()->user()->hasRole('owner');
                 // not admin, and not own user?
                 if (auth()->check() && false === $isAdmin && $current?->id !== auth()->user()->id) {

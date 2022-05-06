@@ -88,6 +88,8 @@ trait GetConfigurationData
      *
      * @return array
      * @throws FireflyException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function getDateRangeConfig(): array // get configuration + get preferences.
     {
@@ -98,7 +100,7 @@ trait GetConfigurationData
         $end = session('end');
         /** @var Carbon $first */
         $first    = session('first');
-        $title    = sprintf('%s - %s', $start->formatLocalized($this->monthAndDayFormat), $end->formatLocalized($this->monthAndDayFormat));
+        $title    = sprintf('%s - %s', $start->isoFormat($this->monthAndDayFormat), $end->isoFormat($this->monthAndDayFormat));
         $isCustom = true === session('is_custom_range', false);
         $today    = today(config('app.timezone'));
         $ranges   = [

@@ -46,12 +46,12 @@ class StoreRequest extends FormRequest
     public function getAll(): array
     {
         $fields = [
-            'title'            => ['title', 'string'],
-            'description'      => ['description', 'string'],
+            'title'            => ['title', 'convertString'],
+            'description'      => ['description', 'convertString'],
             'rule_group_id'    => ['rule_group_id', 'integer'],
             'order'            => ['order', 'integer'],
-            'rule_group_title' => ['rule_group_title', 'string'],
-            'trigger'          => ['trigger', 'string'],
+            'rule_group_title' => ['rule_group_title', 'convertString'],
+            'trigger'          => ['trigger', 'convertString'],
             'strict'           => ['strict', 'boolean'],
             'stop_processing'  => ['stop_processing', 'boolean'],
             'active'           => ['active', 'boolean'],
@@ -76,8 +76,8 @@ class StoreRequest extends FormRequest
                 $return[] = [
                     'type'            => $trigger['type'],
                     'value'           => $trigger['value'],
-                    'active'          => $this->convertBoolean((string)($trigger['active'] ?? 'false')),
-                    'stop_processing' => $this->convertBoolean((string)($trigger['stop_processing'] ?? 'false')),
+                    'active'          => $this->convertBoolean((string) ($trigger['active'] ?? 'false')),
+                    'stop_processing' => $this->convertBoolean((string) ($trigger['stop_processing'] ?? 'false')),
                 ];
             }
         }
@@ -97,8 +97,8 @@ class StoreRequest extends FormRequest
                 $return[] = [
                     'type'            => $action['type'],
                     'value'           => $action['value'],
-                    'active'          => $this->convertBoolean((string)($action['active'] ?? 'false')),
-                    'stop_processing' => $this->convertBoolean((string)($action['stop_processing'] ?? 'false')),
+                    'active'          => $this->convertBoolean((string) ($action['active'] ?? 'false')),
+                    'stop_processing' => $this->convertBoolean((string) ($action['stop_processing'] ?? 'false')),
                 ];
             }
         }
@@ -170,7 +170,22 @@ class StoreRequest extends FormRequest
         $triggers = $data['triggers'] ?? [];
         // need at least one trigger
         if (!is_countable($triggers) || empty($triggers)) {
-            $validator->errors()->add('title', (string)trans('validation.at_least_one_trigger'));
+            $validator->errors()->add('title', (string) trans('validation.at_least_one_trigger'));
+        }
+    }
+
+    /**
+     * Adds an error to the validator when there are no repetitions in the array of data.
+     *
+     * @param Validator $validator
+     */
+    protected function atLeastOneAction(Validator $validator): void
+    {
+        $data    = $validator->getData();
+        $actions = $data['actions'] ?? [];
+        // need at least one trigger
+        if (!is_countable($actions) || empty($actions)) {
+            $validator->errors()->add('title', (string) trans('validation.at_least_one_action'));
         }
     }
 
@@ -199,7 +214,7 @@ class StoreRequest extends FormRequest
             }
         }
         if (true === $allInactive) {
-            $validator->errors()->add(sprintf('triggers.%d.active', $inactiveIndex), (string)trans('validation.at_least_one_active_trigger'));
+            $validator->errors()->add(sprintf('triggers.%d.active', $inactiveIndex), (string) trans('validation.at_least_one_active_trigger'));
         }
     }
 
@@ -228,22 +243,7 @@ class StoreRequest extends FormRequest
             }
         }
         if (true === $allInactive) {
-            $validator->errors()->add(sprintf('actions.%d.active', $inactiveIndex), (string)trans('validation.at_least_one_active_action'));
-        }
-    }
-
-    /**
-     * Adds an error to the validator when there are no repetitions in the array of data.
-     *
-     * @param Validator $validator
-     */
-    protected function atLeastOneAction(Validator $validator): void
-    {
-        $data    = $validator->getData();
-        $actions = $data['actions'] ?? [];
-        // need at least one trigger
-        if (!is_countable($actions) || empty($actions)) {
-            $validator->errors()->add('title', (string)trans('validation.at_least_one_action'));
+            $validator->errors()->add(sprintf('actions.%d.active', $inactiveIndex), (string) trans('validation.at_least_one_active_action'));
         }
     }
 }
