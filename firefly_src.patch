@@ -1,6 +1,6 @@
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
 --- ../official/public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:20:55.829339578 +0200
-+++ ./public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:23:18.611086958 +0200
++++ ./public/v1/js/ff/accounts/reconcile.js	2022-07-16 08:07:47.674616594 +0200
 @@ -21,6 +21,7 @@
  var balanceDifference = 0;
  var difference = 0;
@@ -203,7 +203,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
      $('#difference').addClass(addClass).text(accounting.formatMoney(difference));
 diff -Naur ../official/resources/assets/js/components/transactions/CreateTransaction.vue ./resources/assets/js/components/transactions/CreateTransaction.vue
 --- ../official/resources/assets/js/components/transactions/CreateTransaction.vue	2022-01-30 07:42:09.276120228 +0100
-+++ ./resources/assets/js/components/transactions/CreateTransaction.vue	2022-03-05 07:19:10.665507109 +0100
++++ ./resources/assets/js/components/transactions/CreateTransaction.vue	2022-07-16 08:07:47.674616594 +0200
 @@ -134,35 +134,14 @@
                        :transactionType="transactionType"
                        v-bind:title="$t('form.foreign_amount')"
@@ -244,7 +244,7 @@ diff -Naur ../official/resources/assets/js/components/transactions/CreateTransac
                        :error="transaction.errors.custom_errors"
 diff -Naur ../official/resources/views/accounts/reconcile/index.twig ./resources/views/accounts/reconcile/index.twig
 --- ../official/resources/views/accounts/reconcile/index.twig	2022-05-06 16:20:55.873340118 +0200
-+++ ./resources/views/accounts/reconcile/index.twig	2022-05-06 16:23:18.655087496 +0200
++++ ./resources/views/accounts/reconcile/index.twig	2022-07-16 08:07:47.678616704 +0200
 @@ -134,4 +134,7 @@
          var selectRangeAndBalance = '{{ 'select_range_and_balance'|_|escape('js') }}';
      </script>
@@ -255,7 +255,7 @@ diff -Naur ../official/resources/views/accounts/reconcile/index.twig ./resources
  {% endblock %}
 diff -Naur ../official/resources/views/index.twig ./resources/views/index.twig
 --- ../official/resources/views/index.twig	2022-05-06 16:20:55.873340118 +0200
-+++ ./resources/views/index.twig	2022-05-06 16:23:18.655087496 +0200
++++ ./resources/views/index.twig	2022-07-16 08:07:47.678616704 +0200
 @@ -4,7 +4,6 @@
      {{ Breadcrumbs.render }}
  {% endblock %}
@@ -354,7 +354,7 @@ diff -Naur ../official/resources/views/index.twig ./resources/views/index.twig
  {% endblock %}
 diff -Naur ../official/resources/views/layout/default.twig ./resources/views/layout/default.twig
 --- ../official/resources/views/layout/default.twig	2022-05-06 16:20:55.873340118 +0200
-+++ ./resources/views/layout/default.twig	2022-05-06 16:23:18.655087496 +0200
++++ ./resources/views/layout/default.twig	2022-07-16 08:07:47.678616704 +0200
 @@ -84,11 +84,22 @@
                          </span>
                      </li>
@@ -384,7 +384,7 @@ diff -Naur ../official/resources/views/layout/default.twig ./resources/views/lay
                      </li>
 diff -Naur ../official/resources/views/list/groups-tiny.twig ./resources/views/list/groups-tiny.twig
 --- ../official/resources/views/list/groups-tiny.twig	2022-01-30 07:42:09.304120315 +0100
-+++ ./resources/views/list/groups-tiny.twig	2022-03-05 09:28:32.857200421 +0100
++++ ./resources/views/list/groups-tiny.twig	2022-07-16 08:07:47.682616812 +0200
 @@ -7,7 +7,12 @@
              {{ transaction.description }}
  
@@ -401,7 +401,7 @@ diff -Naur ../official/resources/views/list/groups-tiny.twig ./resources/views/l
                    ({{ formatAmountBySymbol(transaction.foreign_amount*-1, transaction.foreign_currency_symbol, transaction.foreign_currency_decimal_places) }})
 diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./app/Http/Controllers/Account/ReconcileController.php
 --- ../official/app/Http/Controllers/Account/ReconcileController.php	2022-05-06 16:20:55.797339186 +0200
-+++ ./app/Http/Controllers/Account/ReconcileController.php	2022-05-06 16:23:18.575086520 +0200
++++ ./app/Http/Controllers/Account/ReconcileController.php	2022-07-16 08:04:19.161365342 +0200
 @@ -105,19 +105,15 @@
          }
          $currency = $this->accountRepos->getAccountCurrency($account) ?? app('amount')->getDefaultCurrency();
@@ -430,7 +430,7 @@ diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./ap
          }
 diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/CreateRecurringTransactions.php
 --- ../official/app/Jobs/CreateRecurringTransactions.php	2022-05-06 16:20:55.801339234 +0200
-+++ ./app/Jobs/CreateRecurringTransactions.php	2022-05-06 16:23:18.583086617 +0200
++++ ./app/Jobs/CreateRecurringTransactions.php	2022-07-16 08:04:19.165365429 +0200
 @@ -87,6 +87,8 @@
          $this->submitted         = 0;
          $this->executed          = 0;
@@ -478,7 +478,7 @@ diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/Creat
          $journalCount = $this->repository->getJournalCount($recurrence, $date, $date);
 diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./app/Support/Http/Controllers/GetConfigurationData.php
 --- ../official/app/Support/Http/Controllers/GetConfigurationData.php	2022-05-06 16:20:55.813339381 +0200
-+++ ./app/Support/Http/Controllers/GetConfigurationData.php	2022-05-06 16:24:34.696014301 +0200
++++ ./app/Support/Http/Controllers/GetConfigurationData.php	2022-07-16 08:07:47.662616268 +0200
 @@ -52,7 +52,7 @@
              E_COMPILE_ERROR | E_RECOVERABLE_ERROR | E_ERROR | E_CORE_ERROR => 'E_COMPILE_ERROR|E_RECOVERABLE_ERROR|E_ERROR|E_CORE_ERROR',
          ];
