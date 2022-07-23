@@ -1,6 +1,6 @@
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
 --- ../official/public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:20:55.829339578 +0200
-+++ ./public/v1/js/ff/accounts/reconcile.js	2022-07-16 08:07:47.674616594 +0200
++++ ./public/v1/js/ff/accounts/reconcile.js	2022-07-16 08:22:54.605171977 +0200
 @@ -21,6 +21,7 @@
  var balanceDifference = 0;
  var difference = 0;
