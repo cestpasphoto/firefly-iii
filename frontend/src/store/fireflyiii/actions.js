@@ -24,7 +24,7 @@ export function someAction (context) {
 */
 
 
-import {endOfDay, endOfMonth, endOfQuarter, endOfWeek, startOfDay, startOfMonth, startOfQuarter, startOfWeek, startOfYear, subDays} from "date-fns";
+import {endOfDay, endOfMonth, endOfQuarter, endOfWeek, startOfDay, startOfMonth, startOfQuarter, startOfWeek, startOfYear, subDays, addDays} from "date-fns";
 
 export function refreshCacheKey(context) {
   let cacheKey = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 8);
@@ -80,6 +80,11 @@ export function setDatesFromViewRange(context) {
       // this week:
       start = startOfDay(startOfWeek(today, {weekStartsOn: 1}));
       end = endOfDay(endOfWeek(today, {weekStartsOn: 1}));
+      break;
+    case '3W':
+      // last 2 weeks plus next week:
+      start = startOfDay(subDays(today, 14));
+      end = endOfDay(addDays(today, 7));
       break;
     case '1M':
       // this month:

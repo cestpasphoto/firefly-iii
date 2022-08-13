@@ -499,6 +499,7 @@ class AccountController extends Controller
                 break;
 
             case '1W':
+            case '3W':
             case '1M':
             case '1Y':
                 while ($end >= $current) {

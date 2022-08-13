@@ -1,6 +1,6 @@
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
 --- ../official/public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:20:55.829339578 +0200
-+++ ./public/v1/js/ff/accounts/reconcile.js	2022-07-16 08:22:54.605171977 +0200
++++ ./public/v1/js/ff/accounts/reconcile.js	2022-07-23 07:44:17.294279485 +0200
 @@ -21,6 +21,7 @@
  var balanceDifference = 0;
  var difference = 0;
@@ -242,6 +242,28 @@ diff -Naur ../official/resources/assets/js/components/transactions/CreateTransac
                    <custom-transaction-fields
                        v-model="transaction.custom_fields"
                        :error="transaction.errors.custom_errors"
+diff -Naur ../official/resources/lang/en_US/firefly.php ./resources/lang/en_US/firefly.php
+--- ../official/resources/lang/en_US/firefly.php	2022-05-06 16:20:55.849339823 +0200
++++ ./resources/lang/en_US/firefly.php	2022-08-13 15:09:21.980674791 +0200
+@@ -938,6 +938,7 @@
+     'pref_view_range_help'                      => 'Some charts are automatically grouped in periods. Your budgets will also be grouped in periods. What period would you prefer?',
+     'pref_1D'                                   => 'One day',
+     'pref_1W'                                   => 'One week',
++    'pref_3W'                                   => 'Three weeks centered',
+     'pref_1M'                                   => 'One month',
+     'pref_3M'                                   => 'Three months (quarter)',
+     'pref_6M'                                   => 'Six months',
+diff -Naur ../official/resources/lang/fr_FR/firefly.php ./resources/lang/fr_FR/firefly.php
+--- ../official/resources/lang/fr_FR/firefly.php	2022-07-23 07:36:55.763875434 +0200
++++ ./resources/lang/fr_FR/firefly.php	2022-08-13 15:08:54.000293459 +0200
+@@ -938,6 +938,7 @@
+     'pref_view_range_help'                      => 'Certains graphiques sont automatiquement regroupés par périodes. Vos budgets seront aussi organisés par périodes. Quelle période préférez-vous ?',
+     'pref_1D'                                   => 'Un jour',
+     'pref_1W'                                   => 'Une semaine',
++    'pref_3W'                                   => 'Trois semaines centrees',
+     'pref_1M'                                   => 'Un mois',
+     'pref_3M'                                   => 'Trois mois (trimestre)',
+     'pref_6M'                                   => 'Six mois',
 diff -Naur ../official/resources/views/accounts/reconcile/index.twig ./resources/views/accounts/reconcile/index.twig
 --- ../official/resources/views/accounts/reconcile/index.twig	2022-05-06 16:20:55.873340118 +0200
 +++ ./resources/views/accounts/reconcile/index.twig	2022-07-16 08:07:47.678616704 +0200
@@ -399,6 +421,24 @@ diff -Naur ../official/resources/views/list/groups-tiny.twig ./resources/views/l
                {{ formatAmountBySymbol(transaction.amount*-1, transaction.currency_symbol, transaction.currency_decimal_places) }}
                {% if null != transaction.foreign_amount %}
                    ({{ formatAmountBySymbol(transaction.foreign_amount*-1, transaction.foreign_currency_symbol, transaction.foreign_currency_decimal_places) }})
+diff -Naur ../official/resources/views/preferences/index.twig ./resources/views/preferences/index.twig
+--- ../official/resources/views/preferences/index.twig	2022-01-30 07:42:09.304120315 +0100
++++ ./resources/views/preferences/index.twig	2022-08-13 14:35:50.956564914 +0200
+@@ -184,6 +184,14 @@
+                                         <div class="radio">
+                                             <label>
+                                                 <input type="radio" name="viewRange"
++                                                       value="3W" {% if viewRange == '3W' %} checked {% endif %}>
++                                                {{ 'pref_3W'|_ }}
++                                            </label>
++                                        </div>
++
++                                        <div class="radio">
++                                            <label>
++                                                <input type="radio" name="viewRange"
+                                                        value="1M" {% if viewRange == '1M' %} checked {% endif %}>
+                                                 {{ 'pref_1M'|_ }}
+                                             </label>
 diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./app/Http/Controllers/Account/ReconcileController.php
 --- ../official/app/Http/Controllers/Account/ReconcileController.php	2022-05-06 16:20:55.797339186 +0200
 +++ ./app/Http/Controllers/Account/ReconcileController.php	2022-07-16 08:04:19.161365342 +0200
@@ -428,6 +468,17 @@ diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./ap
              /** @var Carbon $end */
              $end = app('navigation')->endOfPeriod($start, $range);
          }
+diff -Naur ../official/app/Http/Controllers/Chart/AccountController.php ./app/Http/Controllers/Chart/AccountController.php
+--- ../official/app/Http/Controllers/Chart/AccountController.php	2022-05-06 16:20:55.797339186 +0200
++++ ./app/Http/Controllers/Chart/AccountController.php	2022-08-13 14:35:50.184552179 +0200
+@@ -499,6 +499,7 @@
+                 break;
+ 
+             case '1W':
++            case '3W':
+             case '1M':
+             case '1Y':
+                 while ($end >= $current) {
 diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/CreateRecurringTransactions.php
 --- ../official/app/Jobs/CreateRecurringTransactions.php	2022-05-06 16:20:55.801339234 +0200
 +++ ./app/Jobs/CreateRecurringTransactions.php	2022-07-16 08:04:19.165365429 +0200
@@ -478,93 +529,118 @@ diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/Creat
          $journalCount = $this->repository->getJournalCount($recurrence, $date, $date);
 diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./app/Support/Http/Controllers/GetConfigurationData.php
 --- ../official/app/Support/Http/Controllers/GetConfigurationData.php	2022-05-06 16:20:55.813339381 +0200
-+++ ./app/Support/Http/Controllers/GetConfigurationData.php	2022-07-16 08:07:47.662616268 +0200
-@@ -52,7 +52,7 @@
-             E_COMPILE_ERROR | E_RECOVERABLE_ERROR | E_ERROR | E_CORE_ERROR => 'E_COMPILE_ERROR|E_RECOVERABLE_ERROR|E_ERROR|E_CORE_ERROR',
-         ];
++++ ./app/Support/Http/Controllers/GetConfigurationData.php	2022-08-13 15:11:47.006651280 +0200
+@@ -129,10 +129,15 @@
+         $ranges[$index] = [$nextStart, $nextEnd];
  
--        return $array[$value] ?? (string) $value;
-+        return $array[$value] ?? (string)$value;
-     }
- 
-     /**
-@@ -72,7 +72,7 @@
-                 $currentStep = $options;
- 
-                 // get the text:
--                $currentStep['intro'] = (string) trans('intro.' . $route . '_' . $key);
-+                $currentStep['intro'] = (string)trans('intro.' . $route . '_' . $key);
- 
-                 // save in array:
-                 $steps[] = $currentStep;
-@@ -93,7 +93,7 @@
-      */
-     protected function getDateRangeConfig(): array // get configuration + get preferences.
-     {
--        $viewRange = (string) app('preferences')->get('viewRange', '1M')->data;
-+        $viewRange = (string)app('preferences')->get('viewRange', '1M')->data;
-         /** @var Carbon $start */
-         $start = session('start');
-         /** @var Carbon $end */
-@@ -134,31 +134,32 @@
-         /** @var Carbon $todayEnd */
-         $todayEnd = app('navigation')->endOfPeriod($todayStart, $viewRange);
+         // today:
+-        /** @var Carbon $todayStart */
+-        $todayStart = app('navigation')->startOfPeriod($today, $viewRange);
+-        /** @var Carbon $todayEnd */
+-        $todayEnd = app('navigation')->endOfPeriod($todayStart, $viewRange);
++        if ('3W' === $viewRange) {
++            $todayStart = Carbon::now()->subDays(14);
++            $todayEnd = Carbon::now()->addDays(7);
++        } else {
++            /** @var Carbon $todayStart */
++            $todayStart = app('navigation')->startOfPeriod($today, $viewRange);
++            /** @var Carbon $todayEnd */
++            $todayEnd = app('navigation')->endOfPeriod($todayStart, $viewRange);
++        }
          if ($todayStart->ne($start) || $todayEnd->ne($end)) {
--            $ranges[ucfirst((string) trans('firefly.today'))] = [$todayStart, $todayEnd];
-+            $ranges[ucfirst((string)trans('firefly.today'))] = [$todayStart, $todayEnd];
+             $ranges[ucfirst((string) trans('firefly.today'))] = [$todayStart, $todayEnd];
+         }
+diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
+--- ../official/app/Support/Navigation.php	2022-05-06 16:20:55.813339381 +0200
++++ ./app/Support/Navigation.php	2022-08-13 14:56:30.602161645 +0200
+@@ -50,6 +50,7 @@
+             '1W'        => 'addWeeks',
+             'weekly'    => 'addWeeks',
+             'week'      => 'addWeeks',
++            '3W'        => 'addWeeks',
+             '1M'        => 'addMonths',
+             'month'     => 'addMonths',
+             'monthly'   => 'addMonths',
+@@ -64,6 +65,7 @@
+             'custom'    => 'addMonths', // custom? just add one month.
+         ];
+         $modifierMap = [
++            '3W'        => 3,
+             'quarter'   => 3,
+             '3M'        => 3,
+             'quarterly' => 3,
+@@ -201,7 +203,7 @@
+             return $date;
          }
  
-         // last seven days:
--        $seven          = Carbon::now()->subDays(7);
--        $index          = (string) trans('firefly.last_seven_days');
--        $ranges[$index] = [$seven, new Carbon];
-+        $custom_begin   = Carbon::now()->subDays(14);
-+        $custom_end     = Carbon::now()->addDays(7);
-+        $index          = (string)trans('firefly.last_seven_days');
-+        $ranges[$index] = [$custom_begin, $custom_end];
+-        if ('custom' === $repeatFreq) {
++        if ('custom' === $repeatFreq || '3W' === $repeatFreq) {
+             return $date; // the date is already at the start.
+         }
+         Log::error(sprintf('Cannot do startOfPeriod for $repeat_freq "%s"', $repeatFreq));
+@@ -226,6 +228,7 @@
+             '1W'        => 'addWeek',
+             'week'      => 'addWeek',
+             'weekly'    => 'addWeek',
++            '3W'        => 'addWeeks',
+             '1M'        => 'addMonth',
+             'month'     => 'addMonth',
+             'monthly'   => 'addMonth',
+@@ -240,6 +243,7 @@
+             '1Y'        => 'addYear',
+         ];
+         $modifierMap = [
++            '3W'        => 3,
+             'quarter'   => 3,
+             '3M'        => 3,
+             'quarterly' => 3,
+@@ -248,7 +252,7 @@
+             '6M'        => 6,
+         ];
  
-         // last 30 days:
-         $thirty         = Carbon::now()->subDays(30);
--        $index          = (string) trans('firefly.last_thirty_days');
-+        $index          = (string)trans('firefly.last_thirty_days');
-         $ranges[$index] = [$thirty, new Carbon];
+-        $subDay = ['week', 'weekly', '1W', 'month', 'monthly', '1M', '3M', 'quarter', 'quarterly', '6M', 'half-year', 'half_year', '1Y', 'year', 'yearly'];
++        $subDay = ['week', 'weekly', '1W', 'month', 'monthly', '3W', '1M', '3M', 'quarter', 'quarterly', '6M', 'half-year', 'half_year', '1Y', 'year', 'yearly'];
  
-         // everything
--        $index          = (string) trans('firefly.everything');
-+        $index          = (string)trans('firefly.everything');
-         $ranges[$index] = [$first, new Carbon];
+         // if the range is custom, the end of the period
+         // is another X days (x is the difference between start)
+@@ -569,6 +573,10 @@
  
-         return [
-             'title'         => $title,
-             'configuration' => [
--                'apply'       => (string) trans('firefly.apply'),
--                'cancel'      => (string) trans('firefly.cancel'),
--                'from'        => (string) trans('firefly.from'),
--                'to'          => (string) trans('firefly.to'),
--                'customRange' => (string) trans('firefly.customRange'),
-+                'apply'       => (string)trans('firefly.apply'),
-+                'cancel'      => (string)trans('firefly.cancel'),
-+                'from'        => (string)trans('firefly.from'),
-+                'to'          => (string)trans('firefly.to'),
-+                'customRange' => (string)trans('firefly.customRange'),
-                 'start'       => $start->format('Y-m-d'),
-                 'end'         => $end->format('Y-m-d'),
-                 'ranges'      => $ranges,
-@@ -189,7 +190,7 @@
-                     $currentStep = $options;
+             return $date;
+         }
++        if ('3W' === $repeatFreq) {
++            $date->subDays(21);
++            return $date;
++        }
+         // a custom range requires the session start
+         // and session end to calculate the difference in days.
+         // this is then subtracted from $theDate (* $subtract).
+@@ -637,6 +645,11 @@
  
-                     // get the text:
--                    $currentStep['intro'] = (string) trans('intro.' . $route . '_' . $specificPage . '_' . $key);
-+                    $currentStep['intro'] = (string)trans('intro.' . $route . '_' . $specificPage . '_' . $key);
+             return $end;
+         }
++
++        if ('3W' === $range) {
++            $end->addDays(21);
++            return $end;
++        }
+         if ('6M' === $range) {
+             if ($start->month >= 7) {
+                 $end->endOfYear();
+@@ -694,6 +707,7 @@
  
-                     // save in array:
-                     $steps[] = $currentStep;
-@@ -207,7 +208,7 @@
-     protected function verifyRecurringCronJob(): void
-     {
-         $config   = app('fireflyconfig')->get('last_rt_job', 0);
--        $lastTime = (int) $config->data;
-+        $lastTime = (int)$config->data;
-         $now      = time();
-         Log::debug(sprintf('verifyRecurringCronJob: last time is %d ("%s"), now is %d', $lastTime, $config->data, $now));
-         if (0 === $lastTime) {
+             return $start;
+         }
++
+         if ('6M' === $range) {
+             if ($start->month >= 7) {
+                 $start->startOfYear()->addMonths(6);
+@@ -718,6 +732,9 @@
+             case 'last7';
+                 $start->subDays(7);
+                 return $start;
++            case '3W';
++                $start->subDays(14);
++                return $start;
+             case 'last30';
+                 $start->subDays(30);
+                 return $start;

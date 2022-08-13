@@ -938,6 +938,7 @@ return [
     'pref_view_range_help'                      => 'Certains graphiques sont automatiquement regroupés par périodes. Vos budgets seront aussi organisés par périodes. Quelle période préférez-vous ?',
     'pref_1D'                                   => 'Un jour',
     'pref_1W'                                   => 'Une semaine',
+    'pref_3W'                                   => 'Trois semaines centrees',
     'pref_1M'                                   => 'Un mois',
     'pref_3M'                                   => 'Trois mois (trimestre)',
     'pref_6M'                                   => 'Six mois',

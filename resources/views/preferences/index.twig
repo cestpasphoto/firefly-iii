@@ -184,6 +184,14 @@
                                         <div class="radio">
                                             <label>
                                                 <input type="radio" name="viewRange"
+                                                       value="3W" {% if viewRange == '3W' %} checked {% endif %}>
+                                                {{ 'pref_3W'|_ }}
+                                            </label>
+                                        </div>
+
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" name="viewRange"
                                                        value="1M" {% if viewRange == '1M' %} checked {% endif %}>
                                                 {{ 'pref_1M'|_ }}
                                             </label>

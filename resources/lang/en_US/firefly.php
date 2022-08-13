@@ -938,6 +938,7 @@ return [
     'pref_view_range_help'                      => 'Some charts are automatically grouped in periods. Your budgets will also be grouped in periods. What period would you prefer?',
     'pref_1D'                                   => 'One day',
     'pref_1W'                                   => 'One week',
+    'pref_3W'                                   => 'Three weeks centered',
     'pref_1M'                                   => 'One month',
     'pref_3M'                                   => 'Three months (quarter)',
     'pref_6M'                                   => 'Six months',

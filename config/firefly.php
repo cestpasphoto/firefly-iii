@@ -222,7 +222,7 @@ return [
         Recurrence::class,
     ],
     'bill_reminder_periods'        => [90, 30, 14, 7, 0],
-    'valid_view_ranges'            => ['1D', '1W', '1M', '3M', '6M', '1Y',],
+    'valid_view_ranges'            => ['1D', '1W', '3W', '1M', '3M', '6M', '1Y',],
     'allowedMimes'                 => [
         /* plain files */
         'text/plain',
@@ -303,6 +303,7 @@ return [
     'range_to_repeat_freq'         => [
         '1D'     => 'weekly',
         '1W'     => 'weekly',
+        '3W'     => 'tri-weekly',
         '1M'     => 'monthly',
         '3M'     => 'quarterly',
         '6M'     => 'half-year',

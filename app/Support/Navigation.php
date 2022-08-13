@@ -50,6 +50,7 @@ class Navigation
             '1W'        => 'addWeeks',
             'weekly'    => 'addWeeks',
             'week'      => 'addWeeks',
+            '3W'        => 'addWeeks',
             '1M'        => 'addMonths',
             'month'     => 'addMonths',
             'monthly'   => 'addMonths',
@@ -64,6 +65,7 @@ class Navigation
             'custom'    => 'addMonths', // custom? just add one month.
         ];
         $modifierMap = [
+            '3W'        => 3,
             'quarter'   => 3,
             '3M'        => 3,
             'quarterly' => 3,
@@ -201,7 +203,7 @@ class Navigation
             return $date;
         }
 
-        if ('custom' === $repeatFreq) {
+        if ('custom' === $repeatFreq || '3W' === $repeatFreq) {
             return $date; // the date is already at the start.
         }
         Log::error(sprintf('Cannot do startOfPeriod for $repeat_freq "%s"', $repeatFreq));
@@ -226,6 +228,7 @@ class Navigation
             '1W'        => 'addWeek',
             'week'      => 'addWeek',
             'weekly'    => 'addWeek',
+            '3W'        => 'addWeeks',
             '1M'        => 'addMonth',
             'month'     => 'addMonth',
             'monthly'   => 'addMonth',
@@ -240,6 +243,7 @@ class Navigation
             '1Y'        => 'addYear',
         ];
         $modifierMap = [
+            '3W'        => 3,
             'quarter'   => 3,
             '3M'        => 3,
             'quarterly' => 3,
@@ -248,7 +252,7 @@ class Navigation
             '6M'        => 6,
         ];
 
-        $subDay = ['week', 'weekly', '1W', 'month', 'monthly', '1M', '3M', 'quarter', 'quarterly', '6M', 'half-year', 'half_year', '1Y', 'year', 'yearly'];
+        $subDay = ['week', 'weekly', '1W', 'month', 'monthly', '3W', '1M', '3M', 'quarter', 'quarterly', '6M', 'half-year', 'half_year', '1Y', 'year', 'yearly'];
 
         // if the range is custom, the end of the period
         // is another X days (x is the difference between start)
@@ -569,6 +573,10 @@ class Navigation
 
             return $date;
         }
+        if ('3W' === $repeatFreq) {
+            $date->subDays(21);
+            return $date;
+        }
         // a custom range requires the session start
         // and session end to calculate the difference in days.
         // this is then subtracted from $theDate (* $subtract).
@@ -637,6 +645,11 @@ class Navigation
 
             return $end;
         }
+
+        if ('3W' === $range) {
+            $end->addDays(21);
+            return $end;
+        }
         if ('6M' === $range) {
             if ($start->month >= 7) {
                 $end->endOfYear();
@@ -694,6 +707,7 @@ class Navigation
 
             return $start;
         }
+
         if ('6M' === $range) {
             if ($start->month >= 7) {
                 $start->startOfYear()->addMonths(6);
@@ -717,6 +731,9 @@ class Navigation
                 break;
             case 'last7';
                 $start->subDays(7);
+                return $start;
+            case '3W';
+                $start->subDays(14);
                 return $start;
             case 'last30';
                 $start->subDays(30);
