@@ -1,6 +1,6 @@
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
 --- ../official/public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:20:55.829339578 +0200
-+++ ./public/v1/js/ff/accounts/reconcile.js	2022-07-23 07:44:17.294279485 +0200
++++ ./public/v1/js/ff/accounts/reconcile.js	2022-08-13 15:15:52.041990722 +0200
 @@ -21,6 +21,7 @@
  var balanceDifference = 0;
  var difference = 0;
@@ -375,8 +375,8 @@ diff -Naur ../official/resources/views/index.twig ./resources/views/index.twig
      </div>
  {% endblock %}
 diff -Naur ../official/resources/views/layout/default.twig ./resources/views/layout/default.twig
---- ../official/resources/views/layout/default.twig	2022-05-06 16:20:55.873340118 +0200
-+++ ./resources/views/layout/default.twig	2022-07-16 08:07:47.678616704 +0200
+--- ../official/resources/views/layout/default.twig	2022-09-24 20:47:32.888016682 +0200
++++ ./resources/views/layout/default.twig	2022-09-24 20:47:34.123871327 +0200
 @@ -84,11 +84,22 @@
                          </span>
                      </li>
@@ -469,8 +469,8 @@ diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./ap
              $end = app('navigation')->endOfPeriod($start, $range);
          }
 diff -Naur ../official/app/Http/Controllers/Chart/AccountController.php ./app/Http/Controllers/Chart/AccountController.php
---- ../official/app/Http/Controllers/Chart/AccountController.php	2022-05-06 16:20:55.797339186 +0200
-+++ ./app/Http/Controllers/Chart/AccountController.php	2022-08-13 14:35:50.184552179 +0200
+--- ../official/app/Http/Controllers/Chart/AccountController.php	2022-09-24 20:47:32.868019114 +0200
++++ ./app/Http/Controllers/Chart/AccountController.php	2022-09-24 20:47:34.103873600 +0200
 @@ -499,6 +499,7 @@
                  break;
  
