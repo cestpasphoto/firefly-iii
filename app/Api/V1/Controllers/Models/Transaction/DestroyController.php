@@ -97,8 +97,6 @@ class DestroyController extends Controller
 
         $this->groupRepository->destroy($transactionGroup);
 
-        // trigger just after destruction
-        event(new DestroyedTransactionGroup($transactionGroup));
         app('preferences')->mark();
 
         /** @var Account $account */
@@ -124,6 +122,7 @@ class DestroyController extends Controller
     public function destroyJournal(TransactionJournal $transactionJournal): JsonResponse
     {
         $this->repository->destroyJournal($transactionJournal);
+        app('preferences')->mark();
 
         return response()->json([], 204);
     }
