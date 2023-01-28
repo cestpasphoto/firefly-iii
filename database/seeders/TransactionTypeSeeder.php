@@ -1,4 +1,5 @@
 <?php
+
 /**
  * TransactionTypeSeeder.php
  * Copyright (c) 2019 james@firefly-iii.org.
@@ -24,7 +25,7 @@ namespace Database\Seeders;
 
 use FireflyIII\Models\TransactionType;
 use Illuminate\Database\Seeder;
-use PDOEXception;
+use PDOException;
 
 /**
  * Class TransactionTypeSeeder.

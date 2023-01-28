@@ -34,6 +34,8 @@ use FireflyIII\Services\Internal\Support\CreditRecalculateService;
 use FireflyIII\User;
 use Illuminate\Console\Command;
 use Log;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class UpgradeLiabilities
@@ -81,14 +83,14 @@ class UpgradeLiabilities extends Command
     /**
      * @return bool
      * @throws FireflyException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     private function isExecuted(): bool
     {
         $configVar = app('fireflyconfig')->get(self::CONFIG_NAME, false);
         if (null !== $configVar) {
-            return (bool) $configVar->data;
+            return (bool)$configVar->data;
         }
 
         return false;
@@ -108,7 +110,7 @@ class UpgradeLiabilities extends Command
     }
 
     /**
-     * @param User $user
+     * @param  User  $user
      */
     private function upgradeForUser(User $user): void
     {
@@ -127,7 +129,7 @@ class UpgradeLiabilities extends Command
     }
 
     /**
-     * @param Account $account
+     * @param  Account  $account
      */
     private function upgradeLiability(Account $account): void
     {
@@ -143,15 +145,18 @@ class UpgradeLiabilities extends Command
             $this->correctOpeningBalance($account, $openingBalance);
         }
 
-        // add liability direction property
-        /** @var AccountMetaFactory $factory */
-        $factory = app(AccountMetaFactory::class);
-        $factory->crud($account, 'liability_direction', 'debit');
+        // add liability direction property (if it does not yet exist!)
+        $value = $repository->getMetaValue($account, 'liability_direction');
+        if (null === $value) {
+            /** @var AccountMetaFactory $factory */
+            $factory = app(AccountMetaFactory::class);
+            $factory->crud($account, 'liability_direction', 'debit');
+        }
     }
 
     /**
-     * @param Account            $account
-     * @param TransactionJournal $openingBalance
+     * @param  Account  $account
+     * @param  TransactionJournal  $openingBalance
      */
     private function correctOpeningBalance(Account $account, TransactionJournal $openingBalance): void
     {
@@ -161,10 +166,10 @@ class UpgradeLiabilities extends Command
             return;
         }
         // source MUST be the liability.
-        if ((int) $destination->account_id === (int) $account->id) {
+        if ((int)$destination->account_id === (int)$account->id) {
             Log::debug(sprintf('Must switch around, because account #%d is the destination.', $destination->account_id));
             // so if not, switch things around:
-            $sourceAccountId         = (int) $source->account_id;
+            $sourceAccountId         = (int)$source->account_id;
             $source->account_id      = $destination->account_id;
             $destination->account_id = $sourceAccountId;
             $source->save();
@@ -175,7 +180,7 @@ class UpgradeLiabilities extends Command
     }
 
     /**
-     * @param TransactionJournal $journal
+     * @param  TransactionJournal  $journal
      *
      * @return Transaction|null
      */
@@ -185,7 +190,7 @@ class UpgradeLiabilities extends Command
     }
 
     /**
-     * @param TransactionJournal $journal
+     * @param  TransactionJournal  $journal
      *
      * @return Transaction|null
      */
@@ -201,5 +206,4 @@ class UpgradeLiabilities extends Command
     {
         app('fireflyconfig')->set(self::CONFIG_NAME, true);
     }
-
 }

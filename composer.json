@@ -65,7 +65,7 @@
     }
   ],
   "require": {
-    "php": ">=8",
+    "php": ">=8.2",
     "ext-bcmath": "*",
     "ext-curl": "*",
     "ext-fileinfo": "*",
@@ -84,13 +84,14 @@
     "bacon/bacon-qr-code": "2.*",
     "diglactic/laravel-breadcrumbs": "^8.0",
     "doctrine/dbal": "3.*",
-    "gdbots/query-parser": "^2.0",
+    "gdbots/query-parser": "^3.0",
     "guzzlehttp/guzzle": "^7.5",
     "jc5/google2fa-laravel": "^2.0",
     "jc5/recovery": "^2",
     "laravel/framework": "^9",
     "laravel/passport": "11.*",
     "laravel/sanctum": "^3.0",
+    "laravel/slack-notification-channel": "^2.4",
     "laravel/ui": "^4.1",
     "laravelcollective/html": "6.*",
     "league/commonmark": "2.*",
@@ -100,7 +101,7 @@
     "pragmarx/google2fa": "^8.0",
     "predis/predis": "^2.0",
     "psr/log": "<4",
-    "ramsey/uuid": "^4.6",
+    "ramsey/uuid": "^4.7",
     "rcrowe/twigbridge": "^0.14",
     "spatie/data-transfer-object": "^3.9",
     "spatie/laravel-ignition": "^1.5",
@@ -109,10 +110,16 @@
   },
   "require-dev": {
     "barryvdh/laravel-ide-helper": "2.*",
-    "filp/whoops": "2.*",
+    "ergebnis/phpstan-rules": "^1.0",
     "fakerphp/faker": "1.*",
+    "filp/whoops": "2.*",
     "mockery/mockery": "1.*",
-    "phpunit/phpunit": "^9.5"
+    "nunomaduro/larastan": "^2.0",
+    "phpstan/phpstan": "^1.9",
+    "phpstan/phpstan-deprecation-rules": "^1.0",
+    "phpstan/phpstan-strict-rules": "^1.4",
+    "phpunit/phpunit": "^9.5",
+    "thecodingmachine/phpstan-strict-rules": "^1.0"
   },
   "suggest": {
   },
@@ -168,6 +175,7 @@
       "@php artisan firefly-iii:migrate-recurrence-type",
       "@php artisan firefly-iii:upgrade-liabilities",
       "@php artisan firefly-iii:create-group-memberships",
+      "@php artisan firefly-iii:liabilities-600",
       "@php artisan firefly-iii:fix-piggies",
       "@php artisan firefly-iii:create-link-types",
       "@php artisan firefly-iii:create-access-tokens",
@@ -193,6 +201,7 @@
       "@php artisan firefly-iii:report-empty-objects",
       "@php artisan firefly-iii:report-sum",
       "@php artisan firefly-iii:restore-oauth-keys",
+      "@php artisan firefly-iii:upgrade-group-information",
       "@php artisan firefly-iii:set-latest-version --james-is-cool",
       "@php artisan firefly:instructions update",
       "@php artisan firefly-iii:verify-security-alerts",
@@ -205,7 +214,7 @@
   },
   "config": {
     "platform": {
-      "php": "8.0.19"
+      "php": "8.2"
     },
     "preferred-install": "dist",
     "sort-packages": true,

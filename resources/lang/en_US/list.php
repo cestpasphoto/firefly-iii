@@ -20,6 +20,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// Ignore this comment
+
 declare(strict_types=1);
 
 return [
@@ -43,6 +45,10 @@ return [
     'lastActivity'            => 'Last activity',
     'balanceDiff'             => 'Balance difference',
     'other_meta_data'         => 'Other meta data',
+    'invited_at'              => 'Invited at',
+    'expires'                 => 'Invitation expires',
+    'invited_by'              => 'Invited by',
+    'invite_link'             => 'Invite link',
     'account_type'            => 'Account type',
     'created_at'              => 'Created at',
     'account'                 => 'Account',
@@ -52,6 +58,9 @@ return [
     'source'                  => 'Source',
     'next_expected_match'     => 'Next expected match',
     'automatch'               => 'Auto match?',
+
+    // Ignore this comment
+
     'repeat_freq'             => 'Repeats',
     'description'             => 'Description',
     'amount'                  => 'Amount',
@@ -76,7 +85,7 @@ return [
     'type'                    => 'Type',
     'completed'               => 'Completed',
     'iban'                    => 'IBAN',
-    'account_number'              => 'Account number',
+    'account_number'          => 'Account number',
     'paid_current_period'     => 'Paid this period',
     'email'                   => 'Email',
     'registered_at'           => 'Registered at',
@@ -117,6 +126,9 @@ return [
     'external_id'             => 'External ID',
     'account_at_bunq'         => 'Account with bunq',
     'file_name'               => 'File name',
+
+    // Ignore this comment
+
     'file_size'               => 'File size',
     'file_type'               => 'File type',
     'attached_to'             => 'Attached to',
@@ -138,4 +150,11 @@ return [
     'payment_info'            => 'Payment information',
     'expected_info'           => 'Next expected transaction',
     'start_date'              => 'Start date',
+    'trigger'                 => 'Trigger',
+    'response'                => 'Response',
+    'delivery'                => 'Delivery',
+    'url'                     => 'URL',
+    'secret'                  => 'Secret',
+
 ];
+// Ignore this comment

@@ -33,6 +33,7 @@ use FireflyIII\Transformers\UserTransformer;
 use FireflyIII\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection as FractalCollection;
 use League\Fractal\Resource\Item;
@@ -67,7 +68,7 @@ class UserController extends Controller
      *
      * Remove the specified resource from storage.
      *
-     * @param User $user
+     * @param  User  $user
      *
      * @return JsonResponse
      * @throws FireflyException
@@ -102,7 +103,7 @@ class UserController extends Controller
     public function index(): JsonResponse
     {
         // user preferences
-        $pageSize = (int) app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
         $manager  = $this->getManager();
 
         // build collection
@@ -112,7 +113,7 @@ class UserController extends Controller
 
         // make paginator:
         $paginator = new LengthAwarePaginator($users, $count, $pageSize, $this->parameters->get('page'));
-        $paginator->setPath(route('api.v1.users.index') . $this->buildParams());
+        $paginator->setPath(route('api.v1.users.index').$this->buildParams());
 
         // make resource
         /** @var UserTransformer $transformer */
@@ -131,7 +132,7 @@ class UserController extends Controller
      *
      * Show a single user.
      *
-     * @param User $user
+     * @param  User  $user
      *
      * @return JsonResponse
      * @codeCoverageIgnore
@@ -156,7 +157,7 @@ class UserController extends Controller
      *
      * Store a new user.
      *
-     * @param UserStoreRequest $request
+     * @param  UserStoreRequest  $request
      *
      * @return JsonResponse
      */
@@ -183,14 +184,21 @@ class UserController extends Controller
      *
      * Update a user.
      *
-     * @param UserUpdateRequest $request
-     * @param User              $user
+     * @param  UserUpdateRequest  $request
+     * @param  User  $user
      *
      * @return JsonResponse
      */
     public function update(UserUpdateRequest $request, User $user): JsonResponse
     {
         $data    = $request->getAll();
+
+        // can only update 'blocked' when user is admin.
+        if (!$this->repository->hasRole(auth()->user(), 'owner')) {
+            Log::debug('Quietly drop fields "blocked" and "blocked_code" from request.');
+            unset($data['blocked'], $data['blocked_code']);
+        }
+
         $user    = $this->repository->update($user, $data);
         $manager = $this->getManager();
         // make resource
@@ -201,7 +209,5 @@ class UserController extends Controller
         $resource = new Item($user, $transformer, 'users');
 
         return response()->json($manager->createData($resource)->toArray())->header('Content-Type', self::CONTENT_TYPE);
-
     }
-
 }

@@ -20,6 +20,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// Ignore this comment
+
 declare(strict_types=1);
 
 return [
@@ -78,6 +80,9 @@ return [
     'before'                         => 'The :attribute must be a date before :date.',
     'unique_object_for_user'         => 'This name is already in use.',
     'unique_account_for_user'        => 'This account name is already in use.',
+
+    // Ignore this comment
+
     'between.numeric'                => 'The :attribute must be between :min and :max.',
     'between.file'                   => 'The :attribute must be between :min and :max kilobytes.',
     'between.string'                 => 'The :attribute must be between :min and :max characters.',
@@ -141,10 +146,12 @@ return [
     'unique_piggy_bank_for_user'     => 'The name of the piggy bank must be unique.',
     'unique_object_group'            => 'The group name must be unique',
     'starts_with'                    => 'The value must start with :values.',
-    'unique_webhook'                 => 'You already have a webhook with these values.',
-    'unique_existing_webhook'        => 'You already have another webhook with these values.',
+    'unique_webhook'                 => 'You already have a webhook with this combination of URL, trigger, response and delivery.',
+    'unique_existing_webhook'        => 'You already have another webhook with this combination of URL, trigger, response and delivery.',
     'same_account_type'              => 'Both accounts must be of the same account type',
     'same_account_currency'          => 'Both accounts must have the same currency setting',
+
+    // Ignore this comment
 
     'secure_password'             => 'This is not a secure password. Please try again. For more information, visit https://bit.ly/FF3-password-security',
     'valid_recurrence_rep_type'   => 'Invalid repetition type for recurring transactions.',
@@ -194,6 +201,8 @@ return [
     'withdrawal_dest_need_data'   => 'Need to get a valid destination account ID and/or valid destination account name to continue.',
     'withdrawal_dest_bad_data'    => 'Could not find a valid destination account when searching for ID ":id" or name ":name".',
 
+    'reconciliation_source_bad_data' => 'Could not find a valid reconciliation account when searching for ID ":id" or name ":name".',
+
     'generic_source_bad_data' => 'Could not find a valid source account when searching for ID ":id" or name ":name".',
 
     'deposit_source_need_data' => 'Need to get a valid source account ID and/or valid source account name to continue.',
@@ -202,16 +211,19 @@ return [
     'deposit_dest_bad_data'    => 'Could not find a valid destination account when searching for ID ":id" or name ":name".',
     'deposit_dest_wrong_type'  => 'The submitted destination account is not of the right type.',
 
+    // Ignore this comment
+
     'transfer_source_need_data' => 'Need to get a valid source account ID and/or valid source account name to continue.',
     'transfer_source_bad_data'  => 'Could not find a valid source account when searching for ID ":id" or name ":name".',
     'transfer_dest_need_data'   => 'Need to get a valid destination account ID and/or valid destination account name to continue.',
     'transfer_dest_bad_data'    => 'Could not find a valid destination account when searching for ID ":id" or name ":name".',
     'need_id_in_edit'           => 'Each split must have transaction_journal_id (either valid ID or 0).',
 
-    'ob_source_need_data' => 'Need to get a valid source account ID and/or valid source account name to continue.',
-    'lc_source_need_data' => 'Need to get a valid source account ID to continue.',
-    'ob_dest_need_data'   => 'Need to get a valid destination account ID and/or valid destination account name to continue.',
-    'ob_dest_bad_data'    => 'Could not find a valid destination account when searching for ID ":id" or name ":name".',
+    'ob_source_need_data'           => 'Need to get a valid source account ID and/or valid source account name to continue.',
+    'lc_source_need_data'           => 'Need to get a valid source account ID to continue.',
+    'ob_dest_need_data'             => 'Need to get a valid destination account ID and/or valid destination account name to continue.',
+    'ob_dest_bad_data'              => 'Could not find a valid destination account when searching for ID ":id" or name ":name".',
+    'reconciliation_either_account' => 'To submit a reconciliation, you must submit either a source or a destination account. Not both, not neither.',
 
     'generic_invalid_source'      => 'You can\'t use this account as the source account.',
     'generic_invalid_destination' => 'You can\'t use this account as the destination account.',
@@ -229,3 +241,5 @@ return [
     'auto_budget_amount_positive'     => 'The amount must be more than zero.',
     'auto_budget_period_mandatory'    => 'The auto budget period is a mandatory field.',
 ];
+
+// Ignore this comment

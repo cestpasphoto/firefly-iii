@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace FireflyIII\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -35,25 +36,25 @@ use Illuminate\Support\Carbon;
 /**
  * FireflyIII\Models\RecurrenceTransaction
  *
- * @property int                                         $id
- * @property Carbon|null                                 $created_at
- * @property Carbon|null                                 $updated_at
- * @property Carbon|null                                 $deleted_at
- * @property int                                         $recurrence_id
- * @property int                                         $transaction_currency_id
- * @property int|null                                    $foreign_currency_id
- * @property int                                         $source_id
- * @property int                                         $destination_id
- * @property string                                      $amount
- * @property string|null                                 $foreign_amount
- * @property string                                      $description
- * @property-read Account                                $destinationAccount
- * @property-read TransactionCurrency|null               $foreignCurrency
- * @property-read Recurrence                             $recurrence
+ * @property int $id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property int $recurrence_id
+ * @property int $transaction_currency_id
+ * @property int|null $foreign_currency_id
+ * @property int $source_id
+ * @property int $destination_id
+ * @property string $amount
+ * @property string|null $foreign_amount
+ * @property string $description
+ * @property-read Account $destinationAccount
+ * @property-read TransactionCurrency|null $foreignCurrency
+ * @property-read Recurrence $recurrence
  * @property-read Collection|RecurrenceTransactionMeta[] $recurrenceTransactionMeta
- * @property-read int|null                               $recurrence_transaction_meta_count
- * @property-read Account                                $sourceAccount
- * @property-read TransactionCurrency                    $transactionCurrency
+ * @property-read int|null $recurrence_transaction_meta_count
+ * @property-read Account $sourceAccount
+ * @property-read TransactionCurrency $transactionCurrency
  * @method static \Illuminate\Database\Eloquent\Builder|RecurrenceTransaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|RecurrenceTransaction newQuery()
  * @method static Builder|RecurrenceTransaction onlyTrashed()
@@ -73,9 +74,9 @@ use Illuminate\Support\Carbon;
  * @method static Builder|RecurrenceTransaction withTrashed()
  * @method static Builder|RecurrenceTransaction withoutTrashed()
  * @mixin Eloquent
- * @property int|null                                    $transaction_type_id
+ * @property int|null $transaction_type_id
  * @method static \Illuminate\Database\Eloquent\Builder|RecurrenceTransaction whereTransactionTypeId($value)
- * @property-read TransactionType|null                   $transactionType
+ * @property-read TransactionType|null $transactionType
  */
 class RecurrenceTransaction extends Model
 {
@@ -97,8 +98,16 @@ class RecurrenceTransaction extends Model
         ];
     /** @var array Fields that can be filled */
     protected $fillable
-        = ['recurrence_id', 'transaction_currency_id', 'foreign_currency_id', 'source_id', 'destination_id', 'amount', 'foreign_amount',
-           'description'];
+        = [
+            'recurrence_id',
+            'transaction_currency_id',
+            'foreign_currency_id',
+            'source_id',
+            'destination_id',
+            'amount',
+            'foreign_amount',
+            'description',
+        ];
     /** @var string The table to store the data in */
     protected $table = 'recurrences_transactions';
 
@@ -163,5 +172,25 @@ class RecurrenceTransaction extends Model
     public function transactionType(): BelongsTo
     {
         return $this->belongsTo(TransactionType::class);
+    }
+
+    /**
+     * @return Attribute
+     */
+    protected function amount(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => (string) $value,
+        );
+    }
+
+    /**
+     * @return Attribute
+     */
+    protected function foreignAmount(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => (string) $value,
+        );
     }
 }

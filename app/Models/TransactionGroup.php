@@ -1,4 +1,5 @@
 <?php
+
 /**
  * TransactionGroup.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -31,20 +32,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * FireflyIII\Models\TransactionGroup
  *
- * @property int                                  $id
- * @property Carbon|null                          $created_at
- * @property Carbon|null                          $updated_at
- * @property Carbon|null                          $deleted_at
- * @property int                                  $user_id
- * @property string|null                          $title
+ * @property int $id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property int $user_id
+ * @property string|null $title
  * @property-read Collection|TransactionJournal[] $transactionJournals
- * @property-read int|null                        $transaction_journals_count
- * @property-read User                            $user
+ * @property-read int|null $transaction_journals_count
+ * @property-read User $user
  * @method static \Illuminate\Database\Eloquent\Builder|TransactionGroup newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|TransactionGroup newQuery()
  * @method static Builder|TransactionGroup onlyTrashed()
@@ -58,7 +60,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static Builder|TransactionGroup withTrashed()
  * @method static Builder|TransactionGroup withoutTrashed()
  * @mixin Eloquent
- * @property int|null                             $user_group_id
+ * @property int|null $user_group_id
  * @method static \Illuminate\Database\Eloquent\Builder|TransactionGroup whereUserGroupId($value)
  */
 class TransactionGroup extends Model
@@ -86,36 +88,31 @@ class TransactionGroup extends Model
     /**
      * Route binder. Converts the key in the URL to the specified object (or throw 404).
      *
-     * @param string $value
+     * @param  string  $value
      *
      * @return TransactionGroup
      * @throws NotFoundHttpException
      */
     public static function routeBinder(string $value): TransactionGroup
     {
+        Log::debug(sprintf('Now in %s("%s")', __METHOD__, $value));
         if (auth()->check()) {
-            $groupId = (int) $value;
+            $groupId = (int)$value;
             /** @var User $user */
             $user = auth()->user();
+            Log::debug(sprintf('User authenticated as %s', $user->email));
             /** @var TransactionGroup $group */
             $group = $user->transactionGroups()
                           ->with(['transactionJournals', 'transactionJournals.transactions'])
                           ->where('transaction_groups.id', $groupId)->first(['transaction_groups.*']);
             if (null !== $group) {
+                Log::debug(sprintf('Found group #%d.', $group->id));
                 return $group;
             }
         }
+        Log::debug('Found no group.');
 
-        throw new NotFoundHttpException;
-    }
-
-    /**
-     * @codeCoverageIgnore
-     * @return HasMany
-     */
-    public function transactionJournals(): HasMany
-    {
-        return $this->hasMany(TransactionJournal::class);
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -127,4 +124,12 @@ class TransactionGroup extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @codeCoverageIgnore
+     * @return HasMany
+     */
+    public function transactionJournals(): HasMany
+    {
+        return $this->hasMany(TransactionJournal::class);
+    }
 }

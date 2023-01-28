@@ -26,7 +26,7 @@ namespace Database\Seeders;
 
 use FireflyIII\Models\UserRole;
 use Illuminate\Database\Seeder;
-use PDOEXception;
+use PDOException;
 
 /**
  * Class UserRoleSeeder
@@ -47,6 +47,8 @@ class UserRoleSeeder extends Seeder
             UserRole::CHANGE_PIGGY_BANKS,
             UserRole::CHANGE_REPETITIONS,
             UserRole::VIEW_REPORTS,
+            UserRole::MANAGE_WEBHOOKS,
+            UserRole::MANAGE_CURRENCIES,
             UserRole::FULL,
             UserRole::OWNER,
         ];

@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace FireflyIII\TransactionRules\Actions;
 
+use FireflyIII\Events\TriggeredAuditLog;
 use FireflyIII\Models\PiggyBank;
 use FireflyIII\Models\RuleAction;
 use FireflyIII\Models\Transaction;
@@ -82,19 +83,49 @@ class UpdatePiggybank implements ActionInterface
         Log::debug(sprintf('Found piggy bank #%d ("%s")', $piggyBank->id, $piggyBank->name));
 
         /** @var Transaction $source */
+        $source = $journalObj->transactions()->where('amount', '<', 0)->first();
         /** @var Transaction $destination */
-        $source      = $journalObj->transactions()->where('amount', '<', 0)->first();
         $destination = $journalObj->transactions()->where('amount', '>', 0)->first();
 
         if ((int)$source->account_id === (int)$piggyBank->account_id) {
             Log::debug('Piggy bank account is linked to source, so remove amount from piggy bank.');
-            $this->removeAmount($journal, $piggyBank, $destination->amount);
+            $this->removeAmount($piggyBank, $journalObj, $destination->amount);
+
+            event(
+                new TriggeredAuditLog(
+                    $this->action->rule,
+                    $journalObj,
+                    'remove_from_piggy',
+                    null,
+                    [
+                        'currency_symbol' => $journalObj->transactionCurrency->symbol,
+                        'decimal_places'  => $journalObj->transactionCurrency->decimal_places,
+                        'amount'          => $destination->amount,
+                        'piggy'           => $piggyBank->name,
+                    ]
+                )
+            );
 
             return true;
         }
         if ((int)$destination->account_id === (int)$piggyBank->account_id) {
             Log::debug('Piggy bank account is linked to source, so add amount to piggy bank.');
-            $this->addAmount($journal, $piggyBank, $destination->amount);
+            $this->addAmount($piggyBank, $journalObj, $destination->amount);
+
+            event(
+                new TriggeredAuditLog(
+                    $this->action->rule,
+                    $journalObj,
+                    'add_to_piggy',
+                    null,
+                    [
+                        'currency_symbol' => $journalObj->transactionCurrency->symbol,
+                        'decimal_places'  => $journalObj->transactionCurrency->decimal_places,
+                        'amount'          => $destination->amount,
+                        'piggy'           => $piggyBank->name,
+                    ]
+                )
+            );
 
             return true;
         }
@@ -106,7 +137,7 @@ class UpdatePiggybank implements ActionInterface
             )
         );
 
-        return true;
+        return false;
     }
 
     /**
@@ -140,14 +171,14 @@ class UpdatePiggybank implements ActionInterface
 
         // if amount is zero, stop.
         if (0 === bccomp('0', $amount)) {
-            Log::warning('Amount left is zero, stop.');
+            app('log')->warning('Amount left is zero, stop.');
 
             return;
         }
 
         // make sure we can remove amount:
         if (false === $repository->canRemoveAmount($piggyBank, $amount)) {
-            Log::warning(sprintf('Cannot remove %s from piggy bank.', $amount));
+            app('log')->warning(sprintf('Cannot remove %s from piggy bank.', $amount));
 
             return;
         }
@@ -168,23 +199,29 @@ class UpdatePiggybank implements ActionInterface
         $repository->setUser($journal->user);
 
         // how much can we add to the piggy bank?
-        $toAdd = bcsub($piggyBank->targetamount, $repository->getCurrentAmount($piggyBank));
-        Log::debug(sprintf('Max amount to add to piggy bank is %s, amount is %s', $toAdd, $amount));
+        if (0 !== bccomp($piggyBank->targetamount, '0')) {
+            $toAdd = bcsub($piggyBank->targetamount, $repository->getCurrentAmount($piggyBank));
+            Log::debug(sprintf('Max amount to add to piggy bank is %s, amount is %s', $toAdd, $amount));
 
-        // update amount to fit:
-        $amount = -1 === bccomp($amount, $toAdd) ? $amount : $toAdd;
-        Log::debug(sprintf('Amount is now %s', $amount));
+            // update amount to fit:
+            $amount = -1 === bccomp($amount, $toAdd) ? $amount : $toAdd;
+            Log::debug(sprintf('Amount is now %s', $amount));
+        }
+        if (0 === bccomp($piggyBank->targetamount, '0')) {
+            Log::debug('Target amount is zero, can add anything.');
+        }
+
 
         // if amount is zero, stop.
         if (0 === bccomp('0', $amount)) {
-            Log::warning('Amount left is zero, stop.');
+            app('log')->warning('Amount left is zero, stop.');
 
             return;
         }
 
         // make sure we can add amount:
         if (false === $repository->canAddAmount($piggyBank, $amount)) {
-            Log::warning(sprintf('Cannot add %s to piggy bank.', $amount));
+            app('log')->warning(sprintf('Cannot add %s to piggy bank.', $amount));
 
             return;
         }

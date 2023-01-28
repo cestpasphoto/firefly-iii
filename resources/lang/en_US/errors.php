@@ -20,6 +20,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// Ignore this comment
+
 declare(strict_types=1);
 
 return [
@@ -33,11 +35,15 @@ return [
     'be_right_back'           => 'Be right back!',
     'check_back'              => 'Firefly III is down for some necessary maintenance. Please check back in a second.',
     'error_occurred'          => 'Whoops! An error occurred.',
+    'db_error_occurred'       => 'Whoops! A database error occurred.',
     'error_not_recoverable'   => 'Unfortunately, this error was not recoverable :(. Firefly III broke. The error is:',
     'error'                   => 'Error',
     'error_location'          => 'This error occured in file <span style="font-family: monospace;">:file</span> on line :line with code :code.',
     'stacktrace'              => 'Stack trace',
     'more_info'               => 'More information',
+
+    // Ignore this comment
+
     'collect_info'            => 'Please collect more information in the <code>storage/logs</code> directory where you will find log files. If you\'re running Docker, use <code>docker logs -f [container]</code>.',
     'collect_info_more'       => 'You can read more about collecting error information in <a href="https://docs.firefly-iii.org/faq/other#how-do-i-enable-debug-mode">the FAQ</a>.',
     'github_help'             => 'Get help on GitHub',

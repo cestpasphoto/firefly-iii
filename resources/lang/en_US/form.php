@@ -20,6 +20,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// Ignore this comment
+
 declare(strict_types=1);
 
 return [
@@ -62,6 +64,9 @@ return [
     'opening_balance'             => 'Opening balance',
     'tagMode'                     => 'Tag mode',
     'virtual_balance'             => 'Virtual balance',
+
+    // Ignore this comment
+
     'targetamount'                => 'Target amount',
     'account_role'                => 'Account role',
     'opening_balance_date'        => 'Opening balance date',
@@ -125,6 +130,7 @@ return [
     'start'                       => 'Start of range',
     'end'                         => 'End of range',
     'delete_account'              => 'Delete account ":name"',
+    'delete_webhook'              => 'Delete webhook ":title"',
     'delete_bill'                 => 'Delete bill ":name"',
     'delete_budget'               => 'Delete budget ":name"',
     'delete_category'             => 'Delete category ":name"',
@@ -145,12 +151,16 @@ return [
     'object_group_areYouSure'     => 'Are you sure you want to delete the group titled ":title"?',
     'ruleGroup_areYouSure'        => 'Are you sure you want to delete the rule group titled ":title"?',
     'budget_areYouSure'           => 'Are you sure you want to delete the budget named ":name"?',
+    'webhook_areYouSure'           => 'Are you sure you want to delete the webhook named ":title"?',
     'category_areYouSure'         => 'Are you sure you want to delete the category named ":name"?',
     'recurring_areYouSure'        => 'Are you sure you want to delete the recurring transaction titled ":title"?',
     'currency_areYouSure'         => 'Are you sure you want to delete the currency named ":name"?',
     'piggyBank_areYouSure'        => 'Are you sure you want to delete the piggy bank named ":name"?',
     'journal_areYouSure'          => 'Are you sure you want to delete the transaction described ":description"?',
     'mass_journal_are_you_sure'   => 'Are you sure you want to delete these transactions?',
+
+    // Ignore this comment
+
     'tag_areYouSure'              => 'Are you sure you want to delete the tag ":tag"?',
     'journal_link_areYouSure'     => 'Are you sure you want to delete the link between <a href=":source_link">:source</a> and <a href=":destination_link">:destination</a>?',
     'linkType_areYouSure'         => 'Are you sure you want to delete the link type ":name" (":inward" / ":outward")?',
@@ -214,6 +224,9 @@ return [
     'fints_password'              => 'PIN / Password',
     'fints_account'               => 'FinTS account',
     'local_account'               => 'Firefly III account',
+
+    // Ignore this comment
+
     'from_date'                   => 'Date from',
     'to_date'                     => 'Date to',
     'due_date'                    => 'Due date',
@@ -246,4 +259,8 @@ return [
     'submitted'                   => 'Submitted',
     'key'                         => 'Key',
     'value'                       => 'Content of record',
+    'webhook_delivery'            => 'Delivery',
+    'webhook_response'            => 'Response',
+    'webhook_trigger'             => 'Trigger',
 ];
+// Ignore this comment

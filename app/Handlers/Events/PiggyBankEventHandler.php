@@ -1,8 +1,8 @@
 <?php
-declare(strict_types=1);
+
 /*
  * PiggyBankEventHandler.php
- * Copyright (c) 2022 james@firefly-iii.org
+ * Copyright (c) 2023 james@firefly-iii.org
  *
  * This file is part of Firefly III (https://github.com/firefly-iii).
  *
@@ -20,13 +20,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace FireflyIII\Handlers\Events;
 
 use Carbon\Carbon;
 use FireflyIII\Events\ChangedPiggyBankAmount;
 use FireflyIII\Models\PiggyBankEvent;
 use Illuminate\Support\Facades\Log;
-
 
 /**
  * Class PiggyBankEventHandler
@@ -51,7 +52,7 @@ class PiggyBankEventHandler
             $exists = PiggyBankEvent::where('piggy_bank_id', $event->piggyBank->id)
                                     ->where('transaction_journal_id', $journal->id)
                                     ->exists();
-            if($exists) {
+            if ($exists) {
                 Log::warning('Already have event for this journal and piggy, will not create another.');
                 return;
             }
@@ -66,5 +67,4 @@ class PiggyBankEventHandler
             ]
         );
     }
-
 }

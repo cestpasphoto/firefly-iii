@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BudgetFormRequest.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -35,7 +36,9 @@ use Illuminate\Validation\Validator;
  */
 class BudgetFormUpdateRequest extends FormRequest
 {
-    use ConvertsDataTypes, ValidatesAutoBudgetRequest, ChecksLogin;
+    use ConvertsDataTypes;
+    use ValidatesAutoBudgetRequest;
+    use ChecksLogin;
 
     /**
      * Returns the data required by the controller.
@@ -67,7 +70,7 @@ class BudgetFormUpdateRequest extends FormRequest
         $budget = $this->route()->parameter('budget');
 
         if (null !== $budget) {
-            $nameRule = 'required|between:1,100|uniqueObjectForUser:budgets,name,' . $budget->id;
+            $nameRule = 'required|between:1,100|uniqueObjectForUser:budgets,name,'.$budget->id;
         }
 
         return [
@@ -75,7 +78,7 @@ class BudgetFormUpdateRequest extends FormRequest
             'active'                  => 'numeric|between:0,1',
             'auto_budget_type'        => 'numeric|integer|gte:0|lte:31',
             'auto_budget_currency_id' => 'exists:transaction_currencies,id',
-            'auto_budget_amount'      => 'min:0|max:1000000000|required_if:auto_budget_type,1|required_if:auto_budget_type,2',
+            'auto_budget_amount'      => 'min:0|max:1000000000|required_if:auto_budget_type,1|required_if:auto_budget_type,2|numeric',
             'auto_budget_period'      => 'in:daily,weekly,monthly,quarterly,half_year,yearly',
         ];
     }
@@ -83,7 +86,7 @@ class BudgetFormUpdateRequest extends FormRequest
     /**
      * Configure the validator instance with special rules for after the basic validation rules.
      *
-     * @param Validator $validator
+     * @param  Validator  $validator
      *
      * @return void
      */

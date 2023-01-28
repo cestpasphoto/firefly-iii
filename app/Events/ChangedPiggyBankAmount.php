@@ -1,8 +1,8 @@
 <?php
-declare(strict_types=1);
+
 /*
  * ChangedPiggyBankAmount.php
- * Copyright (c) 2022 james@firefly-iii.org
+ * Copyright (c) 2023 james@firefly-iii.org
  *
  * This file is part of Firefly III (https://github.com/firefly-iii).
  *
@@ -20,6 +20,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace FireflyIII\Events;
 
 use FireflyIII\Models\PiggyBank;
@@ -35,10 +37,10 @@ class ChangedPiggyBankAmount extends Event
 {
     use SerializesModels;
 
-    public PiggyBank           $piggyBank;
-    public ?TransactionJournal $transactionJournal;
-    public ?TransactionGroup   $transactionGroup;
     public string              $amount;
+    public PiggyBank           $piggyBank;
+    public ?TransactionGroup   $transactionGroup;
+    public ?TransactionJournal $transactionJournal;
 
     /**
      * Create a new event instance.

@@ -29,8 +29,9 @@ use FireflyIII\Models\TransactionCurrency;
 use FireflyIII\User;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Collection;
-use JsonException;
 use NumberFormatter;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class Amount.
@@ -67,25 +68,24 @@ class Amount
      * @return string
      *
      * @throws FireflyException
-     * @noinspection MoreThanThreeArgumentsInspection
      */
     public function formatFlat(string $symbol, int $decimalPlaces, string $amount, bool $coloured = null): string
     {
-        $locale = app('steam')->getLocale();
-
+        $locale   = app('steam')->getLocale();
+        $rounded  = app('steam')->bcround($amount, $decimalPlaces);
         $coloured = $coloured ?? true;
 
         $fmt = new NumberFormatter($locale, NumberFormatter::CURRENCY);
         $fmt->setSymbol(NumberFormatter::CURRENCY_SYMBOL, $symbol);
         $fmt->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimalPlaces);
         $fmt->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimalPlaces);
-        $result = $fmt->format((float)app('steam')->bcround($amount, $decimalPlaces)); // intentional float
+        $result = $fmt->format((float)$rounded); // intentional float
 
         if (true === $coloured) {
-            if (1 === bccomp($amount, '0')) {
+            if (1 === bccomp($rounded, '0')) {
                 return sprintf('<span class="text-success">%s</span>', $result);
             }
-            if (-1 === bccomp($amount, '0')) {
+            if (-1 === bccomp($rounded, '0')) {
                 return sprintf('<span class="text-danger">%s</span>', $result);
             }
 
@@ -114,12 +114,12 @@ class Amount
     /**
      * @return string
      * @throws FireflyException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function getCurrencyCode(): string
     {
-        $cache = new CacheProperties;
+        $cache = new CacheProperties();
         $cache->addProperty('getCurrencyCode');
         if ($cache->has()) {
             return $cache->get();
@@ -140,7 +140,6 @@ class Amount
     /**
      * @return TransactionCurrency
      * @throws FireflyException
-     * @throws JsonException
      */
     public function getDefaultCurrency(): TransactionCurrency
     {
@@ -158,7 +157,7 @@ class Amount
      */
     public function getDefaultCurrencyByUser(User $user): TransactionCurrency
     {
-        $cache = new CacheProperties;
+        $cache = new CacheProperties();
         $cache->addProperty('getDefaultCurrency');
         $cache->addProperty($user->id);
         if ($cache->has()) {

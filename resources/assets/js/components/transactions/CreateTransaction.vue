@@ -208,6 +208,30 @@
           </div>
         </div>
       </div>
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title">
+              {{ $t('firefly.submission_options') }}
+            </h3>
+          </div>
+          <div class="box-body">
+            <div class="checkbox">
+              <label>
+                <input v-model="applyRules" name="apply_rules" type="checkbox">
+                {{ $t('firefly.apply_rules_checkbox') }}
+              </label>
+            </div>
+            <div class="checkbox">
+              <label>
+                <input v-model="fireWebhooks" name="fire_webhooks" type="checkbox">
+                {{ $t('firefly.fire_webhooks_checkbox') }}
+
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </form>
 </template>
@@ -272,6 +296,8 @@ export default {
     convertData: function () {
       // console.log('Now in convertData()');
       let data = {
+        'apply_rules': this.applyRules,
+        'fire_webhooks': this.fireWebhooks,
         'transactions': [],
       };
       let transactionType;
@@ -482,7 +508,7 @@ export default {
       // if count is 0, send user onwards.
       if (this.createAnother) {
         // do message:
-        this.success_message = this.$t('firefly.transaction_stored_link', {ID: groupId, title: title});
+        this.success_message = this.$t('firefly.transaction_stored_link', {ID: groupId, title: $(title).text()});
         this.error_message = '';
         if (this.resetFormAfter) {
           // also clear form.
@@ -945,6 +971,8 @@ export default {
       cash_account_id: 0,
       createAnother: false,
       resetFormAfter: false,
+      fireWebhooks: true,
+      applyRules: true,
       resetButtonDisabled: true,
       attachmentCount: 0,
     };

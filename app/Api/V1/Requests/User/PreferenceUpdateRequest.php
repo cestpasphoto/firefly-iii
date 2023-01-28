@@ -30,7 +30,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class PreferenceUpdateRequest extends FormRequest
 {
-    use ChecksLogin, ConvertsDataTypes;
+    use ChecksLogin;
+    use ConvertsDataTypes;
 
     /**
      * @return array
@@ -47,9 +48,8 @@ class PreferenceUpdateRequest extends FormRequest
         if ('false' === $array['data']) {
             $array['data'] = false;
         }
-        // TODO remove float
         if (is_numeric($array['data'])) {
-            $array['data'] = (float) $array['data'];
+            $array['data'] = (float)$array['data']; // intentional float.
         }
 
         return $array;
@@ -64,5 +64,4 @@ class PreferenceUpdateRequest extends FormRequest
             'data' => 'required',
         ];
     }
-
 }

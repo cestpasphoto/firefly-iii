@@ -1,4 +1,5 @@
 <?php
+
 /**
  * TransactionCurrencySeeder.php
  * Copyright (c) 2019 james@firefly-iii.org.
@@ -24,7 +25,7 @@ namespace Database\Seeders;
 
 use FireflyIII\Models\TransactionCurrency;
 use Illuminate\Database\Seeder;
-use PDOEXception;
+use PDOException;
 
 /**
  * Class TransactionCurrencySeeder.
@@ -65,7 +66,7 @@ class TransactionCurrencySeeder extends Seeder
 
         // asian currencies
         $currencies[] = ['code' => 'JPY', 'name' => 'Japanese yen', 'symbol' => '¥', 'decimal_places' => 0];
-        $currencies[] = ['code' => 'RMB', 'name' => 'Chinese yuan', 'symbol' => '¥', 'decimal_places' => 2];
+        $currencies[] = ['code' => 'CNY', 'name' => 'Chinese yuan', 'symbol' => '¥', 'decimal_places' => 2];
         $currencies[] = ['code' => 'RUB', 'name' => 'Russian ruble', 'symbol' => '₽', 'decimal_places' => 2];
         $currencies[] = ['code' => 'INR', 'name' => 'Indian rupee', 'symbol' => '₹', 'decimal_places' => 2];
 
