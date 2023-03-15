@@ -1,6 +1,6 @@
 diff -Naur ../official/public/v1/js/ff/accounts/create.js ./public/v1/js/ff/accounts/create.js
 --- ../official/public/v1/js/ff/accounts/create.js	2023-01-28 10:04:18.191880339 +0100
-+++ ./public/v1/js/ff/accounts/create.js	2023-01-28 11:04:40.049174653 +0100
++++ ./public/v1/js/ff/accounts/create.js	2023-03-15 10:04:55.506012176 +0100
 @@ -30,21 +30,4 @@
              }
          );
@@ -25,7 +25,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/create.js ./public/v1/js/ff/acco
 -}
 diff -Naur ../official/public/v1/js/ff/accounts/edit.js ./public/v1/js/ff/accounts/edit.js
 --- ../official/public/v1/js/ff/accounts/edit.js	2023-01-28 10:04:18.191880339 +0100
-+++ ./public/v1/js/ff/accounts/edit.js	2023-01-28 11:04:40.041174332 +0100
++++ ./public/v1/js/ff/accounts/edit.js	2023-03-15 10:04:55.502012122 +0100
 @@ -30,21 +30,5 @@
              }
          );
@@ -50,7 +50,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/edit.js ./public/v1/js/ff/accoun
 -}
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
 --- ../official/public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:20:55.829339578 +0200
-+++ ./public/v1/js/ff/accounts/reconcile.js	2023-01-28 11:04:40.037174172 +0100
++++ ./public/v1/js/ff/accounts/reconcile.js	2023-03-15 10:04:55.494012013 +0100
 @@ -21,6 +21,7 @@
  var balanceDifference = 0;
  var difference = 0;
@@ -253,7 +253,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
      $('#difference').addClass(addClass).text(accounting.formatMoney(difference));
 diff -Naur ../official/public/v1/js/ff/budgets/index.js ./public/v1/js/ff/budgets/index.js
 --- ../official/public/v1/js/ff/budgets/index.js	2023-03-15 08:36:59.135380515 +0100
-+++ ./public/v1/js/ff/budgets/index.js	2023-03-15 08:37:07.279486846 +0100
++++ ./public/v1/js/ff/budgets/index.js	2023-03-15 10:04:55.386010540 +0100
 @@ -29,9 +29,9 @@
      drawSpentBars();
      drawBudgetedBars();
@@ -299,7 +299,7 @@ diff -Naur ../official/public/v1/js/ff/budgets/index.js ./public/v1/js/ff/budget
          if (pct <= 100) {
 diff -Naur ../official/public/v1/js/ff/rules/create-edit.js ./public/v1/js/ff/rules/create-edit.js
 --- ../official/public/v1/js/ff/rules/create-edit.js	2023-01-14 16:08:04.965752279 +0100
-+++ ./public/v1/js/ff/rules/create-edit.js	2023-01-28 11:04:39.385148015 +0100
++++ ./public/v1/js/ff/rules/create-edit.js	2023-03-15 10:04:54.906003993 +0100
 @@ -232,16 +232,11 @@
              break;
          case 'clear_category':
@@ -397,7 +397,7 @@ diff -Naur ../official/public/v1/js/ff/rules/create-edit.js ./public/v1/js/ff/ru
  }
 diff -Naur ../official/public/v1/js/ff/rules/select-transactions.js ./public/v1/js/ff/rules/select-transactions.js
 --- ../official/public/v1/js/ff/rules/select-transactions.js	2023-01-14 16:08:04.969752440 +0100
-+++ ./public/v1/js/ff/rules/select-transactions.js	2023-01-28 11:04:39.373147534 +0100
++++ ./public/v1/js/ff/rules/select-transactions.js	2023-03-15 10:04:54.898003883 +0100
 @@ -29,4 +29,7 @@
              }
          );
@@ -447,6 +447,18 @@ diff -Naur ../official/resources/assets/js/components/transactions/CreateTransac
                    <custom-transaction-fields
                        v-model="transaction.custom_fields"
                        :error="transaction.errors.custom_errors"
+diff -Naur ../official/resources/assets/js/webhooks/index.js ./resources/assets/js/webhooks/index.js
+--- ../official/resources/assets/js/webhooks/index.js	2023-01-14 16:08:05.029754847 +0100
++++ ./resources/assets/js/webhooks/index.js	2023-03-15 11:22:01.422950658 +0100
+@@ -18,7 +18,7 @@
+  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  */
+ 
+-import Index from "../components/webhooks";
++import Index from "../components/webhooks/Index";
+ 
+ /**
+  * First we will load Axios via bootstrap.js
 diff -Naur ../official/resources/lang/en_US/firefly.php ./resources/lang/en_US/firefly.php
 --- ../official/resources/lang/en_US/firefly.php	2023-03-15 08:36:59.167380933 +0100
 +++ ./resources/lang/en_US/firefly.php	2023-03-15 08:37:07.311487263 +0100
