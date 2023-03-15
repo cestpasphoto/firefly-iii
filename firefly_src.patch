@@ -1,6 +1,56 @@
+diff -Naur ../official/public/v1/js/ff/accounts/create.js ./public/v1/js/ff/accounts/create.js
+--- ../official/public/v1/js/ff/accounts/create.js	2023-01-28 10:04:18.191880339 +0100
++++ ./public/v1/js/ff/accounts/create.js	2023-01-28 11:04:40.049174653 +0100
+@@ -30,21 +30,4 @@
+             }
+         );
+     }
+-    // change the 'ffInput_opening_balance' text based on the
+-    // selection of the direction.
+-    $("#ffInput_liability_direction").change(triggerDirection);
+-    triggerDirection();
+ });
+-
+-
+-function triggerDirection() {
+-    let obj = $("#ffInput_liability_direction");
+-    let direction = obj.val();
+-    console.log('Direction is now ' + direction);
+-    if('credit' === direction) {
+-        $('label[for="ffInput_opening_balance"]').text(iAmOwed);
+-    }
+-    if('debit' === direction) {
+-        $('label[for="ffInput_opening_balance"]').text(iOwe);
+-    }
+-}
+diff -Naur ../official/public/v1/js/ff/accounts/edit.js ./public/v1/js/ff/accounts/edit.js
+--- ../official/public/v1/js/ff/accounts/edit.js	2023-01-28 10:04:18.191880339 +0100
++++ ./public/v1/js/ff/accounts/edit.js	2023-01-28 11:04:40.041174332 +0100
+@@ -30,21 +30,5 @@
+             }
+         );
+     }
+-    // change the 'ffInput_opening_balance' text based on the
+-    // selection of the direction.
+-    $("#ffInput_liability_direction").change(triggerDirection);
+-    triggerDirection();
+ 
+ });
+-
+-function triggerDirection() {
+-    let obj = $("#ffInput_liability_direction");
+-    let direction = obj.val();
+-    console.log('Direction is now ' + direction);
+-    if('credit' === direction) {
+-        $('label[for="ffInput_opening_balance"]').text(iAmOwed);
+-    }
+-    if('debit' === direction) {
+-        $('label[for="ffInput_opening_balance"]').text(iOwe);
+-    }
+-}
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
 --- ../official/public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:20:55.829339578 +0200
-+++ ./public/v1/js/ff/accounts/reconcile.js	2023-01-14 16:38:20.142569856 +0100
++++ ./public/v1/js/ff/accounts/reconcile.js	2023-01-28 11:04:40.037174172 +0100
 @@ -21,6 +21,7 @@
  var balanceDifference = 0;
  var difference = 0;
@@ -201,9 +251,164 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
          addClass = 'text-danger';
      }
      $('#difference').addClass(addClass).text(accounting.formatMoney(difference));
+diff -Naur ../official/public/v1/js/ff/budgets/index.js ./public/v1/js/ff/budgets/index.js
+--- ../official/public/v1/js/ff/budgets/index.js	2023-03-15 08:36:59.135380515 +0100
++++ ./public/v1/js/ff/budgets/index.js	2023-03-15 08:37:07.279486846 +0100
+@@ -29,9 +29,9 @@
+     drawSpentBars();
+     drawBudgetedBars();
+ 
+-    //$('.update_ab').on('click', updateAvailableBudget);
+-    //$('.delete_ab').on('click', deleteAvailableBudget);
+-    //$('.create_ab_alt').on('click', createAltAvailableBudget);
++    $('.update_ab').on('click', updateAvailableBudget);
++    $('.delete_ab').on('click', deleteAvailableBudget);
++    $('.create_ab_alt').on('click', createAltAvailableBudget);
+ 
+     $('.budget_amount').on('change', updateBudgetedAmount);
+     $('.create_bl').on('click', createBudgetLimit);
+@@ -129,28 +129,20 @@
+ }
+ 
+ function updateTotalBudgetedAmount(currencyId) {
+-    console.log('updateTotalBudgetedAmount');
+     // fade info away:
+     $('span.budgeted_amount[data-currency="' + currencyId + '"]')
+         .fadeTo(100, 0.1, function () {
+-        });
+-    $('span.available_amount[data-currency="' + currencyId + '"]')
+-        .fadeTo(100, 0.1, function () {
++            //$(this).fadeTo(500, 1.0);
+         });
+ 
+     // get new amount:
+     $.get(totalBudgetedUrl.replace('REPLACEME', currencyId)).done(function (data) {
+         // set thing:
+-
+         $('span.budgeted_amount[data-currency="' + currencyId + '"]')
+             .html(data.budgeted_formatted)
+             // fade back:
+             .fadeTo(300, 1.0);
+ 
+-        // also set available amount:
+-        $('span.available_amount[data-currency="' + currencyId + '"]')
+-            .html(data.available_formatted).fadeTo(300, 1.0);
+-
+         // set bar:
+         var pct = parseFloat(data.percentage);
+         if (pct <= 100) {
+diff -Naur ../official/public/v1/js/ff/rules/create-edit.js ./public/v1/js/ff/rules/create-edit.js
+--- ../official/public/v1/js/ff/rules/create-edit.js	2023-01-14 16:08:04.965752279 +0100
++++ ./public/v1/js/ff/rules/create-edit.js	2023-01-28 11:04:39.385148015 +0100
+@@ -232,16 +232,11 @@
+             break;
+         case 'clear_category':
+         case 'clear_budget':
+-        case 'append_descr_to_notes':
+-        case 'append_notes_to_descr':
+-        case 'move_descr_to_notes':
+-        case 'move_notes_to_descr':
+         case 'clear_notes':
+         case 'delete_transaction':
+         case 'remove_all_tags':
+             console.log('Select list value is ' + selectList.val() + ', so input needs to be disabled.');
+-            inputResult.prop('disabled', true);
+-            inputResult.typeahead('destroy');
++            inputResult.attr('disabled', 'disabled');
+             break;
+         case 'set_budget':
+             console.log('Select list value is ' + selectList.val() + ', so input needs auto complete.');
+@@ -348,12 +343,9 @@
+         case 'has_no_tag':
+         case 'no_notes':
+         case 'any_notes':
+-        case 'exists':
+-        case 'reconciled':
+         case 'has_any_tag':
+         case 'has_attachments':
+         case 'source_is_cash':
+-        case 'has_no_attachments':
+         case 'destination_is_cash':
+         case 'account_is_cash':
+         case 'no_external_url':
+@@ -372,7 +364,7 @@
+         case 'amount_exactly':
+             console.log('Set value to type=number');
+             inputResult.prop('type', 'number');
+-            inputResult.prop('step', 'any');
++            inputResult.prop('step','any');
+             break;
+         default:
+             console.log('Select list value is ' + selectList.val() + ', destroy auto complete, do nothing else.');
+@@ -391,32 +383,32 @@
+     input.typeahead('destroy');
+ 
+     // append URL:
+-    var lastChar = URL[URL.length - 1];
++    var lastChar = URL[URL.length -1];
+     var urlParamSplit = '?';
+-    if ('&' === lastChar) {
++    if('&' === lastChar) {
+         urlParamSplit = '';
+     }
+     var source = new Bloodhound({
+-        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+-        queryTokenizer: Bloodhound.tokenizers.whitespace,
+-        prefetch: {
+-            url: URL + urlParamSplit + 'uid=' + uid,
+-            filter: function (list) {
+-                return $.map(list, function (item) {
+-                    return {name: item.name};
+-                });
+-            }
+-        },
+-        remote: {
+-            url: URL + urlParamSplit + 'query=%QUERY&uid=' + uid,
+-            wildcard: '%QUERY',
+-            filter: function (list) {
+-                return $.map(list, function (item) {
+-                    return {name: item.name};
+-                });
+-            }
+-        }
+-    });
++                                    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
++                                    queryTokenizer: Bloodhound.tokenizers.whitespace,
++                                    prefetch: {
++                                        url: URL + urlParamSplit + 'uid=' + uid,
++                                        filter: function (list) {
++                                            return $.map(list, function (item) {
++                                                return {name: item.name};
++                                            });
++                                        }
++                                    },
++                                    remote: {
++                                        url: URL + urlParamSplit + 'query=%QUERY&uid=' + uid,
++                                        wildcard: '%QUERY',
++                                        filter: function (list) {
++                                            return $.map(list, function (item) {
++                                                return {name: item.name};
++                                            });
++                                        }
++                                    }
++                                });
+     source.initialize();
+     input.typeahead({hint: true, highlight: true,}, {source: source, displayKey: 'name', autoSelect: false});
+ }
+diff -Naur ../official/public/v1/js/ff/rules/select-transactions.js ./public/v1/js/ff/rules/select-transactions.js
+--- ../official/public/v1/js/ff/rules/select-transactions.js	2023-01-14 16:08:04.969752440 +0100
++++ ./public/v1/js/ff/rules/select-transactions.js	2023-01-28 11:04:39.373147534 +0100
+@@ -29,4 +29,7 @@
+             }
+         );
+     }
++    // $('form.form-horizontal').on('submit', function () {
++    //     return confirm(askReadWarning);
++    // });
+ });
 diff -Naur ../official/resources/assets/js/components/transactions/CreateTransaction.vue ./resources/assets/js/components/transactions/CreateTransaction.vue
---- ../official/resources/assets/js/components/transactions/CreateTransaction.vue	2023-01-28 10:04:18.199880660 +0100
-+++ ./resources/assets/js/components/transactions/CreateTransaction.vue	2023-01-28 10:04:05.707379511 +0100
+--- ../official/resources/assets/js/components/transactions/CreateTransaction.vue	2023-03-15 08:36:59.151380724 +0100
++++ ./resources/assets/js/components/transactions/CreateTransaction.vue	2023-03-15 08:37:07.299487107 +0100
 @@ -134,35 +134,14 @@
                        :transactionType="transactionType"
                        v-bind:title="$t('form.foreign_amount')"
@@ -243,9 +448,9 @@ diff -Naur ../official/resources/assets/js/components/transactions/CreateTransac
                        v-model="transaction.custom_fields"
                        :error="transaction.errors.custom_errors"
 diff -Naur ../official/resources/lang/en_US/firefly.php ./resources/lang/en_US/firefly.php
---- ../official/resources/lang/en_US/firefly.php	2023-01-28 10:04:18.219881462 +0100
-+++ ./resources/lang/en_US/firefly.php	2023-01-28 10:04:05.723380153 +0100
-@@ -1267,6 +1267,7 @@
+--- ../official/resources/lang/en_US/firefly.php	2023-03-15 08:36:59.167380933 +0100
++++ ./resources/lang/en_US/firefly.php	2023-03-15 08:37:07.311487263 +0100
+@@ -1269,6 +1269,7 @@
      'pref_view_range_help'                      => 'Some charts are automatically grouped in periods. Your budgets will also be grouped in periods. What period would you prefer?',
      'pref_1D'                                   => 'One day',
      'pref_1W'                                   => 'One week',
@@ -254,9 +459,9 @@ diff -Naur ../official/resources/lang/en_US/firefly.php ./resources/lang/en_US/f
      'pref_3M'                                   => 'Three months (quarter)',
      'pref_6M'                                   => 'Six months',
 diff -Naur ../official/resources/lang/fr_FR/firefly.php ./resources/lang/fr_FR/firefly.php
---- ../official/resources/lang/fr_FR/firefly.php	2023-01-28 10:04:18.223881623 +0100
-+++ ./resources/lang/fr_FR/firefly.php	2023-01-28 10:04:05.727380314 +0100
-@@ -1307,6 +1307,7 @@
+--- ../official/resources/lang/fr_FR/firefly.php	2023-03-15 08:36:59.171380985 +0100
++++ ./resources/lang/fr_FR/firefly.php	2023-03-15 08:37:07.319487368 +0100
+@@ -1309,6 +1309,7 @@
      'pref_view_range_help'                      => 'Certains graphiques sont automatiquement regroupés par périodes. Vos budgets seront aussi organisés par périodes. Quelle période préférez-vous ?',
      'pref_1D'                                   => 'Un jour',
      'pref_1W'                                   => 'Une semaine',
@@ -276,8 +481,8 @@ diff -Naur ../official/resources/views/accounts/reconcile/index.twig ./resources
 +    </script>
  {% endblock %}
 diff -Naur ../official/resources/views/index.twig ./resources/views/index.twig
---- ../official/resources/views/index.twig	2022-05-06 16:20:55.873340118 +0200
-+++ ./resources/views/index.twig	2022-07-16 08:07:47.678616704 +0200
+--- ../official/resources/views/index.twig	2023-03-15 08:36:59.187381194 +0100
++++ ./resources/views/index.twig	2023-03-15 08:37:07.335487577 +0100
 @@ -4,7 +4,6 @@
      {{ Breadcrumbs.render }}
  {% endblock %}
@@ -375,9 +580,9 @@ diff -Naur ../official/resources/views/index.twig ./resources/views/index.twig
      </div>
  {% endblock %}
 diff -Naur ../official/resources/views/layout/default.twig ./resources/views/layout/default.twig
---- ../official/resources/views/layout/default.twig	2022-12-29 16:01:27.132300233 +0100
-+++ ./resources/views/layout/default.twig	2022-12-29 16:01:29.808338727 +0100
-@@ -84,11 +84,22 @@
+--- ../official/resources/views/layout/default.twig	2023-03-15 08:36:59.187381194 +0100
++++ ./resources/views/layout/default.twig	2023-03-15 08:37:07.335487577 +0100
+@@ -97,11 +97,22 @@
                          </span>
                      </li>
  
@@ -422,32 +627,55 @@ diff -Naur ../official/resources/views/list/groups-tiny.twig ./resources/views/l
                {% if null != transaction.foreign_amount %}
                    ({{ formatAmountBySymbol(transaction.foreign_amount*-1, transaction.foreign_currency_symbol, transaction.foreign_currency_decimal_places) }})
 diff -Naur ../official/resources/views/preferences/index.twig ./resources/views/preferences/index.twig
---- ../official/resources/views/preferences/index.twig	2023-01-14 16:08:05.093757414 +0100
-+++ ./resources/views/preferences/index.twig	2023-01-28 10:04:05.759381597 +0100
-@@ -196,6 +196,14 @@
+--- ../official/resources/views/preferences/index.twig	2023-03-15 08:36:59.187381194 +0100
++++ ./resources/views/preferences/index.twig	2023-03-15 08:43:00.656081570 +0100
+@@ -196,30 +196,24 @@
                                          <div class="radio">
                                              <label>
                                                  <input type="radio" name="viewRange"
+-                                                       value="last7" {% if viewRange == 'last7' %} checked {% endif %}>
+-                                                {{ 'pref_last7'|_ }}
 +                                                       value="3W" {% if viewRange == '3W' %} checked {% endif %}>
 +                                                {{ 'pref_3W'|_ }}
-+                                            </label>
-+                                        </div>
-+
-+                                        <div class="radio">
-+                                            <label>
-+                                                <input type="radio" name="viewRange"
-                                                        value="1M" {% if viewRange == '1M' %} checked {% endif %}>
-                                                 {{ 'pref_1M'|_ }}
                                              </label>
+                                         </div>
+ 
+                                         <div class="radio">
+                                             <label>
+                                                 <input type="radio" name="viewRange"
+-                                                       value="1M" {% if viewRange == '1M' %} checked {% endif %}>
+-                                                {{ 'pref_1M'|_ }}
+-                                            </label>
+-                                        </div>
+-                                        <div class="radio">
+-                                            <label>
+-                                                <input type="radio" name="viewRange"
+-                                                       value="last30" {% if viewRange == 'last30' %} checked {% endif %}>
+-                                                {{ 'pref_last30'|_ }}
++                                                       value="last7" {% if viewRange == 'last7' %} checked {% endif %}>
++                                                {{ 'pref_last7'|_ }}
+                                             </label>
+                                         </div>
++
+                                         <div class="radio">
+                                             <label>
+                                                 <input type="radio" name="viewRange"
+-                                                       value="MTD" {% if viewRange == 'MTD' %} checked {% endif %}>
+-                                                {{ 'pref_MTD'|_ }}
++                                                       value="1M" {% if viewRange == '1M' %} checked {% endif %}>
++                                                {{ 'pref_1M'|_ }}
+                                             </label>
+                                         </div>
+ 
 diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./app/Http/Controllers/Account/ReconcileController.php
---- ../official/app/Http/Controllers/Account/ReconcileController.php	2023-01-14 16:08:04.857747946 +0100
-+++ ./app/Http/Controllers/Account/ReconcileController.php	2023-01-28 10:24:46.137140553 +0100
+--- ../official/app/Http/Controllers/Account/ReconcileController.php	2023-03-15 08:36:59.099380045 +0100
++++ ./app/Http/Controllers/Account/ReconcileController.php	2023-03-15 08:38:49.120814561 +0100
 @@ -99,18 +99,15 @@
          }
          $currency = $this->accountRepos->getAccountCurrency($account) ?? app('amount')->getDefaultCurrency();
  
 -        // no start or end:
--        $range = app('preferences')->get('viewRange', '1M')->data;
+-        $range = app('navigation')->getViewRange(false);
 -
 -        // get start and end
 -
@@ -468,9 +696,9 @@ diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./ap
              $end = app('navigation')->endOfPeriod($start, $range);
          }
 diff -Naur ../official/app/Http/Controllers/Chart/AccountController.php ./app/Http/Controllers/Chart/AccountController.php
---- ../official/app/Http/Controllers/Chart/AccountController.php	2023-01-14 16:08:04.873748588 +0100
-+++ ./app/Http/Controllers/Chart/AccountController.php	2023-01-28 10:14:59.733616407 +0100
-@@ -498,7 +498,7 @@
+--- ../official/app/Http/Controllers/Chart/AccountController.php	2023-03-15 08:36:59.099380045 +0100
++++ ./app/Http/Controllers/Chart/AccountController.php	2023-03-15 08:37:07.243486376 +0100
+@@ -495,7 +495,7 @@
                  $current->addDay();
              }
          }
@@ -480,9 +708,9 @@ diff -Naur ../official/app/Http/Controllers/Chart/AccountController.php ./app/Ht
                  $balance         = (float)app('steam')->balance($account, $current, $currency);
                  $label           = app('navigation')->periodShow($current, $step);
 diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/CreateRecurringTransactions.php
---- ../official/app/Jobs/CreateRecurringTransactions.php	2023-01-14 16:08:04.881748909 +0100
-+++ ./app/Jobs/CreateRecurringTransactions.php	2023-01-28 10:29:34.224697464 +0100
-@@ -93,6 +93,8 @@
+--- ../official/app/Jobs/CreateRecurringTransactions.php	2023-03-15 08:36:59.107380149 +0100
++++ ./app/Jobs/CreateRecurringTransactions.php	2023-03-15 08:37:07.247486428 +0100
+@@ -92,6 +92,8 @@
          $this->created           = 0;
          $this->recurrences       = new Collection();
          $this->groups            = new Collection();
@@ -491,7 +719,7 @@ diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/Creat
  
          Log::debug(sprintf('Created new CreateRecurringTransactions("%s")', $this->date->format('Y-m-d')));
      }
-@@ -333,10 +335,10 @@
+@@ -332,10 +334,10 @@
              );
  
              // start looping from $startDate to today perhaps we have a hit?
@@ -506,7 +734,7 @@ diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/Creat
  
              unset($includeWeekend);
  
-@@ -384,10 +386,18 @@
+@@ -383,10 +385,18 @@
      private function handleOccurrence(Recurrence $recurrence, RecurrenceRepetition $repetition, Carbon $date): ?TransactionGroup
      {
          $date->startOfDay();
@@ -528,10 +756,10 @@ diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/Creat
          // count created journals on THIS day.
          $journalCount = $this->repository->getJournalCount($recurrence, $date, $date);
 diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./app/Support/Http/Controllers/GetConfigurationData.php
---- ../official/app/Support/Http/Controllers/GetConfigurationData.php	2023-01-14 16:08:04.913750193 +0100
-+++ ./app/Support/Http/Controllers/GetConfigurationData.php	2023-01-28 10:04:05.595375018 +0100
-@@ -131,10 +131,15 @@
-         $ranges[$index] = [$nextStart, $nextEnd];
+--- ../official/app/Support/Http/Controllers/GetConfigurationData.php	2023-03-15 08:36:59.119380306 +0100
++++ ./app/Support/Http/Controllers/GetConfigurationData.php	2023-03-15 08:37:07.259486584 +0100
+@@ -133,10 +133,15 @@
+         }
  
          // today:
 -        /** @var Carbon $todayStart */
@@ -551,9 +779,9 @@ diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./a
              $ranges[ucfirst((string)trans('firefly.today'))] = [$todayStart, $todayEnd];
          }
 diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
---- ../official/app/Support/Navigation.php	2023-01-14 16:08:04.913750193 +0100
-+++ ./app/Support/Navigation.php	2023-01-28 10:32:45.356364896 +0100
-@@ -51,6 +51,7 @@
+--- ../official/app/Support/Navigation.php	2023-03-15 08:36:59.119380306 +0100
++++ ./app/Support/Navigation.php	2023-03-15 08:41:09.894644800 +0100
+@@ -53,6 +53,7 @@
              '1W'        => 'addWeeks',
              'weekly'    => 'addWeeks',
              'week'      => 'addWeeks',
@@ -561,7 +789,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              '1M'        => 'addMonths',
              'month'     => 'addMonths',
              'monthly'   => 'addMonths',
-@@ -65,6 +66,7 @@
+@@ -67,6 +68,7 @@
              'custom'    => 'addMonths', // custom? just add one month.
          ];
          $modifierMap = [
@@ -569,16 +797,16 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              'quarter'   => 3,
              '3M'        => 3,
              'quarterly' => 3,
-@@ -202,7 +204,7 @@
-             return $date;
+@@ -219,7 +221,7 @@
          }
+ 
  
 -        if ('custom' === $repeatFreq) {
 +        if ('custom' === $repeatFreq || '3W' === $repeatFreq) {
              return $date; // the date is already at the start.
          }
          Log::error(sprintf('Cannot do startOfPeriod for $repeat_freq "%s"', $repeatFreq));
-@@ -226,6 +228,7 @@
+@@ -243,6 +245,7 @@
              '1W'        => 'addWeek',
              'week'      => 'addWeek',
              'weekly'    => 'addWeek',
@@ -586,7 +814,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              '1M'        => 'addMonth',
              'month'     => 'addMonth',
              'monthly'   => 'addMonth',
-@@ -240,6 +243,7 @@
+@@ -257,6 +260,7 @@
              '1Y'        => 'addYear',
          ];
          $modifierMap = [
@@ -594,7 +822,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              'quarter'   => 3,
              '3M'        => 3,
              'quarterly' => 3,
-@@ -248,7 +252,7 @@
+@@ -265,7 +269,7 @@
              '6M'        => 6,
          ];
  
@@ -603,7 +831,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
  
          // if the range is custom, the end of the period
          // is another X days (x is the difference between start)
-@@ -568,6 +572,10 @@
+@@ -615,6 +619,10 @@
  
              return $date;
          }
@@ -614,7 +842,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          // a custom range requires the session start
          // and session end to calculate the difference in days.
          // this is then subtracted from $theDate (* $subtract).
-@@ -636,6 +644,11 @@
+@@ -684,6 +692,11 @@
  
              return $end;
          }
@@ -626,7 +854,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          if ('6M' === $range) {
              if ($start->month >= 7) {
                  $end->endOfYear();
-@@ -717,6 +730,9 @@
+@@ -769,6 +782,9 @@
              case 'last7':
                  $start->subDays(7);
                  return $start;
