@@ -34,7 +34,7 @@ use Illuminate\Support\Collection;
 /**
  * Class ReportHelper.
  *
- * @codeCoverageIgnore
+
  */
 class ReportHelper implements ReportHelperInterface
 {
@@ -123,7 +123,7 @@ class ReportHelper implements ReportHelperInterface
         $fiscalHelper = app(FiscalHelperInterface::class);
         $start        = clone $date;
         $start->startOfMonth();
-        $end = Carbon::now();
+        $end = today(config('app.timezone'));
         $end->endOfMonth();
         $months = [];
 

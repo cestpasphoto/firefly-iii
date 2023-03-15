@@ -29,6 +29,8 @@ use FireflyIII\Models\TransactionCurrency;
 use FireflyIII\Repositories\Currency\CurrencyRepositoryInterface;
 use FireflyIII\Repositories\User\UserRepositoryInterface;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -55,7 +57,6 @@ class DownloadExchangeRates implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @codeCoverageIgnore
      *
      * @param  Carbon|null  $date
      */
@@ -94,6 +95,7 @@ class DownloadExchangeRates implements ShouldQueue
     /**
      * @param  TransactionCurrency  $currency
      * @return void
+     * @throws GuzzleException
      */
     private function downloadRates(TransactionCurrency $currency): void
     {
@@ -101,7 +103,12 @@ class DownloadExchangeRates implements ShouldQueue
         $base       = sprintf('%s/%s/%s', (string)config('cer.url'), $this->date->year, $this->date->isoWeek);
         $client     = new Client();
         $url        = sprintf('%s/%s.json', $base, $currency->code);
-        $res        = $client->get($url);
+        try {
+            $res = $client->get($url);
+        } catch(RequestException $e) {
+            app('log')->warning(sprintf('Trying to grab "%s" resulted in error "%d".', $url, $e->getMessage()));
+            return;
+        }
         $statusCode = $res->getStatusCode();
         if (200 !== $statusCode) {
             app('log')->warning(sprintf('Trying to grab "%s" resulted in status code %d.', $url, $statusCode));
@@ -117,11 +124,6 @@ class DownloadExchangeRates implements ShouldQueue
         $this->saveRates($currency, $date, $json['rates']);
     }
 
-    /**
-     * @param  TransactionCurrency  $currency
-     * @param  array  $rates
-     * @return void
-     */
     private function saveRates(TransactionCurrency $currency, Carbon $date, array $rates): void
     {
         foreach ($rates as $code => $rate) {

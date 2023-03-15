@@ -279,6 +279,8 @@ return [
     'response'                             => 'Resposta',
     'visit_webhook_url'                    => 'Visitar l\'URL del webhook',
     'reset_webhook_secret'                 => 'Reiniciar el secret del webhook',
+    'webhook_stored_link'                  => 'S\'ha desat <a href="webhooks/show/{ID}">el Webook #{ID} ("{title}")</a> correctament.',
+    'webhook_updated_link'                 => 'S\'ha actualitzat el <a href="webhooks/show/{ID}">Webook #{ID}</a> ("{title}").',
 
     // API access
     'authorization_request'                => 'Firefly III v:version Sol·licitud d\'Autorització',
@@ -1113,14 +1115,14 @@ return [
     'rule_trigger_not_account_nr_contains'                => 'Cap número de compte / IBAN conté ":trigger_value"',
     'rule_trigger_not_account_nr_ends'                    => 'Cap número de compte / IBAN acaba amb ":trigger_value"',
     'rule_trigger_not_account_nr_starts'                  => 'Cap número de compte / IBAN comença per ":trigger_value"',
-    'rule_trigger_not_category_is'                        => 'Cap categoria és ":trigger_value"',
-    'rule_trigger_not_category_contains'                  => 'Cap categoria conté ":trigger_value"',
-    'rule_trigger_not_category_ends'                      => 'Cap categoria acaba amb ":trigger_value"',
-    'rule_trigger_not_category_starts'                    => 'Cap categoria comença per ":trigger_value"',
-    'rule_trigger_not_budget_is'                          => 'Cap pressupost és ":trigger_value"',
-    'rule_trigger_not_budget_contains'                    => 'Cap pressupost conté ":trigger_value"',
-    'rule_trigger_not_budget_ends'                        => 'Cap pressupost acaba amb ":trigger_value"',
-    'rule_trigger_not_budget_starts'                      => 'Cap pressupost comença per ":trigger_value"',
+    'rule_trigger_not_category_is'                        => 'La categoria no és ":trigger_value"',
+    'rule_trigger_not_category_contains'                  => 'La categoria no conté ":trigger_value"',
+    'rule_trigger_not_category_ends'                      => 'La categoria no acaba en ":trigger_value"',
+    'rule_trigger_not_category_starts'                    => 'La categoria no comença per ":trigger_value"',
+    'rule_trigger_not_budget_is'                          => 'El pressupost no és ":trigger_value"',
+    'rule_trigger_not_budget_contains'                    => 'El pressupost no conté ":trigger_value"',
+    'rule_trigger_not_budget_ends'                        => 'El pressupost no acaba en ":trigger_value"',
+    'rule_trigger_not_budget_starts'                      => 'El pressupost no comença amb ":trigger_value"',
     'rule_trigger_not_bill_is'                            => 'La factura no és ":trigger_value"',
     'rule_trigger_not_bill_contains'                      => 'La factura no conté ":trigger_value"',
     'rule_trigger_not_bill_ends'                          => 'La factura no acaba amb ":trigger_value"',
@@ -1387,6 +1389,9 @@ return [
     'slack_webhook_url_help'                    => 'Si vols que Firefly III et notifiqui utilitzant Slack, introdueix el webhook URL aquí. Altrament, deixa el camp en blanc. Si ets administrador, també has d\'introduir l\'URL a l\'administració.',
     'slack_url_label'                           => 'URL del webhook entrant de Slack',
 
+    // Financial administrations
+    'administration_index'                      => 'Administració financera',
+
     // profile:
     'purge_data_title'                          => 'Purgar dades de Firefly III',
     'purge_data_expl'                           => '"Purgar" vol dir "eliminar allò que ja s\'ha eliminat". En circumstàncies normals, Firefly III no eliminar res permanentment. Només ho oculta. El següent botó elimina tots els registres prèviament "eliminats" PER SEMPRE.',
@@ -1476,6 +1481,7 @@ return [
     'oauth'                                     => 'OAuth',
     'profile_oauth_clients'                     => 'Clients OAuth',
     'profile_oauth_no_clients'                  => 'No has creat cap client OAuth.',
+    'profile_oauth_clients_external_auth'       => 'Si estàs fent servir un proveïdor extern d\'autentificació com Authelia, els Clients OAuth no funcionaran. Sols pots fer servir Tokens d\'Accés Personal.',
     'profile_oauth_clients_header'              => 'Clients',
     'profile_oauth_client_id'                   => 'ID de Client',
     'profile_oauth_client_name'                 => 'Nom',
@@ -1765,8 +1771,8 @@ return [
     'extension_date_is'                         => 'La data d\'extensió és {date}',
 
     // accounts:
-    'i_am_owed_amount'                          => 'I am owed amount',
-    'i_owe_amount'                              => 'I owe amount',
+    'i_am_owed_amount'                          => 'Se\'m deu la quantitat',
+    'i_owe_amount'                              => 'Jo dec la quantitat',
     'inactive_account_link'                     => 'Tens :count compte inactiu (arxivat), que pots veure en aquesta pàgina.|Tens :count comptes inactius (arxivats), els pots veure en aquesta pàgina.',
     'all_accounts_inactive'                     => 'Aquests són els teus comptes inactius.',
     'active_account_link'                       => 'Aquest enllaç et retorna als teus comptes actius.',
@@ -2358,6 +2364,8 @@ return [
 
 
     // administration
+    'invite_is_already_redeemed'               => 'The invite to ":address" has already been redeemed.',
+    'invite_is_deleted'                        => 'The invite to ":address" has been deleted.',
     'invite_new_user_title'                    => 'Invitar nou usuari',
     'invite_new_user_text'                     => 'Com a administrador, pots convidar usuaris a l\'administració de Firefly III. Amb aquest enllaç podran crear un compte. L\'usuari convidat, i el seu compte d\'invitació apareixeran a la taula inferior. Pots compartir l\'enllaç.',
     'invited_user_mail'                        => 'Correu electrònic',

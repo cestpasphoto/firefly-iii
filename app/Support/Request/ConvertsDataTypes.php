@@ -33,24 +33,6 @@ use Log;
 trait ConvertsDataTypes
 {
     /**
-     * Abstract method that always exists in the Request classes that use this
-     * trait, OR a stub needs to be added by any other class that uses this train.
-     *
-     * @param  string  $key
-     * @param  mixed|null  $default
-     * @return mixed
-     */
-    abstract public function get(string $key, mixed $default = null): mixed;
-
-    /**
-     * Abstract method that always exists in the Request classes that use this
-     * trait, OR a stub needs to be added by any other class that uses this train.
-     *
-     * @param mixed $key
-     * @return mixed
-     */
-    abstract public function has($key);
-    /**
      * Return integer value.
      *
      * @param  string  $field
@@ -63,6 +45,16 @@ trait ConvertsDataTypes
     }
 
     /**
+     * Abstract method that always exists in the Request classes that use this
+     * trait, OR a stub needs to be added by any other class that uses this train.
+     *
+     * @param  string  $key
+     * @param  mixed|null  $default
+     * @return mixed
+     */
+    abstract public function get(string $key, mixed $default = null): mixed;
+
+    /**
      * Return string value.
      *
      * @param  string  $field
@@ -71,7 +63,11 @@ trait ConvertsDataTypes
      */
     public function convertString(string $field): string
     {
-        return $this->clearString((string)($this->get($field) ?? ''), false);
+        $entry = $this->get($field);
+        if (!is_scalar($entry)) {
+            return '';
+        }
+        return $this->clearString((string)$entry, false);
     }
 
     /**
@@ -85,7 +81,10 @@ trait ConvertsDataTypes
         if (null === $string) {
             return null;
         }
-        $search       = [
+        if ('' === $string) {
+            return '';
+        }
+        $search  = [
             "\0", // NUL
             "\f", // form feed
             "\v", // vertical tab
@@ -135,14 +134,20 @@ trait ConvertsDataTypes
             "\u{3000}", // ideographic space
             "\u{FEFF}", // zero width no -break space
         ];
-        $replace      = "\x20"; // plain old normal space
-        $string       = str_replace($search, $replace, $string);
+        $replace = "\x20"; // plain old normal space
+        $string  = str_replace($search, $replace, $string);
+
         $secondSearch = $keepNewlines ? ["\r"] : ["\r", "\n", "\t", "\036", "\025"];
         $string       = str_replace($secondSearch, '', $string);
 
         // clear zalgo text (TODO also in API v2)
-        $string = preg_replace('/\pM/u', '', $string);
-
+        $string = preg_replace('/(\pM{2})\pM+/u', '\1', $string);
+        if (null === $string) {
+            return null;
+        }
+        if ('' === $string) {
+            return '';
+        }
         return trim($string);
     }
 
@@ -270,6 +275,15 @@ trait ConvertsDataTypes
 
         return $return;
     }
+
+    /**
+     * Abstract method that always exists in the Request classes that use this
+     * trait, OR a stub needs to be added by any other class that uses this train.
+     *
+     * @param  mixed  $key
+     * @return mixed
+     */
+    abstract public function has($key);
 
     /**
      * Return date or NULL.

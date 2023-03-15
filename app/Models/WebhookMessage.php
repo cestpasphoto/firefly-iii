@@ -63,9 +63,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static Builder|WebhookMessage whereUpdatedAt($value)
  * @method static Builder|WebhookMessage whereUuid($value)
  * @method static Builder|WebhookMessage whereWebhookId($value)
- * @mixin Eloquent
  * @property-read Collection|WebhookAttempt[] $webhookAttempts
  * @property-read int|null $webhook_attempts_count
+ * @mixin Eloquent
  */
 class WebhookMessage extends Model
 {
@@ -102,7 +102,6 @@ class WebhookMessage extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsTo
      */
     public function webhook(): BelongsTo
@@ -111,13 +110,13 @@ class WebhookMessage extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return HasMany
      */
     public function webhookAttempts(): HasMany
     {
         return $this->hasMany(WebhookAttempt::class);
     }
+
     /**
      * Get the amount
      *

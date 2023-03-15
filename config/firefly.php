@@ -31,6 +31,7 @@ use FireflyIII\Models\Bill;
 use FireflyIII\Models\Budget;
 use FireflyIII\Models\BudgetLimit;
 use FireflyIII\Models\Category;
+use FireflyIII\Models\InvitedUser;
 use FireflyIII\Models\LinkType;
 use FireflyIII\Models\ObjectGroup;
 use FireflyIII\Models\PiggyBank;
@@ -106,8 +107,8 @@ return [
         'webhooks'     => true,
         'handle_debts' => true,
     ],
-    'version'                      => '6.0.0-alpha.1',
-    'api_version'                  => '2.0.0-alpha.1',
+    'version'                      => '6.0.4',
+    'api_version'                  => '2.0.1',
     'db_version'                   => 19,
 
     // generic settings
@@ -128,8 +129,6 @@ return [
     'allow_webhooks'               => env('ALLOW_WEBHOOKS', false),
 
     // email flags
-    'send_registration_mail'       => env('SEND_REGISTRATION_MAIL', true),
-    'warn_new_ip'                  => env('SEND_LOGIN_NEW_IP_WARNING', true),
     'send_report_journals'         => envNonEmpty('SEND_REPORT_JOURNALS', true),
 
     // info for demo site
@@ -162,7 +161,7 @@ return [
         'en_GB' => ['name_locale' => 'English (GB)', 'name_english' => 'English (GB)'],
         'en_US' => ['name_locale' => 'English (US)', 'name_english' => 'English (US)'],
         'es_ES' => ['name_locale' => 'Español', 'name_english' => 'Spanish'],
-        'ca_ES' => ['name_locale' => 'Español (català)', 'name_english' => 'Spanish (Catalan)'],
+        'ca_ES' => ['name_locale' => 'Català (Espanya)', 'name_english' => 'Catalan (Spain)'],
         //        'et_EE' => ['name_locale' => 'Estonian', 'name_english' => 'Estonian'],
         //        'fa_IR' => ['name_locale' => 'فارسی', 'name_english' => 'Persian'],
         'fi_FI' => ['name_locale' => 'Suomi', 'name_english' => 'Finnish'],
@@ -448,6 +447,7 @@ return [
         'webhook'          => Webhook::class,
         'webhookMessage'   => WebhookMessage::class,
         'webhookAttempt'   => WebhookAttempt::class,
+        'invitedUser'      => InvitedUser::class,
 
         // strings
         'currency_code'    => CurrencyCode::class,
@@ -472,6 +472,7 @@ return [
         'tagOrId'          => TagOrId::class,
         'dynamicConfigKey' => DynamicConfigKey::class,
         'eitherConfigKey'  => EitherConfigKey::class,
+
 
     ],
     'rule-actions'         => [
@@ -880,6 +881,9 @@ return [
     'valid_asset_fields'        => ['account_role', 'account_number', 'currency_id', 'BIC', 'include_net_worth'],
     'valid_cc_fields'           => ['account_role', 'cc_monthly_payment_date', 'cc_type', 'account_number', 'currency_id', 'BIC', 'include_net_worth'],
     'valid_account_fields'      => ['account_number', 'currency_id', 'BIC', 'interest', 'interest_period', 'include_net_worth', 'liability_direction'],
+
+    // dynamic date ranges are as follows:
+    'dynamic_date_ranges'       => ['last7', 'last30', 'last90', 'last365', 'MTD', 'QTD', 'YTD'],
 
     // only used in v1
     'allowed_sort_parameters'   => ['order', 'name', 'iban'],

@@ -72,7 +72,9 @@ class MigrateToGroups extends Command
      * Execute the console command.
      *
      * @return int
-     * @throws Exception
+     * @throws ContainerExceptionInterface
+     * @throws FireflyException
+     * @throws NotFoundExceptionInterface
      */
     public function handle(): int
     {
@@ -117,7 +119,7 @@ class MigrateToGroups extends Command
      * executed. This leads to noticeable slow-downs and class calls. To prevent this, this method should
      * be called from the handle method instead of using the constructor to initialize the command.
      *
-     * @codeCoverageIgnore
+
      */
     private function stupidLaravel(): void
     {
@@ -130,7 +132,6 @@ class MigrateToGroups extends Command
 
     /**
      * @return bool
-     * @throws FireflyException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */

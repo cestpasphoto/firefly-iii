@@ -110,7 +110,7 @@ class TransferCurrenciesCorrections extends Command
      * executed. This leads to noticeable slow-downs and class calls. To prevent this, this method should
      * be called from the handle method instead of using the constructor to initialize the command.
      *
-     * @codeCoverageIgnore
+
      */
     private function stupidLaravel(): void
     {
@@ -124,7 +124,7 @@ class TransferCurrenciesCorrections extends Command
     /**
      * Reset all the class fields for the current transfer.
      *
-     * @codeCoverageIgnore
+
      */
     private function resetInformation(): void
     {
@@ -138,7 +138,6 @@ class TransferCurrenciesCorrections extends Command
 
     /**
      * @return bool
-     * @throws FireflyException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -238,7 +237,6 @@ class TransferCurrenciesCorrections extends Command
      * @param  TransactionJournal  $transfer
      *
      * @return bool
-     * @codeCoverageIgnore
      */
     private function isSplitJournal(TransactionJournal $transfer): bool
     {
@@ -250,7 +248,7 @@ class TransferCurrenciesCorrections extends Command
      *
      * @param  TransactionJournal  $journal
      *
-     * @codeCoverageIgnore
+
      */
     private function getSourceInformation(TransactionJournal $journal): void
     {
@@ -263,7 +261,6 @@ class TransferCurrenciesCorrections extends Command
      * @param  TransactionJournal  $transfer
      *
      * @return Transaction|null
-     * @codeCoverageIgnore
      */
     private function getSourceTransaction(TransactionJournal $transfer): ?Transaction
     {
@@ -300,7 +297,7 @@ class TransferCurrenciesCorrections extends Command
      *
      * @param  TransactionJournal  $journal
      *
-     * @codeCoverageIgnore
+
      */
     private function getDestinationInformation(TransactionJournal $journal): void
     {
@@ -313,7 +310,6 @@ class TransferCurrenciesCorrections extends Command
      * @param  TransactionJournal  $transfer
      *
      * @return Transaction|null
-     * @codeCoverageIgnore
      */
     private function getDestinationTransaction(TransactionJournal $transfer): ?Transaction
     {
@@ -324,7 +320,6 @@ class TransferCurrenciesCorrections extends Command
      * Is either the source or destination transaction NULL?
      *
      * @return bool
-     * @codeCoverageIgnore
      */
     private function isEmptyTransactions(): bool
     {
@@ -335,7 +330,6 @@ class TransferCurrenciesCorrections extends Command
 
     /**
      * @return bool
-     * @codeCoverageIgnore
      */
     private function isNoCurrencyPresent(): bool
     {

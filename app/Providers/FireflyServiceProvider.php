@@ -76,7 +76,6 @@ use Validator;
  *
  * Class FireflyServiceProvider.
  *
- * @codeCoverageIgnore
  *
  */
 class FireflyServiceProvider extends ServiceProvider

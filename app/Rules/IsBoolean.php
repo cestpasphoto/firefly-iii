@@ -34,7 +34,6 @@ class IsBoolean implements Rule
     /**
      * Get the validation error message.
      *
-     * @codeCoverageIgnore
      * @return string
      */
     public function message(): string

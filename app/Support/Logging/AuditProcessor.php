@@ -24,22 +24,24 @@ declare(strict_types=1);
 
 namespace FireflyIII\Support\Logging;
 
+use Monolog\LogRecord;
+
 /**
  * Class AuditProcessor
  *
- * @codeCoverageIgnore
+
  */
 class AuditProcessor
 {
     /**
-     * @param  array  $record
+     * @param  LogRecord  $record
      *
-     * @return array
+     * @return LogRecord
      */
-    public function __invoke(array $record): array
+    public function __invoke(LogRecord $record): LogRecord
     {
         if (auth()->check()) {
-            $record['message'] = sprintf(
+            $message =  sprintf(
                 'AUDIT: %s (%s (%s) -> %s:%s)',
                 $record['message'],
                 app('request')->ip(),
@@ -47,11 +49,10 @@ class AuditProcessor
                 request()->method(),
                 request()->url()
             );
-
-            return $record;
+            return new LogRecord($record->datetime, $record->channel, $record->level, $message, $record->context, $record->extra, $record->formatted);
         }
 
-        $record['message'] = sprintf(
+        $message = sprintf(
             'AUDIT: %s (%s -> %s:%s)',
             $record['message'],
             app('request')->ip(),
@@ -59,6 +60,6 @@ class AuditProcessor
             request()->url()
         );
 
-        return $record;
+        return new LogRecord($record->datetime, $record->channel, $record->level, $message, $record->context, $record->extra, $record->formatted);
     }
 }

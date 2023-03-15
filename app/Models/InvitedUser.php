@@ -24,12 +24,13 @@ declare(strict_types=1);
 
 namespace FireflyIII\Models;
 
+use Carbon\Carbon;
 use Eloquent;
 use FireflyIII\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Carbon\Carbon;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class InvitedUser
@@ -38,7 +39,6 @@ use Carbon\Carbon;
  * @method static Builder|InvitedUser newModelQuery()
  * @method static Builder|InvitedUser newQuery()
  * @method static Builder|InvitedUser query()
- * @mixin Eloquent
  * @property int $id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -55,22 +55,43 @@ use Carbon\Carbon;
  * @method static Builder|InvitedUser whereRedeemed($value)
  * @method static Builder|InvitedUser whereUpdatedAt($value)
  * @method static Builder|InvitedUser whereUserId($value)
+ * @mixin Eloquent
  */
 class InvitedUser extends Model
 {
     protected $casts
-        = [
+                        = [
             'expires'  => 'datetime',
             'redeemed' => 'boolean',
         ];
     protected $fillable = ['user_id', 'email', 'invite_code', 'expires', 'redeemed'];
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsTo
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Route binder. Converts the key in the URL to the specified object (or throw 404).
+     *
+     * @param  string  $value
+     *
+     * @return WebhookAttempt
+     * @throws NotFoundHttpException
+     */
+    public static function routeBinder(string $value): InvitedUser
+    {
+        if (auth()->check()) {
+            $attemptId = (int)$value;
+            /** @var InvitedUser $attempt */
+            $attempt = self::find($attemptId);
+            if (null !== $attempt) {
+                return $attempt;
+            }
+        }
+        throw new NotFoundHttpException();
     }
 }

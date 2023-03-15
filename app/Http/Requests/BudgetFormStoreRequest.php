@@ -30,7 +30,6 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
 /**
- * @codeCoverageIgnore
  * Class BudgetFormStoreRequest
  */
 class BudgetFormStoreRequest extends FormRequest

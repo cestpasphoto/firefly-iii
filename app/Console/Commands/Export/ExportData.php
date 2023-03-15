@@ -143,7 +143,7 @@ class ExportData extends Command
      * executed. This leads to noticeable slow-downs and class calls. To prevent this, this method should
      * be called from the handle method instead of using the constructor to initialize the command.
      *
-     * @codeCoverageIgnore
+
      */
     private function stupidLaravel(): void
     {
@@ -191,7 +191,7 @@ class ExportData extends Command
      */
     private function getDateParameter(string $field): Carbon
     {
-        $date  = Carbon::now()->subYear();
+        $date  = today(config('app.timezone'))->subYear();
         $error = false;
         if (null !== $this->option($field)) {
             try {
@@ -209,7 +209,7 @@ class ExportData extends Command
 
         if (true === $error && 'start' === $field) {
             $journal = $this->journalRepository->firstNull();
-            $date    = null === $journal ? Carbon::now()->subYear() : $journal->date;
+            $date    = null === $journal ? today(config('app.timezone'))->subYear() : $journal->date;
             $date->startOfDay();
         }
 
@@ -249,7 +249,7 @@ class ExportData extends Command
             }
         }
         if (0 === $final->count()) {
-            throw new FireflyException('Ended up with zero valid accounts to export from.');
+            throw new FireflyException('300007: Ended up with zero valid accounts to export from.');
         }
 
         return $final;

@@ -31,7 +31,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * @codeCoverageIgnore
  * Class TagServiceProvider.
  */
 class TagServiceProvider extends ServiceProvider

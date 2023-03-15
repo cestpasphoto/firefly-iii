@@ -78,9 +78,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereUserId($value)
  * @method static Builder|Attachment withTrashed()
  * @method static Builder|Attachment withoutTrashed()
- * @mixin Eloquent
  * @property int|null $user_group_id
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereUserGroupId($value)
+ * @mixin Eloquent
  */
 class Attachment extends Model
 {
@@ -125,7 +125,6 @@ class Attachment extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsTo
      */
     public function user(): BelongsTo
@@ -136,7 +135,6 @@ class Attachment extends Model
     /**
      * Get all of the owning attachable models.
      *
-     * @codeCoverageIgnore
      *
      * @return MorphTo
      */
@@ -148,7 +146,6 @@ class Attachment extends Model
     /**
      * Returns the expected filename for this attachment.
      *
-     * @codeCoverageIgnore
      * @return string
      */
     public function fileName(): string
@@ -157,7 +154,6 @@ class Attachment extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * Get all of the notes.
      */
     public function notes(): MorphMany

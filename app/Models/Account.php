@@ -90,7 +90,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static EloquentBuilder|Account whereVirtualBalance($value)
  * @method static Builder|Account withTrashed()
  * @method static Builder|Account withoutTrashed()
- * @mixin Eloquent
  * @property Carbon $lastActivityDate
  * @property string $startBalance
  * @property string $endBalance
@@ -103,6 +102,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @property string $current_debt
  * @property int|null $user_group_id
  * @method static EloquentBuilder|Account whereUserGroupId($value)
+ * @mixin Eloquent
  */
 class Account extends Model
 {
@@ -154,7 +154,6 @@ class Account extends Model
 
     /**
      * @return BelongsTo
-     * @codeCoverageIgnore
      */
     public function user(): BelongsTo
     {
@@ -163,7 +162,6 @@ class Account extends Model
 
     /**
      * @return BelongsTo
-     * @codeCoverageIgnore
      */
     public function accountType(): BelongsTo
     {
@@ -171,7 +169,6 @@ class Account extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return MorphMany
      */
     public function attachments(): MorphMany
@@ -196,7 +193,6 @@ class Account extends Model
 
     /**
      * @return HasMany
-     * @codeCoverageIgnore
      */
     public function accountMeta(): HasMany
     {
@@ -205,7 +201,6 @@ class Account extends Model
 
     /**
      * @return string
-     * @codeCoverageIgnore
      */
     public function getEditNameAttribute(): string
     {
@@ -219,7 +214,6 @@ class Account extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return MorphMany
      */
     public function locations(): MorphMany
@@ -228,7 +222,6 @@ class Account extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * Get all of the notes.
      */
     public function notes(): MorphMany
@@ -246,7 +239,6 @@ class Account extends Model
 
     /**
      * @return HasMany
-     * @codeCoverageIgnore
      */
     public function piggyBanks(): HasMany
     {
@@ -254,7 +246,6 @@ class Account extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @param  EloquentBuilder  $query
      * @param  array  $types
@@ -269,11 +260,10 @@ class Account extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @param  mixed  $value
      *
-     * @codeCoverageIgnore
+
      */
     public function setVirtualBalanceAttribute($value): void
     {
@@ -286,7 +276,6 @@ class Account extends Model
 
     /**
      * @return HasMany
-     * @codeCoverageIgnore
      */
     public function transactions(): HasMany
     {
@@ -301,7 +290,7 @@ class Account extends Model
     protected function virtualBalance(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => (string) $value,
+            get: fn ($value) => (string)$value,
         );
     }
 }

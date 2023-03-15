@@ -50,7 +50,7 @@ use Psr\Container\NotFoundExceptionInterface;
  * redirecting them to your home screen. The controller uses a trait
  * to conveniently provide its functionality to your applications.
  *
- * @codeCoverageIgnore
+
  */
 class LoginController extends Controller
 {
@@ -81,7 +81,6 @@ class LoginController extends Controller
     /**
      * Handle a login request to the application.
      *
-     * @param  Request  $request
      *
      * @throws ValidationException
      */

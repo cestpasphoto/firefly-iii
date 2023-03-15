@@ -41,7 +41,7 @@ class AccountTransformer extends AbstractTransformer
      *
      * AccountTransformer constructor.
      *
-     * @codeCoverageIgnore
+
      */
     public function __construct()
     {
@@ -55,6 +55,7 @@ class AccountTransformer extends AbstractTransformer
      * @param  Account  $account
      *
      * @return array
+     * @throws FireflyException
      * @throws JsonException
      */
     public function transform(Account $account): array

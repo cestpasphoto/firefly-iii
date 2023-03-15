@@ -29,7 +29,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * @codeCoverageIgnore
  * Class PiggyBankServiceProvider.
  */
 class PiggyBankServiceProvider extends ServiceProvider

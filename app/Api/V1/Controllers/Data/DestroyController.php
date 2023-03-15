@@ -56,7 +56,7 @@ class DestroyController extends Controller
 
     /**
      * This endpoint is documented at:
-     * https://api-docs.firefly-iii.org/#/data/destroyData
+     * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/data/destroyData
      *
      * @param  DestroyRequest  $request
      *
@@ -69,7 +69,7 @@ class DestroyController extends Controller
         $this->unused = $request->boolean('unused', false);
         switch ($objects) {
             default:
-                throw new FireflyException(sprintf('This endpoint can\'t handle object "%s"', $objects));
+                throw new FireflyException(sprintf('200033: This endpoint can\'t handle object "%s"', $objects));
             case 'budgets':
                 $this->destroyBudgets();
                 break;
@@ -94,19 +94,39 @@ class DestroyController extends Controller
             case 'object_groups':
                 $this->destroyObjectGroups();
                 break;
+            case 'not_assets_liabilities':
+                $this->destroyAccounts(
+                    [
+                        AccountType::BENEFICIARY,
+                        AccountType::CASH,
+                        AccountType::CREDITCARD,
+                        AccountType::DEFAULT,
+                        AccountType::EXPENSE,
+                        AccountType::IMPORT,
+                        AccountType::INITIAL_BALANCE,
+                        AccountType::LIABILITY_CREDIT,
+                        AccountType::RECONCILIATION,
+                        AccountType::REVENUE,
+                    ]
+                );
+                break;
             case 'accounts':
                 $this->destroyAccounts(
                     [
                         AccountType::ASSET,
-                        AccountType::DEFAULT,
                         AccountType::BENEFICIARY,
-                        AccountType::EXPENSE,
-                        AccountType::REVENUE,
-                        AccountType::INITIAL_BALANCE,
+                        AccountType::CASH,
+                        AccountType::CREDITCARD,
                         AccountType::DEBT,
+                        AccountType::DEFAULT,
+                        AccountType::EXPENSE,
+                        AccountType::IMPORT,
+                        AccountType::INITIAL_BALANCE,
+                        AccountType::LIABILITY_CREDIT,
                         AccountType::LOAN,
                         AccountType::MORTGAGE,
-                        AccountType::CREDITCARD,
+                        AccountType::RECONCILIATION,
+                        AccountType::REVENUE,
                     ]
                 );
                 break;

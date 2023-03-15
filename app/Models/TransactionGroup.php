@@ -59,9 +59,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static \Illuminate\Database\Eloquent\Builder|TransactionGroup whereUserId($value)
  * @method static Builder|TransactionGroup withTrashed()
  * @method static Builder|TransactionGroup withoutTrashed()
- * @mixin Eloquent
  * @property int|null $user_group_id
  * @method static \Illuminate\Database\Eloquent\Builder|TransactionGroup whereUserGroupId($value)
+ * @mixin Eloquent
  */
 class TransactionGroup extends Model
 {
@@ -116,7 +116,6 @@ class TransactionGroup extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsTo
      */
     public function user(): BelongsTo
@@ -125,7 +124,6 @@ class TransactionGroup extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return HasMany
      */
     public function transactionJournals(): HasMany

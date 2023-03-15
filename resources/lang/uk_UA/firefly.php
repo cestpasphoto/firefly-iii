@@ -279,6 +279,8 @@ return [
     'response'                             => 'Відповідь',
     'visit_webhook_url'                    => 'Відвідайте URL-адресу веб-хуку',
     'reset_webhook_secret'                 => 'Відновити сікрет веб-хука',
+    'webhook_stored_link'                  => '<a href="webhooks/show/{ID}">Webhook #{ID} ("{title}")</a> has been stored.',
+    'webhook_updated_link'                 => '<a href="webhooks/show/{ID}">Webhook #{ID}</a> ("{title}") has been updated.',
 
     // API access
     'authorization_request'                => 'Firefly III v:version запит авторизації',
@@ -1113,14 +1115,14 @@ return [
     'rule_trigger_not_account_nr_contains'                => 'Жодного рахунку з номером / IBAN який містить ":trigger_value"',
     'rule_trigger_not_account_nr_ends'                    => 'Жодного рахунку з номером / IBAN який закінчується ":trigger_value"',
     'rule_trigger_not_account_nr_starts'                  => 'Жодного рахунку з номером / IBAN який починається ":trigger_value"',
-    'rule_trigger_not_category_is'                        => 'Жодна категорія не ":trigger_value"',
-    'rule_trigger_not_category_contains'                  => 'Жодна категорія не містить ":trigger_value"',
-    'rule_trigger_not_category_ends'                      => 'Жодна категорія не закінчується на ":trigger_value"',
-    'rule_trigger_not_category_starts'                    => 'Жодна категорія не починається на ":trigger_value"',
-    'rule_trigger_not_budget_is'                          => 'Жодного бюджету немає ":trigger_value"',
-    'rule_trigger_not_budget_contains'                    => 'Жоден бюджет не містить ":trigger_value"',
-    'rule_trigger_not_budget_ends'                        => 'Жоден бюджет не закінчується на ":trigger_value"',
-    'rule_trigger_not_budget_starts'                      => 'Жоден бюджет не починається з ":trigger_value"',
+    'rule_trigger_not_category_is'                        => 'Category is not ":trigger_value"',
+    'rule_trigger_not_category_contains'                  => 'Category does not contain ":trigger_value"',
+    'rule_trigger_not_category_ends'                      => 'Category does not end on ":trigger_value"',
+    'rule_trigger_not_category_starts'                    => 'Category does not start with ":trigger_value"',
+    'rule_trigger_not_budget_is'                          => 'Budget is not ":trigger_value"',
+    'rule_trigger_not_budget_contains'                    => 'Budget does not contain ":trigger_value"',
+    'rule_trigger_not_budget_ends'                        => 'Budget does not end on ":trigger_value"',
+    'rule_trigger_not_budget_starts'                      => 'Budget does not start with ":trigger_value"',
     'rule_trigger_not_bill_is'                            => 'Рахунок до сплати не ":trigger_value"',
     'rule_trigger_not_bill_contains'                      => 'Рахунок до сплати не містить ":trigger_value"',
     'rule_trigger_not_bill_ends'                          => 'Рахунок до сплати не закінчується ":trigger_value"',
@@ -1387,6 +1389,9 @@ return [
     'slack_webhook_url_help'                    => 'Якщо ви хочете, щоб Firefly III повідомляв вас за допомогою Slack, введіть тут URL-адресу вебхука. В іншому випадку залиште поле порожнім. Якщо ви адміністратор, вам також потрібно встановити цю URL-адресу в панелі адміністрування.',
     'slack_url_label'                           => 'URL-адреса Slack "вхідного вебхуку"',
 
+    // Financial administrations
+    'administration_index'                      => 'Financial administration',
+
     // profile:
     'purge_data_title'                          => 'Очистити дані з Firefly III',
     'purge_data_expl'                           => '«Очищення» означає «видалення того, що вже видалено». За звичайних обставин Firefly III нічого не видаляє остаточно. Це просто приховує це. Кнопка нижче видаляє всі ці раніше "видалені" записи НАЗАВЖДИ.',
@@ -1476,6 +1481,7 @@ return [
     'oauth'                                     => 'OAuth',
     'profile_oauth_clients'                     => 'Клієнти OAuth',
     'profile_oauth_no_clients'                  => 'Ви не створили жодних клієнтів OAuth.',
+    'profile_oauth_clients_external_auth'       => 'If you\'re using an external authentication provider like Authelia, OAuth Clients will not work. You can use Personal Access Tokens only.',
     'profile_oauth_clients_header'              => 'Клієнти',
     'profile_oauth_client_id'                   => 'ID клієнта',
     'profile_oauth_client_name'                 => 'Ім\'я',
@@ -2358,6 +2364,8 @@ return [
 
 
     // administration
+    'invite_is_already_redeemed'               => 'The invite to ":address" has already been redeemed.',
+    'invite_is_deleted'                        => 'The invite to ":address" has been deleted.',
     'invite_new_user_title'                    => 'Invite new user',
     'invite_new_user_text'                     => 'As an administrator, you can invite users to register on your Firefly III administration. Using the direct link you can share with them, they will be able to register an account. The invited user and their invite link will appear in the table below. You are free to share the invitation link with them.',
     'invited_user_mail'                        => 'Email address',

@@ -30,7 +30,6 @@ use FireflyIII\Support\Request\ConvertsDataTypes;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * @codeCoverageIgnore
  * Class UpdateRequest
  */
 class UpdateRequest extends FormRequest

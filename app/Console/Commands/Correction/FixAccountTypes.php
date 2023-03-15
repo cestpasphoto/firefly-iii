@@ -30,6 +30,7 @@ use FireflyIII\Models\Transaction;
 use FireflyIII\Models\TransactionJournal;
 use FireflyIII\Models\TransactionType;
 use Illuminate\Console\Command;
+use JsonException;
 use Log;
 
 /**
@@ -91,7 +92,7 @@ class FixAccountTypes extends Command
      * executed. This leads to noticeable slow-downs and class calls. To prevent this, this method should
      * be called from the handle method instead of using the constructor to initialize the command.
      *
-     * @codeCoverageIgnore
+
      */
     private function stupidLaravel(): void
     {
@@ -166,6 +167,7 @@ class FixAccountTypes extends Command
      * @param  Transaction  $dest
      *
      * @throws FireflyException
+     * @throws JsonException
      */
     private function fixJournal(TransactionJournal $journal, string $type, Transaction $source, Transaction $dest): void
     {

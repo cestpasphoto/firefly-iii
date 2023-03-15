@@ -74,12 +74,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static \Illuminate\Database\Eloquent\Builder|Budget whereUserId($value)
  * @method static Builder|Budget withTrashed()
  * @method static Builder|Budget withoutTrashed()
- * @mixin Eloquent
  * @property string $email
  * @property int|null $user_group_id
  * @method static \Illuminate\Database\Eloquent\Builder|Budget whereUserGroupId($value)
  * @property-read Collection|Note[] $notes
  * @property-read int|null $notes_count
+ * @mixin Eloquent
  */
 class Budget extends Model
 {
@@ -127,7 +127,6 @@ class Budget extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsTo
      */
     public function user(): BelongsTo
@@ -136,7 +135,6 @@ class Budget extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return MorphMany
      */
     public function attachments(): MorphMany
@@ -145,7 +143,6 @@ class Budget extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return HasMany
      */
     public function autoBudgets(): HasMany
@@ -154,7 +151,6 @@ class Budget extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return HasMany
      */
     public function budgetlimits(): HasMany
@@ -163,7 +159,6 @@ class Budget extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * Get all of the notes.
      */
     public function notes(): MorphMany
@@ -172,7 +167,6 @@ class Budget extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsToMany
      */
     public function transactionJournals(): BelongsToMany
@@ -181,7 +175,6 @@ class Budget extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsToMany
      */
     public function transactions(): BelongsToMany

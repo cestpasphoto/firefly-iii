@@ -75,9 +75,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static \Illuminate\Database\Eloquent\Builder|Tag whereZoomLevel($value)
  * @method static Builder|Tag withTrashed()
  * @method static Builder|Tag withoutTrashed()
- * @mixin Eloquent
  * @property int|null $user_group_id
  * @method static \Illuminate\Database\Eloquent\Builder|Tag whereUserGroupId($value)
+ * @mixin Eloquent
  */
 class Tag extends Model
 {
@@ -127,7 +127,6 @@ class Tag extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsTo
      */
     public function user(): BelongsTo
@@ -136,7 +135,6 @@ class Tag extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return MorphMany
      */
     public function attachments(): MorphMany
@@ -145,7 +143,6 @@ class Tag extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return MorphMany
      */
     public function locations(): MorphMany
@@ -154,7 +151,6 @@ class Tag extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsToMany
      */
     public function transactionJournals(): BelongsToMany

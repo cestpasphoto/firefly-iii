@@ -47,7 +47,7 @@ class IndexController extends Controller
     /**
      * IndexController constructor.
      *
-     * @codeCoverageIgnore
+
      */
     public function __construct()
     {
@@ -134,7 +134,6 @@ class IndexController extends Controller
      * @param  string  $objectType
      *
      * @return Factory|View
-     * @throws FireflyException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */

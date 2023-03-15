@@ -26,7 +26,6 @@ namespace FireflyIII\Api\V2\Controllers;
 
 use FireflyIII\Api\V2\Request\Generic\SingleDateRequest;
 use FireflyIII\Helpers\Report\NetWorthInterface;
-use FireflyIII\Repositories\Account\AccountRepositoryInterface;
 use FireflyIII\Support\Http\Api\ConvertsExchangeRates;
 use Illuminate\Http\JsonResponse;
 
@@ -37,7 +36,7 @@ class NetWorthController extends Controller
 {
     use ConvertsExchangeRates;
 
-    private NetWorthInterface          $netWorth;
+    private NetWorthInterface $netWorth;
 
     /**
      *
@@ -47,7 +46,7 @@ class NetWorthController extends Controller
         parent::__construct();
         $this->middleware(
             function ($request, $next) {
-                $this->netWorth   = app(NetWorthInterface::class);
+                $this->netWorth = app(NetWorthInterface::class);
                 $this->netWorth->setUser(auth()->user());
                 return $next($request);
             }
@@ -55,6 +54,8 @@ class NetWorthController extends Controller
     }
 
     /**
+     * This endpoint is documented at:
+     * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v2)#/net-worth/getNetWorth
      * @param  SingleDateRequest  $request
      * @return JsonResponse
      */

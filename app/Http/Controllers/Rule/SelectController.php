@@ -118,8 +118,8 @@ class SelectController extends Controller
             return redirect(route('rules.index'));
         }
         // does the user have shared accounts?
-        $first    = session('first', Carbon::now()->subYear())->format('Y-m-d');
-        $today    = Carbon::now()->format('Y-m-d');
+        $first    = session('first', today(config('app.timezone'))->subYear())->format('Y-m-d');
+        $today    = today(config('app.timezone'))->format('Y-m-d');
         $subTitle = (string)trans('firefly.apply_rule_selection', ['title' => $rule->title]);
 
         return view('rules.rule.select-transactions', compact('first', 'today', 'rule', 'subTitle'));
@@ -132,7 +132,7 @@ class SelectController extends Controller
      * @param  TestRuleFormRequest  $request
      *
      * @return JsonResponse
-     *
+     * @throws FireflyException
      */
     public function testTriggers(TestRuleFormRequest $request): JsonResponse
     {
@@ -194,7 +194,7 @@ class SelectController extends Controller
      * @param  Rule  $rule
      *
      * @return JsonResponse
-     *
+     * @throws FireflyException
      */
     public function testTriggersByRule(Rule $rule): JsonResponse
     {

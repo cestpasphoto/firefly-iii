@@ -57,7 +57,7 @@ class AccountFactory
     /**
      * AccountFactory constructor.
      *
-     * @codeCoverageIgnore
+
      */
     public function __construct()
     {
@@ -253,6 +253,8 @@ class AccountFactory
      * @param  array  $data
      *
      * @return array
+     * @throws FireflyException
+     * @throws JsonException
      */
     private function cleanMetaDataArray(Account $account, array $data): array
     {

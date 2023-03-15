@@ -55,10 +55,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static \Illuminate\Database\Eloquent\Builder|WebhookAttempt whereStatusCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WebhookAttempt whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WebhookAttempt whereWebhookMessageId($value)
- * @mixin Eloquent
  * @method static Builder|WebhookAttempt onlyTrashed()
  * @method static Builder|WebhookAttempt withTrashed()
  * @method static Builder|WebhookAttempt withoutTrashed()
+ * @mixin Eloquent
  */
 class WebhookAttempt extends Model
 {
@@ -88,7 +88,6 @@ class WebhookAttempt extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsTo
      */
     public function webhookMessage(): BelongsTo

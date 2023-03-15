@@ -45,6 +45,7 @@ use FireflyIII\Services\Internal\Destroy\TransactionGroupDestroyService;
 use FireflyIII\Services\Internal\Update\GroupUpdateService;
 use FireflyIII\Support\NullArrayObject;
 use FireflyIII\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use JsonException;
@@ -175,11 +176,11 @@ class TransactionGroupRepository implements TransactionGroupRepositoryInterface
         $result = [];
         /** @var Attachment $attachment */
         foreach ($set as $attachment) {
-            $journalId                = (int)$attachment->attachable_id;
-            $result[$journalId]       = $result[$journalId] ?? [];
-            $current                  = $attachment->toArray();
-            $current['file_exists']   = true;
-            $current['notes']         = $repository->getNoteText($attachment);
+            $journalId              = (int)$attachment->attachable_id;
+            $result[$journalId]     = $result[$journalId] ?? [];
+            $current                = $attachment->toArray();
+            $current['file_exists'] = true;
+            $current['notes']       = $repository->getNoteText($attachment);
             // already determined that this attachable is a TransactionJournal.
             $current['journal_title'] = $attachment->attachable->description; // @phpstan-ignore-line
             $result[$journalId][]     = $current;
@@ -189,11 +190,13 @@ class TransactionGroupRepository implements TransactionGroupRepositoryInterface
     }
 
     /**
-     * @param  User  $user
+     * @param  User|Authenticatable|null  $user
      */
-    public function setUser(User $user): void
+    public function setUser(User|Authenticatable|null $user): void
     {
-        $this->user = $user;
+        if (null !== $user) {
+            $this->user = $user;
+        }
     }
 
     /**
@@ -467,6 +470,7 @@ class TransactionGroupRepository implements TransactionGroupRepositoryInterface
      * @return TransactionGroup
      * @throws DuplicateTransactionException
      * @throws FireflyException
+     * @throws JsonException
      */
     public function store(array $data): TransactionGroup
     {
@@ -492,6 +496,7 @@ class TransactionGroupRepository implements TransactionGroupRepositoryInterface
      *
      * @return TransactionGroup
      *
+     * @throws DuplicateTransactionException
      * @throws FireflyException
      */
     public function update(TransactionGroup $transactionGroup, array $data): TransactionGroup

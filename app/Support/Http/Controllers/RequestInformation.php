@@ -24,7 +24,6 @@ declare(strict_types=1);
 namespace FireflyIII\Support\Http\Controllers;
 
 use Carbon\Carbon;
-use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Exceptions\ValidationException;
 use FireflyIII\Helpers\Help\HelpInterface;
 use FireflyIII\Http\Requests\RuleFormRequest;
@@ -89,7 +88,6 @@ trait RequestInformation
      * Returns if user has seen demo.
      *
      * @return bool
-     * @throws FireflyException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -145,9 +143,9 @@ trait RequestInformation
     final protected function notInSessionRange(Carbon $date): bool // Validate a preference
     {
         /** @var Carbon $start */
-        $start = session('start', Carbon::now()->startOfMonth());
+        $start = session('start', today(config('app.timezone'))->startOfMonth());
         /** @var Carbon $end */
-        $end    = session('end', Carbon::now()->endOfMonth());
+        $end    = session('end', today(config('app.timezone'))->endOfMonth());
         $result = false;
         if ($start->greaterThanOrEqualTo($date) && $end->greaterThanOrEqualTo($date)) {
             $result = true;
@@ -175,7 +173,7 @@ trait RequestInformation
             $attributes['startDate'] = Carbon::createFromFormat('Ymd', $attributes['startDate'])->startOfDay();
         } catch (InvalidArgumentException $e) {
             Log::debug(sprintf('Not important error message: %s', $e->getMessage()));
-            $date                    = Carbon::now()->startOfMonth();
+            $date                    = today(config('app.timezone'))->startOfMonth();
             $attributes['startDate'] = $date;
         }
 
@@ -183,7 +181,7 @@ trait RequestInformation
             $attributes['endDate'] = Carbon::createFromFormat('Ymd', $attributes['endDate'])->endOfDay();
         } catch (InvalidArgumentException $e) {
             Log::debug(sprintf('Not important error message: %s', $e->getMessage()));
-            $date                  = Carbon::now()->startOfMonth();
+            $date                  = today(config('app.timezone'))->startOfMonth();
             $attributes['endDate'] = $date;
         }
 
@@ -220,7 +218,6 @@ trait RequestInformation
      * @param  array  $data
      *
      * @return ValidatorContract
-     * @codeCoverageIgnore
      */
     final protected function validator(array $data): ValidatorContract
     {

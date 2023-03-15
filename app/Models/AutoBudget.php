@@ -71,7 +71,6 @@ class AutoBudget extends Model
     public const AUTO_BUDGET_ROLLOVER = 2;
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsTo
      */
     public function budget(): BelongsTo
@@ -80,7 +79,6 @@ class AutoBudget extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsTo
      */
     public function transactionCurrency(): BelongsTo
@@ -94,7 +92,7 @@ class AutoBudget extends Model
     protected function amount(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => (string) $value,
+            get: fn ($value) => (string)$value,
         );
     }
 }

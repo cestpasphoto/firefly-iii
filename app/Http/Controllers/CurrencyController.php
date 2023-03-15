@@ -51,7 +51,7 @@ class CurrencyController extends Controller
     /**
      * CurrencyController constructor.
      *
-     * @codeCoverageIgnore
+
      */
     public function __construct()
     {
@@ -326,7 +326,6 @@ class CurrencyController extends Controller
      * @param  Request  $request
      *
      * @return Factory|View
-     * @throws FireflyException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */

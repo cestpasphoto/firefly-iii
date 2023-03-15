@@ -74,9 +74,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static \Illuminate\Database\Eloquent\Builder|Rule whereUserId($value)
  * @method static Builder|Rule withTrashed()
  * @method static Builder|Rule withoutTrashed()
- * @mixin Eloquent
  * @property int|null $user_group_id
  * @method static \Illuminate\Database\Eloquent\Builder|Rule whereUserGroupId($value)
+ * @mixin Eloquent
  */
 class Rule extends Model
 {
@@ -125,7 +125,6 @@ class Rule extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsTo
      */
     public function user(): BelongsTo
@@ -134,7 +133,6 @@ class Rule extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return HasMany
      */
     public function ruleActions(): HasMany
@@ -143,7 +141,6 @@ class Rule extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsTo
      */
     public function ruleGroup(): BelongsTo
@@ -152,7 +149,6 @@ class Rule extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return HasMany
      */
     public function ruleTriggers(): HasMany
@@ -163,7 +159,7 @@ class Rule extends Model
     /**
      * @param  mixed  $value
      *
-     * @codeCoverageIgnore
+
      */
     public function setDescriptionAttribute($value): void
     {

@@ -67,7 +67,9 @@ class OtherCurrenciesCorrections extends Command
      * Execute the console command.
      *
      * @return int
+     * @throws ContainerExceptionInterface
      * @throws FireflyException
+     * @throws NotFoundExceptionInterface
      */
     public function handle(): int
     {
@@ -96,7 +98,7 @@ class OtherCurrenciesCorrections extends Command
      * executed. This leads to noticeable slow-downs and class calls. To prevent this, this method should
      * be called from the handle method instead of using the constructor to initialize the command.
      *
-     * @codeCoverageIgnore
+
      */
     private function stupidLaravel(): void
     {
@@ -110,7 +112,6 @@ class OtherCurrenciesCorrections extends Command
 
     /**
      * @return bool
-     * @throws FireflyException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */

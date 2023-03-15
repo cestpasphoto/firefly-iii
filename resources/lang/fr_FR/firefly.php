@@ -279,6 +279,8 @@ return [
     'response'                             => 'Réponse',
     'visit_webhook_url'                    => 'Visiter l\'URL du webhook',
     'reset_webhook_secret'                 => 'Réinitialiser le secret du webhook',
+    'webhook_stored_link'                  => '<a href="webhooks/show/{ID}">Le Webhook #{ID} ("{title}")</a> a été enregistré.',
+    'webhook_updated_link'                 => '<a href="webhooks/show/{ID}">Le webhook #{ID}</a> ("{title}") a été mis à jour.',
 
     // API access
     'authorization_request'                => 'Firefly III v:version demande d\'autorisation',
@@ -1113,14 +1115,14 @@ return [
     'rule_trigger_not_account_nr_contains'                => 'Aucun numéro / IBAN de compte ne contient ":trigger_value"',
     'rule_trigger_not_account_nr_ends'                    => 'Aucun numéro / IBAN de compte ne se termine par ":trigger_value"',
     'rule_trigger_not_account_nr_starts'                  => 'Aucun numéro / IBAN de compte ne commence par ":trigger_value"',
-    'rule_trigger_not_category_is'                        => 'Aucune catégorie n\'est ":trigger_value"',
-    'rule_trigger_not_category_contains'                  => 'Aucune catégorie ne contient ":trigger_value"',
-    'rule_trigger_not_category_ends'                      => 'Aucune catégorie ne se termine par ":trigger_value"',
-    'rule_trigger_not_category_starts'                    => 'Aucune catégorie ne commence par ":trigger_value"',
-    'rule_trigger_not_budget_is'                          => 'Aucun budget n\'est ":trigger_value"',
-    'rule_trigger_not_budget_contains'                    => 'Aucun budget ne contient ":trigger_value"',
-    'rule_trigger_not_budget_ends'                        => 'Aucun budget ne se termine par ":trigger_value"',
-    'rule_trigger_not_budget_starts'                      => 'Aucun budget ne commence par ":trigger_value"',
+    'rule_trigger_not_category_is'                        => 'La catégorie n\'est pas «:trigger_value»',
+    'rule_trigger_not_category_contains'                  => 'La catégorie ne contient pas «:trigger_value»',
+    'rule_trigger_not_category_ends'                      => 'La catégorie ne se termine pas par ":trigger_value"',
+    'rule_trigger_not_category_starts'                    => 'La catégorie ne commence pas par ":trigger_value"',
+    'rule_trigger_not_budget_is'                          => 'Le budget n\'est pas «:trigger_value»',
+    'rule_trigger_not_budget_contains'                    => 'Le budget ne contient pas ":trigger_value"',
+    'rule_trigger_not_budget_ends'                        => 'Le budget ne se termine pas par ":trigger_value"',
+    'rule_trigger_not_budget_starts'                      => 'Le budget ne commence pas par ":trigger_value"',
     'rule_trigger_not_bill_is'                            => 'La facture n\'est pas ":trigger_value"',
     'rule_trigger_not_bill_contains'                      => 'La facture ne contient pas ":trigger_value"',
     'rule_trigger_not_bill_ends'                          => 'La facture ne se termine pas par ":trigger_value"',
@@ -1378,15 +1380,18 @@ return [
     'optional_field_attachments'                => 'Pièces jointes',
     'optional_field_meta_data'                  => 'Métadonnées facultatives',
     'external_url'                              => 'URL externe',
-    'pref_notification_bill_reminder'           => 'Rappel au renouvellement des factures',
+    'pref_notification_bill_reminder'           => 'Rappel à l\'expiration des factures',
     'pref_notification_new_access_token'        => 'Alerte à la création d\'un nouveau jeton d\'accès API',
     'pref_notification_transaction_creation'    => 'Alerte à la création automatique d\'une opération',
     'pref_notification_user_login'              => 'Alerte à la connexion depuis un nouvel emplacement',
     'pref_notifications'                        => 'Notifications',
-    'pref_notifications_help'                   => 'Indiquez si ce sont des notifications que vous souhaitez obtenir. Certaines notifications peuvent contenir des informations financières sensibles.',
+    'pref_notifications_help'                   => 'Sélectionnez les notifications que vous souhaitez recevoir. Certaines notifications peuvent contenir des informations financières sensibles.',
     'slack_webhook_url'                         => 'Webhook URL de Slack',
     'slack_webhook_url_help'                    => 'Si vous voulez que Firefly III vous avertisse en utilisant Slack, entrez l\'URL du webhook ici. Sinon, laissez le champ vide. Si vous êtes un administrateur, vous devez également définir cette URL dans l\'administration.',
     'slack_url_label'                           => 'URL du webhook entrant de Slack',
+
+    // Financial administrations
+    'administration_index'                      => 'Administration financière',
 
     // profile:
     'purge_data_title'                          => 'Purger des données de Firefly III',
@@ -1477,6 +1482,7 @@ return [
     'oauth'                                     => 'OAuth',
     'profile_oauth_clients'                     => 'Clients OAuth',
     'profile_oauth_no_clients'                  => 'Vous n’avez pas encore créé de client OAuth.',
+    'profile_oauth_clients_external_auth'       => 'Si vous utilisez un fournisseur d\'authentification externe comme Authelia, les clients OAuth ne fonctionneront pas. Vous ne pouvez utiliser que des jetons d\'accès personnel.',
     'profile_oauth_clients_header'              => 'Clients',
     'profile_oauth_client_id'                   => 'Identifiant',
     'profile_oauth_client_name'                 => 'Nom',
@@ -1766,8 +1772,8 @@ return [
     'extension_date_is'                         => 'La date de l\'extension est {date}',
 
     // accounts:
-    'i_am_owed_amount'                          => 'I am owed amount',
-    'i_owe_amount'                              => 'I owe amount',
+    'i_am_owed_amount'                          => 'On me doit le montant',
+    'i_owe_amount'                              => 'Je dois le montant',
     'inactive_account_link'                     => 'Vous avez :count compte inactif (archivé) que vous pouvez consulter sur cette page dédiée.| Vous avez :count comptes inactifs (archivés) que vous pouvez consulter sur cette page dédiée.',
     'all_accounts_inactive'                     => 'Voici vos comptes inactifs.',
     'active_account_link'                       => 'Ce lien renvoie à vos comptes actifs.',
@@ -2359,6 +2365,8 @@ return [
 
 
     // administration
+    'invite_is_already_redeemed'               => 'L\'invitation à ":address" a déjà été utilisée.',
+    'invite_is_deleted'                        => 'L\'invitation à ":address" a été supprimée.',
     'invite_new_user_title'                    => 'Inviter un nouvel utilisateur',
     'invite_new_user_text'                     => 'En tant qu\'administrateur, vous pouvez inviter des utilisateurs à s\'inscrire sur votre administration Firefly III. En partageant avec eux le lien direct, ils seront en mesure de créer un compte. L\'utilisateur invité et son lien d\'invitation apparaîtront dans le tableau ci-dessous. Vous êtes libre de partager le lien d\'invitation avec eux.',
     'invited_user_mail'                        => 'Adresse e-mail',
@@ -2410,7 +2418,7 @@ return [
     'admin_notification_check_admin_new_reg'   => 'Les administrateurs reçoivent une notification à l\'inscription de nouveaux utilisateurs',
     'admin_notification_check_new_version'     => 'Une nouvelle version est disponible',
     'admin_notification_check_invite_created'  => 'Un utilisateur est invité à rejoindre Firefly III',
-    'admin_notification_check_invite_redeemed' => 'Une invitation d\'utilisateur a été présentée',
+    'admin_notification_check_invite_redeemed' => 'Une invitation d\'utilisateur a été utilisée',
     'all_invited_users'                        => 'Tous les utilisateurs invités',
     'save_notification_settings'               => 'Enregistrer les paramètres',
     'notification_settings_saved'              => 'Les paramètres de notification ont été enregistrés',

@@ -38,7 +38,7 @@ use Log;
 /**
  * Class UpdateRequest
  *
- * @codeCoverageIgnore
+
  */
 class UpdateRequest extends FormRequest
 {
@@ -76,7 +76,7 @@ class UpdateRequest extends FormRequest
             'liability_amount'        => ['liability_amount', 'convertString'],
             'liability_start_date'    => ['liability_start_date', 'date'],
         ];
-        $data    = $this->getAllData($fields);
+        $data   = $this->getAllData($fields);
         return $this->appendLocationData($data, null);
     }
 

@@ -38,6 +38,7 @@ use FireflyIII\Models\TransactionType;
 use FireflyIII\Services\Internal\Destroy\AccountDestroyService;
 use FireflyIII\Services\Internal\Update\AccountUpdateService;
 use FireflyIII\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
@@ -127,7 +128,7 @@ class AccountRepository implements AccountRepositoryInterface
             $dbQuery->leftJoin('account_types', 'accounts.account_type_id', '=', 'account_types.id');
             $dbQuery->whereIn('account_types.type', $types);
         }
-
+        /** @var Account|null */
         return $dbQuery->first(['accounts.*']);
     }
 
@@ -146,6 +147,7 @@ class AccountRepository implements AccountRepositoryInterface
             $query->whereIn('account_types.type', $types);
         }
 
+        /** @var Account|null */
         return $query->where('iban', $iban)->first(['accounts.*']);
     }
 
@@ -260,6 +262,7 @@ class AccountRepository implements AccountRepositoryInterface
      * @return Account
      *
      * @throws FireflyException
+     * @throws JsonException
      */
     public function getCashAccount(): Account
     {
@@ -273,11 +276,13 @@ class AccountRepository implements AccountRepositoryInterface
     }
 
     /**
-     * @param  User  $user
+     * @param  User|Authenticatable|null  $user
      */
-    public function setUser(User $user): void
+    public function setUser(User|Authenticatable|null $user): void
     {
-        $this->user = $user;
+        if (null !== $user) {
+            $this->user = $user;
+        }
     }
 
     /**
@@ -326,6 +331,7 @@ class AccountRepository implements AccountRepositoryInterface
      */
     public function getLocation(Account $account): ?Location
     {
+        /** @var Location|null */
         return $account->locations()->first();
     }
 

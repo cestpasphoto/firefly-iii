@@ -32,6 +32,7 @@ use Illuminate\Http\JsonResponse;
 use Log;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Validator;
 
 /**
  * Class ConfigurationController
@@ -57,10 +58,12 @@ class ConfigurationController extends Controller
 
     /**
      * This endpoint is documented at:
-     * https://api-docs.firefly-iii.org/#/configuration/getConfiguration
+     * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/configuration/getConfiguration
      *
      * @return JsonResponse
+     * @throws ContainerExceptionInterface
      * @throws FireflyException
+     * @throws NotFoundExceptionInterface
      */
     public function index(): JsonResponse
     {
@@ -95,7 +98,6 @@ class ConfigurationController extends Controller
      * Get all config values.
      *
      * @return array
-     * @throws FireflyException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -130,12 +132,14 @@ class ConfigurationController extends Controller
 
     /**
      * This endpoint is documented at:
-     * https://api-docs.firefly-iii.org/#/configuration/getSingleConfiguration
+     * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/configuration/getSingleConfiguration
      *
      * @param  string  $configKey
      *
      * @return JsonResponse
+     * @throws ContainerExceptionInterface
      * @throws FireflyException
+     * @throws NotFoundExceptionInterface
      */
     public function show(string $configKey): JsonResponse
     {
@@ -162,7 +166,7 @@ class ConfigurationController extends Controller
 
     /**
      * This endpoint is documented at:
-     * https://api-docs.firefly-iii.org/#/configuration/setConfiguration
+     * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/configuration/setConfiguration
      *
      * Update the configuration.
      *
@@ -170,12 +174,16 @@ class ConfigurationController extends Controller
      * @param  string  $name
      *
      * @return JsonResponse
+     * @throws ContainerExceptionInterface
      * @throws FireflyException
+     * @throws NotFoundExceptionInterface
      */
     public function update(UpdateRequest $request, string $name): JsonResponse
     {
+        $rules = ['value' => 'required'];
         if (!$this->repository->hasRole(auth()->user(), 'owner')) {
-            throw new FireflyException('200005: You need the "owner" role to do this.');
+            $messages = ['value' => '200005: You need the "owner" role to do this.'];
+            Validator::make([], $rules, $messages)->validate();
         }
         $data      = $request->getAll();
         $shortName = str_replace('configuration.', '', $name);

@@ -29,7 +29,6 @@ use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Helpers\Collector\GroupCollectorInterface;
 use FireflyIII\Models\LinkType;
 use FireflyIII\Repositories\LinkType\LinkTypeRepositoryInterface;
-use FireflyIII\Repositories\User\UserRepositoryInterface;
 use FireflyIII\Support\Http\Api\TransactionFilter;
 use FireflyIII\Transformers\TransactionGroupTransformer;
 use FireflyIII\User;
@@ -50,7 +49,7 @@ class ListController extends Controller
     /**
      * LinkTypeController constructor.
      *
-     * @codeCoverageIgnore
+
      */
     public function __construct()
     {
@@ -58,8 +57,8 @@ class ListController extends Controller
         $this->middleware(
             function ($request, $next) {
                 /** @var User $user */
-                $user                 = auth()->user();
-                $this->repository     = app(LinkTypeRepositoryInterface::class);
+                $user             = auth()->user();
+                $this->repository = app(LinkTypeRepositoryInterface::class);
                 $this->repository->setUser($user);
 
                 return $next($request);
@@ -69,14 +68,13 @@ class ListController extends Controller
 
     /**
      * This endpoint is documented at:
-     * https://api-docs.firefly-iii.org/#/links/listTransactionByLinkType
+     * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/links/listTransactionByLinkType
      *
      * @param  Request  $request
      * @param  LinkType  $linkType
      *
      * @return JsonResponse
      * @throws FireflyException
-     * @codeCoverageIgnore
      */
     public function transactions(Request $request, LinkType $linkType): JsonResponse
     {

@@ -73,7 +73,6 @@ class TransactionJournalFactory
      * Constructor.
      *
      * @throws Exception
-     * @codeCoverageIgnore
      */
     public function __construct()
     {
@@ -244,6 +243,7 @@ class TransactionJournalFactory
         $transactionFactory->setJournal($journal);
         $transactionFactory->setAccount($sourceAccount);
         $transactionFactory->setCurrency($currency);
+        $transactionFactory->setAccountInformation($sourceInfo);
         $transactionFactory->setForeignCurrency($foreignCurrency);
         $transactionFactory->setReconciled($row['reconciled'] ?? false);
         try {
@@ -262,6 +262,7 @@ class TransactionJournalFactory
         $transactionFactory->setUser($this->user);
         $transactionFactory->setJournal($journal);
         $transactionFactory->setAccount($destinationAccount);
+        $transactionFactory->setAccountInformation($destInfo);
         $transactionFactory->setCurrency($currency);
         $transactionFactory->setForeignCurrency($foreignCurrency);
         $transactionFactory->setReconciled($row['reconciled'] ?? false);
@@ -448,10 +449,12 @@ class TransactionJournalFactory
      * @param  Account  $destination
      *
      * @return TransactionCurrency
+     * @throws FireflyException
+     * @throws JsonException
      */
     private function getCurrencyByAccount(string $type, ?TransactionCurrency $currency, Account $source, Account $destination): TransactionCurrency
     {
-        Log::debug('Now ingetCurrencyByAccount()');
+        Log::debug('Now in getCurrencyByAccount()');
 
         return match ($type) {
             default => $this->getCurrency($currency, $source),
@@ -508,6 +511,8 @@ class TransactionJournalFactory
      * @param  Account  $destination
      *
      * @return TransactionCurrency|null
+     * @throws FireflyException
+     * @throws JsonException
      */
     private function getForeignByAccount(string $type, ?TransactionCurrency $foreignCurrency, Account $destination): ?TransactionCurrency
     {

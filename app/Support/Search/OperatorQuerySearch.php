@@ -63,27 +63,27 @@ use TypeError;
  */
 class OperatorQuerySearch implements SearchInterface
 {
+    protected Carbon                    $date;
     private AccountRepositoryInterface  $accountRepository;
     private BillRepositoryInterface     $billRepository;
     private BudgetRepositoryInterface   $budgetRepository;
     private CategoryRepositoryInterface $categoryRepository;
     private GroupCollectorInterface     $collector;
     private CurrencyRepositoryInterface $currencyRepository;
-    private Carbon                      $date;
     private array                       $invalidOperators;
     private int                         $limit;
     private Collection                  $operators;
     private int                         $page;
-    private array                       $prohibitedWords;
-    private float                       $startTime;
-    private TagRepositoryInterface      $tagRepository;
-    private array                       $validOperators;
-    private array                       $words;
+    private array                  $prohibitedWords;
+    private float                  $startTime;
+    private TagRepositoryInterface $tagRepository;
+    private array                  $validOperators;
+    private array                  $words;
 
     /**
      * OperatorQuerySearch constructor.
      *
-     * @codeCoverageIgnore
+
      */
     public function __construct()
     {
@@ -94,7 +94,6 @@ class OperatorQuerySearch implements SearchInterface
         $this->prohibitedWords    = [];
         $this->invalidOperators   = [];
         $this->limit              = 25;
-        $this->date               = today(config('app.timezone'));
         $this->validOperators     = array_keys(config('search.operators'));
         $this->startTime          = microtime(true);
         $this->accountRepository  = app(AccountRepositoryInterface::class);
@@ -115,7 +114,6 @@ class OperatorQuerySearch implements SearchInterface
 
     /**
      * @inheritDoc
-     * @codeCoverageIgnore
      */
     public function getModifiers(): Collection
     {
@@ -124,7 +122,6 @@ class OperatorQuerySearch implements SearchInterface
 
     /**
      * @inheritDoc
-     * @codeCoverageIgnore
      */
     public function getOperators(): Collection
     {
@@ -133,7 +130,6 @@ class OperatorQuerySearch implements SearchInterface
 
     /**
      * @inheritDoc
-     * @codeCoverageIgnore
      */
     public function getWordsAsString(): string
     {
@@ -142,7 +138,6 @@ class OperatorQuerySearch implements SearchInterface
 
     /**
      * @inheritDoc
-     * @codeCoverageIgnore
      */
     public function hasModifiers(): bool
     {
@@ -162,7 +157,7 @@ class OperatorQuerySearch implements SearchInterface
         } catch (TypeError|LogicException $e) {
             Log::error($e->getMessage());
             Log::error(sprintf('Could not parse search: "%s".', $query));
-            throw new FireflyException('Invalid search value. See the logs.', 0, $e);
+            throw new FireflyException(sprintf('Invalid search value "%s". See the logs.', e($query)), 0, $e);
         }
 
         Log::debug(sprintf('Found %d node(s)', count($query1->getNodes())));
@@ -244,10 +239,7 @@ class OperatorQuerySearch implements SearchInterface
     }
 
     /**
-     * @param  string  $operator
-     * @param  string  $value
      *
-     * @return bool
      * @throws FireflyException
      */
     private function updateCollector(string $operator, string $value, bool $prohibited): bool
@@ -1571,7 +1563,6 @@ class OperatorQuerySearch implements SearchInterface
     }
 
     /**
-     * @param  array  $range
      *
      * @throws FireflyException
      */
@@ -1630,7 +1621,6 @@ class OperatorQuerySearch implements SearchInterface
     }
 
     /**
-     * @param  array  $range
      *
      * @throws FireflyException
      */
@@ -1669,7 +1659,6 @@ class OperatorQuerySearch implements SearchInterface
     }
 
     /**
-     * @param  array  $range
      *
      * @throws FireflyException
      */
@@ -1708,9 +1697,6 @@ class OperatorQuerySearch implements SearchInterface
     }
 
     /**
-     * @param  string  $field
-     * @param  array  $range
-     * @return void
      * @throws FireflyException
      */
     private function setExactMetaDateParams(string $field, array $range, bool $prohibited = false): void
@@ -1770,9 +1756,6 @@ class OperatorQuerySearch implements SearchInterface
     }
 
     /**
-     * @param  string  $field
-     * @param  array  $range
-     * @return void
      * @throws FireflyException
      */
     private function setMetaDateBeforeParams(string $field, array $range, bool $prohibited = false): void
@@ -1810,9 +1793,6 @@ class OperatorQuerySearch implements SearchInterface
     }
 
     /**
-     * @param  string  $field
-     * @param  array  $range
-     * @return void
      * @throws FireflyException
      */
     private function setMetaDateAfterParams(string $field, array $range, bool $prohibited = false): void
@@ -1850,9 +1830,6 @@ class OperatorQuerySearch implements SearchInterface
     }
 
     /**
-     * @param  string  $field
-     * @param  array  $range
-     * @return void
      * @throws FireflyException
      */
     private function setExactObjectDateParams(string $field, array $range, bool $prohibited = false): void
@@ -1911,8 +1888,6 @@ class OperatorQuerySearch implements SearchInterface
     }
 
     /**
-     * @param  string  $field
-     * @param  array  $range
      *
      * @throws FireflyException
      */
@@ -1951,8 +1926,6 @@ class OperatorQuerySearch implements SearchInterface
     }
 
     /**
-     * @param  string  $field
-     * @param  array  $range
      *
      * @throws FireflyException
      */
@@ -1992,7 +1965,6 @@ class OperatorQuerySearch implements SearchInterface
 
     /**
      * @inheritDoc
-     * @codeCoverageIgnore
      */
     public function searchTime(): float
     {
@@ -2029,7 +2001,6 @@ class OperatorQuerySearch implements SearchInterface
 
     /**
      * @inheritDoc
-     * @codeCoverageIgnore
      */
     public function setPage(int $page): void
     {
@@ -2039,7 +2010,6 @@ class OperatorQuerySearch implements SearchInterface
 
     /**
      * @inheritDoc
-     * @codeCoverageIgnore
      */
     public function setUser(User $user): void
     {

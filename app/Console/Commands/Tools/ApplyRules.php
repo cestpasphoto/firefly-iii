@@ -156,7 +156,7 @@ class ApplyRules extends Command
      * executed. This leads to noticeable slow-downs and class calls. To prevent this, this method should
      * be called from the handle method instead of using the constructor to initialize the command.
      *
-     * @codeCoverageIgnore
+
      */
     private function stupidLaravel(): void
     {
@@ -282,7 +282,7 @@ class ApplyRules extends Command
     private function verifyInputDates(): void
     {
         // parse start date.
-        $inputStart  = Carbon::now()->startOfMonth();
+        $inputStart  = today(config('app.timezone'))->startOfMonth();
         $startString = $this->option('start_date');
         if (null === $startString) {
             /** @var JournalRepositoryInterface $repository */
@@ -298,7 +298,7 @@ class ApplyRules extends Command
         }
 
         // parse end date
-        $inputEnd  = Carbon::now();
+        $inputEnd  = today(config('app.timezone'));
         $endString = $this->option('end_date');
         if (null !== $endString && '' !== $endString) {
             $inputEnd = Carbon::createFromFormat('Y-m-d', $endString);

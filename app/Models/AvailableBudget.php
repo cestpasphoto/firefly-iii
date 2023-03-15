@@ -62,9 +62,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static \Illuminate\Database\Eloquent\Builder|AvailableBudget whereUserId($value)
  * @method static Builder|AvailableBudget withTrashed()
  * @method static Builder|AvailableBudget withoutTrashed()
- * @mixin Eloquent
  * @property int|null $user_group_id
  * @method static \Illuminate\Database\Eloquent\Builder|AvailableBudget whereUserGroupId($value)
+ * @mixin Eloquent
  */
 class AvailableBudget extends Model
 {
@@ -111,7 +111,6 @@ class AvailableBudget extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsTo
      */
     public function user(): BelongsTo
@@ -120,7 +119,6 @@ class AvailableBudget extends Model
     }
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsTo
      */
     public function transactionCurrency(): BelongsTo

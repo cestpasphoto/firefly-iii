@@ -34,7 +34,6 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
-use JsonException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -53,7 +52,7 @@ class ShowController extends Controller
     /**
      * CategoryController constructor.
      *
-     * @codeCoverageIgnore
+
      */
     public function __construct()
     {
@@ -81,21 +80,20 @@ class ShowController extends Controller
      *
      * @return Factory|View
      * @throws FireflyException
-     * @throws JsonException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
     public function show(Request $request, Category $category, Carbon $start = null, Carbon $end = null)
     {
         /** @var Carbon $start */
-        $start = $start ?? session('start', Carbon::now()->startOfMonth());
+        $start = $start ?? session('start', today(config('app.timezone'))->startOfMonth());
         /** @var Carbon $end */
-        $end          = $end ?? session('end', Carbon::now()->endOfMonth());
+        $end          = $end ?? session('end', today(config('app.timezone'))->endOfMonth());
         $subTitleIcon = 'fa-bookmark';
         $page         = (int)$request->get('page');
         $attachments  = $this->repository->getAttachments($category);
         $pageSize     = (int)app('preferences')->get('listPageSize', 50)->data;
-        $oldest       = $this->repository->firstUseDate($category) ?? Carbon::now()->startOfYear();
+        $oldest       = $this->repository->firstUseDate($category) ?? today(config('app.timezone'))->startOfYear();
         $periods      = $this->getCategoryPeriodOverview($category, $oldest, $end);
         $path         = route('categories.show', [$category->id, $start->format('Y-m-d'), $end->format('Y-m-d')]);
         $subTitle     = trans(
@@ -126,7 +124,6 @@ class ShowController extends Controller
      * @param  Category  $category
      *
      * @return Factory|View
-     * @throws FireflyException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */

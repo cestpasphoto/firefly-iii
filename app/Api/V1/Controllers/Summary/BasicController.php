@@ -58,7 +58,7 @@ class BasicController extends Controller
     /**
      * BasicController constructor.
      *
-     * @codeCoverageIgnore
+
      */
     public function __construct()
     {
@@ -88,7 +88,7 @@ class BasicController extends Controller
 
     /**
      * This endpoint is documented at:
-     * https://api-docs.firefly-iii.org/#/summary/getBasicSummary
+     * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/summary/getBasicSummary
      *
      * @param  DateRequest  $request
      *
@@ -350,17 +350,19 @@ class BasicController extends Controller
     {
         /** @var User $user */
         $user = auth()->user();
-        $date = Carbon::now()->startOfDay();
+        $date = today(config('app.timezone'))->startOfDay();
         // start and end in the future? use $end
         if ($this->notInDateRange($date, $start, $end)) {
             /** @var Carbon $date */
-            $date = session('end', Carbon::now()->endOfMonth());
+            $date = session('end', today(config('app.timezone'))->endOfMonth());
         }
 
         /** @var NetWorthInterface $netWorthHelper */
         $netWorthHelper = app(NetWorthInterface::class);
         $netWorthHelper->setUser($user);
-        $allAccounts = $this->accountRepository->getActiveAccountsByType([AccountType::ASSET, AccountType::DEFAULT, AccountType::LOAN, AccountType::MORTGAGE, AccountType::DEBT]);
+        $allAccounts = $this->accountRepository->getActiveAccountsByType(
+            [AccountType::ASSET, AccountType::DEFAULT, AccountType::LOAN, AccountType::MORTGAGE, AccountType::DEBT]
+        );
 
         // filter list on preference of being included.
         $filtered = $allAccounts->filter(

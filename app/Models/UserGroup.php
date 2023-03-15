@@ -56,7 +56,6 @@ class UserGroup extends Model
     protected $fillable = ['title'];
 
     /**
-     * @codeCoverageIgnore
      *
      * @return HasMany
      */

@@ -24,13 +24,12 @@ declare(strict_types=1);
 namespace FireflyIII\Services\Internal\Destroy;
 
 use DB;
-use Exception;
 use FireflyIII\Models\Category;
 
 /**
  * Class CategoryDestroyService
  *
- * @codeCoverageIgnore
+
  */
 class CategoryDestroyService
 {

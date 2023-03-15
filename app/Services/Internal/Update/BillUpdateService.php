@@ -37,7 +37,6 @@ use JsonException;
 use Log;
 
 /**
- * @codeCoverageIgnore
  * Class BillUpdateService
  */
 class BillUpdateService

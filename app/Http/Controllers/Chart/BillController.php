@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace FireflyIII\Http\Controllers\Chart;
 
-use Carbon\Carbon;
 use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Generator\Chart\Basic\GeneratorInterface;
 use FireflyIII\Helpers\Collector\GroupCollectorInterface;
@@ -45,7 +44,7 @@ class BillController extends Controller
     /**
      * BillController constructor.
      *
-     * @codeCoverageIgnore
+
      */
     public function __construct()
     {
@@ -62,8 +61,8 @@ class BillController extends Controller
      */
     public function frontpage(BillRepositoryInterface $repository): JsonResponse
     {
-        $start = session('start', Carbon::now()->startOfMonth());
-        $end   = session('end', Carbon::now()->endOfMonth());
+        $start = session('start', today(config('app.timezone'))->startOfMonth());
+        $end   = session('end', today(config('app.timezone'))->endOfMonth());
         $cache = new CacheProperties();
         $cache->addProperty($start);
         $cache->addProperty($end);

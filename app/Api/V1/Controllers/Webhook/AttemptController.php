@@ -45,7 +45,6 @@ class AttemptController extends Controller
     private WebhookRepositoryInterface $repository;
 
     /**
-     * @codeCoverageIgnore
      */
     public function __construct()
     {
@@ -62,7 +61,7 @@ class AttemptController extends Controller
 
     /**
      * This endpoint is documented at:
-     * https://api-docs.firefly-iii.org/#/webhooks/getWebhookMessageAttempts
+     * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/webhooks/getWebhookMessageAttempts
      *
      * @param  Webhook  $webhook
      * @param  WebhookMessage  $message
@@ -73,7 +72,7 @@ class AttemptController extends Controller
     public function index(Webhook $webhook, WebhookMessage $message): JsonResponse
     {
         if ($message->webhook_id !== $webhook->id) {
-            throw new FireflyException('Webhook and webhook message are no match');
+            throw new FireflyException('200040: Webhook and webhook message are no match');
         }
 
         $manager    = $this->getManager();
@@ -98,7 +97,7 @@ class AttemptController extends Controller
 
     /**
      * This endpoint is documented at:
-     * https://api-docs.firefly-iii.org/#/webhooks/getSingleWebhookMessageAttempt
+     * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/webhooks/getSingleWebhookMessageAttempt
      *
      * Show single instance.
      *
@@ -112,10 +111,10 @@ class AttemptController extends Controller
     public function show(Webhook $webhook, WebhookMessage $message, WebhookAttempt $attempt): JsonResponse
     {
         if ($message->webhook_id !== $webhook->id) {
-            throw new FireflyException('Webhook and webhook message are no match');
+            throw new FireflyException('200040: Webhook and webhook message are no match');
         }
         if ($attempt->webhook_message_id !== $message->id) {
-            throw new FireflyException('Webhook message and webhook attempt are no match');
+            throw new FireflyException('200041: Webhook message and webhook attempt are no match');
         }
 
         $manager = $this->getManager();

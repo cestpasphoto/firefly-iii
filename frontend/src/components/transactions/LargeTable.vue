@@ -23,8 +23,8 @@
     v-model:pagination="pagination"
     :columns="columns"
     :loading="loading"
+    dense
     :rows="rows"
-    :title="title"
     class="q-ma-md"
     row-key="group_id"
     @request="onRequest"

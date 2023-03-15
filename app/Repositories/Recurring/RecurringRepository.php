@@ -43,6 +43,7 @@ use FireflyIII\Support\Repositories\Recurring\CalculateXOccurrences;
 use FireflyIII\Support\Repositories\Recurring\CalculateXOccurrencesSince;
 use FireflyIII\Support\Repositories\Recurring\FiltersWeekends;
 use FireflyIII\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -92,6 +93,21 @@ class RecurringRepository implements RecurringRepositoryInterface
     }
 
     /**
+     * Returns all of the user's recurring transactions.
+     *
+     * @return Collection
+     */
+    public function get(): Collection
+    {
+        return $this->user->recurrences()
+                          ->with(['TransactionCurrency', 'TransactionType', 'RecurrenceRepetitions', 'RecurrenceTransactions'])
+                          ->orderBy('active', 'DESC')
+                          ->orderBy('transaction_type_id', 'ASC')
+                          ->orderBy('title', 'ASC')
+                          ->get();
+    }
+
+    /**
      * Destroy a recurring transaction.
      *
      * @param  Recurrence  $recurrence
@@ -123,21 +139,6 @@ class RecurringRepository implements RecurringRepositoryInterface
                          ->orderBy('active', 'DESC')
                          ->orderBy('title', 'ASC')
                          ->get();
-    }
-
-    /**
-     * Returns all of the user's recurring transactions.
-     *
-     * @return Collection
-     */
-    public function get(): Collection
-    {
-        return $this->user->recurrences()
-                          ->with(['TransactionCurrency', 'TransactionType', 'RecurrenceRepetitions', 'RecurrenceTransactions'])
-                          ->orderBy('active', 'DESC')
-                          ->orderBy('transaction_type_id', 'ASC')
-                          ->orderBy('title', 'ASC')
-                          ->get();
     }
 
     /**
@@ -345,13 +346,13 @@ class RecurringRepository implements RecurringRepositoryInterface
     }
 
     /**
-     * Set user for in repository.
-     *
-     * @param  User  $user
+     * @param  User|Authenticatable|null  $user
      */
-    public function setUser(User $user): void
+    public function setUser(User|Authenticatable|null $user): void
     {
-        $this->user = $user;
+        if (null !== $user) {
+            $this->user = $user;
+        }
     }
 
     /**
@@ -534,7 +535,7 @@ class RecurringRepository implements RecurringRepositoryInterface
         }
         if ('yearly' === $repetition->repetition_type) {
             //
-            $today       = Carbon::now()->endOfYear();
+            $today       = today(config('app.timezone'))->endOfYear();
             $repDate     = Carbon::createFromFormat('Y-m-d', $repetition->repetition_moment);
             $diffInYears = $today->diffInYears($repDate);
             $repDate->addYears($diffInYears); // technically not necessary.

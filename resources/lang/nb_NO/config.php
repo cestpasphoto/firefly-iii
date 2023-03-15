@@ -66,13 +66,13 @@ CONTEXTREQUEST',
 
     //'date_time'               => '%B %e, %Y, @ %T',
     'date_time_js'             => 'MMMM Do, YYYY, @ HH:mm:ss',
-    'date_time_fns'            => 'MMMM do, yyyy @ HH:mm:ss',
+    'date_time_fns'            => 'do MMMM, yyyy @ HH:mm:ss',
 
     //'specific_day'            => '%e %B %Y',
     'specific_day_js'          => 'D MMMM YYYY',
 
     //'week_in_year'            => 'Week %V, %G',
-    'week_in_year_js'          => '[Week] w, YYYY',
+    'week_in_year_js'          => '[Week] W, GGGG',
     'week_in_year_fns'         => "'Week' w, yyyy",
 
     //'year'                    => '%Y',
@@ -81,7 +81,7 @@ CONTEXTREQUEST',
     //'half_year'               => '%B %Y',
     'half_year_js'             => '\QQ YYYY',
 
-    'quarter_fns'   => "'Q'Q, yyyy",
+    'quarter_fns'   => "'kvartal'Q, yyyy",
     'half_year_fns' => "'H{half}', yyyy",
     'dow_1'         => 'Mandag',
     'dow_2'         => 'Tirsdag',

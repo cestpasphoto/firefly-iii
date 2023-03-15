@@ -37,7 +37,6 @@ use FireflyIII\Support\Http\Controllers\PeriodOverview;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use JsonException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -56,7 +55,7 @@ class ShowController extends Controller
     /**
      * ShowController constructor.
      *
-     * @codeCoverageIgnore
+
      */
     public function __construct()
     {
@@ -83,7 +82,6 @@ class ShowController extends Controller
      *
      * @return Factory|View
      * @throws FireflyException
-     * @throws JsonException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -121,7 +119,6 @@ class ShowController extends Controller
      * @param  Request  $request
      *
      * @return Factory|View
-     * @throws FireflyException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -151,15 +148,13 @@ class ShowController extends Controller
      * @param  Budget  $budget
      *
      * @return Factory|View
-     * @throws FireflyException
-     * @throws JsonException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
     public function show(Request $request, Budget $budget)
     {
         /** @var Carbon $allStart */
-        $allStart    = session('first', Carbon::now()->startOfYear());
+        $allStart    = session('first', today(config('app.timezone'))->startOfYear());
         $allEnd      = today();
         $page        = (int)$request->get('page');
         $pageSize    = (int)app('preferences')->get('listPageSize', 50)->data;
@@ -190,7 +185,6 @@ class ShowController extends Controller
      *
      * @return Factory|View
      * @throws FireflyException
-     * @throws JsonException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -221,7 +215,7 @@ class ShowController extends Controller
         $groups = $collector->getPaginatedGroups();
         $groups->setPath(route('budgets.show', [$budget->id, $budgetLimit->id]));
         /** @var Carbon $start */
-        $start       = session('first', Carbon::now()->startOfYear());
+        $start       = session('first', today(config('app.timezone'))->startOfYear());
         $end         = today(config('app.timezone'));
         $attachments = $this->repository->getAttachments($budget);
         $limits      = $this->getLimits($budget, $start, $end);

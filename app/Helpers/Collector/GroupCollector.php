@@ -24,7 +24,6 @@ declare(strict_types=1);
 namespace FireflyIII\Helpers\Collector;
 
 use Carbon\Carbon;
-use Carbon\Exceptions\InvalidDateException;
 use Carbon\Exceptions\InvalidFormatException;
 use Closure;
 use Exception;
@@ -38,6 +37,7 @@ use FireflyIII\Helpers\Collector\Extensions\TimeCollection;
 use FireflyIII\Models\TransactionCurrency;
 use FireflyIII\Models\TransactionGroup;
 use FireflyIII\Models\TransactionJournal;
+use FireflyIII\Models\TransactionType;
 use FireflyIII\User;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\JoinClause;
@@ -48,7 +48,7 @@ use Log;
 /**
  * Class GroupCollector
  *
- * @codeCoverageIgnore
+
  */
 class GroupCollector implements GroupCollectorInterface
 {
@@ -437,6 +437,10 @@ class GroupCollector implements GroupCollectorInterface
     public function exists(): GroupCollectorInterface
     {
         $this->query->whereNull('transaction_groups.deleted_at');
+        $this->query->whereNotIn(
+            'transaction_types.type',
+            [TransactionType::LIABILITY_CREDIT, TransactionType::OPENING_BALANCE, TransactionType::RECONCILIATION]
+        );
         return $this;
     }
 
@@ -504,6 +508,7 @@ class GroupCollector implements GroupCollectorInterface
      * @param  Collection  $collection
      *
      * @return Collection
+     * @throws FireflyException
      */
     private function parseArray(Collection $collection): Collection
     {
@@ -514,8 +519,8 @@ class GroupCollector implements GroupCollectorInterface
 
             if (!array_key_exists($groupId, $groups)) {
                 // make new array
-                $parsedGroup                            = $this->parseAugmentedJournal($augumentedJournal);
-                $groupArray                             = [
+                $parsedGroup = $this->parseAugmentedJournal($augumentedJournal);
+                $groupArray  = [
                     'id'               => (int)$augumentedJournal->transaction_group_id,
                     'user_id'          => (int)$augumentedJournal->user_id,
                     // Field transaction_group_title was added by the query.
@@ -556,6 +561,7 @@ class GroupCollector implements GroupCollectorInterface
      * @param  TransactionJournal  $augumentedJournal
      *
      * @return array
+     * @throws FireflyException
      */
     private function parseAugmentedJournal(TransactionJournal $augumentedJournal): array
     {

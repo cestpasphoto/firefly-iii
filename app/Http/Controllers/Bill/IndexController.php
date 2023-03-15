@@ -49,7 +49,7 @@ class IndexController extends Controller
     /**
      * BillController constructor.
      *
-     * @codeCoverageIgnore
+
      */
     public function __construct()
     {
@@ -154,7 +154,7 @@ class IndexController extends Controller
     private function getSums(array $bills): array
     {
         $sums  = [];
-        $range = app('preferences')->get('viewRange', '1M')->data;
+        $range = app('navigation')->getViewRange(false);
 
         /** @var array $group */
         foreach ($bills as $groupOrder => $group) {
@@ -215,12 +215,19 @@ class IndexController extends Controller
 
         // per period:
         $division  = [
-            '1Y' => '1',
-            '6M' => '2',
-            '3M' => '4',
-            '1M' => '12',
-            '1W' => '52.16',
-            '1D' => '365.24',
+            '1Y'      => '1',
+            '6M'      => '2',
+            '3M'      => '4',
+            '1M'      => '12',
+            '1W'      => '52.16',
+            '1D'      => '365.24',
+            'YTD'     => '1',
+            'QTD'     => '4',
+            'MTD'     => '12',
+            'last7'   => '52.16',
+            'last30'  => '12',
+            'last90'  => '4',
+            'last365' => '1',
         ];
         $perPeriod = bcdiv($yearAmount, $division[$range]);
 

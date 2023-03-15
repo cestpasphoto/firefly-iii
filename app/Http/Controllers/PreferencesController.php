@@ -46,7 +46,7 @@ class PreferencesController extends Controller
     /**
      * PreferencesController constructor.
      *
-     * @codeCoverageIgnore
+
      */
     public function __construct()
     {
@@ -95,10 +95,8 @@ class PreferencesController extends Controller
         }
         ksort($groupedAccounts);
 
-        $accountIds    = $accounts->pluck('id')->toArray();
-        $viewRangePref = app('preferences')->get('viewRange', '1M');
-
-        $viewRange          = $viewRangePref->data;
+        $accountIds         = $accounts->pluck('id')->toArray();
+        $viewRange          = app('navigation')->getViewRange(false);
         $frontPageAccounts  = app('preferences')->get('frontPageAccounts', $accountIds);
         $language           = app('steam')->getLanguage();
         $languages          = config('firefly.languages');

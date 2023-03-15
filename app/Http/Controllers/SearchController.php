@@ -103,10 +103,15 @@ class SearchController extends Controller
      * @param  SearchInterface  $searcher
      *
      * @return JsonResponse
+     * @throws FireflyException
      */
     public function search(Request $request, SearchInterface $searcher): JsonResponse
     {
-        $fullQuery = (string)$request->get('query');
+        $entry = $request->get('query');
+        if (!is_scalar($entry)) {
+            $entry = '';
+        }
+        $fullQuery = (string)$entry;
         $page      = 0 === (int)$request->get('page') ? 1 : (int)$request->get('page');
 
         $searcher->parseQuery($fullQuery);

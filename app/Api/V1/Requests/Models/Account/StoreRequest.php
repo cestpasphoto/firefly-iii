@@ -36,7 +36,7 @@ use Illuminate\Foundation\Http\FormRequest;
 /**
  * Class StoreRequest
  *
- * @codeCoverageIgnore
+
  */
 class StoreRequest extends FormRequest
 {
@@ -83,9 +83,9 @@ class StoreRequest extends FormRequest
         $data = $this->appendLocationData($data, null);
 
         if ('liability' === $data['account_type_name'] || 'liabilities' === $data['account_type_name']) {
-            $data['account_type_name']    = $this->convertString('liability_type');
-            $data['liability_direction']  = $this->convertString('liability_direction');
-            $data['account_type_id']      = null;
+            $data['account_type_name']   = $this->convertString('liability_type');
+            $data['liability_direction'] = $this->convertString('liability_direction');
+            $data['account_type_id']     = null;
         }
 
         return $data;

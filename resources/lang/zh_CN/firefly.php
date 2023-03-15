@@ -279,6 +279,8 @@ return [
     'response'                             => '响应',
     'visit_webhook_url'                    => '访问 webhook URL',
     'reset_webhook_secret'                 => '重置 webhook 密钥',
+    'webhook_stored_link'                  => '<a href="webhooks/show/{ID}">Webhook #{ID} ("{title}")</a> has been stored.',
+    'webhook_updated_link'                 => '<a href="webhooks/show/{ID}">Webhook #{ID}</a> ("{title}") has been updated.',
 
     // API access
     'authorization_request'                => 'Firefly III :version 版授权请求',
@@ -1113,14 +1115,14 @@ return [
     'rule_trigger_not_account_nr_contains'                => 'Neither account number / IBAN contains ":trigger_value"',
     'rule_trigger_not_account_nr_ends'                    => 'Neither account number / IBAN ends on ":trigger_value"',
     'rule_trigger_not_account_nr_starts'                  => 'Neither account number / IBAN starts with ":trigger_value"',
-    'rule_trigger_not_category_is'                        => 'Neither category is ":trigger_value"',
-    'rule_trigger_not_category_contains'                  => 'Neither category contains ":trigger_value"',
-    'rule_trigger_not_category_ends'                      => 'Neither category ends on ":trigger_value"',
-    'rule_trigger_not_category_starts'                    => 'Neither category starts with ":trigger_value"',
-    'rule_trigger_not_budget_is'                          => 'Neither budget is ":trigger_value"',
-    'rule_trigger_not_budget_contains'                    => 'Neither budget contains ":trigger_value"',
-    'rule_trigger_not_budget_ends'                        => 'Neither budget ends on ":trigger_value"',
-    'rule_trigger_not_budget_starts'                      => 'Neither budget starts with ":trigger_value"',
+    'rule_trigger_not_category_is'                        => 'Category is not ":trigger_value"',
+    'rule_trigger_not_category_contains'                  => 'Category does not contain ":trigger_value"',
+    'rule_trigger_not_category_ends'                      => 'Category does not end on ":trigger_value"',
+    'rule_trigger_not_category_starts'                    => 'Category does not start with ":trigger_value"',
+    'rule_trigger_not_budget_is'                          => 'Budget is not ":trigger_value"',
+    'rule_trigger_not_budget_contains'                    => 'Budget does not contain ":trigger_value"',
+    'rule_trigger_not_budget_ends'                        => 'Budget does not end on ":trigger_value"',
+    'rule_trigger_not_budget_starts'                      => 'Budget does not start with ":trigger_value"',
     'rule_trigger_not_bill_is'                            => 'Bill is not is ":trigger_value"',
     'rule_trigger_not_bill_contains'                      => 'Bill does not contain ":trigger_value"',
     'rule_trigger_not_bill_ends'                          => 'Bill does not end on ":trigger_value"',
@@ -1387,6 +1389,9 @@ return [
     'slack_webhook_url_help'                    => '如果您想要 Firefly III 使用 Slack 通知您，请在此处输入 webhook 地址。否则请留空该字段。 如果您是管理员，您还需要在管理设置中设置此地址。',
     'slack_url_label'                           => 'Slack "incoming webhook" URL',
 
+    // Financial administrations
+    'administration_index'                      => 'Financial administration',
+
     // profile:
     'purge_data_title'                          => '从 Frefly III 清除数据',
     'purge_data_expl'                           => '“清除”是指“删除已经删除的内容”。在正常情况下，Firefly III 不会永久删除记录，只是将其隐藏。下面的按钮会将先前“已删除”的记录永久删除。',
@@ -1476,6 +1481,7 @@ return [
     'oauth'                                     => 'OAuth 授权',
     'profile_oauth_clients'                     => 'OAuth 客户端',
     'profile_oauth_no_clients'                  => '您尚未创建任何 OAuth 客户端。',
+    'profile_oauth_clients_external_auth'       => 'If you\'re using an external authentication provider like Authelia, OAuth Clients will not work. You can use Personal Access Tokens only.',
     'profile_oauth_clients_header'              => '客户端',
     'profile_oauth_client_id'                   => '客户端 ID',
     'profile_oauth_client_name'                 => '名称',
@@ -2268,7 +2274,7 @@ return [
     'earned'                                    => '收入',
     'overspent'                                 => '超支',
     'left'                                      => '剩余',
-    'max-amount'                                => '最小金额',
+    'max-amount'                                => '最大',
     'min-amount'                                => '最小金额',
     'journal-amount'                            => '目前账单条目',
     'name'                                      => '名称',
@@ -2358,6 +2364,8 @@ return [
 
 
     // administration
+    'invite_is_already_redeemed'               => 'The invite to ":address" has already been redeemed.',
+    'invite_is_deleted'                        => 'The invite to ":address" has been deleted.',
     'invite_new_user_title'                    => 'Invite new user',
     'invite_new_user_text'                     => 'As an administrator, you can invite users to register on your Firefly III administration. Using the direct link you can share with them, they will be able to register an account. The invited user and their invite link will appear in the table below. You are free to share the invitation link with them.',
     'invited_user_mail'                        => 'Email address',

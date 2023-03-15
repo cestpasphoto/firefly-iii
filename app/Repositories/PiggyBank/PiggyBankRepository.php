@@ -34,6 +34,7 @@ use FireflyIII\Models\TransactionJournal;
 use FireflyIII\Repositories\Account\AccountRepositoryInterface;
 use FireflyIII\Repositories\Journal\JournalRepositoryInterface;
 use FireflyIII\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
 use JsonException;
 use Log;
@@ -274,11 +275,13 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
     }
 
     /**
-     * @param  User  $user
+     * @param  User|Authenticatable|null  $user
      */
-    public function setUser(User $user): void
+    public function setUser(User|Authenticatable|null $user): void
     {
-        $this->user = $user;
+        if (null !== $user) {
+            $this->user = $user;
+        }
     }
 
     /**
@@ -333,12 +336,14 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
     public function getPiggyBanks(): Collection
     {
         return $this->user  // @phpstan-ignore-line (phpstan does not recognize objectGroups)
-            ->piggyBanks()
-            ->with(
-                ['account',
-                 'objectGroups']
-            )
-            ->orderBy('order', 'ASC')->get();
+        ->piggyBanks()
+        ->with(
+            [
+                'account',
+                'objectGroups',
+            ]
+        )
+        ->orderBy('order', 'ASC')->get();
     }
 
     /**
@@ -357,7 +362,7 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
             return $savePerMonth;
         }
         if (null !== $piggyBank->targetdate && $repetition->currentamount < $piggyBank->targetamount) {
-            $now             = Carbon::now();
+            $now             = today(config('app.timezone'));
             $startDate       = null !== $piggyBank->startdate && $piggyBank->startdate->gte($now) ? $piggyBank->startdate : $now;
             $diffInMonths    = $startDate->diffInMonths($piggyBank->targetdate, false);
             $remainingAmount = bcsub($piggyBank->targetamount, $repetition->currentamount);

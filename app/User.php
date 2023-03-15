@@ -27,6 +27,7 @@ namespace FireflyIII;
 use Eloquent;
 use Exception;
 use FireflyIII\Events\RequestedNewPassword;
+use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Models\Account;
 use FireflyIII\Models\Attachment;
 use FireflyIII\Models\AvailableBudget;
@@ -68,6 +69,8 @@ use Illuminate\Support\Str;
 use Laravel\Passport\Client;
 use Laravel\Passport\HasApiTokens;
 use Laravel\Passport\Token;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -119,7 +122,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static Builder|User whereRememberToken($value)
  * @method static Builder|User whereReset($value)
  * @method static Builder|User whereUpdatedAt($value)
- * @mixin Eloquent
  * @property string|null $objectguid
  * @property-read int|null $accounts_count
  * @property-read int|null $attachments_count
@@ -162,6 +164,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @property-read int|null $group_memberships_count
  * @property-read UserGroup|null $userGroup
  * @method static Builder|User whereUserGroupId($value)
+ * @mixin Eloquent
  */
 class User extends Authenticatable
 {
@@ -217,7 +220,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to accounts.
      *
      * @return HasMany
@@ -228,7 +230,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to attachments
      *
      * @return HasMany
@@ -239,7 +240,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to available budgets
      *
      * @return HasMany
@@ -250,7 +250,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to bills.
      *
      * @return HasMany
@@ -261,7 +260,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to budgets.
      *
      * @return HasMany
@@ -272,7 +270,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to categories
      *
      * @return HasMany
@@ -283,7 +280,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to currency exchange rates
      *
      * @return HasMany
@@ -294,7 +290,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Generates access token.
      *
      * @return string
@@ -305,6 +300,21 @@ class User extends Authenticatable
         $bytes = random_bytes(16);
 
         return bin2hex($bytes);
+    }
+
+    /**
+     * A safe method that returns the user's current administration ID (group ID).
+     *
+     * @return int
+     * @throws FireflyException
+     */
+    public function getAdministrationId(): int
+    {
+        $groupId = (int)$this->user_group_id;
+        if (0 === $groupId) {
+            throw new FireflyException('User has no administration ID.');
+        }
+        return $groupId;
     }
 
     /**
@@ -352,7 +362,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return HasMany
      */
@@ -362,7 +371,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to object groups.
      *
      * @return HasMany
@@ -373,7 +381,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to piggy banks.
      *
      * @return HasManyThrough
@@ -384,7 +391,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to preferences.
      *
      * @return HasMany
@@ -395,7 +401,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to recurring transactions.
      *
      * @return HasMany
@@ -446,7 +451,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to roles.
      *
      * @return BelongsToMany
@@ -461,6 +465,8 @@ class User extends Authenticatable
      *
      * @param  Notification  $notification
      * @return string
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function routeNotificationForSlack(Notification $notification): string
     {
@@ -481,7 +487,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to rule groups.
      *
      * @return HasMany
@@ -492,7 +497,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to rules.
      *
      * @return HasMany
@@ -503,7 +507,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Send the password reset notification.
      *
      * @param  string  $token
@@ -543,7 +546,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to tags.
      *
      * @return HasMany
@@ -554,7 +556,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to transaction groups.
      *
      * @return HasMany
@@ -565,7 +566,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to transaction journals.
      *
      * @return HasMany
@@ -576,7 +576,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * Link to transactions.
      *
      * @return HasManyThrough
@@ -587,7 +586,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsTo
      */
     public function userGroup(): BelongsTo
@@ -596,7 +594,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * Link to webhooks
      *

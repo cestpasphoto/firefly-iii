@@ -36,13 +36,12 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Laravel\Passport\Passport;
 use Log;
-use phpseclib\Crypt\RSA as LegacyRSA;
 use phpseclib3\Crypt\RSA;
 
 /**
  * Class InstallController
  *
- * @codeCoverageIgnore
+
  */
 class InstallController extends Controller
 {
@@ -85,7 +84,6 @@ class InstallController extends Controller
             'firefly-iii:migrate-tag-locations'        => [],
             'firefly-iii:migrate-recurrence-type'      => [],
             'firefly-iii:upgrade-liabilities'          => [],
-            'firefly-iii:create-group-memberships'     => [],
             'firefly-iii:liabilities-600'              => [],
 
             // verify commands
@@ -111,9 +109,10 @@ class InstallController extends Controller
             'firefly-iii:fix-transaction-types'        => [],
             'firefly-iii:fix-frontpage-accounts'       => [],
             'firefly-iii:fix-ibans'                    => [],
+            'firefly-iii:create-group-memberships'     => [],
             'firefly-iii:upgrade-group-information'    => [],
 
-            // final command to set latest version in DB
+            // final command to set the latest version in DB
             'firefly-iii:set-latest-version'           => ['--james-is-cool' => true],
             'firefly-iii:verify-security-alerts'       => [],
         ];
@@ -228,18 +227,8 @@ class InstallController extends Controller
         // switch on PHP version.
         $keys = [];
         // switch on class existence.
-        Log::info(sprintf('PHP version is %s', phpversion()));
-        if (class_exists(LegacyRSA::class)) {
-            // PHP 7
-            Log::info('Will run PHP7 code.');
-            $keys = (new LegacyRSA())->createKey(4096);
-        }
-
-        if (!class_exists(LegacyRSA::class)) {
-            // PHP 8
-            Log::info('Will run PHP8 code.');
-            $keys = RSA::createKey(4096);
-        }
+        Log::info('Will run PHP8 code.');
+        $keys = RSA::createKey(4096);
 
         [$publicKey, $privateKey] = [
             Passport::keyPath('oauth-public.key'),

@@ -55,7 +55,7 @@ module.exports = configure(function (ctx) {
     extras: [
       // 'ionicons-v4',
       // 'mdi-v5',
-      'fontawesome-v5',
+      'fontawesome-v6',
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
@@ -101,18 +101,18 @@ module.exports = configure(function (ctx) {
         type: 'https'
       },
       port: 8080,
-      host: 'firefly-dev.sd.home',
+      host: 'firefly-dev.sd.local',
       open: false, // opens browser window automatically
       proxy: [
         {
           context: ['/sanctum', '/api'],
-          target: 'https://firefly.sd.home', // Laravel Homestead end-point
+          target: 'https://firefly.sd.local', // Laravel Homestead end-point
           // avoid problems with session and XSRF cookies
           // When using capacitor, use the IP of the dev server streaming the app
           // For SPA and PWA use localhost, given that the app is streamed on that host
           // xxx address is your machine current IP address
           cookieDomainRewrite:
-              ctx.modeName === 'capacitor' ? '10.0.0.1' : '.sd.home',
+              ctx.modeName === 'capacitor' ? '10.0.0.1' : '.sd.local',
           changeOrigin: true,
         }
       ]
@@ -126,7 +126,7 @@ module.exports = configure(function (ctx) {
       },
 
       lang: 'en-US', // Quasar language pack
-      iconSet: 'fontawesome-v5',
+      iconSet: 'fontawesome-v6',
 
       // For special cases outside of where the auto-import strategy can have an impact
       // (like functional components as one of the examples),

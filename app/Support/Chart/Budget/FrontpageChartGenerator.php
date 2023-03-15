@@ -24,7 +24,6 @@ declare(strict_types=1);
 namespace FireflyIII\Support\Chart\Budget;
 
 use Carbon\Carbon;
-use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Models\Budget;
 use FireflyIII\Models\BudgetLimit;
 use FireflyIII\Repositories\Budget\BudgetLimitRepositoryInterface;
@@ -44,7 +43,6 @@ class FrontpageChartGenerator
     private Carbon                          $end;
     private string                          $monthAndDayFormat;
     private Carbon                          $start;
-    private User                            $user;
 
     /**
      * FrontpageChartGenerator constructor.
@@ -222,11 +220,9 @@ class FrontpageChartGenerator
      * A basic setter for the user. Also updates the repositories with the right user.
      *
      * @param  User  $user
-     * @throws FireflyException
      */
     public function setUser(User $user): void
     {
-        $this->user = $user;
         $this->budgetRepository->setUser($user);
         $this->blRepository->setUser($user);
         $this->opsRepository->setUser($user);

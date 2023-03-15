@@ -32,6 +32,8 @@ use FireflyIII\Models\AccountType;
 use FireflyIII\Repositories\Account\AccountRepositoryInterface;
 use FireflyIII\Support\Http\Api\ConvertsExchangeRates;
 use Illuminate\Http\JsonResponse;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class AccountController
@@ -47,6 +49,7 @@ class AccountController extends Controller
      */
     public function __construct()
     {
+        parent::__construct();
         $this->middleware(
             function ($request, $next) {
                 $this->repository = app(AccountRepositoryInterface::class);
@@ -56,8 +59,13 @@ class AccountController extends Controller
     }
 
     /**
+     * This endpoint is documented at
+     * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v2)#/charts/getChartAccountOverview
+     *
      * @param  DateRequest  $request
      * @return JsonResponse
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function dashboard(DateRequest $request): JsonResponse
     {

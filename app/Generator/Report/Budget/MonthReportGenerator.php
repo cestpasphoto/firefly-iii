@@ -36,7 +36,7 @@ use Throwable;
  * Class MonthReportGenerator.
  * TODO include info about tags.
  *
- * @codeCoverageIgnore
+
  */
 class MonthReportGenerator implements ReportGeneratorInterface
 {
@@ -58,6 +58,7 @@ class MonthReportGenerator implements ReportGeneratorInterface
      * Generates the report.
      *
      * @return string
+     * @throws FireflyException
      */
     public function generate(): string
     {

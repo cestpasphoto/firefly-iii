@@ -29,7 +29,6 @@ use FireflyIII\Support\Request\ConvertsDataTypes;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * @codeCoverageIgnore
  * Class StoreRequest
  */
 class StoreRequest extends FormRequest

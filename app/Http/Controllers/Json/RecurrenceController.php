@@ -44,7 +44,7 @@ class RecurrenceController extends Controller
     /**
      * RecurrenceController constructor.
      *
-     * @codeCoverageIgnore
+
      */
     public function __construct()
     {
@@ -71,7 +71,7 @@ class RecurrenceController extends Controller
      */
     public function events(Request $request): JsonResponse
     {
-        $occurrences = [];
+        $occurrences      = [];
         $return           = [];
         $start            = Carbon::createFromFormat('Y-m-d', $request->get('start'));
         $end              = Carbon::createFromFormat('Y-m-d', $request->get('end'));
@@ -150,8 +150,9 @@ class RecurrenceController extends Controller
      */
     public function suggest(Request $request): JsonResponse
     {
+        $request->validate(['date' => ['required', 'date'],]);
         $string      = $request->get('date') ?? date('Y-m-d');
-        $today       = Carbon::now()->startOfDay();
+        $today       = today(config('app.timezone'))->startOfDay();
         $date        = Carbon::createFromFormat('Y-m-d', $string)->startOfDay();
         $preSelected = (string)$request->get('pre_select');
         $locale      = app('steam')->getLocale();

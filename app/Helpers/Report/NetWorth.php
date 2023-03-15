@@ -31,8 +31,8 @@ use FireflyIII\Repositories\Account\AccountRepositoryInterface;
 use FireflyIII\Repositories\Currency\CurrencyRepositoryInterface;
 use FireflyIII\Support\CacheProperties;
 use FireflyIII\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use JsonException;
 
 /**
@@ -73,12 +73,12 @@ class NetWorth implements NetWorthInterface
         $cache->addProperty('net-worth-by-currency');
         $cache->addProperty(implode(',', $accounts->pluck('id')->toArray()));
         if ($cache->has()) {
-            // return $cache->get();
+            return $cache->get();
         }
 
         $netWorth = [];
         $result   = [];
-        Log::debug(sprintf('Now in getNetWorthByCurrency(%s)', $date->format('Y-m-d')));
+//        Log::debug(sprintf('Now in getNetWorthByCurrency(%s)', $date->format('Y-m-d')));
 
         // get default currency
         $default = app('amount')->getDefaultCurrencyByUser($this->user);
@@ -89,16 +89,16 @@ class NetWorth implements NetWorthInterface
         // get the preferred currency for this account
         /** @var Account $account */
         foreach ($accounts as $account) {
-            Log::debug(sprintf('Now at account #%d: "%s"', $account->id, $account->name));
+//            Log::debug(sprintf('Now at account #%d: "%s"', $account->id, $account->name));
             $currencyId = (int)$this->accountRepository->getMetaValue($account, 'currency_id');
             $currencyId = 0 === $currencyId ? $default->id : $currencyId;
 
-            Log::debug(sprintf('Currency ID is #%d', $currencyId));
+//            Log::debug(sprintf('Currency ID is #%d', $currencyId));
 
             // balance in array:
             $balance = $balances[$account->id] ?? '0';
 
-            Log::debug(sprintf('Balance for %s is %s', $date->format('Y-m-d'), $balance));
+            //Log::debug(sprintf('Balance for %s is %s', $date->format('Y-m-d'), $balance));
 
             // always subtract virtual balance.
             $virtualBalance = (string)$account->virtual_balance;
@@ -106,14 +106,13 @@ class NetWorth implements NetWorthInterface
                 $balance = bcsub($balance, $virtualBalance);
             }
 
-            Log::debug(sprintf('Balance corrected to %s because of virtual balance (%s)', $balance, $virtualBalance));
+//            Log::debug(sprintf('Balance corrected to %s because of virtual balance (%s)', $balance, $virtualBalance));
 
             if (!array_key_exists($currencyId, $netWorth)) {
                 $netWorth[$currencyId] = '0';
             }
             $netWorth[$currencyId] = bcadd($balance, $netWorth[$currencyId]);
-
-            Log::debug(sprintf('Total net worth for currency #%d is %s', $currencyId, $netWorth[$currencyId]));
+//            Log::debug(sprintf('Total net worth for currency #%d is %s', $currencyId, $netWorth[$currencyId]));
         }
         ksort($netWorth);
 
@@ -130,10 +129,13 @@ class NetWorth implements NetWorthInterface
     }
 
     /**
-     * @param  User  $user
+     * @param  User|Authenticatable|null  $user
      */
-    public function setUser(User $user): void
+    public function setUser(User|Authenticatable|null $user): void
     {
+        if (null === $user) {
+            return;
+        }
         $this->user = $user;
 
         // make repository:
@@ -184,7 +186,9 @@ class NetWorth implements NetWorthInterface
      */
     private function getAccounts(): Collection
     {
-        $accounts = $this->accountRepository->getAccountsByType([AccountType::ASSET, AccountType::DEFAULT, AccountType::LOAN, AccountType::DEBT, AccountType::MORTGAGE]);
+        $accounts = $this->accountRepository->getAccountsByType(
+            [AccountType::ASSET, AccountType::DEFAULT, AccountType::LOAN, AccountType::DEBT, AccountType::MORTGAGE]
+        );
         $filtered = new Collection();
         /** @var Account $account */
         foreach ($accounts as $account) {

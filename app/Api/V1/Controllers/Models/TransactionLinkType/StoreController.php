@@ -34,6 +34,7 @@ use FireflyIII\Transformers\LinkTypeTransformer;
 use FireflyIII\User;
 use Illuminate\Http\JsonResponse;
 use League\Fractal\Resource\Item;
+use Validator;
 
 /**
  * Class StoreController
@@ -48,7 +49,7 @@ class StoreController extends Controller
     /**
      * LinkTypeController constructor.
      *
-     * @codeCoverageIgnore
+
      */
     public function __construct()
     {
@@ -68,7 +69,7 @@ class StoreController extends Controller
 
     /**
      * This endpoint is documented at:
-     * https://api-docs.firefly-iii.org/#/links/storeLinkType
+     * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/links/storeLinkType
      *
      * Store new object.
      *
@@ -81,9 +82,12 @@ class StoreController extends Controller
     {
         /** @var User $admin */
         $admin = auth()->user();
+        $rules = ['name' => 'required'];
 
         if (!$this->userRepository->hasRole($admin, 'owner')) {
-            throw new FireflyException('200005: You need the "owner" role to do this.');
+            // access denied:
+            $messages = ['name' => '200005: You need the "owner" role to do this.'];
+            Validator::make([], $rules, $messages)->validate();
         }
         $data = $request->getAll();
         // if currency ID is 0, find the currency by the code:

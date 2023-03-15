@@ -70,7 +70,6 @@ class Role extends Model
     protected $fillable = ['name', 'display_name', 'description'];
 
     /**
-     * @codeCoverageIgnore
      * @return BelongsToMany
      */
     public function users(): BelongsToMany

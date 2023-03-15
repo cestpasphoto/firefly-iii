@@ -35,6 +35,7 @@ use Log;
 trait CurrencyValidation
 {
     public const TEST = 'Test';
+
     /**
      * If the transactions contain foreign amounts, there must also be foreign currency information.
      *
@@ -42,10 +43,16 @@ trait CurrencyValidation
      */
     protected function validateForeignCurrencyInformation(Validator $validator): void
     {
+        if ($validator->errors()->count() > 0) {
+            return;
+        }
         Log::debug('Now in validateForeignCurrencyInformation()');
         $transactions = $this->getTransactionsArray($validator);
 
         foreach ($transactions as $index => $transaction) {
+            if (!is_array($transaction)) {
+                continue;
+            }
             // if foreign amount is present, then the currency must be as well.
             if (array_key_exists('foreign_amount', $transaction)
                 && !(array_key_exists('foreign_currency_id', $transaction)

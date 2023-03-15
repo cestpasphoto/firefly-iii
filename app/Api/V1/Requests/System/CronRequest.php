@@ -24,14 +24,13 @@ declare(strict_types=1);
 
 namespace FireflyIII\Api\V1\Requests\System;
 
-use Carbon\Carbon;
 use FireflyIII\Support\Request\ConvertsDataTypes;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Class CronRequest
  *
- * @codeCoverageIgnore
+
  */
 class CronRequest extends FormRequest
 {
@@ -56,7 +55,7 @@ class CronRequest extends FormRequest
     {
         $data = [
             'force' => false,
-            'date'  => Carbon::now(),
+            'date'  => today(config('app.timezone')),
         ];
         if ($this->has('force')) {
             $data['force'] = $this->boolean('force');

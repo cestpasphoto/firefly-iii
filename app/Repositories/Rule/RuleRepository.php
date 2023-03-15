@@ -32,6 +32,7 @@ use FireflyIII\Models\RuleTrigger;
 use FireflyIII\Repositories\RuleGroup\RuleGroupRepositoryInterface;
 use FireflyIII\Support\Search\OperatorQuerySearch;
 use FireflyIII\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
 use Log;
 
@@ -361,11 +362,13 @@ class RuleRepository implements RuleRepositoryInterface
     }
 
     /**
-     * @param  User  $user
+     * @param  User|Authenticatable|null  $user
      */
-    public function setUser(User $user): void
+    public function setUser(User|Authenticatable|null $user): void
     {
-        $this->user = $user;
+        if (null !== $user) {
+            $this->user = $user;
+        }
     }
 
     /**
@@ -426,7 +429,7 @@ class RuleRepository implements RuleRepositoryInterface
             $stopProcessing = $trigger['stop_processing'] ?? false;
             $active         = $trigger['active'] ?? true;
             $type           = $trigger['type'];
-            if (true === $trigger['prohibited']) {
+            if (true === ($trigger['prohibited'] ?? false) && !str_starts_with($type, '-')) {
                 $type = sprintf('-%s', $type);
             }
 

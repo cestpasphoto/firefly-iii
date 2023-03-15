@@ -23,14 +23,15 @@ declare(strict_types=1);
 
 namespace FireflyIII\Repositories\User;
 
-use Carbon\Carbon;
 use Exception;
 use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Models\BudgetLimit;
+use FireflyIII\Models\GroupMembership;
 use FireflyIII\Models\InvitedUser;
 use FireflyIII\Models\Role;
 use FireflyIII\Models\UserGroup;
 use FireflyIII\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Log;
@@ -119,6 +120,15 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function deleteInvite(InvitedUser $invite): void
+    {
+        Log::debug(sprintf('Deleting invite #%d', $invite->id));
+        $invite->delete();
+    }
+
+    /**
      * @param  User  $user
      *
      * @return bool
@@ -168,16 +178,6 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
-     * @param  int  $userId
-     *
-     * @return User|null
-     */
-    public function find(int $userId): ?User
-    {
-        return User::find($userId);
-    }
-
-    /**
      * @param  string  $email
      *
      * @return User|null
@@ -222,6 +222,37 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
+     * @inheritDoc
+     * @throws FireflyException
+     */
+    public function getRolesInGroup(User $user, int $groupId): array
+    {
+        /** @var UserGroup $group */
+        $group = UserGroup::find($groupId);
+        if (null === $group) {
+            throw new FireflyException(sprintf('Could not find group #%d', $groupId));
+        }
+        $memberships = $group->groupMemberships()->where('user_id', $user->id)->get();
+        $roles       = [];
+        /** @var GroupMembership $membership */
+        foreach ($memberships as $membership) {
+            $role    = $membership->userRole;
+            $roles[] = $role->title;
+        }
+        return $roles;
+    }
+
+    /**
+     * @param  int  $userId
+     *
+     * @return User|null
+     */
+    public function find(int $userId): ?User
+    {
+        return User::find($userId);
+    }
+
+    /**
      * Return basic user information.
      *
      * @param  User  $user
@@ -259,13 +290,16 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
-     * @param  User  $user
+     * @param  User|Authenticatable|null  $user
      * @param  string  $role
      *
      * @return bool
      */
-    public function hasRole(User $user, string $role): bool
+    public function hasRole(User|Authenticatable|null $user, string $role): bool
     {
+        if (null === $user) {
+            return false;
+        }
         /** @var Role $userRole */
         foreach ($user->roles as $userRole) {
             if ($userRole->name === $role) {
@@ -279,9 +313,9 @@ class UserRepository implements UserRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function inviteUser(User $user, string $email): InvitedUser
+    public function inviteUser(User|Authenticatable|null $user, string $email): InvitedUser
     {
-        $now = Carbon::now();
+        $now = today(config('app.timezone'));
         $now->addDays(2);
         $invitee = new InvitedUser();
         $invitee->user()->associate($user);
@@ -462,7 +496,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function validateInviteCode(string $code): bool
     {
-        $now     = Carbon::now();
+        $now     = today(config('app.timezone'));
         $invitee = InvitedUser::where('invite_code', $code)->where('expires', '>', $now->format('Y-m-d H:i:s'))->where('redeemed', 0)->first();
         return null !== $invitee;
     }

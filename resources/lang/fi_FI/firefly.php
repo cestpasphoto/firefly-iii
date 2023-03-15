@@ -279,6 +279,8 @@ return [
     'response'                             => 'Response',
     'visit_webhook_url'                    => 'Visit webhook URL',
     'reset_webhook_secret'                 => 'Reset webhook secret',
+    'webhook_stored_link'                  => '<a href="webhooks/show/{ID}">Webhook #{ID} ("{title}")</a> has been stored.',
+    'webhook_updated_link'                 => '<a href="webhooks/show/{ID}">Webhook #{ID}</a> ("{title}") has been updated.',
 
     // API access
     'authorization_request'                => 'Firefly III v:version Valtuutus Pyyntö',
@@ -1113,14 +1115,14 @@ return [
     'rule_trigger_not_account_nr_contains'                => 'Neither account number / IBAN contains ":trigger_value"',
     'rule_trigger_not_account_nr_ends'                    => 'Neither account number / IBAN ends on ":trigger_value"',
     'rule_trigger_not_account_nr_starts'                  => 'Neither account number / IBAN starts with ":trigger_value"',
-    'rule_trigger_not_category_is'                        => 'Neither category is ":trigger_value"',
-    'rule_trigger_not_category_contains'                  => 'Neither category contains ":trigger_value"',
-    'rule_trigger_not_category_ends'                      => 'Neither category ends on ":trigger_value"',
-    'rule_trigger_not_category_starts'                    => 'Neither category starts with ":trigger_value"',
-    'rule_trigger_not_budget_is'                          => 'Neither budget is ":trigger_value"',
-    'rule_trigger_not_budget_contains'                    => 'Neither budget contains ":trigger_value"',
-    'rule_trigger_not_budget_ends'                        => 'Neither budget ends on ":trigger_value"',
-    'rule_trigger_not_budget_starts'                      => 'Neither budget starts with ":trigger_value"',
+    'rule_trigger_not_category_is'                        => 'Category is not ":trigger_value"',
+    'rule_trigger_not_category_contains'                  => 'Category does not contain ":trigger_value"',
+    'rule_trigger_not_category_ends'                      => 'Category does not end on ":trigger_value"',
+    'rule_trigger_not_category_starts'                    => 'Category does not start with ":trigger_value"',
+    'rule_trigger_not_budget_is'                          => 'Budget is not ":trigger_value"',
+    'rule_trigger_not_budget_contains'                    => 'Budget does not contain ":trigger_value"',
+    'rule_trigger_not_budget_ends'                        => 'Budget does not end on ":trigger_value"',
+    'rule_trigger_not_budget_starts'                      => 'Budget does not start with ":trigger_value"',
     'rule_trigger_not_bill_is'                            => 'Bill is not is ":trigger_value"',
     'rule_trigger_not_bill_contains'                      => 'Bill does not contain ":trigger_value"',
     'rule_trigger_not_bill_ends'                          => 'Bill does not end on ":trigger_value"',
@@ -1387,6 +1389,9 @@ return [
     'slack_webhook_url_help'                    => 'If you want Firefly III to notify you using Slack, enter the webhook URL here. Otherwise leave the field blank. If you are an admin, you need to set this URL in the administration as well.',
     'slack_url_label'                           => 'Slack "incoming webhook" URL',
 
+    // Financial administrations
+    'administration_index'                      => 'Financial administration',
+
     // profile:
     'purge_data_title'                          => 'Purge data from Firefly III',
     'purge_data_expl'                           => '"Purging" means "deleting that which is already deleted". In normal circumstances, Firefly III deletes nothing permanently. It just hides it. The button below deletes all of these previously "deleted" records FOREVER.',
@@ -1476,6 +1481,7 @@ return [
     'oauth'                                     => 'OAuth',
     'profile_oauth_clients'                     => 'OAuth Asiakkaat',
     'profile_oauth_no_clients'                  => 'Et ole luonut yhtään OAuth-asiakasta.',
+    'profile_oauth_clients_external_auth'       => 'If you\'re using an external authentication provider like Authelia, OAuth Clients will not work. You can use Personal Access Tokens only.',
     'profile_oauth_clients_header'              => 'Asiakasohjelmat',
     'profile_oauth_client_id'                   => 'Asiakastunnus',
     'profile_oauth_client_name'                 => 'Nimi',
@@ -2358,6 +2364,8 @@ return [
 
 
     // administration
+    'invite_is_already_redeemed'               => 'The invite to ":address" has already been redeemed.',
+    'invite_is_deleted'                        => 'The invite to ":address" has been deleted.',
     'invite_new_user_title'                    => 'Invite new user',
     'invite_new_user_text'                     => 'As an administrator, you can invite users to register on your Firefly III administration. Using the direct link you can share with them, they will be able to register an account. The invited user and their invite link will appear in the table below. You are free to share the invitation link with them.',
     'invited_user_mail'                        => 'Email address',

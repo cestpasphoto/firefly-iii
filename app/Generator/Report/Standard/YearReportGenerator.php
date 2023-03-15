@@ -33,7 +33,7 @@ use Throwable;
 /**
  * Class MonthReportGenerator.
  *
- * @codeCoverageIgnore
+
  */
 class YearReportGenerator implements ReportGeneratorInterface
 {
@@ -48,6 +48,7 @@ class YearReportGenerator implements ReportGeneratorInterface
      * Generates the report.
      *
      * @return string
+     * @throws FireflyException
      */
     public function generate(): string
     {
