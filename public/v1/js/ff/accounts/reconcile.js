@@ -76,39 +76,48 @@ $(function () {
 function smart_reconcile(amounts, target_sum) {
     let d_size = amounts.length;
     let max_sum = amounts.reduce((a, b) => a + b);
-    // Define number of maximum items to uncheck in order to keep short computing time
+    // Define number of maximum items to exclude in order to keep short computing time
     // Here are some pre-computed values ensuring less than 1e7 combinations to explore
     // 10 -> 10, 20 -> 20, 22 -> 22, 24 -> 12, 26 -> 9, 30 -> 8, 40 -> 6, 50 -> 5, 100 -> 4
     // next line is a magic formula fitting these values
-    let max_nb_items = (d_size <= 22) ? d_size : Math.floor( 13*(d_size-22)**-0.3 );
-    console.log('debug smart_reconcile:', target_sum, max_sum, max_nb_items);
-    // Result is list of items NOT to check
-    let result = smart_reconcile_aux(amounts, 0, max_nb_items, 0, max_sum-target_sum);
+    let max_nb_unchecked_items = (d_size <= 22) ? d_size : Math.floor( 13*(d_size-22)**-0.3 );
+    console.log('debug smart_reconcile:', target_sum, max_sum, max_nb_unchecked_items);
+    // Result will be list of items to EXCLUDE from reconcile
+    let result = solve_knapsack(amounts, amounts.length, max_nb_unchecked_items, 0, max_sum-target_sum);
     return result;
 }
 
-// Recursive function, try to add the amounts after the 'nth' one to achieve 'target_sum'
-// without exceeding maximum number of items 'remain_to_take'
-// Returns null if not possible else boolean array listing which items to check
-function smart_reconcile_aux(amounts, nth_number, remain_to_take, current_sum, target_sum) {
+// Find combination of transactions whose sum equals to target, with a preference
+// to pick minimum number of transactions and new transactions first. (remember
+// that pick = exclude some reconcile).
+// Tree exploration through recursive function:
+// Add transactions from index-1 to 0 to achieve target_sum without picking more
+// than remain_to_take items 
+// Returns null if not possible, else boolean array listing which transactions to pick
+function solve_knapsack(amounts, index, remain_to_take, current_sum, target_sum) {
     // Stop if no more transactions can be checked
-    if (Math.abs(current_sum - target_sum) < 0.01) return Array(amounts.length-nth_number).fill(false);
-    if (remain_to_take == 0 || nth_number == amounts.length) return null;
+    if (Math.abs(current_sum - target_sum) < 0.001) return Array(index).fill(false);
+    if (remain_to_take == 0 || index == 0) return null;
 
-    // Try without using current number
-    let result = smart_reconcile_aux(amounts, nth_number+1, remain_to_take, current_sum, target_sum);
+    // Try not to pick current transaction
+    let result = solve_knapsack(amounts, index-1, remain_to_take, current_sum, target_sum);
     if (result) {
-        result.unshift(false);
+        result.push(false);
         return result;
     }
 
-    // Try using current number
-    let new_amount = amounts[nth_number];
+    // Try picking current transaction
+    let new_amount = amounts[index-1];
     let new_sum = current_sum + new_amount;
-    if (Math.abs(new_sum - target_sum) < 1e-8) return [true].concat(Array(amounts.length-nth_number-1).fill(false));
-    result = smart_reconcile_aux(amounts, nth_number+1, remain_to_take-1, new_sum, target_sum);
-    if (result) result.unshift(true);
-    return result;
+    if (Math.abs(new_sum - target_sum) < 0.001) return Array(index-1).fill(false).concat([true]);
+    result = solve_knapsack(amounts, index-1, remain_to_take-1, new_sum, target_sum);
+    if (result) {
+        result.push(true);
+        return result;
+    }
+
+    // No solution
+    return null;
 }
 
 function trigger_smart_reconcile() {
