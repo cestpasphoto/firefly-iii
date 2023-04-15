@@ -25,7 +25,7 @@ namespace FireflyIII\Helpers\Update;
 
 use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Services\FireflyIIIOrg\Update\UpdateRequestInterface;
-use Log;
+use Illuminate\Support\Facades\Log;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -41,7 +41,6 @@ trait UpdateTrait
      * 'level' => 'info' / 'success' / 'error'
      *
      * @return array
-     * @throws FireflyException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */

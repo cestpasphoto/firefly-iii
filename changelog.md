@@ -2,6 +2,68 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.0.8 - 2023-04-16
+
+### Added
+- [Issue 7351](https://github.com/firefly-iii/firefly-iii/issues/7351) Optional command to force the decimal size.
+- [Issue 7352](https://github.com/firefly-iii/firefly-iii/issues/7352) Optional command to force the migrations.
+- [Issue 7354](https://github.com/firefly-iii/firefly-iii/issues/7354) The new v3 layout will redirect to the index when unauthenticated, thanks @corcom!
+
+### Fixed
+- [Issue 7349](https://github.com/firefly-iii/firefly-iii/issues/7349) Missing tables in PostgreSQL script.
+- [Issue 7358](https://github.com/firefly-iii/firefly-iii/issues/7358) Could not create liabilities with a pre-set amount.
+- Fix date field in bill warning mail.
+- Fix installer script.
+- Remove attachment paperclip from transactions with deleted attachments.
+
+### API
+- [Issue 7347](https://github.com/firefly-iii/firefly-iii/issues/7347) API made rules would be inactive by default.
+
+## v6.0.7 - 2023-04-09
+
+### Added
+- Lots of error catching in DB migrations for smoother upgrades.
+- New command `firefly-iii:force-migration` which will force database migrations to run. It will probably also destroy your database so don't use it.
+- You can now force light/dark mode in your settings.
+
+### Fixed
+- [Issue 7137](https://github.com/firefly-iii/firefly-iii/issues/7137) Inconsistent rule test form
+- [Issue 7320](https://github.com/firefly-iii/firefly-iii/issues/7320) Standard email values so less errors
+- [Issue 7311](https://github.com/firefly-iii/firefly-iii/issues/7311) Fix issue with date validation
+- [Issue 7310](https://github.com/firefly-iii/firefly-iii/issues/7310) Better color contrast in dark mode.
+
+### API
+- [Issue 7308](https://github.com/firefly-iii/firefly-iii/issues/7308) Could not set current amount for certain piggy banks
+
+## v6.0.6 - 2023-04-02
+
+### Changed
+- Database migrations are capped at 12 decimals.
+- Currency processing is capped at 12 decimals.
+- Mail errors no longer crash the app but report the error in logs
+- Disabled Sonarcloud runs
+
+### Fixed
+- "Change transaction type"-rule actions would create a new expense account instead of finding a liability.
+- New users from remote user repositories would not be able to create new asset accounts.
+- Firefly III would create "Loan" instead of "Expense account" when faced with unknown accounts during API calls.
+- Icons would not show up in the minimized left-hand menu.
+- Contrast for dark mode improved.
+- Better credit calculation for liabilities in case of complex transactions.
+
+### API
+- Fixed: Could not give piggy bank an unlimited amount.
+- [Issue 7335](https://github.com/firefly-iii/firefly-iii/issues/7335) Fix upload of attachments, thanks @fengkaijia
+
+## v6.0.5 - 2023-03-19
+
+### Changed
+- Mathematical accuracy is set to 12 decimals. This is accurate enough for most currencies and prevents rounding issues for systems that don't support more.
+
+### Fixed
+- [Issue 7227](https://github.com/firefly-iii/firefly-iii/issues/7227) Could not set webhooks to the correct trigger.
+- [Issue 7221](https://github.com/firefly-iii/firefly-iii/issues/7221) Could not see the result of a rule test.
+
 ## v6.0.4 - 2023-03-13
 
 ### Fixed

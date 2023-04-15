@@ -36,7 +36,7 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use League\Flysystem\UnableToDeleteFile;
-use Log;
+use Illuminate\Support\Facades\Log;
 use LogicException;
 
 /**
@@ -84,10 +84,10 @@ class AttachmentRepository implements AttachmentRepositoryInterface
 
         if ($disk->exists($file)) {
             $encryptedContent = (string)$disk->get($file);
-
             try {
                 $unencryptedContent = Crypt::decrypt($encryptedContent); // verified
             } catch (DecryptException $e) {
+                Log::debug(sprintf('Could not decrypt attachment #%d but this is fine: %s', $attachment->id, $e->getMessage()));
                 $unencryptedContent = $encryptedContent;
             }
         }

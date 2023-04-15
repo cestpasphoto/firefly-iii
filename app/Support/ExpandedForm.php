@@ -28,13 +28,12 @@ use Eloquent;
 use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Support\Form\FormSupport;
 use Illuminate\Support\Collection;
-use Log;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 /**
  * Class ExpandedForm.
  *
- * @SuppressWarnings(PHPMD.TooManyMethods)
  *
 
  */

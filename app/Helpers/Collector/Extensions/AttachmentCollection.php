@@ -29,7 +29,7 @@ use FireflyIII\Models\Attachment;
 use FireflyIII\Models\TransactionJournal;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Log;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Trait AttachmentCollection
@@ -92,7 +92,8 @@ trait AttachmentCollection
                         ->where(
                             static function (EloquentBuilder $q1) {
                                 $q1->where('attachments.attachable_type', TransactionJournal::class);
-                                //$q1->where('attachments.uploaded', true);
+                                $q1->where('attachments.uploaded', true);
+                                $q1->whereNull('attachments.deleted_at');
                                 $q1->orWhereNull('attachments.attachable_type');
                             }
                         );

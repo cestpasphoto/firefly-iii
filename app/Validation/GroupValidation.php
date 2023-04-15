@@ -26,7 +26,7 @@ namespace FireflyIII\Validation;
 
 use FireflyIII\Models\TransactionGroup;
 use Illuminate\Validation\Validator;
-use Log;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Trait GroupValidation.
@@ -165,7 +165,6 @@ trait GroupValidation
      * @param  array  $transaction
      * @param  TransactionGroup  $transactionGroup
      *
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     private function validateJournalId(Validator $validator, int $index, array $transaction, TransactionGroup $transactionGroup): void
     {

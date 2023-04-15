@@ -22,6 +22,7 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\QueryException;
 use Illuminate\Database\Schema\Blueprint;
 
 /**
@@ -41,22 +42,35 @@ class FixNullables extends Migration
     /**
      * Run the migrations.
      *
-     * @SuppressWarnings(PHPMD.ShortMethodName)
      */
     public function up(): void
     {
-        Schema::table(
-            'rule_groups',
-            static function (Blueprint $table) {
-                $table->text('description')->nullable()->change();
+        if (!Schema::hasColumn('rule_groups', 'description')) {
+            try {
+                Schema::table(
+                    'rule_groups',
+                    static function (Blueprint $table) {
+                        $table->text('description')->nullable()->change();
+                    }
+                );
+            } catch (QueryException $e) {
+                Log::error(sprintf('Could not update table: %s', $e->getMessage()));
+                Log::error('If the column or index already exists (see error), this is not an problem. Otherwise, please open a GitHub discussion.');
             }
-        );
+        }
 
-        Schema::table(
-            'rules',
-            static function (Blueprint $table) {
-                $table->text('description')->nullable()->change();
+        if (!Schema::hasColumn('rules', 'description')) {
+            try {
+                Schema::table(
+                    'rules',
+                    static function (Blueprint $table) {
+                        $table->text('description')->nullable()->change();
+                    }
+                );
+            } catch (QueryException $e) {
+                Log::error(sprintf('Could not execute query: %s', $e->getMessage()));
+                Log::error('If the column or index already exists (see error), this is not an problem. Otherwise, please open a GitHub discussion.');
             }
-        );
+        }
     }
 }

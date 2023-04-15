@@ -1302,7 +1302,12 @@ return [
 
 
     // preferences
+    'dark_mode_option_browser'                  => 'Je browser bepaalt',
+    'dark_mode_option_light'                    => 'Altijd licht',
+    'dark_mode_option_dark'                     => 'Altijd donker',
     'equal_to_language'                         => '(zelfde als taal)',
+    'dark_mode_preference'                      => 'Nachtmodus',
+    'dark_mode_preference_help'                 => 'Stel nachtmodus in.',
     'pref_home_screen_accounts'                 => 'Voorpaginarekeningen',
     'pref_home_screen_accounts_help'            => 'Welke betaalrekeningen wil je op de voorpagina zien?',
     'pref_view_range'                           => 'Bereik',
@@ -2364,8 +2369,8 @@ return [
 
 
     // administration
-    'invite_is_already_redeemed'               => 'The invite to ":address" has already been redeemed.',
-    'invite_is_deleted'                        => 'The invite to ":address" has been deleted.',
+    'invite_is_already_redeemed'               => 'De uitnodiging aan ":address" is al gebruikt.',
+    'invite_is_deleted'                        => 'De uitnodiging aan ":address" is verwijderd.',
     'invite_new_user_title'                    => 'Nieuwe gebruiker uitnodigen',
     'invite_new_user_text'                     => 'Als beheerder kun je gebruikers uitnodigen om zich te registreren bij jouw Firefly III-installatie. Je kan een directe link maken en deze vervolgens delen met gebruiker. Hiermee kunnen ze een account maken. De uitgenodigde gebruiker en hun uitnodigingslink verschijnen in de onderstaande tabel. Je kan die link met ze delen.',
     'invited_user_mail'                        => 'E-mailadres',
