@@ -1,56 +1,6 @@
-diff -Naur ../official/public/v1/js/ff/accounts/create.js ./public/v1/js/ff/accounts/create.js
---- ../official/public/v1/js/ff/accounts/create.js	2023-01-28 10:04:18.191880339 +0100
-+++ ./public/v1/js/ff/accounts/create.js	2023-03-15 10:04:55.506012176 +0100
-@@ -30,21 +30,4 @@
-             }
-         );
-     }
--    // change the 'ffInput_opening_balance' text based on the
--    // selection of the direction.
--    $("#ffInput_liability_direction").change(triggerDirection);
--    triggerDirection();
- });
--
--
--function triggerDirection() {
--    let obj = $("#ffInput_liability_direction");
--    let direction = obj.val();
--    console.log('Direction is now ' + direction);
--    if('credit' === direction) {
--        $('label[for="ffInput_opening_balance"]').text(iAmOwed);
--    }
--    if('debit' === direction) {
--        $('label[for="ffInput_opening_balance"]').text(iOwe);
--    }
--}
-diff -Naur ../official/public/v1/js/ff/accounts/edit.js ./public/v1/js/ff/accounts/edit.js
---- ../official/public/v1/js/ff/accounts/edit.js	2023-01-28 10:04:18.191880339 +0100
-+++ ./public/v1/js/ff/accounts/edit.js	2023-03-15 10:04:55.502012122 +0100
-@@ -30,21 +30,5 @@
-             }
-         );
-     }
--    // change the 'ffInput_opening_balance' text based on the
--    // selection of the direction.
--    $("#ffInput_liability_direction").change(triggerDirection);
--    triggerDirection();
- 
- });
--
--function triggerDirection() {
--    let obj = $("#ffInput_liability_direction");
--    let direction = obj.val();
--    console.log('Direction is now ' + direction);
--    if('credit' === direction) {
--        $('label[for="ffInput_opening_balance"]').text(iAmOwed);
--    }
--    if('debit' === direction) {
--        $('label[for="ffInput_opening_balance"]').text(iOwe);
--    }
--}
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
 --- ../official/public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:20:55.829339578 +0200
-+++ ./public/v1/js/ff/accounts/reconcile.js	2023-03-15 10:04:55.494012013 +0100
++++ ./public/v1/js/ff/accounts/reconcile.js	2023-04-15 17:27:25.329118469 +0200
 @@ -21,6 +21,7 @@
  var balanceDifference = 0;
  var difference = 0;
@@ -69,46 +19,55 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
          }
          changedBalances = true;
      });
-@@ -69,6 +73,98 @@
+@@ -69,6 +73,107 @@
  
  });
  
 +function smart_reconcile(amounts, target_sum) {
 +    let d_size = amounts.length;
 +    let max_sum = amounts.reduce((a, b) => a + b);
-+    // Define number of maximum items to uncheck in order to keep short computing time
++    // Define number of maximum items to exclude in order to keep short computing time
 +    // Here are some pre-computed values ensuring less than 1e7 combinations to explore
 +    // 10 -> 10, 20 -> 20, 22 -> 22, 24 -> 12, 26 -> 9, 30 -> 8, 40 -> 6, 50 -> 5, 100 -> 4
 +    // next line is a magic formula fitting these values
-+    let max_nb_items = (d_size <= 22) ? d_size : Math.floor( 13*(d_size-22)**-0.3 );
-+    console.log('debug smart_reconcile:', target_sum, max_sum, max_nb_items);
-+    // Result is list of items NOT to check
-+    let result = smart_reconcile_aux(amounts, 0, max_nb_items, 0, max_sum-target_sum);
++    let max_nb_unchecked_items = (d_size <= 22) ? d_size : Math.floor( 13*(d_size-22)**-0.3 );
++    console.log('debug smart_reconcile:', target_sum, max_sum, max_nb_unchecked_items);
++    // Result will be list of items to EXCLUDE from reconcile
++    let result = solve_knapsack(amounts, amounts.length, max_nb_unchecked_items, 0, max_sum-target_sum);
 +    return result;
 +}
 +
-+// Recursive function, try to add the amounts after the 'nth' one to achieve 'target_sum'
-+// without exceeding maximum number of items 'remain_to_take'
-+// Returns null if not possible else boolean array listing which items to check
-+function smart_reconcile_aux(amounts, nth_number, remain_to_take, current_sum, target_sum) {
++// Find combination of transactions whose sum equals to target, with a preference
++// to pick minimum number of transactions and new transactions first. (remember
++// that pick = exclude some reconcile).
++// Tree exploration through recursive function:
++// Add transactions from index-1 to 0 to achieve target_sum without picking more
++// than remain_to_take items 
++// Returns null if not possible, else boolean array listing which transactions to pick
++function solve_knapsack(amounts, index, remain_to_take, current_sum, target_sum) {
 +    // Stop if no more transactions can be checked
-+    if (Math.abs(current_sum - target_sum) < 0.01) return Array(amounts.length-nth_number).fill(false);
-+    if (remain_to_take == 0 || nth_number == amounts.length) return null;
++    if (Math.abs(current_sum - target_sum) < 0.001) return Array(index).fill(false);
++    if (remain_to_take == 0 || index == 0) return null;
 +
-+    // Try without using current number
-+    let result = smart_reconcile_aux(amounts, nth_number+1, remain_to_take, current_sum, target_sum);
++    // Try not to pick current transaction
++    let result = solve_knapsack(amounts, index-1, remain_to_take, current_sum, target_sum);
 +    if (result) {
-+        result.unshift(false);
++        result.push(false);
 +        return result;
 +    }
 +
-+    // Try using current number
-+    let new_amount = amounts[nth_number];
++    // Try picking current transaction
++    let new_amount = amounts[index-1];
 +    let new_sum = current_sum + new_amount;
-+    if (Math.abs(new_sum - target_sum) < 1e-8) return [true].concat(Array(amounts.length-nth_number-1).fill(false));
-+    result = smart_reconcile_aux(amounts, nth_number+1, remain_to_take-1, new_sum, target_sum);
-+    if (result) result.unshift(true);
-+    return result;
++    if (Math.abs(new_sum - target_sum) < 0.001) return Array(index-1).fill(false).concat([true]);
++    result = solve_knapsack(amounts, index-1, remain_to_take-1, new_sum, target_sum);
++    if (result) {
++        result.push(true);
++        return result;
++    }
++
++    // No solution
++    return null;
 +}
 +
 +function trigger_smart_reconcile() {
@@ -168,7 +127,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
  function selectAllReconcile(e) {
      // loop all, check.
      var el = $(e.target);
-@@ -83,29 +179,7 @@
+@@ -83,29 +188,7 @@
  
      $('.reconcile_checkbox').each(function (i, v) {
          var check = $(v);
@@ -199,7 +158,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
      });
  
      updateDifference();
-@@ -153,26 +227,7 @@
+@@ -153,26 +236,7 @@
   * @param e
   */
  function checkReconciledBox(e) {
@@ -227,7 +186,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
  }
  
  
-@@ -266,6 +321,7 @@
+@@ -266,6 +330,7 @@
  
      difference = balanceDifference - selectedAmount;
      updateDifference();
@@ -235,7 +194,7 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
  
      // loop al placed checkboxes and check them if necessary.
      restoreFromLocalStorage();
-@@ -331,12 +387,12 @@
+@@ -331,12 +396,12 @@
  }
  
  function updateDifference() {
@@ -251,161 +210,6 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
          addClass = 'text-danger';
      }
      $('#difference').addClass(addClass).text(accounting.formatMoney(difference));
-diff -Naur ../official/public/v1/js/ff/budgets/index.js ./public/v1/js/ff/budgets/index.js
---- ../official/public/v1/js/ff/budgets/index.js	2023-03-15 08:36:59.135380515 +0100
-+++ ./public/v1/js/ff/budgets/index.js	2023-03-15 10:04:55.386010540 +0100
-@@ -29,9 +29,9 @@
-     drawSpentBars();
-     drawBudgetedBars();
- 
--    //$('.update_ab').on('click', updateAvailableBudget);
--    //$('.delete_ab').on('click', deleteAvailableBudget);
--    //$('.create_ab_alt').on('click', createAltAvailableBudget);
-+    $('.update_ab').on('click', updateAvailableBudget);
-+    $('.delete_ab').on('click', deleteAvailableBudget);
-+    $('.create_ab_alt').on('click', createAltAvailableBudget);
- 
-     $('.budget_amount').on('change', updateBudgetedAmount);
-     $('.create_bl').on('click', createBudgetLimit);
-@@ -129,28 +129,20 @@
- }
- 
- function updateTotalBudgetedAmount(currencyId) {
--    console.log('updateTotalBudgetedAmount');
-     // fade info away:
-     $('span.budgeted_amount[data-currency="' + currencyId + '"]')
-         .fadeTo(100, 0.1, function () {
--        });
--    $('span.available_amount[data-currency="' + currencyId + '"]')
--        .fadeTo(100, 0.1, function () {
-+            //$(this).fadeTo(500, 1.0);
-         });
- 
-     // get new amount:
-     $.get(totalBudgetedUrl.replace('REPLACEME', currencyId)).done(function (data) {
-         // set thing:
--
-         $('span.budgeted_amount[data-currency="' + currencyId + '"]')
-             .html(data.budgeted_formatted)
-             // fade back:
-             .fadeTo(300, 1.0);
- 
--        // also set available amount:
--        $('span.available_amount[data-currency="' + currencyId + '"]')
--            .html(data.available_formatted).fadeTo(300, 1.0);
--
-         // set bar:
-         var pct = parseFloat(data.percentage);
-         if (pct <= 100) {
-diff -Naur ../official/public/v1/js/ff/rules/create-edit.js ./public/v1/js/ff/rules/create-edit.js
---- ../official/public/v1/js/ff/rules/create-edit.js	2023-01-14 16:08:04.965752279 +0100
-+++ ./public/v1/js/ff/rules/create-edit.js	2023-03-15 10:04:54.906003993 +0100
-@@ -232,16 +232,11 @@
-             break;
-         case 'clear_category':
-         case 'clear_budget':
--        case 'append_descr_to_notes':
--        case 'append_notes_to_descr':
--        case 'move_descr_to_notes':
--        case 'move_notes_to_descr':
-         case 'clear_notes':
-         case 'delete_transaction':
-         case 'remove_all_tags':
-             console.log('Select list value is ' + selectList.val() + ', so input needs to be disabled.');
--            inputResult.prop('disabled', true);
--            inputResult.typeahead('destroy');
-+            inputResult.attr('disabled', 'disabled');
-             break;
-         case 'set_budget':
-             console.log('Select list value is ' + selectList.val() + ', so input needs auto complete.');
-@@ -348,12 +343,9 @@
-         case 'has_no_tag':
-         case 'no_notes':
-         case 'any_notes':
--        case 'exists':
--        case 'reconciled':
-         case 'has_any_tag':
-         case 'has_attachments':
-         case 'source_is_cash':
--        case 'has_no_attachments':
-         case 'destination_is_cash':
-         case 'account_is_cash':
-         case 'no_external_url':
-@@ -372,7 +364,7 @@
-         case 'amount_exactly':
-             console.log('Set value to type=number');
-             inputResult.prop('type', 'number');
--            inputResult.prop('step', 'any');
-+            inputResult.prop('step','any');
-             break;
-         default:
-             console.log('Select list value is ' + selectList.val() + ', destroy auto complete, do nothing else.');
-@@ -391,32 +383,32 @@
-     input.typeahead('destroy');
- 
-     // append URL:
--    var lastChar = URL[URL.length - 1];
-+    var lastChar = URL[URL.length -1];
-     var urlParamSplit = '?';
--    if ('&' === lastChar) {
-+    if('&' === lastChar) {
-         urlParamSplit = '';
-     }
-     var source = new Bloodhound({
--        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
--        queryTokenizer: Bloodhound.tokenizers.whitespace,
--        prefetch: {
--            url: URL + urlParamSplit + 'uid=' + uid,
--            filter: function (list) {
--                return $.map(list, function (item) {
--                    return {name: item.name};
--                });
--            }
--        },
--        remote: {
--            url: URL + urlParamSplit + 'query=%QUERY&uid=' + uid,
--            wildcard: '%QUERY',
--            filter: function (list) {
--                return $.map(list, function (item) {
--                    return {name: item.name};
--                });
--            }
--        }
--    });
-+                                    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-+                                    queryTokenizer: Bloodhound.tokenizers.whitespace,
-+                                    prefetch: {
-+                                        url: URL + urlParamSplit + 'uid=' + uid,
-+                                        filter: function (list) {
-+                                            return $.map(list, function (item) {
-+                                                return {name: item.name};
-+                                            });
-+                                        }
-+                                    },
-+                                    remote: {
-+                                        url: URL + urlParamSplit + 'query=%QUERY&uid=' + uid,
-+                                        wildcard: '%QUERY',
-+                                        filter: function (list) {
-+                                            return $.map(list, function (item) {
-+                                                return {name: item.name};
-+                                            });
-+                                        }
-+                                    }
-+                                });
-     source.initialize();
-     input.typeahead({hint: true, highlight: true,}, {source: source, displayKey: 'name', autoSelect: false});
- }
-diff -Naur ../official/public/v1/js/ff/rules/select-transactions.js ./public/v1/js/ff/rules/select-transactions.js
---- ../official/public/v1/js/ff/rules/select-transactions.js	2023-01-14 16:08:04.969752440 +0100
-+++ ./public/v1/js/ff/rules/select-transactions.js	2023-03-15 10:04:54.898003883 +0100
-@@ -29,4 +29,7 @@
-             }
-         );
-     }
-+    // $('form.form-horizontal').on('submit', function () {
-+    //     return confirm(askReadWarning);
-+    // });
- });
 diff -Naur ../official/resources/assets/js/components/transactions/CreateTransaction.vue ./resources/assets/js/components/transactions/CreateTransaction.vue
 --- ../official/resources/assets/js/components/transactions/CreateTransaction.vue	2023-03-15 08:36:59.151380724 +0100
 +++ ./resources/assets/js/components/transactions/CreateTransaction.vue	2023-03-15 08:37:07.299487107 +0100
@@ -460,9 +264,9 @@ diff -Naur ../official/resources/assets/js/webhooks/index.js ./resources/assets/
  /**
   * First we will load Axios via bootstrap.js
 diff -Naur ../official/resources/lang/en_US/firefly.php ./resources/lang/en_US/firefly.php
---- ../official/resources/lang/en_US/firefly.php	2023-03-15 08:36:59.167380933 +0100
-+++ ./resources/lang/en_US/firefly.php	2023-03-15 08:37:07.311487263 +0100
-@@ -1269,6 +1269,7 @@
+--- ../official/resources/lang/en_US/firefly.php	2023-04-15 11:46:01.069659839 +0200
++++ ./resources/lang/en_US/firefly.php	2023-04-15 17:32:17.982943740 +0200
+@@ -1274,6 +1274,7 @@
      'pref_view_range_help'                      => 'Some charts are automatically grouped in periods. Your budgets will also be grouped in periods. What period would you prefer?',
      'pref_1D'                                   => 'One day',
      'pref_1W'                                   => 'One week',
@@ -471,9 +275,9 @@ diff -Naur ../official/resources/lang/en_US/firefly.php ./resources/lang/en_US/f
      'pref_3M'                                   => 'Three months (quarter)',
      'pref_6M'                                   => 'Six months',
 diff -Naur ../official/resources/lang/fr_FR/firefly.php ./resources/lang/fr_FR/firefly.php
---- ../official/resources/lang/fr_FR/firefly.php	2023-03-15 08:36:59.171380985 +0100
-+++ ./resources/lang/fr_FR/firefly.php	2023-03-15 08:37:07.319487368 +0100
-@@ -1309,6 +1309,7 @@
+--- ../official/resources/lang/fr_FR/firefly.php	2023-04-15 11:46:01.073659864 +0200
++++ ./resources/lang/fr_FR/firefly.php	2023-04-15 17:32:17.982943740 +0200
+@@ -1314,6 +1314,7 @@
      'pref_view_range_help'                      => 'Certains graphiques sont automatiquement regroupés par périodes. Vos budgets seront aussi organisés par périodes. Quelle période préférez-vous ?',
      'pref_1D'                                   => 'Un jour',
      'pref_1W'                                   => 'Une semaine',
@@ -592,9 +396,9 @@ diff -Naur ../official/resources/views/index.twig ./resources/views/index.twig
      </div>
  {% endblock %}
 diff -Naur ../official/resources/views/layout/default.twig ./resources/views/layout/default.twig
---- ../official/resources/views/layout/default.twig	2023-03-15 08:36:59.187381194 +0100
-+++ ./resources/views/layout/default.twig	2023-03-15 08:37:07.335487577 +0100
-@@ -97,11 +97,22 @@
+--- ../official/resources/views/layout/default.twig	2023-04-15 11:46:01.085659939 +0200
++++ ./resources/views/layout/default.twig	2023-04-15 17:32:17.998943840 +0200
+@@ -104,11 +104,22 @@
                          </span>
                      </li>
  
@@ -622,8 +426,8 @@ diff -Naur ../official/resources/views/layout/default.twig ./resources/views/lay
                          <a href="#" data-toggle="control-sidebar"><span class="fa fa-plus-circle"></span></a>
                      </li>
 diff -Naur ../official/resources/views/list/groups-tiny.twig ./resources/views/list/groups-tiny.twig
---- ../official/resources/views/list/groups-tiny.twig	2022-01-30 07:42:09.304120315 +0100
-+++ ./resources/views/list/groups-tiny.twig	2022-07-16 08:07:47.682616812 +0200
+--- ../official/resources/views/list/groups-tiny.twig	2023-04-15 11:46:01.085659939 +0200
++++ ./resources/views/list/groups-tiny.twig	2023-04-15 17:32:17.998943840 +0200
 @@ -7,7 +7,12 @@
              {{ transaction.description }}
  
@@ -639,8 +443,8 @@ diff -Naur ../official/resources/views/list/groups-tiny.twig ./resources/views/l
                {% if null != transaction.foreign_amount %}
                    ({{ formatAmountBySymbol(transaction.foreign_amount*-1, transaction.foreign_currency_symbol, transaction.foreign_currency_decimal_places) }})
 diff -Naur ../official/resources/views/preferences/index.twig ./resources/views/preferences/index.twig
---- ../official/resources/views/preferences/index.twig	2023-03-15 08:36:59.187381194 +0100
-+++ ./resources/views/preferences/index.twig	2023-03-15 08:43:00.656081570 +0100
+--- ../official/resources/views/preferences/index.twig	2023-04-15 11:46:01.089659964 +0200
++++ ./resources/views/preferences/index.twig	2023-04-15 17:32:17.998943840 +0200
 @@ -196,30 +196,24 @@
                                          <div class="radio">
                                              <label>
@@ -680,8 +484,8 @@ diff -Naur ../official/resources/views/preferences/index.twig ./resources/views/
                                          </div>
  
 diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./app/Http/Controllers/Account/ReconcileController.php
---- ../official/app/Http/Controllers/Account/ReconcileController.php	2023-03-15 08:36:59.099380045 +0100
-+++ ./app/Http/Controllers/Account/ReconcileController.php	2023-03-15 08:38:49.120814561 +0100
+--- ../official/app/Http/Controllers/Account/ReconcileController.php	2023-04-15 11:46:01.021659540 +0200
++++ ./app/Http/Controllers/Account/ReconcileController.php	2023-04-15 17:32:17.930943416 +0200
 @@ -99,18 +99,15 @@
          }
          $currency = $this->accountRepos->getAccountCurrency($account) ?? app('amount')->getDefaultCurrency();
@@ -708,8 +512,8 @@ diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./ap
              $end = app('navigation')->endOfPeriod($start, $range);
          }
 diff -Naur ../official/app/Http/Controllers/Chart/AccountController.php ./app/Http/Controllers/Chart/AccountController.php
---- ../official/app/Http/Controllers/Chart/AccountController.php	2023-03-15 08:36:59.099380045 +0100
-+++ ./app/Http/Controllers/Chart/AccountController.php	2023-03-15 08:37:07.243486376 +0100
+--- ../official/app/Http/Controllers/Chart/AccountController.php	2023-04-15 11:46:01.021659540 +0200
++++ ./app/Http/Controllers/Chart/AccountController.php	2023-04-15 17:32:17.930943416 +0200
 @@ -495,7 +495,7 @@
                  $current->addDay();
              }
@@ -720,8 +524,8 @@ diff -Naur ../official/app/Http/Controllers/Chart/AccountController.php ./app/Ht
                  $balance         = (float)app('steam')->balance($account, $current, $currency);
                  $label           = app('navigation')->periodShow($current, $step);
 diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/CreateRecurringTransactions.php
---- ../official/app/Jobs/CreateRecurringTransactions.php	2023-03-15 08:36:59.107380149 +0100
-+++ ./app/Jobs/CreateRecurringTransactions.php	2023-03-15 08:37:07.247486428 +0100
+--- ../official/app/Jobs/CreateRecurringTransactions.php	2023-04-15 11:46:01.025659565 +0200
++++ ./app/Jobs/CreateRecurringTransactions.php	2023-04-15 17:32:17.934943441 +0200
 @@ -92,6 +92,8 @@
          $this->created           = 0;
          $this->recurrences       = new Collection();
@@ -768,8 +572,8 @@ diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/Creat
          // count created journals on THIS day.
          $journalCount = $this->repository->getJournalCount($recurrence, $date, $date);
 diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./app/Support/Http/Controllers/GetConfigurationData.php
---- ../official/app/Support/Http/Controllers/GetConfigurationData.php	2023-03-15 08:36:59.119380306 +0100
-+++ ./app/Support/Http/Controllers/GetConfigurationData.php	2023-03-15 08:37:07.259486584 +0100
+--- ../official/app/Support/Http/Controllers/GetConfigurationData.php	2023-04-15 11:46:01.029659590 +0200
++++ ./app/Support/Http/Controllers/GetConfigurationData.php	2023-04-15 17:32:17.938943466 +0200
 @@ -133,10 +133,15 @@
          }
  
@@ -791,8 +595,8 @@ diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./a
              $ranges[ucfirst((string)trans('firefly.today'))] = [$todayStart, $todayEnd];
          }
 diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
---- ../official/app/Support/Navigation.php	2023-03-15 08:36:59.119380306 +0100
-+++ ./app/Support/Navigation.php	2023-03-15 08:41:09.894644800 +0100
+--- ../official/app/Support/Navigation.php	2023-04-15 11:46:01.029659590 +0200
++++ ./app/Support/Navigation.php	2023-04-15 17:32:17.938943466 +0200
 @@ -53,6 +53,7 @@
              '1W'        => 'addWeeks',
              'weekly'    => 'addWeeks',
