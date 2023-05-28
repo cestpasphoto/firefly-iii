@@ -1,6 +1,6 @@
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
 --- ../official/public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:20:55.829339578 +0200
-+++ ./public/v1/js/ff/accounts/reconcile.js	2023-04-15 17:27:25.329118469 +0200
++++ ./public/v1/js/ff/accounts/reconcile.js	2023-04-15 17:45:12.423773897 +0200
 @@ -21,6 +21,7 @@
  var balanceDifference = 0;
  var difference = 0;
@@ -264,8 +264,8 @@ diff -Naur ../official/resources/assets/js/webhooks/index.js ./resources/assets/
  /**
   * First we will load Axios via bootstrap.js
 diff -Naur ../official/resources/lang/en_US/firefly.php ./resources/lang/en_US/firefly.php
---- ../official/resources/lang/en_US/firefly.php	2023-04-15 11:46:01.069659839 +0200
-+++ ./resources/lang/en_US/firefly.php	2023-04-15 17:32:17.982943740 +0200
+--- ../official/resources/lang/en_US/firefly.php	2023-05-28 05:57:50.900996585 +0200
++++ ./resources/lang/en_US/firefly.php	2023-05-28 05:57:52.781020345 +0200
 @@ -1274,6 +1274,7 @@
      'pref_view_range_help'                      => 'Some charts are automatically grouped in periods. Your budgets will also be grouped in periods. What period would you prefer?',
      'pref_1D'                                   => 'One day',
@@ -275,8 +275,8 @@ diff -Naur ../official/resources/lang/en_US/firefly.php ./resources/lang/en_US/f
      'pref_3M'                                   => 'Three months (quarter)',
      'pref_6M'                                   => 'Six months',
 diff -Naur ../official/resources/lang/fr_FR/firefly.php ./resources/lang/fr_FR/firefly.php
---- ../official/resources/lang/fr_FR/firefly.php	2023-04-15 11:46:01.073659864 +0200
-+++ ./resources/lang/fr_FR/firefly.php	2023-04-15 17:32:17.982943740 +0200
+--- ../official/resources/lang/fr_FR/firefly.php	2023-05-28 05:57:50.900996585 +0200
++++ ./resources/lang/fr_FR/firefly.php	2023-05-28 05:57:52.785020396 +0200
 @@ -1314,6 +1314,7 @@
      'pref_view_range_help'                      => 'Certains graphiques sont automatiquement regroupés par périodes. Vos budgets seront aussi organisés par périodes. Quelle période préférez-vous ?',
      'pref_1D'                                   => 'Un jour',
@@ -396,9 +396,9 @@ diff -Naur ../official/resources/views/index.twig ./resources/views/index.twig
      </div>
  {% endblock %}
 diff -Naur ../official/resources/views/layout/default.twig ./resources/views/layout/default.twig
---- ../official/resources/views/layout/default.twig	2023-04-15 11:46:01.085659939 +0200
-+++ ./resources/views/layout/default.twig	2023-04-15 17:32:17.998943840 +0200
-@@ -104,11 +104,22 @@
+--- ../official/resources/views/layout/default.twig	2023-05-28 05:57:50.928996939 +0200
++++ ./resources/views/layout/default.twig	2023-05-28 05:57:52.809020699 +0200
+@@ -106,11 +106,22 @@
                          </span>
                      </li>
  
@@ -595,8 +595,8 @@ diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./a
              $ranges[ucfirst((string)trans('firefly.today'))] = [$todayStart, $todayEnd];
          }
 diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
---- ../official/app/Support/Navigation.php	2023-04-15 11:46:01.029659590 +0200
-+++ ./app/Support/Navigation.php	2023-04-15 17:32:17.938943466 +0200
+--- ../official/app/Support/Navigation.php	2023-05-28 05:57:50.864996130 +0200
++++ ./app/Support/Navigation.php	2023-05-28 05:57:52.745019890 +0200
 @@ -53,6 +53,7 @@
              '1W'        => 'addWeeks',
              'weekly'    => 'addWeeks',
@@ -605,15 +605,15 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              '1M'        => 'addMonths',
              'month'     => 'addMonths',
              'monthly'   => 'addMonths',
-@@ -67,6 +68,7 @@
-             'custom'    => 'addMonths', // custom? just add one month.
+@@ -75,6 +76,7 @@
+             'YTD'       => 'addYears',
          ];
          $modifierMap = [
 +            '3W'        => 3,
              'quarter'   => 3,
              '3M'        => 3,
              'quarterly' => 3,
-@@ -219,7 +221,7 @@
+@@ -230,7 +232,7 @@
          }
  
  
@@ -622,7 +622,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              return $date; // the date is already at the start.
          }
          Log::error(sprintf('Cannot do startOfPeriod for $repeat_freq "%s"', $repeatFreq));
-@@ -243,6 +245,7 @@
+@@ -254,6 +256,7 @@
              '1W'        => 'addWeek',
              'week'      => 'addWeek',
              'weekly'    => 'addWeek',
@@ -630,7 +630,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              '1M'        => 'addMonth',
              'month'     => 'addMonth',
              'monthly'   => 'addMonth',
-@@ -257,6 +260,7 @@
+@@ -268,6 +271,7 @@
              '1Y'        => 'addYear',
          ];
          $modifierMap = [
@@ -638,7 +638,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              'quarter'   => 3,
              '3M'        => 3,
              'quarterly' => 3,
-@@ -265,7 +269,7 @@
+@@ -276,7 +280,7 @@
              '6M'        => 6,
          ];
  
@@ -647,7 +647,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
  
          // if the range is custom, the end of the period
          // is another X days (x is the difference between start)
-@@ -615,6 +619,10 @@
+@@ -643,6 +647,10 @@
  
              return $date;
          }
@@ -658,7 +658,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          // a custom range requires the session start
          // and session end to calculate the difference in days.
          // this is then subtracted from $theDate (* $subtract).
-@@ -684,6 +692,11 @@
+@@ -712,6 +720,11 @@
  
              return $end;
          }
@@ -670,7 +670,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          if ('6M' === $range) {
              if ($start->month >= 7) {
                  $end->endOfYear();
-@@ -769,6 +782,9 @@
+@@ -797,6 +810,9 @@
              case 'last7':
                  $start->subDays(7);
                  return $start;
