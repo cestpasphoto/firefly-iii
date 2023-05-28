@@ -271,8 +271,8 @@ return [
     'generic_invalid_source'      => 'No pots fer servir aquest compte com a compte d\'origen.',
     'generic_invalid_destination' => 'No pots fer servir aquest compte com a compte de destí.',
 
-    'generic_no_source'      => 'Has d\'enviar la informació del compte d\'origen.',
-    'generic_no_destination' => 'Has d\'enviar la informació del compte de destí.',
+    'generic_no_source'      => 'Has de confirmar l\'informació del compte font, o afegir un identificador de transacció.',
+    'generic_no_destination' => 'Has de confirmar la informació del compte de destinació, o introduïr un identificador de transacció.',
 
     'gte.numeric' => 'El camp :attribute ha de ser més gran o igual que :value.',
     'gt.numeric'  => 'El camp :attribute ha de ser més gran que :value.',

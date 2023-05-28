@@ -1122,7 +1122,7 @@ return [
     'rule_trigger_not_budget_is'                          => 'Budsjett er ikke ":trigger_value"',
     'rule_trigger_not_budget_contains'                    => 'Budsjett inneholder ikke ":trigger_value"',
     'rule_trigger_not_budget_ends'                        => 'Budsjett slutter ikke på ":trigger_value"',
-    'rule_trigger_not_budget_starts'                      => 'Budget does not start with ":trigger_value"',
+    'rule_trigger_not_budget_starts'                      => 'Budsjettet starter ikke med ":trigger_value"',
     'rule_trigger_not_bill_is'                            => 'Regningen er ikke ":trigger_value"',
     'rule_trigger_not_bill_contains'                      => 'Regningen inneholder ikke ":trigger_value"',
     'rule_trigger_not_bill_ends'                          => 'Regningen slutter ikke på ":trigger_value"',
@@ -1302,11 +1302,11 @@ return [
 
 
     // preferences
-    'dark_mode_option_browser'                  => 'Let your browser decide',
-    'dark_mode_option_light'                    => 'Always light',
-    'dark_mode_option_dark'                     => 'Always dark',
+    'dark_mode_option_browser'                  => 'La nettleseren din avgjøre',
+    'dark_mode_option_light'                    => 'Alltid lys',
+    'dark_mode_option_dark'                     => 'Alltid mørk',
     'equal_to_language'                         => '(likt språk)',
-    'dark_mode_preference'                      => 'Dark mode',
+    'dark_mode_preference'                      => 'Mørk modus',
     'dark_mode_preference_help'                 => 'Tell Firefly III when to use dark mode.',
     'pref_home_screen_accounts'                 => 'Startskjermkontoer',
     'pref_home_screen_accounts_help'            => 'Hvilke kontoer skal vises på startsiden?',
@@ -1706,6 +1706,7 @@ return [
     'auto_budget_none'                          => 'Ingen automatisk budsjett',
     'auto_budget_reset'                         => 'Angi et fast beløp hver periode',
     'auto_budget_rollover'                      => 'Legg til et fast beløp hver periode',
+    'auto_budget_adjusted'                      => 'Add an amount every period and correct for overspending',
     'auto_budget_period_daily'                  => 'Daglig',
     'auto_budget_period_weekly'                 => 'Ukentlig',
     'auto_budget_period_monthly'                => 'Månedlig',
@@ -1715,6 +1716,7 @@ return [
     'auto_budget_help'                          => 'Du kan lese mer om denne funksjonen under hjelp. Klikk ikonet øverst til høyre (?).',
     'auto_budget_reset_icon'                    => 'Budsjettet blir fastsatt periodisk',
     'auto_budget_rollover_icon'                 => 'Budsjettbeløpet vil øke periodisk',
+    'auto_budget_adjusted_icon'                 => 'The budget amount will increase periodically and will correct for overspending',
     'remove_budgeted_amount'                    => 'Fjern budsjettert beløp i :currency',
 
     // bills:
@@ -2292,6 +2294,7 @@ return [
     'budgeted'                                  => 'Budsjettert',
     'period'                                    => 'Periode',
     'balance'                                   => 'Saldo',
+    'in_out_period'                             => 'In + out this period',
     'sum'                                       => 'Sum',
     'summary'                                   => 'Oppsummering',
     'average'                                   => 'Gjennomsnitt',

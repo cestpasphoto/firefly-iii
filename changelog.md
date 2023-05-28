@@ -2,6 +2,70 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v6.0.11 - 2023-05-28
+
+### Added
+- 🇰🇷 Korean translations!
+- A new "adjusted" auto-budget type that will correct itself after spending. [Read more](https://docs.firefly-iii.org/firefly-iii/financial-concepts/organizing/#adjusted-and-correct-for-overspending)
+- [Issue 6631](https://github.com/firefly-iii/firefly-iii/issues/6631) Can now link withdrawals and deposits to piggy banks, thanks @ChrisWin22!
+
+### Changed
+- "Balance" is now called "In + out this period" so it's more clear what it means.
+
+### Removed
+- Some superfluous logging.
+
+### Fixed
+- An intermittent issue came up where people would suffer from badly rounded numbers.
+  The root cause has been fixed. Open a discussion if this affects you, a fix for your data is available.
+- The API cron job would not run all available cron commands.
+- Debug page would always report midnight
+- [Issue 7514](https://github.com/firefly-iii/firefly-iii/issues/7514) DB error when upgrading to 6.0.10
+- [Issue 7516](https://github.com/firefly-iii/firefly-iii/issues/7516) Webhook: wrong JSON transaction amount
+- [Issue 7522](https://github.com/firefly-iii/firefly-iii/issues/7522) Time related events cause a timeout
+- [Issue 7541](https://github.com/firefly-iii/firefly-iii/issues/7541) Login screen display glitch
+- [Issue 7549](https://github.com/firefly-iii/firefly-iii/issues/7549) Account creation duplicate checking fails for German umlaut
+- [Issue 7546](https://github.com/firefly-iii/firefly-iii/issues/7546) Version link doesn't work
+- [Issue 7547](https://github.com/firefly-iii/firefly-iii/issues/7547) Rule fails to convert "Withdrawal from X to Y" to "Transfer from Y to X"
+
+### API
+- [Issue 7505](https://github.com/firefly-iii/firefly-iii/issues/7505) Several API schema dates have been fixed, thanks @nagyv!
+
+## v6.0.10 - 2023-05-14
+
+### Added
+- The debug screen will also report on the build version of the BASE image.
+
+### Changed
+- Health check will also check if the database is up.
+- [Issue 7461](https://github.com/firefly-iii/firefly-iii/issues/7461) MFA field will now autofocus, thanks @eandersons!
+
+### Removed
+- IBAN check no longer triggers on empty IBANs
+
+### Fixed
+- Account validation when you only submit an IBAN.
+- [Issue 7478](https://github.com/firefly-iii/firefly-iii/issues/7478) [issue 7457](https://github.com/firefly-iii/firefly-iii/issues/7457) Various fixes in budget limit and available amount management.
+- [Issue 7446](https://github.com/firefly-iii/firefly-iii/issues/7446) Bills "Next expected match" was incorrect
+- [Issue 7456](https://github.com/firefly-iii/firefly-iii/issues/7456) Missing date calculation fields.
+- [Issue 7448](https://github.com/firefly-iii/firefly-iii/issues/7448) [issue 7444](https://github.com/firefly-iii/firefly-iii/issues/7444) Dark mode bad CSS
+
+## 6.0.9 - 2023-04-29
+
+### Added
+- Better length validation for text fields.
+
+### Changed
+- Better calculation of available budget
+
+### Fixed
+- [Issue 7377](https://github.com/firefly-iii/firefly-iii/issues/7377) Tag search was broken
+- [Issue 7389](https://github.com/firefly-iii/firefly-iii/issues/7389) Bug in charts
+- [Issue 7394](https://github.com/firefly-iii/firefly-iii/issues/7394) unique iban check was broken
+- [Issue 7427](https://github.com/firefly-iii/firefly-iii/issues/7427) API would not accept page 18 and up.
+- [Issue 7410](https://github.com/firefly-iii/firefly-iii/issues/7410) Various dark mode color fixes
+- Old documentation links fixed by @mindlessroman and @noxonad!
+
 ## 6.0.8 - 2023-04-16
 
 ### Added

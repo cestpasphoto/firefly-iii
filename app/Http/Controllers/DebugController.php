@@ -34,8 +34,8 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 use Monolog\Handler\RotatingFileHandler;
 
 /**
@@ -118,17 +118,36 @@ class DebugController extends Controller
     public function index(Request $request)
     {
         // basic scope information:
-        $now               = today(config('app.timezone'))->format('Y-m-d H:i:s e');
+        $now               = now(config('app.timezone'))->format('Y-m-d H:i:s e');
         $buildNr           = '(unknown)';
         $buildDate         = '(unknown)';
+        $baseBuildNr       = '(unknown)';
+        $baseBuildDate     = '(unknown)';
         $expectedDBversion = config('firefly.db_version');
         $foundDBversion    = FireflyConfig::get('db_version', 1)->data;
-        if (file_exists('/var/www/counter-main.txt')) {
-            $buildNr = trim(file_get_contents('/var/www/counter-main.txt'));
+        try {
+            if (file_exists('/var/www/counter-main.txt')) {
+                $buildNr = trim(file_get_contents('/var/www/counter-main.txt'));
+            }
+        } catch (Exception $e) { // generic catch for open basedir.
+            Log::debug('Could not check counter.');
+            Log::warning($e->getMessage());
         }
-        if (file_exists('/var/www/build-date-main.txt')) {
-            $buildDate = trim(file_get_contents('/var/www/build-date-main.txt'));
+        try {
+            if (file_exists('/var/www/build-date-main.txt')) {
+                $buildDate = trim(file_get_contents('/var/www/build-date-main.txt'));
+            }
+        } catch (Exception $e) { // generic catch for open basedir.
+            Log::debug('Could not check date.');
+            Log::warning($e->getMessage());
         }
+        if ('' !== (string)env('BASE_IMAGE_BUILD')) {
+            $baseBuildNr = env('BASE_IMAGE_BUILD');
+        }
+        if ('' !== (string)env('BASE_IMAGE_DATE')) {
+            $baseBuildDate = env('BASE_IMAGE_DATE');
+        }
+
         $phpVersion = PHP_VERSION;
         $phpOs      = PHP_OS;
 
@@ -220,6 +239,8 @@ class DebugController extends Controller
                 'loginProvider',
                 'buildNr',
                 'buildDate',
+                'baseBuildNr',
+                'baseBuildDate',
                 'bcscale',
                 'userAgent',
                 'displayErrors',

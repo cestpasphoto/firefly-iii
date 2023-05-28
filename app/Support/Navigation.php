@@ -66,6 +66,14 @@ class Navigation
             'yearly'    => 'addYears',
             '1Y'        => 'addYears',
             'custom'    => 'addMonths', // custom? just add one month.
+            // last X periods? Jump the relevant month / quarter / year
+            'last7'     => 'addDays',
+            'last30'    => 'addMonths',
+            'last90'    => 'addMonths',
+            'last365'   => 'addYears',
+            'MTD'       => 'addMonths',
+            'QTD'       => 'addMonths',
+            'YTD'       => 'addYears',
         ];
         $modifierMap = [
             '3W'        => 3,
@@ -74,6 +82,9 @@ class Navigation
             'quarterly' => 3,
             '6M'        => 6,
             'half-year' => 6,
+            'last7'     => 7,
+            'last90'    => 3,
+            'QTD'       => 3,
         ];
 
         if (!array_key_exists($repeatFreq, $functionMap)) {
@@ -284,6 +295,23 @@ class Navigation
 
             return $currentEnd;
         }
+
+        $result = match ($repeatFreq) {
+            'last7' => $currentEnd->addDays(7)->startOfDay(),
+            'last30' => $currentEnd->addDays(30)->startOfDay(),
+            'last90' => $currentEnd->addDays(90)->startOfDay(),
+            'last365' => $currentEnd->addDays(365)->startOfDay(),
+            'MTD' => $currentEnd->startOfMonth()->startOfDay(),
+            'QTD' => $currentEnd->firstOfQuarter()->startOfDay(),
+            'YTD' => $currentEnd->startOfYear()->startOfDay(),
+            default => null,
+        };
+        if (null !== $result) {
+            return $result;
+        }
+        unset($result);
+
+
         if (!array_key_exists($repeatFreq, $functionMap)) {
             Log::error(sprintf('Cannot do endOfPeriod for $repeat_freq "%s"', $repeatFreq));
 

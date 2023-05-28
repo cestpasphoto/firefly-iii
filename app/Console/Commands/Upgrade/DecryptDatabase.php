@@ -1,8 +1,8 @@
 <?php
 
-/**
+/*
  * DecryptDatabase.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2023 james@firefly-iii.org
  *
  * This file is part of Firefly III (https://github.com/firefly-iii).
  *
@@ -22,7 +22,7 @@
 
 declare(strict_types=1);
 
-namespace FireflyIII\Console\Commands;
+namespace FireflyIII\Console\Commands\Upgrade;
 
 use Crypt;
 use DB;
@@ -30,8 +30,8 @@ use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Models\Preference;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Encryption\DecryptException;
-use JsonException;
 use Illuminate\Support\Facades\Log;
+use JsonException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use stdClass;
@@ -89,6 +89,81 @@ class DecryptDatabase extends Command
 
     /**
      * @param  string  $table
+     * @param  string  $field
+     */
+    private function decryptField(string $table, string $field): void
+    {
+        $rows = DB::table($table)->get(['id', $field]);
+        /** @var stdClass $row */
+        foreach ($rows as $row) {
+            $this->decryptRow($table, $field, $row);
+        }
+    }
+
+    /**
+     * @param  int  $id
+     * @param  string  $value
+     */
+    private function decryptPreferencesRow(int $id, string $value): void
+    {
+        // try to json_decrypt the value.
+        try {
+            $newValue = json_decode($value, true, 512, JSON_THROW_ON_ERROR) ?? $value;
+        } catch (JsonException $e) {
+            $message = sprintf('Could not JSON decode preference row #%d: %s. This does not have to be a problem.', $id, $e->getMessage());
+            $this->error($message);
+            app('log')->warning($message);
+            app('log')->warning($value);
+            app('log')->warning($e->getTraceAsString());
+
+            return;
+        }
+
+        /** @var Preference $object */
+        $object = Preference::find((int)$id);
+        if (null !== $object) {
+            $object->data = $newValue;
+            $object->save();
+        }
+    }
+
+    /**
+     * @param  string  $table
+     * @param  string  $field
+     * @param  stdClass  $row
+     */
+    private function decryptRow(string $table, string $field, stdClass $row): void
+    {
+        $original = $row->$field;
+        if (null === $original) {
+            return;
+        }
+        $id    = (int)$row->id;
+        $value = '';
+
+        try {
+            $value = $this->tryDecrypt($original);
+        } catch (FireflyException $e) {
+            $message = sprintf('Could not decrypt field "%s" in row #%d of table "%s": %s', $field, $id, $table, $e->getMessage());
+            $this->error($message);
+            Log::error($message);
+            Log::error($e->getTraceAsString());
+        }
+
+        // A separate routine for preferences table:
+        if ('preferences' === $table) {
+            $this->decryptPreferencesRow($id, $value);
+
+            return;
+        }
+
+        if ($value !== $original) {
+            DB::table($table)->where('id', $id)->update([$field => $value]);
+        }
+    }
+
+    /**
+     * @param  string  $table
      * @param  array  $fields
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -133,54 +208,6 @@ class DecryptDatabase extends Command
     }
 
     /**
-     * @param  string  $table
-     * @param  string  $field
-     */
-    private function decryptField(string $table, string $field): void
-    {
-        $rows = DB::table($table)->get(['id', $field]);
-        /** @var stdClass $row */
-        foreach ($rows as $row) {
-            $this->decryptRow($table, $field, $row);
-        }
-    }
-
-    /**
-     * @param  string  $table
-     * @param  string  $field
-     * @param  stdClass  $row
-     */
-    private function decryptRow(string $table, string $field, stdClass $row): void
-    {
-        $original = $row->$field;
-        if (null === $original) {
-            return;
-        }
-        $id    = (int)$row->id;
-        $value = '';
-
-        try {
-            $value = $this->tryDecrypt($original);
-        } catch (FireflyException $e) {
-            $message = sprintf('Could not decrypt field "%s" in row #%d of table "%s": %s', $field, $id, $table, $e->getMessage());
-            $this->error($message);
-            Log::error($message);
-            Log::error($e->getTraceAsString());
-        }
-
-        // A separate routine for preferences table:
-        if ('preferences' === $table) {
-            $this->decryptPreferencesRow($id, $value);
-
-            return;
-        }
-
-        if ($value !== $original) {
-            DB::table($table)->where('id', $id)->update([$field => $value]);
-        }
-    }
-
-    /**
      * Tries to decrypt data. Will only throw an exception when the MAC is invalid.
      *
      * @param  mixed  $value
@@ -199,32 +226,5 @@ class DecryptDatabase extends Command
         }
 
         return $value;
-    }
-
-    /**
-     * @param  int  $id
-     * @param  string  $value
-     */
-    private function decryptPreferencesRow(int $id, string $value): void
-    {
-        // try to json_decrypt the value.
-        try {
-            $newValue = json_decode($value, true, 512, JSON_THROW_ON_ERROR) ?? $value;
-        } catch (JsonException $e) {
-            $message = sprintf('Could not JSON decode preference row #%d: %s. This does not have to be a problem.', $id, $e->getMessage());
-            $this->error($message);
-            app('log')->warning($message);
-            app('log')->warning($value);
-            app('log')->warning($e->getTraceAsString());
-
-            return;
-        }
-
-        /** @var Preference $object */
-        $object = Preference::find((int)$id);
-        if (null !== $object) {
-            $object->data = $newValue;
-            $object->save();
-        }
     }
 }

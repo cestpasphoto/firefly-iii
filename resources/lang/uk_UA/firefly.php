@@ -316,7 +316,7 @@ return [
     'update_new_version_alert'             => 'Доступна нова версія Firefly III. Ви працюєте з :your_version, остання версія :new_version яка була випущена на :date.',
     'update_version_beta'                  => 'Це бета-версія. Ви можете зіткнутися з проблемами.',
     'update_version_alpha'                 => 'Це альфа-версія. Може містити баги та недоліки.',
-    'update_current_version_alert'         => 'Ви працюєте в найоновішій версії :version',
+    'update_current_version_alert'         => 'Ви працюєте в найновішій версії :version.',
     'update_newer_version_alert'           => 'Ви працюєте з :your_version версією, яка є новішою за останній реліз, :new_version.',
     'update_check_error'                   => 'Сталася помилка під час перевірки наявності оновлень: :error',
     'unknown_error'                        => 'Невідома помилка. Вибачте.',
@@ -1706,6 +1706,7 @@ return [
     'auto_budget_none'                          => 'No auto-budget',
     'auto_budget_reset'                         => 'Set a fixed amount every period',
     'auto_budget_rollover'                      => 'Add an amount every period',
+    'auto_budget_adjusted'                      => 'Add an amount every period and correct for overspending',
     'auto_budget_period_daily'                  => 'Daily',
     'auto_budget_period_weekly'                 => 'Weekly',
     'auto_budget_period_monthly'                => 'Monthly',
@@ -1715,6 +1716,7 @@ return [
     'auto_budget_help'                          => 'You can read more about this feature in the help. Click the top-right (?) icon.',
     'auto_budget_reset_icon'                    => 'This budget will be set periodically',
     'auto_budget_rollover_icon'                 => 'The budget amount will increase periodically',
+    'auto_budget_adjusted_icon'                 => 'The budget amount will increase periodically and will correct for overspending',
     'remove_budgeted_amount'                    => 'Remove budgeted amount in :currency',
 
     // bills:
@@ -2292,6 +2294,7 @@ return [
     'budgeted'                                  => 'Budgeted',
     'period'                                    => 'Period',
     'balance'                                   => 'Balance',
+    'in_out_period'                             => 'In + out this period',
     'sum'                                       => 'Sum',
     'summary'                                   => 'Summary',
     'average'                                   => 'Average',
