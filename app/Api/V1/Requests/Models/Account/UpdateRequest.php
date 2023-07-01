@@ -33,7 +33,6 @@ use FireflyIII\Support\Request\AppendsLocationData;
 use FireflyIII\Support\Request\ChecksLogin;
 use FireflyIII\Support\Request\ConvertsDataTypes;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class UpdateRequest
@@ -77,6 +76,7 @@ class UpdateRequest extends FormRequest
             'liability_start_date'    => ['liability_start_date', 'date'],
         ];
         $data   = $this->getAllData($fields);
+
         return $this->appendLocationData($data, null);
     }
 
@@ -109,7 +109,7 @@ class UpdateRequest extends FormRequest
             'include_net_worth'    => [new IsBoolean()],
             'account_role'         => sprintf('in:%s|nullable|required_if:type,asset', $accountRoles),
             'credit_card_type'     => sprintf('in:%s|nullable|required_if:account_role,ccAsset', $ccPaymentTypes),
-            'monthly_payment_date' => 'date'.'|nullable|required_if:account_role,ccAsset|required_if:credit_card_type,monthlyFull',
+            'monthly_payment_date' => 'date' . '|nullable|required_if:account_role,ccAsset|required_if:credit_card_type,monthlyFull',
             'liability_type'       => 'required_if:type,liability|in:loan,debt,mortgage',
             'liability_direction'  => 'required_if:type,liability|in:credit,debit',
             'interest'             => 'required_if:type,liability|between:0,100|numeric',

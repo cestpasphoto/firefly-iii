@@ -36,7 +36,7 @@ trait ConvertsDataTypes
     /**
      * Return integer value.
      *
-     * @param  string  $field
+     * @param string $field
      *
      * @return int
      */
@@ -49,8 +49,8 @@ trait ConvertsDataTypes
      * Abstract method that always exists in the Request classes that use this
      * trait, OR a stub needs to be added by any other class that uses this train.
      *
-     * @param  string  $key
-     * @param  mixed|null  $default
+     * @param string     $key
+     * @param mixed|null $default
      * @return mixed
      */
     abstract public function get(string $key, mixed $default = null): mixed;
@@ -58,7 +58,7 @@ trait ConvertsDataTypes
     /**
      * Return string value.
      *
-     * @param  string  $field
+     * @param string $field
      *
      * @return string
      */
@@ -72,8 +72,8 @@ trait ConvertsDataTypes
     }
 
     /**
-     * @param  string|null  $string
-     * @param  bool  $keepNewlines
+     * @param string|null $string
+     * @param bool        $keepNewlines
      *
      * @return string|null
      */
@@ -155,7 +155,7 @@ trait ConvertsDataTypes
     /**
      * Return string value with newlines.
      *
-     * @param  string  $field
+     * @param string $field
      *
      * @return string
      */
@@ -165,7 +165,7 @@ trait ConvertsDataTypes
     }
 
     /**
-     * @param  mixed  $array
+     * @param mixed $array
      *
      * @return array|null
      */
@@ -185,7 +185,7 @@ trait ConvertsDataTypes
     }
 
     /**
-     * @param  string|null  $value
+     * @param string|null $value
      *
      * @return bool
      */
@@ -208,52 +208,6 @@ trait ConvertsDataTypes
         }
 
         return false;
-    }
-
-    /**
-     * Return floating value.
-     *
-     * @param  string  $field
-     *
-     * @return float|null
-     */
-    protected function convertFloat(string $field): ?float
-    {
-        $res = $this->get($field);
-        if (null === $res) {
-            return null;
-        }
-
-        return (float)$res;
-    }
-
-    /**
-     * @param  string|null  $string
-     *
-     * @return Carbon|null
-     */
-    protected function dateFromValue(?string $string): ?Carbon
-    {
-        if (null === $string) {
-            return null;
-        }
-        if ('' === $string) {
-            return null;
-        }
-        $carbon = null;
-        try {
-            $carbon = new Carbon($string, config('app.timezone'));
-        } catch (InvalidFormatException $e) {
-            // @ignoreException
-        }
-        if (null === $carbon) {
-            Log::debug(sprintf('Invalid date: %s', $string));
-
-            return null;
-        }
-        Log::debug(sprintf('Date object: %s (%s)', $carbon->toW3cString(), $carbon->getTimezone()));
-
-        return $carbon;
     }
 
     protected function convertDateTime(?string $string): ?Carbon
@@ -295,10 +249,56 @@ trait ConvertsDataTypes
     }
 
     /**
+     * Return floating value.
+     *
+     * @param string $field
+     *
+     * @return float|null
+     */
+    protected function convertFloat(string $field): ?float
+    {
+        $res = $this->get($field);
+        if (null === $res) {
+            return null;
+        }
+
+        return (float)$res;
+    }
+
+    /**
+     * @param string|null $string
+     *
+     * @return Carbon|null
+     */
+    protected function dateFromValue(?string $string): ?Carbon
+    {
+        if (null === $string) {
+            return null;
+        }
+        if ('' === $string) {
+            return null;
+        }
+        $carbon = null;
+        try {
+            $carbon = new Carbon($string, config('app.timezone'));
+        } catch (InvalidFormatException $e) {
+            // @ignoreException
+        }
+        if (null === $carbon) {
+            Log::debug(sprintf('Invalid date: %s', $string));
+
+            return null;
+        }
+        Log::debug(sprintf('Date object: %s (%s)', $carbon->toW3cString(), $carbon->getTimezone()));
+
+        return $carbon;
+    }
+
+    /**
      * Returns all data in the request, or omits the field if not set,
      * according to the config from the request. This is the way.
      *
-     * @param  array  $fields
+     * @param array $fields
      *
      * @return array
      */
@@ -319,7 +319,7 @@ trait ConvertsDataTypes
      * Abstract method that always exists in the Request classes that use this
      * trait, OR a stub needs to be added by any other class that uses this train.
      *
-     * @param  mixed  $key
+     * @param mixed $key
      * @return mixed
      */
     abstract public function has($key);
@@ -327,7 +327,7 @@ trait ConvertsDataTypes
     /**
      * Return date or NULL.
      *
-     * @param  string  $field
+     * @param string $field
      *
      * @return Carbon|null
      */
@@ -349,7 +349,7 @@ trait ConvertsDataTypes
     /**
      * Parse to integer
      *
-     * @param  string|null  $string
+     * @param string|null $string
      *
      * @return int|null
      */
@@ -368,7 +368,7 @@ trait ConvertsDataTypes
     /**
      * Return integer value, or NULL when it's not set.
      *
-     * @param  string  $field
+     * @param string $field
      *
      * @return int|null
      */

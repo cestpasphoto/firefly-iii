@@ -47,7 +47,7 @@ class OperationsRepository implements OperationsRepositoryInterface
      * A method that returns the amount of money budgeted per day for this budget,
      * on average.
      *
-     * @param  Budget  $budget
+     * @param Budget $budget
      *
      * @return string
      */
@@ -78,10 +78,10 @@ class OperationsRepository implements OperationsRepositoryInterface
      * This method is being used to generate the budget overview in the year/multi-year report. Its used
      * in both the year/multi-year budget overview AND in the accompanying chart.
      *
-     * @param  Collection  $budgets
-     * @param  Collection  $accounts
-     * @param  Carbon  $start
-     * @param  Carbon  $end
+     * @param Collection $budgets
+     * @param Collection $accounts
+     * @param Carbon     $start
+     * @param Carbon     $end
      *
      * @return array
      * @deprecated
@@ -129,10 +129,10 @@ class OperationsRepository implements OperationsRepositoryInterface
      * which have the specified budget set to them. It's grouped per currency, with as few details in the array
      * as possible. Amounts are always negative.
      *
-     * @param  Carbon  $start
-     * @param  Carbon  $end
-     * @param  Collection|null  $accounts
-     * @param  Collection|null  $budgets
+     * @param Carbon          $start
+     * @param Carbon          $end
+     * @param Collection|null $accounts
+     * @param Collection|null $budgets
      *
      * @return array
      */
@@ -201,9 +201,9 @@ class OperationsRepository implements OperationsRepositoryInterface
     }
 
     /**
-     * @param  User|Authenticatable|null  $user
+     * @param User|Authenticatable|null $user
      */
-    public function setUser(User|Authenticatable|null $user): void
+    public function setUser(User | Authenticatable | null $user): void
     {
         if (null !== $user) {
             $this->user = $user;
@@ -222,10 +222,10 @@ class OperationsRepository implements OperationsRepositoryInterface
     }
 
     /**
-     * @param  Collection  $budgets
-     * @param  Collection  $accounts
-     * @param  Carbon  $start
-     * @param  Carbon  $end
+     * @param Collection $budgets
+     * @param Collection $accounts
+     * @param Carbon     $start
+     * @param Carbon     $end
      *
      * @return array
      * @deprecated
@@ -283,19 +283,19 @@ class OperationsRepository implements OperationsRepositoryInterface
     }
 
     /**
-     * @param  Carbon  $start
-     * @param  Carbon  $end
-     * @param  Collection|null  $accounts
-     * @param  Collection|null  $budgets
-     * @param  TransactionCurrency|null  $currency
+     * @param Carbon                   $start
+     * @param Carbon                   $end
+     * @param Collection|null          $accounts
+     * @param Collection|null          $budgets
+     * @param TransactionCurrency|null $currency
      * @return array
      * @deprecated
      */
     public function sumExpenses(
-        Carbon $start,
-        Carbon $end,
-        ?Collection $accounts = null,
-        ?Collection $budgets = null,
+        Carbon               $start,
+        Carbon               $end,
+        ?Collection          $accounts = null,
+        ?Collection          $budgets = null,
         ?TransactionCurrency $currency = null
     ): array {
         //Log::debug(sprintf('Now in %s', __METHOD__));
@@ -390,9 +390,9 @@ class OperationsRepository implements OperationsRepositoryInterface
      * For now, simply refer to whichever repository holds this function.
      * TODO perhaps better in the future.
      *
-     * @param  Budget  $budget
-     * @param  Carbon|null  $start
-     * @param  Carbon|null  $end
+     * @param Budget      $budget
+     * @param Carbon|null $start
+     * @param Carbon|null $end
      *
      * @return Collection
      */

@@ -67,28 +67,115 @@ class UpgradeFireflyInstructions extends Command
     }
 
     /**
+     * Render upgrade instructions.
+     */
+    private function updateInstructions(): void
+    {
+        /** @var string $version */
+        $version = config('firefly.version');
+        $config  = config('upgrade.text.upgrade');
+        $text    = '';
+        foreach (array_keys($config) as $compare) {
+            // if string starts with:
+            if (\str_starts_with($version, $compare)) {
+                $text = $config[$compare];
+            }
+        }
+
+        $this->newLine();
+        $this->showLogo();
+        $this->newLine();
+        $this->showLine();
+
+        $this->boxed('');
+        if (null === $text || '' === $text) {
+            $this->boxed(sprintf('Thank you for updating to Firefly III, v%s', $version));
+            $this->boxedInfo('There are no extra upgrade instructions.');
+            $this->boxed('Firefly III should be ready for use.');
+            $this->boxed('');
+            $this->showLine();
+
+            return;
+        }
+
+        $this->boxed(sprintf('Thank you for updating to Firefly III, v%s!', $version));
+        $this->boxedInfo($text);
+        $this->boxed('');
+        $this->showLine();
+    }
+
+    /**
+     * The logo takes up 8 lines of code. So 8 colors can be used.
+     *
+     * @return void
+     */
+    private function showLogo(): void
+    {
+        $today = date('m-d');
+        $month = date('m');
+        // variation in colors and effects just because I can!
+        // default is Ukraine flag:
+        $colors = ['blue', 'blue', 'blue', 'yellow', 'yellow', 'yellow', 'default', 'default'];
+
+        // 5th of May is Dutch liberation day and 29th of April is Dutch King's Day and September 17 is my birthday.
+        if ('05-01' === $today || '04-29' === $today || '09-17' === $today) {
+            $colors = ['red', 'red', 'red', 'white', 'white', 'blue', 'blue', 'blue'];
+        }
+
+        // National Coming Out Day, International Day Against Homophobia, Biphobia and Transphobia and Pride Month
+        if ('10-11' === $today || '05-17' === $today || '06' === $month) {
+            $colors = ['red', 'bright-red', 'yellow', 'green', 'blue', 'magenta', 'default', 'default'];
+        }
+
+        // International Transgender Day of Visibility
+        if ('03-31' === $today) {
+            $colors = ['bright-blue', 'bright-red', 'white', 'white', 'bright-red', 'bright-blue', 'default', 'default'];
+        }
+
+        $this->line(sprintf('<fg=%s>              ______ _           __ _            _____ _____ _____  </>', $colors[0]));
+        $this->line(sprintf('<fg=%s>             |  ____(_)         / _| |          |_   _|_   _|_   _| </>', $colors[1]));
+        $this->line(sprintf('<fg=%s>             | |__   _ _ __ ___| |_| |_   _       | |   | |   | |   </>', $colors[2]));
+        $this->line(sprintf('<fg=%s>             |  __| | | \'__/ _ \  _| | | | |      | |   | |   | |   </>', $colors[3]));
+        $this->line(sprintf('<fg=%s>             | |    | | | |  __/ | | | |_| |     _| |_ _| |_ _| |_  </>', $colors[4]));
+        $this->line(sprintf('<fg=%s>             |_|    |_|_|  \___|_| |_|\__, |    |_____|_____|_____| </>', $colors[5]));
+        $this->line(sprintf('<fg=%s>                                       __/ |                        </>', $colors[6]));
+        $this->line(sprintf('<fg=%s>                                      |___/                         </>', $colors[7]));
+    }
+
+    /**
+     * Show a line.
+     */
+    private function showLine(): void
+    {
+        $line = '+';
+        $line .= str_repeat('-', 78);
+        $line .= '+';
+        $this->line($line);
+    }
+
+    /**
      * Show a nice box.
      *
-     * @param  string  $text
+     * @param string $text
      */
     private function boxed(string $text): void
     {
         $parts = explode("\n", wordwrap($text));
         foreach ($parts as $string) {
-            $this->line('| '.sprintf('%-77s', $string).'|');
+            $this->line('| ' . sprintf('%-77s', $string) . '|');
         }
     }
 
     /**
      * Show a nice info box.
      *
-     * @param  string  $text
+     * @param string $text
      */
     private function boxedInfo(string $text): void
     {
         $parts = explode("\n", wordwrap($text));
         foreach ($parts as $string) {
-            $this->info('| '.sprintf('%-77s', $string).'|');
+            $this->info('| ' . sprintf('%-77s', $string) . '|');
         }
     }
 
@@ -107,6 +194,9 @@ class UpgradeFireflyInstructions extends Command
                 $text = $config[$compare];
             }
         }
+        $this->newLine();
+        $this->showLogo();
+        $this->newLine();
         $this->showLine();
         $this->boxed('');
         if (null === $text || '' === $text) {
@@ -120,51 +210,6 @@ class UpgradeFireflyInstructions extends Command
         }
 
         $this->boxed(sprintf('Thank you for installing Firefly III, v%s!', $version));
-        $this->boxedInfo($text);
-        $this->boxed('');
-        $this->showLine();
-    }
-
-    /**
-     * Show a line.
-     */
-    private function showLine(): void
-    {
-        $line = '+';
-        $line .= str_repeat('-', 78);
-        $line .= '+';
-        $this->line($line);
-    }
-
-    /**
-     * Render upgrade instructions.
-     */
-    private function updateInstructions(): void
-    {
-        /** @var string $version */
-        $version = config('firefly.version');
-        $config  = config('upgrade.text.upgrade');
-        $text    = '';
-        foreach (array_keys($config) as $compare) {
-            // if string starts with:
-            if (\str_starts_with($version, $compare)) {
-                $text = $config[$compare];
-            }
-        }
-
-        $this->showLine();
-        $this->boxed('');
-        if (null === $text || '' === $text) {
-            $this->boxed(sprintf('Thank you for updating to Firefly III, v%s', $version));
-            $this->boxedInfo('There are no extra upgrade instructions.');
-            $this->boxed('Firefly III should be ready for use.');
-            $this->boxed('');
-            $this->showLine();
-
-            return;
-        }
-
-        $this->boxed(sprintf('Thank you for updating to Firefly III, v%s!', $version));
         $this->boxedInfo($text);
         $this->boxed('');
         $this->showLine();

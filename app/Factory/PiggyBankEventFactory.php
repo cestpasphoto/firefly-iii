@@ -25,7 +25,6 @@ namespace FireflyIII\Factory;
 
 use FireflyIII\Models\PiggyBank;
 use FireflyIII\Models\TransactionJournal;
-use FireflyIII\Models\TransactionType;
 use FireflyIII\Repositories\PiggyBank\PiggyBankRepositoryInterface;
 use Illuminate\Support\Facades\Log;
 
@@ -37,8 +36,8 @@ use Illuminate\Support\Facades\Log;
 class PiggyBankEventFactory
 {
     /**
-     * @param  TransactionJournal  $journal
-     * @param  PiggyBank|null  $piggyBank
+     * @param TransactionJournal $journal
+     * @param PiggyBank|null     $piggyBank
      */
     public function create(TransactionJournal $journal, ?PiggyBank $piggyBank): void
     {

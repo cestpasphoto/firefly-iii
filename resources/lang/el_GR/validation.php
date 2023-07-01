@@ -61,6 +61,10 @@ return [
     'invalid_selection'              => 'Η επιλογή σας δεν είναι έγκυρη.',
     'belongs_user'                   => 'Αυτή η τιμή δεν είναι έγκυρη για αυτό το πεδίο.',
     'at_least_one_transaction'       => 'Απαιτείται τουλάχιστο μία συναλλαγή.',
+    'recurring_transaction_id'       => 'Need at least one transaction.',
+    'need_id_to_match'               => 'You need to submit this entry with an ID for the API to be able to match it.',
+    'too_many_unmatched'             => 'Too many submitted transactions cannot be matched to their respective database entries. Make sure existing entries have a valid ID.',
+    'id_does_not_match'              => 'Submitted ID #:id does not match expected ID. Make sure it matches or omit the field.',
     'at_least_one_repetition'        => 'Απαιτείται τουλάχιστον μία επανάληψη.',
     'require_repeat_until'           => 'Απαιτείται είτε ένας αριθμός επαναλήψεων, ή μία ημερομηνία λήξης (repeat_until). Όχι και τα δύο.',
     'require_currency_info'          => 'Το περιεχόμενο αυτού του πεδίου δεν είναι έγκυρη χωρίς νομισματικές πληροφορίες.',
@@ -230,17 +234,20 @@ return [
 
     // validation of accounts:
     'withdrawal_source_need_data' => 'Πρέπει να λάβετε ένα έγκυρο αναγνωριστικό λογαριασμού προέλευσης και/ή ένα έγκυρο όνομα λογαριασμού προέλευσης για να συνεχίσετε.',
-    'withdrawal_source_bad_data'  => 'Δεν ήταν δυνατή η εύρεση ενός έγκυρου λογαριασμού προέλευσης κατά την αναζήτηση του αναγνωριστικού ID ":id" ή του ονόματος ":name".',
-    'withdrawal_dest_need_data'   => 'Πρέπει να λάβετε ένα έγκυρο αναγνωριστικό ID λογαριασμού προέλευσης και/ή ένα έγκυρο όνομα λογαριασμού προορισμού για να συνεχίσετε.',
+    'withdrawal_source_bad_data'  => '[a] Could not find a valid source account when searching for ID ":id" or name ":name".',
+    'withdrawal_dest_need_data'   => '[a] Need to get a valid destination account ID and/or valid destination account name to continue.',
     'withdrawal_dest_bad_data'    => 'Δεν ήταν δυνατή η εύρεση ενός έγκυρου λογαριασμού προορισμού κατά την αναζήτηση του αναγνωριστικού ID ":id" ή του ονόματος ":name".',
+
+    'withdrawal_dest_iban_exists' => 'This destination account IBAN is already in use by an asset account or a liability and cannot be used as a withdrawal destination.',
+    'deposit_src_iban_exists'     => 'This source account IBAN is already in use by an asset account or a liability and cannot be used as a deposit source.',
 
     'reconciliation_source_bad_data' => 'Could not find a valid reconciliation account when searching for ID ":id" or name ":name".',
 
-    'generic_source_bad_data' => 'Δεν ήταν δυνατή η εύρεση ενός έγκυρου λογαριασμού προέλευσης κατά την αναζήτηση του αναγνωριστικού ID ":id" ή του ονόματος ":name".',
+    'generic_source_bad_data' => '[e] Could not find a valid source account when searching for ID ":id" or name ":name".',
 
     'deposit_source_need_data' => 'Πρέπει να λάβετε ένα έγκυρο αναγνωριστικό ID λογαριασμού προέλευσης και/ή ένα έγκυρο όνομα λογαριασμού προέλευσης για να συνεχίσετε.',
-    'deposit_source_bad_data'  => 'Δεν ήταν δυνατή η εύρεση ενός έγκυρου λογαριασμού προέλευσης κατά την αναζήτηση του αναγνωριστικού ID ":id" ή του ονόματος ":name".',
-    'deposit_dest_need_data'   => 'Πρέπει να λάβετε ένα έγκυρο αναγνωριστικό ID λογαριασμού προορισμού και/ή ένα έγκυρο όνομα λογαριασμού προορισμού για να συνεχίσετε.',
+    'deposit_source_bad_data'  => '[b] Could not find a valid source account when searching for ID ":id" or name ":name".',
+    'deposit_dest_need_data'   => '[b] Need to get a valid destination account ID and/or valid destination account name to continue.',
     'deposit_dest_bad_data'    => 'Δεν ήταν δυνατή η εύρεση ενός έγκυρου λογαριασμού προορισμού κατά την αναζήτηση του αναγνωριστικού ID ":id" ή του ονόματος ":name".',
     'deposit_dest_wrong_type'  => 'O υποβεβλημένος λογαριασμός προέλευσης δεν είναι σωστού τύπου.',
 
@@ -257,14 +264,14 @@ return [
 
 
     'transfer_source_need_data' => 'Πρέπει να λάβετε ένα έγκυρο αναγνωριστικό λογαριασμού προέλευσης και/ή ένα έγκυρο όνομα λογαριασμού προέλευσης για να συνεχίσετε.',
-    'transfer_source_bad_data'  => 'Δεν ήταν δυνατή η εύρεση ενός έγκυρου λογαριασμού προέλευσης κατά την αναζήτηση του αναγνωριστικού ID ":id" ή του ονόματος ":name".',
-    'transfer_dest_need_data'   => 'Πρέπει να λάβετε ένα έγκυρο αναγνωριστικό ID λογαριασμού προορισμού και/ή ένα έγκυρο όνομα λογαριασμού προορισμού για να συνεχίσετε.',
+    'transfer_source_bad_data'  => '[c] Could not find a valid source account when searching for ID ":id" or name ":name".',
+    'transfer_dest_need_data'   => '[c] Need to get a valid destination account ID and/or valid destination account name to continue.',
     'transfer_dest_bad_data'    => 'Δεν ήταν δυνατή η εύρεση ενός έγκυρου λογαριασμού προορισμού κατά την αναζήτηση του αναγνωριστικού ID ":id" ή του ονόματος ":name".',
     'need_id_in_edit'           => 'Κάθε διαχωρισμός πρέπει να έχει transaction_journal_id (είτε έγκυρο αναγνωριστικό ID ή 0).',
 
     'ob_source_need_data'           => 'Πρέπει να λάβετε ένα έγκυρο αναγνωριστικό λογαριασμού προέλευσης και/ή ένα έγκυρο όνομα λογαριασμού προέλευσης για να συνεχίσετε.',
     'lc_source_need_data'           => 'Πρέπει να λάβετε ένα έγκυρο ID λογαριασμού προέλευσης για να συνεχίσετε.',
-    'ob_dest_need_data'             => 'Πρέπει να λάβετε ένα έγκυρο αναγνωριστικό ID λογαριασμού προορισμού και/ή ένα έγκυρο όνομα λογαριασμού προορισμού για να συνεχίσετε.',
+    'ob_dest_need_data'             => '[d] Need to get a valid destination account ID and/or valid destination account name to continue.',
     'ob_dest_bad_data'              => 'Δεν ήταν δυνατή η εύρεση ενός έγκυρου λογαριασμού προορισμού κατά την αναζήτηση του αναγνωριστικού ID ":id" ή του ονόματος ":name".',
     'reconciliation_either_account' => 'To submit a reconciliation, you must submit either a source or a destination account. Not both, not neither.',
 

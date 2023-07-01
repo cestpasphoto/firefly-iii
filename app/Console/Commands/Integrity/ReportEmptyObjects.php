@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace FireflyIII\Console\Commands\Integrity;
 
+use FireflyIII\Console\Commands\ShowsFriendlyMessages;
 use FireflyIII\Models\Account;
 use FireflyIII\Models\Budget;
 use FireflyIII\Models\Category;
@@ -35,6 +36,8 @@ use stdClass;
  */
 class ReportEmptyObjects extends Command
 {
+    use ShowsFriendlyMessages;
+
     /**
      * The console command description.
      *
@@ -55,61 +58,13 @@ class ReportEmptyObjects extends Command
      */
     public function handle(): int
     {
-        $start = microtime(true);
         $this->reportEmptyBudgets();
         $this->reportEmptyCategories();
         $this->reportEmptyTags();
         $this->reportAccounts();
         $this->reportBudgetLimits();
-        $end = round(microtime(true) - $start, 2);
-        $this->info(sprintf('Report on empty objects finished in %s seconds', $end));
 
         return 0;
-    }
-
-    /**
-     * Reports on accounts with no transactions.
-     */
-    private function reportAccounts(): void
-    {
-        $set = Account::leftJoin('transactions', 'transactions.account_id', '=', 'accounts.id')
-                      ->leftJoin('users', 'accounts.user_id', '=', 'users.id')
-                      ->groupBy(['accounts.id', 'accounts.encrypted', 'accounts.name', 'accounts.user_id', 'users.email'])
-                      ->whereNull('transactions.account_id')
-                      ->get(
-                          ['accounts.id', 'accounts.encrypted', 'accounts.name', 'accounts.user_id', 'users.email']
-                      );
-
-        /** @var stdClass $entry */
-        foreach ($set as $entry) {
-            $line = 'User #%d (%s) has account #%d ("%s") which has no transactions.';
-            $line = sprintf($line, $entry->user_id, $entry->email, $entry->id, $entry->name);
-            $this->line($line);
-        }
-    }
-
-    /**
-     * Reports on budgets with no budget limits (which makes them pointless).
-     */
-    private function reportBudgetLimits(): void
-    {
-        $set = Budget::leftJoin('budget_limits', 'budget_limits.budget_id', '=', 'budgets.id')
-                     ->leftJoin('users', 'budgets.user_id', '=', 'users.id')
-                     ->groupBy(['budgets.id', 'budgets.name', 'budgets.encrypted', 'budgets.user_id', 'users.email'])
-                     ->whereNull('budget_limits.id')
-                     ->get(['budgets.id', 'budgets.name', 'budgets.user_id', 'budgets.encrypted', 'users.email']);
-
-        /** @var Budget $entry */
-        foreach ($set as $entry) {
-            $line = sprintf(
-                'User #%d (%s) has budget #%d ("%s") which has no budget limits.',
-                $entry->user_id,
-                $entry->email,
-                $entry->id,
-                $entry->name
-            );
-            $this->line($line);
-        }
     }
 
     /**
@@ -133,7 +88,7 @@ class ReportEmptyObjects extends Command
                 $entry->id,
                 $entry->name
             );
-            $this->line($line);
+            $this->friendlyWarning($line);
         }
     }
 
@@ -158,7 +113,7 @@ class ReportEmptyObjects extends Command
                 $entry->id,
                 $entry->name
             );
-            $this->line($line);
+            $this->friendlyWarning($line);
         }
     }
 
@@ -183,7 +138,52 @@ class ReportEmptyObjects extends Command
                 $entry->id,
                 $entry->tag
             );
-            $this->line($line);
+            $this->friendlyWarning($line);
+        }
+    }
+
+    /**
+     * Reports on accounts with no transactions.
+     */
+    private function reportAccounts(): void
+    {
+        $set = Account::leftJoin('transactions', 'transactions.account_id', '=', 'accounts.id')
+                      ->leftJoin('users', 'accounts.user_id', '=', 'users.id')
+                      ->groupBy(['accounts.id', 'accounts.encrypted', 'accounts.name', 'accounts.user_id', 'users.email'])
+                      ->whereNull('transactions.account_id')
+                      ->get(
+                          ['accounts.id', 'accounts.encrypted', 'accounts.name', 'accounts.user_id', 'users.email']
+                      );
+
+        /** @var stdClass $entry */
+        foreach ($set as $entry) {
+            $line = 'User #%d (%s) has account #%d ("%s") which has no transactions.';
+            $line = sprintf($line, $entry->user_id, $entry->email, $entry->id, $entry->name);
+            $this->friendlyWarning($line);
+        }
+    }
+
+    /**
+     * Reports on budgets with no budget limits (which makes them pointless).
+     */
+    private function reportBudgetLimits(): void
+    {
+        $set = Budget::leftJoin('budget_limits', 'budget_limits.budget_id', '=', 'budgets.id')
+                     ->leftJoin('users', 'budgets.user_id', '=', 'users.id')
+                     ->groupBy(['budgets.id', 'budgets.name', 'budgets.encrypted', 'budgets.user_id', 'users.email'])
+                     ->whereNull('budget_limits.id')
+                     ->get(['budgets.id', 'budgets.name', 'budgets.user_id', 'budgets.encrypted', 'users.email']);
+
+        /** @var Budget $entry */
+        foreach ($set as $entry) {
+            $line = sprintf(
+                'User #%d (%s) has budget #%d ("%s") which has no budget limits.',
+                $entry->user_id,
+                $entry->email,
+                $entry->id,
+                $entry->name
+            );
+            $this->friendlyWarning($line);
         }
     }
 }

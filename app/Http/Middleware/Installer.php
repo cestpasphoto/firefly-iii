@@ -42,8 +42,8 @@ class Installer
     /**
      * Handle an incoming request.
      *
-     * @param  Request  $request
-     * @param  Closure  $next
+     * @param Request $request
+     * @param Closure $next
      *
      * @return mixed
      *
@@ -117,7 +117,7 @@ class Installer
     /**
      * Is access denied error.
      *
-     * @param  string  $message
+     * @param string $message
      *
      * @return bool
      */
@@ -129,7 +129,7 @@ class Installer
     /**
      * Is no tables exist error.
      *
-     * @param  string  $message
+     * @param string $message
      *
      * @return bool
      */

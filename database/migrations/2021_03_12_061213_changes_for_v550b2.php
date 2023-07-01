@@ -40,7 +40,7 @@ class ChangesForV550b2 extends Migration
      */
     public function down(): void
     {
-        if(Schema::hasColumn('recurrences_transactions', 'transaction_type_id')) {
+        if (Schema::hasColumn('recurrences_transactions', 'transaction_type_id')) {
             try {
                 Schema::table(
                     'recurrences_transactions',
@@ -53,7 +53,7 @@ class ChangesForV550b2 extends Migration
                         }
                     }
                 );
-            } catch (QueryException|ColumnDoesNotExist $e) {
+            } catch (QueryException | ColumnDoesNotExist $e) {
                 Log::error(sprintf('Could not execute query: %s', $e->getMessage()));
                 Log::error('If the column or index already exists (see error), this is not an problem. Otherwise, please open a GitHub discussion.');
             }
@@ -68,7 +68,7 @@ class ChangesForV550b2 extends Migration
     public function up(): void
     {
         // expand recurrence transaction table
-        if(!Schema::hasColumn('recurrences_transactions', 'transaction_type_id')) {
+        if (!Schema::hasColumn('recurrences_transactions', 'transaction_type_id')) {
             try {
                 Schema::table(
                     'recurrences_transactions',

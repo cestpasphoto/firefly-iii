@@ -45,7 +45,7 @@ class ConvertToTransfer implements ActionInterface
     /**
      * TriggerInterface constructor.
      *
-     * @param  RuleAction  $action
+     * @param RuleAction $action
      */
     public function __construct(RuleAction $action)
     {
@@ -140,12 +140,42 @@ class ConvertToTransfer implements ActionInterface
     }
 
     /**
+     * @param int $journalId
+     * @return string
+     */
+    private function getSourceType(int $journalId): string
+    {
+        /** @var TransactionJournal $journal */
+        $journal = TransactionJournal::find($journalId);
+        if (null === $journal) {
+            Log::error(sprintf('Journal #%d does not exist. Cannot convert to transfer.', $journalId));
+            return '';
+        }
+        return (string)$journal->transactions()->where('amount', '<', 0)->first()?->account?->accountType?->type;
+    }
+
+    /**
+     * @param int $journalId
+     * @return string
+     */
+    private function getDestinationType(int $journalId): string
+    {
+        /** @var TransactionJournal $journal */
+        $journal = TransactionJournal::find($journalId);
+        if (null === $journal) {
+            Log::error(sprintf('Journal #%d does not exist. Cannot convert to transfer.', $journalId));
+            return '';
+        }
+        return (string)$journal->transactions()->where('amount', '>', 0)->first()?->account?->accountType?->type;
+    }
+
+    /**
      * A withdrawal is from Asset to Expense.
      * We replace the Expense with another asset.
      * So this replaces the destination
      *
-     * @param  TransactionJournal  $journal
-     * @param  Account  $opposing
+     * @param TransactionJournal $journal
+     * @param Account            $opposing
      *
      * @return bool
      * @throws FireflyException
@@ -183,11 +213,26 @@ class ConvertToTransfer implements ActionInterface
     }
 
     /**
+     * @param TransactionJournal $journal
+     * @return Account
+     * @throws FireflyException
+     */
+    private function getSourceAccount(TransactionJournal $journal): Account
+    {
+        /** @var Transaction|null $sourceTransaction */
+        $sourceTransaction = $journal->transactions()->where('amount', '<', 0)->first();
+        if (null === $sourceTransaction) {
+            throw new FireflyException(sprintf('Cannot find source transaction for journal #%d', $journal->id));
+        }
+        return $sourceTransaction->account;
+    }
+
+    /**
      * A deposit is from Revenue to Asset.
      * We replace the Revenue with another asset.
      *
-     * @param  TransactionJournal  $journal
-     * @param  Account  $opposing
+     * @param TransactionJournal $journal
+     * @param Account            $opposing
      *
      * @return bool
      * @throws FireflyException
@@ -225,22 +270,7 @@ class ConvertToTransfer implements ActionInterface
     }
 
     /**
-     * @param  TransactionJournal  $journal
-     * @return Account
-     * @throws FireflyException
-     */
-    private function getSourceAccount(TransactionJournal $journal): Account
-    {
-        /** @var Transaction|null $sourceTransaction */
-        $sourceTransaction = $journal->transactions()->where('amount', '<', 0)->first();
-        if (null === $sourceTransaction) {
-            throw new FireflyException(sprintf('Cannot find source transaction for journal #%d', $journal->id));
-        }
-        return $sourceTransaction->account;
-    }
-
-    /**
-     * @param  TransactionJournal  $journal
+     * @param TransactionJournal $journal
      * @return Account
      * @throws FireflyException
      */
@@ -252,35 +282,5 @@ class ConvertToTransfer implements ActionInterface
             throw new FireflyException(sprintf('Cannot find destination transaction for journal #%d', $journal->id));
         }
         return $destAccount->account;
-    }
-
-    /**
-     * @param  int  $journalId
-     * @return string
-     */
-    private function getSourceType(int $journalId): string
-    {
-        /** @var TransactionJournal $journal */
-        $journal = TransactionJournal::find($journalId);
-        if (null === $journal) {
-            Log::error(sprintf('Journal #%d does not exist. Cannot convert to transfer.', $journalId));
-            return '';
-        }
-        return (string)$journal->transactions()->where('amount', '<', 0)->first()?->account?->accountType?->type;
-    }
-
-    /**
-     * @param  int  $journalId
-     * @return string
-     */
-    private function getDestinationType(int $journalId): string
-    {
-        /** @var TransactionJournal $journal */
-        $journal = TransactionJournal::find($journalId);
-        if (null === $journal) {
-            Log::error(sprintf('Journal #%d does not exist. Cannot convert to transfer.', $journalId));
-            return '';
-        }
-        return (string)$journal->transactions()->where('amount', '>', 0)->first()?->account?->accountType?->type;
     }
 }

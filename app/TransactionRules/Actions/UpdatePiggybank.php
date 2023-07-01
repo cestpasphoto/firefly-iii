@@ -44,7 +44,7 @@ class UpdatePiggybank implements ActionInterface
     /**
      * TriggerInterface constructor.
      *
-     * @param  RuleAction  $action
+     * @param RuleAction $action
      */
     public function __construct(RuleAction $action)
     {
@@ -135,7 +135,7 @@ class UpdatePiggybank implements ActionInterface
     }
 
     /**
-     * @param  User  $user
+     * @param User $user
      *
      * @return PiggyBank|null
      */
@@ -145,9 +145,9 @@ class UpdatePiggybank implements ActionInterface
     }
 
     /**
-     * @param  PiggyBank  $piggyBank
-     * @param  TransactionJournal  $journal
-     * @param  string  $amount
+     * @param PiggyBank          $piggyBank
+     * @param TransactionJournal $journal
+     * @param string             $amount
      * @return void
      */
     private function removeAmount(PiggyBank $piggyBank, TransactionJournal $journal, string $amount): void
@@ -182,9 +182,9 @@ class UpdatePiggybank implements ActionInterface
     }
 
     /**
-     * @param  PiggyBank  $piggyBank
-     * @param  TransactionJournal  $journal
-     * @param  string  $amount
+     * @param PiggyBank          $piggyBank
+     * @param TransactionJournal $journal
+     * @param string             $amount
      * @return void
      */
     private function addAmount(PiggyBank $piggyBank, TransactionJournal $journal, string $amount): void

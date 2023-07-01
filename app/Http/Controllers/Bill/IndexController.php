@@ -82,7 +82,8 @@ class IndexController extends Controller
         $parameters      = new ParameterBag();
         // sub one day from temp start so the last paid date is one day before it should be.
         $tempStart = clone $start;
-        $tempStart->subDay();
+        // 2023-06-23 do not sub one day from temp start, fix is in BillTransformer::payDates instead
+        //$tempStart->subDay();
         $parameters->set('start', $tempStart);
         $parameters->set('end', $end);
 
@@ -135,7 +136,7 @@ class IndexController extends Controller
     }
 
     /**
-     * @param  array  $bills
+     * @param array $bills
      *
      * @return array
      * @throws FireflyException
@@ -181,8 +182,8 @@ class IndexController extends Controller
     }
 
     /**
-     * @param  array  $bill
-     * @param  string  $range
+     * @param array  $bill
+     * @param string $range
      *
      * @return string
      */
@@ -228,7 +229,7 @@ class IndexController extends Controller
     }
 
     /**
-     * @param  array  $sums
+     * @param array $sums
      *
      * @return array
      */
@@ -243,7 +244,7 @@ class IndexController extends Controller
          */
         foreach ($sums as $array) {
             /**
-             * @var int $currencyId
+             * @var int   $currencyId
              * @var array $entry
              */
             foreach ($array as $currencyId => $entry) {
@@ -268,8 +269,8 @@ class IndexController extends Controller
     /**
      * Set the order of a bill.
      *
-     * @param  Request  $request
-     * @param  Bill  $bill
+     * @param Request $request
+     * @param Bill    $bill
      *
      * @return JsonResponse
      */

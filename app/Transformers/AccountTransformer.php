@@ -52,7 +52,7 @@ class AccountTransformer extends AbstractTransformer
     /**
      * Transform the account.
      *
-     * @param  Account  $account
+     * @param Account $account
      *
      * @return array
      * @throws FireflyException
@@ -133,16 +133,16 @@ class AccountTransformer extends AbstractTransformer
             'links'                   => [
                 [
                     'rel' => 'self',
-                    'uri' => '/accounts/'.$account->id,
+                    'uri' => '/accounts/' . $account->id,
                 ],
             ],
         ];
     }
 
     /**
-     * @param  Account  $account
+     * @param Account $account
      *
-     * @param  string  $accountType
+     * @param string  $accountType
      *
      * @return string|null
      */
@@ -158,6 +158,7 @@ class AccountTransformer extends AbstractTransformer
 
     /**
      * TODO duplicated in the V2 transformer.
+     *
      * @return Carbon
      */
     private function getDate(): Carbon
@@ -171,7 +172,7 @@ class AccountTransformer extends AbstractTransformer
     }
 
     /**
-     * @param  Account  $account
+     * @param Account $account
      *
      * @return array
      * @throws FireflyException
@@ -194,9 +195,9 @@ class AccountTransformer extends AbstractTransformer
     }
 
     /**
-     * @param  Account  $account
-     * @param  string|null  $accountRole
-     * @param  string  $accountType
+     * @param Account     $account
+     * @param string|null $accountRole
+     * @param string      $accountType
      *
      * @return array
      */
@@ -210,10 +211,10 @@ class AccountTransformer extends AbstractTransformer
         }
         if (null !== $monthlyPaymentDate) {
             // try classic date:
-            if(10 === strlen($monthlyPaymentDate)) {
+            if (10 === strlen($monthlyPaymentDate)) {
                 $monthlyPaymentDate = Carbon::createFromFormat('!Y-m-d', $monthlyPaymentDate, config('app.timezone'))->toAtomString();
             }
-            if(10 !== strlen($monthlyPaymentDate)) {
+            if (10 !== strlen($monthlyPaymentDate)) {
                 $monthlyPaymentDate = Carbon::parse($monthlyPaymentDate, config('app.timezone'))->toAtomString();
             }
         }
@@ -222,8 +223,8 @@ class AccountTransformer extends AbstractTransformer
     }
 
     /**
-     * @param  Account  $account
-     * @param  string  $accountType
+     * @param Account $account
+     * @param string  $accountType
      *
      * @return array
      *
@@ -246,8 +247,8 @@ class AccountTransformer extends AbstractTransformer
     }
 
     /**
-     * @param  Account  $account
-     * @param  string  $accountType
+     * @param Account $account
+     * @param string  $accountType
      *
      * @return array
      */

@@ -33,8 +33,8 @@ use FireflyIII\Services\Internal\Support\AccountServiceTrait;
 use FireflyIII\Services\Internal\Support\LocationServiceTrait;
 use FireflyIII\Services\Internal\Update\AccountUpdateService;
 use FireflyIII\User;
-use JsonException;
 use Illuminate\Support\Facades\Log;
+use JsonException;
 
 /**
  * Factory to create or return accounts.
@@ -70,8 +70,8 @@ class AccountFactory
     }
 
     /**
-     * @param  string  $accountName
-     * @param  string  $accountType
+     * @param string $accountName
+     * @param string $accountType
      *
      * @return Account
      * @throws FireflyException
@@ -106,7 +106,7 @@ class AccountFactory
     }
 
     /**
-     * @param  array  $data
+     * @param array $data
      *
      * @return Account
      * @throws FireflyException
@@ -133,7 +133,7 @@ class AccountFactory
     }
 
     /**
-     * @param  array  $data
+     * @param array $data
      *
      * @return AccountType|null
      * @throws FireflyException
@@ -168,8 +168,8 @@ class AccountFactory
     }
 
     /**
-     * @param  string  $accountName
-     * @param  string  $accountType
+     * @param string $accountName
+     * @param string $accountType
      *
      * @return Account|null
      */
@@ -178,12 +178,13 @@ class AccountFactory
         Log::debug(sprintf('Now in AccountFactory::find("%s", "%s")', $accountName, $accountType));
         $type = AccountType::whereType($accountType)->first();
 
+        /** @var Account|null */
         return $this->user->accounts()->where('account_type_id', $type->id)->where('name', $accountName)->first();
     }
 
     /**
-     * @param  AccountType  $type
-     * @param  array  $data
+     * @param AccountType $type
+     * @param array       $data
      *
      * @return Account
      * @throws FireflyException
@@ -251,8 +252,8 @@ class AccountFactory
     }
 
     /**
-     * @param  Account  $account
-     * @param  array  $data
+     * @param Account $account
+     * @param array   $data
      *
      * @return array
      * @throws FireflyException
@@ -280,8 +281,8 @@ class AccountFactory
     }
 
     /**
-     * @param  Account  $account
-     * @param  array  $data
+     * @param Account $account
+     * @param array   $data
      */
     private function storeMetaData(Account $account, array $data): void
     {
@@ -323,12 +324,12 @@ class AccountFactory
     }
 
     /**
-     * @param  Account  $account
-     * @param  array  $data
+     * @param Account $account
+     * @param array   $data
      *
      * @throws FireflyException
      */
-    private function storeOpeningBalance(Account $account, array $data)
+    private function storeOpeningBalance(Account $account, array $data): void
     {
         $accountType = $account->accountType->type;
 
@@ -345,12 +346,12 @@ class AccountFactory
     }
 
     /**
-     * @param  Account  $account
-     * @param  array  $data
+     * @param Account $account
+     * @param array   $data
      *
      * @throws FireflyException
      */
-    private function storeCreditLiability(Account $account, array $data)
+    private function storeCreditLiability(Account $account, array $data): void
     {
         Log::debug('storeCreditLiability');
         $account->refresh();
@@ -374,8 +375,8 @@ class AccountFactory
     }
 
     /**
-     * @param  Account  $account
-     * @param  array  $data
+     * @param Account $account
+     * @param array   $data
      *
      * @throws FireflyException
      */
@@ -398,7 +399,7 @@ class AccountFactory
     }
 
     /**
-     * @param  User  $user
+     * @param User $user
      */
     public function setUser(User $user): void
     {

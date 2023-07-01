@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace FireflyIII\Console\Commands\Correction;
 
+use FireflyIII\Console\Commands\ShowsFriendlyMessages;
 use FireflyIII\Models\PiggyBankEvent;
 use FireflyIII\Models\TransactionJournal;
 use Illuminate\Console\Command;
@@ -34,18 +35,10 @@ use Illuminate\Console\Command;
  */
 class FixPiggies extends Command
 {
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
+    use ShowsFriendlyMessages;
+
     protected $description = 'Fixes common issues with piggy banks.';
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'firefly-iii:fix-piggies';
+    protected $signature   = 'firefly-iii:fix-piggies';
 
     /**
      * Execute the console command.
@@ -55,7 +48,6 @@ class FixPiggies extends Command
     public function handle(): int
     {
         $count = 0;
-        $start = microtime(true);
         $set   = PiggyBankEvent::with(['PiggyBank', 'TransactionJournal'])->get();
 
         /** @var PiggyBankEvent $event */
@@ -74,14 +66,11 @@ class FixPiggies extends Command
             }
         }
         if (0 === $count) {
-            $this->line('All piggy bank events are correct.');
+            $this->friendlyPositive('All piggy bank events are OK.');
         }
         if (0 !== $count) {
-            $this->line(sprintf('Fixed %d piggy bank event(s).', $count));
+            $this->friendlyInfo(sprintf('Fixed %d piggy bank event(s).', $count));
         }
-
-        $end = round(microtime(true) - $start, 2);
-        $this->line(sprintf('Verified the content of %d piggy bank events in %s seconds.', $set->count(), $end));
 
         return 0;
     }

@@ -195,7 +195,7 @@ class UpdateRequest extends FormRequest
     /**
      * Configure the validator instance.
      *
-     * @param  Validator  $validator
+     * @param Validator $validator
      *
      * @return void
      */
@@ -205,6 +205,11 @@ class UpdateRequest extends FormRequest
             function (Validator $validator) {
                 //$this->validateOneRecurrenceTransaction($validator);
                 //$this->validateOneRepetitionUpdate($validator);
+
+
+                /** @var Recurrence $recurrence */
+                $recurrence = $this->route()->parameter('recurrence');
+                $this->validateTransactionId($recurrence, $validator);
                 $this->validateRecurrenceRepetition($validator);
                 $this->validateRepetitionMoment($validator);
                 $this->validateForeignCurrencyInformation($validator);
@@ -212,4 +217,5 @@ class UpdateRequest extends FormRequest
             }
         );
     }
+
 }

@@ -48,7 +48,7 @@ class ConvertToDeposit implements ActionInterface
     /**
      * TriggerInterface constructor.
      *
-     * @param  RuleAction  $action
+     * @param RuleAction $action
      */
     public function __construct(RuleAction $action)
     {
@@ -86,7 +86,7 @@ class ConvertToDeposit implements ActionInterface
 
             try {
                 $res = $this->convertWithdrawalArray($object);
-            } catch (JsonException|FireflyException $e) {
+            } catch (JsonException | FireflyException $e) {
                 Log::debug('Could not convert withdrawal to deposit.');
                 Log::error($e->getMessage());
                 return false;
@@ -101,7 +101,7 @@ class ConvertToDeposit implements ActionInterface
 
             try {
                 $res = $this->convertTransferArray($object);
-            } catch (JsonException|FireflyException $e) {
+            } catch (JsonException | FireflyException $e) {
                 Log::debug('Could not convert transfer to deposit.');
                 Log::error($e->getMessage());
                 return false;
@@ -118,7 +118,7 @@ class ConvertToDeposit implements ActionInterface
      * Input is a withdrawal from A to B
      * Is converted to a deposit from C to A.
      *
-     * @param  TransactionJournal  $journal
+     * @param TransactionJournal $journal
      *
      * @return bool
      * @throws FireflyException
@@ -152,7 +152,7 @@ class ConvertToDeposit implements ActionInterface
 
         // update the source transaction and put in the new revenue ID.
         DB::table('transactions')
-          ->where('transaction_journal_id', '=', )
+          ->where('transaction_journal_id', '=', $journal->id)
           ->where('amount', '<', 0)
           ->update(['account_id' => $opposingAccount->id]);
 
@@ -175,11 +175,41 @@ class ConvertToDeposit implements ActionInterface
     }
 
     /**
+     * @param TransactionJournal $journal
+     * @return Account
+     * @throws FireflyException
+     */
+    private function getDestinationAccount(TransactionJournal $journal): Account
+    {
+        /** @var Transaction|null $destAccount */
+        $destAccount = $journal->transactions()->where('amount', '>', 0)->first();
+        if (null === $destAccount) {
+            throw new FireflyException(sprintf('Cannot find destination transaction for journal #%d', $journal->id));
+        }
+        return $destAccount->account;
+    }
+
+    /**
+     * @param TransactionJournal $journal
+     * @return Account
+     * @throws FireflyException
+     */
+    private function getSourceAccount(TransactionJournal $journal): Account
+    {
+        /** @var Transaction|null $sourceTransaction */
+        $sourceTransaction = $journal->transactions()->where('amount', '<', 0)->first();
+        if (null === $sourceTransaction) {
+            throw new FireflyException(sprintf('Cannot find source transaction for journal #%d', $journal->id));
+        }
+        return $sourceTransaction->account;
+    }
+
+    /**
      * Input is a transfer from A to B.
      * Output is a deposit from C to B.
      * The source account is replaced.
      *
-     * @param  TransactionJournal  $journal
+     * @param TransactionJournal $journal
      *
      * @return bool
      * @throws FireflyException
@@ -226,35 +256,5 @@ class ConvertToDeposit implements ActionInterface
         Log::debug('Converted transfer to deposit.');
 
         return true;
-    }
-
-    /**
-     * @param  TransactionJournal  $journal
-     * @return Account
-     * @throws FireflyException
-     */
-    private function getSourceAccount(TransactionJournal $journal): Account
-    {
-        /** @var Transaction|null $sourceTransaction */
-        $sourceTransaction = $journal->transactions()->where('amount', '<', 0)->first();
-        if (null === $sourceTransaction) {
-            throw new FireflyException(sprintf('Cannot find source transaction for journal #%d', $journal->id));
-        }
-        return $sourceTransaction->account;
-    }
-
-    /**
-     * @param  TransactionJournal  $journal
-     * @return Account
-     * @throws FireflyException
-     */
-    private function getDestinationAccount(TransactionJournal $journal): Account
-    {
-        /** @var Transaction|null $destAccount */
-        $destAccount = $journal->transactions()->where('amount', '>', 0)->first();
-        if (null === $destAccount) {
-            throw new FireflyException(sprintf('Cannot find destination transaction for journal #%d', $journal->id));
-        }
-        return $destAccount->account;
     }
 }
