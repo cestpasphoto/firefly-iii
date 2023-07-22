@@ -29,6 +29,9 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Notification;
 
+/**
+ * Class NewAccessToken
+ */
 class NewAccessToken extends Notification
 {
     use Queueable;
@@ -46,6 +49,7 @@ class NewAccessToken extends Notification
      * Get the array representation of the notification.
      *
      * @param mixed $notifiable
+     *
      * @return array
      */
     public function toArray($notifiable)
@@ -59,6 +63,7 @@ class NewAccessToken extends Notification
      * Get the mail representation of the notification.
      *
      * @param mixed $notifiable
+     *
      * @return MailMessage
      */
     public function toMail($notifiable)
@@ -72,6 +77,7 @@ class NewAccessToken extends Notification
      * Get the Slack representation of the notification.
      *
      * @param mixed $notifiable
+     *
      * @return SlackMessage
      */
     public function toSlack($notifiable)
@@ -83,10 +89,15 @@ class NewAccessToken extends Notification
      * Get the notification's delivery channels.
      *
      * @param mixed $notifiable
+     *
      * @return array
      */
     public function via($notifiable)
     {
-        return ['mail', 'slack'];
+        $slackUrl = (string)app('preferences')->getForUser(auth()->user(), 'slack_webhook_url', '')->data;
+        if (str_starts_with($slackUrl, 'https://hooks.slack.com/services/')) {
+            return ['mail', 'slack'];
+        }
+        return ['mail'];
     }
 }

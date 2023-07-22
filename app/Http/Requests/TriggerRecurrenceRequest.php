@@ -1,9 +1,9 @@
 <?php
 
-declare(strict_types=1);
+
 /*
  * TriggerRecurrenceRequest.php
- * Copyright (c) 2022 james@firefly-iii.org
+ * Copyright (c) 2023 james@firefly-iii.org
  *
  * This file is part of Firefly III (https://github.com/firefly-iii).
  *
@@ -21,12 +21,17 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace FireflyIII\Http\Requests;
 
 use FireflyIII\Support\Request\ChecksLogin;
 use FireflyIII\Support\Request\ConvertsDataTypes;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Class TriggerRecurrenceRequest
+ */
 class TriggerRecurrenceRequest extends FormRequest
 {
     use ConvertsDataTypes;
