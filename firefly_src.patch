@@ -1,6 +1,6 @@
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
 --- ../official/public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:20:55.829339578 +0200
-+++ ./public/v1/js/ff/accounts/reconcile.js	2023-05-28 06:05:32.582831424 +0200
++++ ./public/v1/js/ff/accounts/reconcile.js	2023-07-01 11:02:24.194421350 +0200
 @@ -21,6 +21,7 @@
  var balanceDifference = 0;
  var difference = 0;
@@ -472,8 +472,8 @@ diff -Naur ../official/resources/views/preferences/index.twig ./resources/views/
                                          </div>
  
 diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./app/Http/Controllers/Account/ReconcileController.php
---- ../official/app/Http/Controllers/Account/ReconcileController.php	2023-07-01 10:55:37.274919027 +0200
-+++ ./app/Http/Controllers/Account/ReconcileController.php	2023-07-01 10:55:39.135019911 +0200
+--- ../official/app/Http/Controllers/Account/ReconcileController.php	2023-07-22 07:48:08.528827656 +0200
++++ ./app/Http/Controllers/Account/ReconcileController.php	2023-07-22 07:48:10.184851606 +0200
 @@ -99,18 +99,15 @@
          }
          $currency = $this->accountRepos->getAccountCurrency($account) ?? app('amount')->getDefaultCurrency();
@@ -499,9 +499,20 @@ diff -Naur ../official/app/Http/Controllers/Account/ReconcileController.php ./ap
              /** @var Carbon $end */
              $end = app('navigation')->endOfPeriod($start, $range);
          }
+diff -Naur ../official/app/Http/Controllers/Bill/IndexController.php ./app/Http/Controllers/Bill/IndexController.php
+--- ../official/app/Http/Controllers/Bill/IndexController.php	2023-07-22 16:14:17.825280987 +0200
++++ ./app/Http/Controllers/Bill/IndexController.php	2023-07-22 16:14:14.573233952 +0200
+@@ -212,6 +212,7 @@
+             '3M'      => '4',
+             '1M'      => '12',
+             '1W'      => '52.16',
++            '3W'      => '156.48',
+             '1D'      => '365.24',
+             'YTD'     => '1',
+             'QTD'     => '4',
 diff -Naur ../official/app/Http/Controllers/Chart/AccountController.php ./app/Http/Controllers/Chart/AccountController.php
---- ../official/app/Http/Controllers/Chart/AccountController.php	2023-07-01 10:55:37.278919254 +0200
-+++ ./app/Http/Controllers/Chart/AccountController.php	2023-07-01 10:55:39.139020110 +0200
+--- ../official/app/Http/Controllers/Chart/AccountController.php	2023-07-22 07:48:08.528827656 +0200
++++ ./app/Http/Controllers/Chart/AccountController.php	2023-07-22 07:48:10.184851606 +0200
 @@ -495,7 +495,7 @@
                  $current->addDay();
              }
@@ -559,6 +570,31 @@ diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/Creat
  
          // count created journals on THIS day.
          $journalCount = $this->repository->getJournalCount($recurrence, $date, $date);
+diff -Naur ../official/app/Support/Calendar/Periodicity/ThreeWeekly.php ./app/Support/Calendar/Periodicity/ThreeWeekly.php
+--- ../official/app/Support/Calendar/Periodicity/ThreeWeekly.php	1970-01-01 01:00:00.000000000 +0100
++++ ./app/Support/Calendar/Periodicity/ThreeWeekly.php	2023-07-22 16:01:09.377877513 +0200
+@@ -0,0 +1,10 @@
++<?php
++
++declare(strict_types=1);
++
++namespace FireflyIII\Support\Calendar\Periodicity;
++
++final class ThreeWeekly extends Weekly
++{
++    public const INTERVAL = 3;
++}
+diff -Naur ../official/app/Support/Calendar/Periodicity.php ./app/Support/Calendar/Periodicity.php
+--- ../official/app/Support/Calendar/Periodicity.php	2023-07-22 17:56:45.489404578 +0200
++++ ./app/Support/Calendar/Periodicity.php	2023-07-22 17:44:32.507208001 +0200
+@@ -32,6 +32,7 @@
+ {
+     case Daily;
+     case Weekly;
++    case ThreeWeekly;
+     case Fortnightly;
+     case Monthly;
+     case Bimonthly;
 diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./app/Support/Http/Controllers/GetConfigurationData.php
 --- ../official/app/Support/Http/Controllers/GetConfigurationData.php	2023-07-01 10:55:37.302920613 +0200
 +++ ./app/Support/Http/Controllers/GetConfigurationData.php	2023-07-01 10:55:39.163021305 +0200
@@ -583,34 +619,17 @@ diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./a
              $ranges[ucfirst((string)trans('firefly.today'))] = [$todayStart, $todayEnd];
          }
 diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
---- ../official/app/Support/Navigation.php	2023-07-01 10:55:37.302920613 +0200
-+++ ./app/Support/Navigation.php	2023-07-01 10:55:39.163021305 +0200
-@@ -53,6 +53,7 @@
-             '1W'        => 'addWeeks',
-             'weekly'    => 'addWeeks',
-             'week'      => 'addWeeks',
-+            '3W'        => 'addWeeks',
-             '1M'        => 'addMonths',
-             'month'     => 'addMonths',
-             'monthly'   => 'addMonths',
-@@ -75,6 +76,7 @@
-             'YTD'       => 'addYears',
-         ];
-         $modifierMap = [
-+            '3W'        => 3,
-             'quarter'   => 3,
-             '3M'        => 3,
-             'quarterly' => 3,
-@@ -230,7 +232,7 @@
-         }
- 
- 
--        if ('custom' === $repeatFreq) {
-+        if ('custom' === $repeatFreq || '3W' === $repeatFreq) {
-             return $date; // the date is already at the start.
-         }
-         Log::error(sprintf('Cannot do startOfPeriod for $repeat_freq "%s"', $repeatFreq));
-@@ -254,6 +256,7 @@
+--- ../official/app/Support/Navigation.php	2023-07-22 07:48:08.536827772 +0200
++++ ./app/Support/Navigation.php	2023-07-22 18:02:35.946359071 +0200
+@@ -65,6 +65,7 @@
+             '1W'        => Periodicity::Weekly,
+             'weekly'    => Periodicity::Weekly,
+             'week'      => Periodicity::Weekly,
++            '3W'        => Periodicity::ThreeWeekly,
+             '1M'        => Periodicity::Monthly,
+             'month'     => Periodicity::Monthly,
+             'monthly'   => Periodicity::Monthly,
+@@ -263,6 +264,7 @@
              '1W'        => 'addWeek',
              'week'      => 'addWeek',
              'weekly'    => 'addWeek',
@@ -618,7 +637,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              '1M'        => 'addMonth',
              'month'     => 'addMonth',
              'monthly'   => 'addMonth',
-@@ -268,6 +271,7 @@
+@@ -277,6 +279,7 @@
              '1Y'        => 'addYear',
          ];
          $modifierMap = [
@@ -626,16 +645,16 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              'quarter'   => 3,
              '3M'        => 3,
              'quarterly' => 3,
-@@ -276,7 +280,7 @@
+@@ -285,7 +288,7 @@
              '6M'        => 6,
          ];
  
 -        $subDay = ['week', 'weekly', '1W', 'month', 'monthly', '1M', '3M', 'quarter', 'quarterly', '6M', 'half-year', 'half_year', '1Y', 'year', 'yearly'];
-+        $subDay = ['week', 'weekly', '1W', 'month', 'monthly', '3W', '1M', '3M', 'quarter', 'quarterly', '6M', 'half-year', 'half_year', '1Y', 'year', 'yearly'];
++        $subDay = ['week', 'weekly', '3W', '1W', 'month', 'monthly', '1M', '3M', 'quarter', 'quarterly', '6M', 'half-year', 'half_year', '1Y', 'year', 'yearly'];
  
          // if the range is custom, the end of the period
          // is another X days (x is the difference between start)
-@@ -645,6 +649,10 @@
+@@ -655,6 +658,10 @@
  
              return $date;
          }
@@ -646,7 +665,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          // a custom range requires the session start
          // and session end to calculate the difference in days.
          // this is then subtracted from $theDate (* $subtract).
-@@ -714,6 +722,11 @@
+@@ -724,6 +731,11 @@
  
              return $end;
          }
@@ -658,7 +677,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          if ('6M' === $range) {
              if ($start->month >= 7) {
                  $end->endOfYear();
-@@ -799,6 +812,9 @@
+@@ -809,6 +821,9 @@
              case 'last7':
                  $start->subDays(7);
                  return $start;

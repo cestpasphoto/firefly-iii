@@ -212,6 +212,7 @@ class IndexController extends Controller
             '3M'      => '4',
             '1M'      => '12',
             '1W'      => '52.16',
+            '3W'      => '156.48',
             '1D'      => '365.24',
             'YTD'     => '1',
             'QTD'     => '4',

@@ -32,6 +32,7 @@ enum Periodicity
 {
     case Daily;
     case Weekly;
+    case ThreeWeekly;
     case Fortnightly;
     case Monthly;
     case Bimonthly;
