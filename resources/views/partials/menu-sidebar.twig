@@ -16,7 +16,7 @@
     </li>
 
     <li class="{{ activeRoutePartial('bills') }}">
-        <a href="{{ route('bills.index') }}">
+        <a href="{{ route('bills.index', false, false) }}">
             <em class="fa fa-calendar-o fa-fw"></em>
             <span>{{ 'bills'|_ }}</span>
         </a>
@@ -42,19 +42,19 @@
 
         <ul class="treeview-menu">
             <li class="{{ activeRoutePartialObjectType('transactions', 'withdrawal') }}">
-                <a href="{{ route('transactions.index', 'withdrawal') }}">
+                <a href="{{ route('transactions.index', ['withdrawal']) }}">
                     <span class="fa fa-angle-right fa-fw"></span>
                     <span>{{ 'expenses'|_ }}</span>
                 </a>
             </li>
             <li class="{{ activeRoutePartialObjectType('transactions', 'deposit') }}">
-                <a href="{{ route('transactions.index', 'deposit') }}">
+                <a href="{{ route('transactions.index', ['deposit']) }}">
                     <span class="fa fa-angle-right fa-fw"></span>
                     <span>{{ 'income'|_ }}</span>
                 </a>
             </li>
             <li class="{{ activeRoutePartialObjectType('transactions', 'transfers') }}">
-                <a href="{{ route('transactions.index', 'transfers') }}">
+                <a href="{{ route('transactions.index', ['transfers']) }}">
                     <span class="fa fa-angle-right fa-fw"></span>
                     <span>{{ 'transfers'|_ }}</span>
                 </a>
@@ -106,25 +106,25 @@
 
         <ul class="treeview-menu">
             <li class="{{ activeRoutePartialObjectType('accounts', 'asset') }}">
-                <a href="{{ route('accounts.index', 'asset') }}">
+                <a href="{{ route('accounts.index', ['asset']) }}">
                     <span class="fa fa-angle-right fa-fw"></span>
                     <span>{{ 'asset_accounts'|_ }}</span>
                 </a>
             </li>
             <li class="{{ activeRoutePartialObjectType('accounts', 'expense') }}">
-                <a href="{{ route('accounts.index', 'expense') }}">
+                <a href="{{ route('accounts.index', ['expense']) }}">
                     <span class="fa fa-angle-right fa-fw"></span>
                     <span>{{ 'expense_accounts'|_ }}</span>
                 </a>
             </li>
             <li class="{{ activeRoutePartialObjectType('accounts', 'revenue') }}">
-                <a href="{{ route('accounts.index', 'revenue') }}">
+                <a href="{{ route('accounts.index', ['revenue']) }}">
                     <span class="fa fa-angle-right fa-fw"></span>
                     <span>{{ 'revenue_accounts'|_ }}</span>
                 </a>
             </li>
             <li class="{{ activeRoutePartialObjectType('accounts', 'liabilities') }}">
-                <a href="{{ route('accounts.index', 'liabilities') }}">
+                <a href="{{ route('accounts.index', ['liabilities']) }}">
                     <span class="fa fa-angle-right fa-fw"></span>
                     <span>{{ 'liabilities_accounts'|_ }}</span>
                 </a>
@@ -164,7 +164,7 @@
     </li>
 
     <li class="{{ activeRoutePartial('reports') }}" id="report-menu">
-        <a href="{{ route('reports.index') }}">
+        <a href="{{ route('reports.index') }}"> {# relative route! #}
             <em class="fa fa-bar-chart fa-fw"></em>
             <span>{{ 'reports'|_ }}</span>
         </a>
@@ -198,7 +198,8 @@
                 </a>
             </li>
             <li class="{{ activeRoutePartial('preferences') }}">
-                <a class="{{ activeRouteStrict('preferences.index') }}" href="{{ route('preferences.index') }}">
+                <a class="{{ activeRouteStrict('preferences.index') }}"
+                   href="{{ route('preferences.index') }}">
                     <span class="fa fa-angle-right fa-fw"></span>
                     <span>{{ 'preferences'|_ }}</span>
                 </a>

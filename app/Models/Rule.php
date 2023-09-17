@@ -76,6 +76,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static Builder|Rule withoutTrashed()
  * @property int|null                     $user_group_id
  * @method static \Illuminate\Database\Eloquent\Builder|Rule whereUserGroupId($value)
+ * @property-read \FireflyIII\Models\UserGroup|null $userGroup
  * @mixin Eloquent
  */
 class Rule extends Model
@@ -164,5 +165,13 @@ class Rule extends Model
     public function setDescriptionAttribute($value): void
     {
         $this->attributes['description'] = e($value);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function userGroup(): BelongsTo
+    {
+        return $this->belongsTo(UserGroup::class);
     }
 }

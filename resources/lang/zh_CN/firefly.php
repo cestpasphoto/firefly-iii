@@ -864,12 +864,12 @@ return [
     'rule_trigger_transaction_type'                       => '转账类型为“:trigger_value”',
     'rule_trigger_category_is_choice'                     => '分类为...',
     'rule_trigger_category_is'                            => '分类为 ":trigger_value"',
-    'rule_trigger_amount_less_choice'                     => '金额小于…',
-    'rule_trigger_amount_less'                            => '金额小于 :trigger_value',
+    'rule_trigger_amount_less_choice'                     => 'Amount is less than or equal to ..',
+    'rule_trigger_amount_less'                            => 'Amount is less than or equal to :trigger_value',
     'rule_trigger_amount_is_choice'                       => '金额是...',
     'rule_trigger_amount_is'                              => 'Amount is :trigger_value',
-    'rule_trigger_amount_more_choice'                     => '金额大于…',
-    'rule_trigger_amount_more'                            => '金额大于 :trigger_value',
+    'rule_trigger_amount_more_choice'                     => 'Amount is more than or equal to..',
+    'rule_trigger_amount_more'                            => 'Amount is more than or equal to :trigger_value',
     'rule_trigger_description_starts_choice'              => '描述开头为...',
     'rule_trigger_description_starts'                     => '描述开头为 ":trigger_value"',
     'rule_trigger_description_ends_choice'                => '描述结尾为...',
@@ -934,10 +934,14 @@ return [
     'rule_trigger_internal_reference_is'                  => '内部引用为":trigger_value"',
     'rule_trigger_journal_id_choice'                      => '交易日志 ID 为...',
     'rule_trigger_journal_id'                             => '交易日志 ID 为“:trigger_value”',
-    'rule_trigger_no_external_url'                        => '交易没有外部URL',
-    'rule_trigger_any_external_url'                       => '交易有一个外部URL',
-    'rule_trigger_any_external_url_choice'                => '交易有一个外部URL',
+    'rule_trigger_any_external_url'                       => 'Transaction has an (any) external URL',
+    'rule_trigger_any_external_url_choice'                => 'Transaction has an (any) external URL',
+    'rule_trigger_any_external_id'                        => 'Transaction has an (any) external ID',
+    'rule_trigger_any_external_id_choice'                 => 'Transaction has an (any) external ID',
     'rule_trigger_no_external_url_choice'                 => '交易没有外部链接',
+    'rule_trigger_no_external_url'                        => '交易没有外部URL',
+    'rule_trigger_no_external_id_choice'                  => 'Transaction has no external ID',
+    'rule_trigger_no_external_id'                         => 'Transaction has no external ID',
     'rule_trigger_id_choice'                              => '交易ID为...',
     'rule_trigger_id'                                     => '交易ID为":trigger_value"',
     'rule_trigger_sepa_ct_is_choice'                      => 'SEPA CT is..',
@@ -1218,6 +1222,7 @@ return [
 
 
     // actions
+    // set, clear, add, remove, append/prepend
     'rule_action_delete_transaction_choice'               => 'DELETE transaction(!)',
     'rule_action_delete_transaction'                      => 'DELETE transaction(!)',
     'rule_action_set_category'                            => '设定分类为 ":action_value"',
@@ -1255,6 +1260,8 @@ return [
     'rule_action_set_notes_choice'                        => '设置备注为..',
     'rule_action_link_to_bill_choice'                     => '关联至账单…',
     'rule_action_link_to_bill'                            => '关联至账单“:action_value”',
+    'rule_action_switch_accounts_choice'                  => 'Switch source and destination accounts (transfers only!)',
+    'rule_action_switch_accounts'                         => 'Switch source and destination',
     'rule_action_set_notes'                               => '设定备注至“:action_value”',
     'rule_action_convert_deposit_choice'                  => '转换交易为收入',
     'rule_action_convert_deposit'                         => '转换交易为来自“:action_value”的收入',
@@ -1388,6 +1395,7 @@ return [
     'pref_notification_new_access_token'        => '创建新 API 访问令牌时提醒',
     'pref_notification_transaction_creation'    => '自动创建交易时提醒',
     'pref_notification_user_login'              => '当您从一个新位置登录时提醒',
+    'pref_notification_rule_action_failures'    => 'Alert when rule actions fail to execute (Slack or Discord only)',
     'pref_notifications'                        => '通知',
     'pref_notifications_help'                   => '设置您想要接收的通知。一些通知可能包含敏感的财务信息。',
     'slack_webhook_url'                         => 'Slack Webhook 地址',
@@ -1396,6 +1404,7 @@ return [
 
     // Financial administrations
     'administration_index'                      => 'Financial administration',
+    'administrations_index_menu'                => 'Financial administration(s)',
 
     // profile:
     'purge_data_title'                          => '从 Frefly III 清除数据',
@@ -1616,6 +1625,8 @@ return [
     'create_new_revenue'                        => '创建新收入账户',
     'create_new_piggy_bank'                     => '创建新存钱罐',
     'create_new_bill'                           => '创建新账单',
+    'create_new_subscription'                   => 'Create new subscription',
+    'create_new_rule'                           => 'Create new rule',
 
     // currencies:
     'create_currency'                           => '创建新货币',
@@ -1774,6 +1785,7 @@ return [
     'bill_repeats_half-year_skip'               => 'Repeats every {skip} half years',
     'bill_repeats_yearly_skip'                  => 'Repeats every {skip} years',
     'subscriptions'                             => 'Subscriptions',
+    'go_to_subscriptions'                       => 'Go to your subscriptions',
     'forever'                                   => 'Forever',
     'extension_date_is'                         => 'Extension date is {date}',
 
@@ -1815,8 +1827,10 @@ return [
     'asset_accounts'                            => '资产账户',
     'undefined_accounts'                        => '账户',
     'asset_accounts_inactive'                   => '资产账户 (已停用)',
+    'expense_account'                           => 'Expense account',
     'expense_accounts'                          => '支出账户',
     'expense_accounts_inactive'                 => '支出账户 (已停用)',
+    'revenue_account'                           => 'Revenue account',
     'revenue_accounts'                          => '收入账户',
     'revenue_accounts_inactive'                 => '收入账户 (已停用)',
     'cash_accounts'                             => '现金账户',
@@ -1905,6 +1919,7 @@ return [
     'categories'                                => '分类',
     'edit_category'                             => '编辑分类 “:name”',
     'no_category'                               => '(没有分类)',
+    'unknown_category_plain'                    => 'No category',
     'category'                                  => '分类',
     'delete_category'                           => '删除分类 “:name”',
     'deleted_category'                          => '已删除分类 “:name”',
@@ -2072,6 +2087,12 @@ return [
     'searchPlaceholder'                         => '搜索…',
     'version'                                   => '版本',
     'dashboard'                                 => '仪表盘',
+    'income_and_expense'                        => 'Income and expense',
+    'all_money'                                 => 'All your money',
+    'unknown_source_plain'                      => 'Unknown source account',
+    'unknown_dest_plain'                        => 'Unknown destination account',
+    'unknown_any_plain'                         => 'Unknown account',
+    'unknown_budget_plain'                      => 'No budget',
     'available_budget'                          => '可用预算 ({currency})',
     'currencies'                                => '货币',
     'activity'                                  => '活动',
@@ -2351,6 +2372,7 @@ return [
     'created_tag'               => '标签 “:tag” 已被建立！',
 
     'transaction_journal_information'          => '交易信息',
+    'transaction_journal_amount'               => 'Amount information',
     'transaction_journal_meta'                 => '元信息',
     'transaction_journal_more'                 => '更多信息',
     'basic_journal_information'                => '基础交易信息',
@@ -2380,6 +2402,7 @@ return [
     'invite_user'                              => 'Invite user',
     'user_is_invited'                          => 'Email address ":address" was invited to Firefly III',
     'administration'                           => '管理',
+    'system_settings'                          => 'System settings',
     'code_already_used'                        => 'Invite code has been used',
     'user_administration'                      => '用户管理',
     'list_all_users'                           => '所有用户',
@@ -2519,6 +2542,7 @@ return [
 
     // object groups
     'default_group_title_name'              => '(未分组)',
+    'default_group_title_name_plain'        => 'ungrouped',
 
     // empty lists? no objects? instructions:
     'no_accounts_title_asset'               => '创建一个资产账户！',
@@ -2703,6 +2727,7 @@ return [
     'ale_action_clear_tag'               => '清除标签',
     'ale_action_clear_all_tags'          => '清除所有标签',
     'ale_action_set_bill'                => '关联账单',
+    'ale_action_switch_accounts'         => 'Switched source and destination account',
     'ale_action_set_budget'              => '设置预算',
     'ale_action_set_category'            => '设置分类',
     'ale_action_set_source'              => '设置来源账户',

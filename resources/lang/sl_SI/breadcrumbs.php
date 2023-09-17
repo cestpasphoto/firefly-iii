@@ -53,7 +53,7 @@ return [
     'profile'          => 'profil',
     'accounts'         => 'Računi',
     'changePassword'   => 'spremeni geslo',
-    'change_email'     => 'Spremeni elektronski naslov',
+    'change_email'     => 'Spremenite e-poštni naslov',
     'bills'            => 'Trajniki',
     'newBill'          => 'nov trajnik',
     'edit_bill'        => 'uredi trajnik ":name"',

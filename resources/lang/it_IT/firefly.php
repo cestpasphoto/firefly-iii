@@ -864,12 +864,12 @@ return [
     'rule_trigger_transaction_type'                       => 'La transazione è di tipo ":trigger_value"',
     'rule_trigger_category_is_choice'                     => 'La categoria è...',
     'rule_trigger_category_is'                            => 'La categoria è ":trigger_value"',
-    'rule_trigger_amount_less_choice'                     => 'L\'importo è inferiore a...',
-    'rule_trigger_amount_less'                            => 'L\'importo è inferiore a :trigger_value',
+    'rule_trigger_amount_less_choice'                     => 'Amount is less than or equal to ..',
+    'rule_trigger_amount_less'                            => 'Amount is less than or equal to :trigger_value',
     'rule_trigger_amount_is_choice'                       => 'L\'importo è..',
     'rule_trigger_amount_is'                              => 'L\'importo è :trigger_value',
-    'rule_trigger_amount_more_choice'                     => 'L\'importo è più di...',
-    'rule_trigger_amount_more'                            => 'L\'importo è superiore a :trigger_value',
+    'rule_trigger_amount_more_choice'                     => 'Amount is more than or equal to..',
+    'rule_trigger_amount_more'                            => 'Amount is more than or equal to :trigger_value',
     'rule_trigger_description_starts_choice'              => 'La descrizione inizia con...',
     'rule_trigger_description_starts'                     => 'La descrizione inizia con ":trigger_value"',
     'rule_trigger_description_ends_choice'                => 'La descrizione termina con...',
@@ -934,10 +934,14 @@ return [
     'rule_trigger_internal_reference_is'                  => 'Internal reference is ":trigger_value"',
     'rule_trigger_journal_id_choice'                      => 'L\'ID journal della transazione è...',
     'rule_trigger_journal_id'                             => 'L\'ID journal della transazione è ":trigger_value"',
-    'rule_trigger_no_external_url'                        => 'La transazione non ha URL esterno',
-    'rule_trigger_any_external_url'                       => 'La transazione ha un URL esterno',
-    'rule_trigger_any_external_url_choice'                => 'La transazione ha un URL esterno',
+    'rule_trigger_any_external_url'                       => 'Transaction has an (any) external URL',
+    'rule_trigger_any_external_url_choice'                => 'Transaction has an (any) external URL',
+    'rule_trigger_any_external_id'                        => 'Transaction has an (any) external ID',
+    'rule_trigger_any_external_id_choice'                 => 'Transaction has an (any) external ID',
     'rule_trigger_no_external_url_choice'                 => 'La transazione non ha URL esterno',
+    'rule_trigger_no_external_url'                        => 'La transazione non ha URL esterno',
+    'rule_trigger_no_external_id_choice'                  => 'Transaction has no external ID',
+    'rule_trigger_no_external_id'                         => 'Transaction has no external ID',
     'rule_trigger_id_choice'                              => 'L\'ID della transazione è...',
     'rule_trigger_id'                                     => 'L\'ID della transazione è ":trigger_value"',
     'rule_trigger_sepa_ct_is_choice'                      => 'SEPA CT is..',
@@ -1218,6 +1222,7 @@ return [
 
 
     // actions
+    // set, clear, add, remove, append/prepend
     'rule_action_delete_transaction_choice'               => 'DELETE transaction(!)',
     'rule_action_delete_transaction'                      => 'DELETE transaction(!)',
     'rule_action_set_category'                            => 'Imposta categoria a ":action_value"',
@@ -1255,6 +1260,8 @@ return [
     'rule_action_set_notes_choice'                        => 'Set notes to ..',
     'rule_action_link_to_bill_choice'                     => 'Link to a bill ..',
     'rule_action_link_to_bill'                            => 'Collegamento alla bolletta ":action_value"',
+    'rule_action_switch_accounts_choice'                  => 'Switch source and destination accounts (transfers only!)',
+    'rule_action_switch_accounts'                         => 'Switch source and destination',
     'rule_action_set_notes'                               => 'Imposta le note su ":action_value"',
     'rule_action_convert_deposit_choice'                  => 'Converti la transazione in un deposito',
     'rule_action_convert_deposit'                         => 'Converti la transazione in un deposito da ":action_value"',
@@ -1388,6 +1395,7 @@ return [
     'pref_notification_new_access_token'        => 'Alert when a new API access token is created',
     'pref_notification_transaction_creation'    => 'Alert when a transaction is created automatically',
     'pref_notification_user_login'              => 'Alert when you login from a new location',
+    'pref_notification_rule_action_failures'    => 'Alert when rule actions fail to execute (Slack or Discord only)',
     'pref_notifications'                        => 'Notifications',
     'pref_notifications_help'                   => 'Indicate if these are notifications you would like to get. Some notifications may contain sensitive financial information.',
     'slack_webhook_url'                         => 'Slack Webhook URL',
@@ -1396,6 +1404,7 @@ return [
 
     // Financial administrations
     'administration_index'                      => 'Amministrazione finanziaria',
+    'administrations_index_menu'                => 'Financial administration(s)',
 
     // profile:
     'purge_data_title'                          => 'Purge data from Firefly III',
@@ -1616,6 +1625,8 @@ return [
     'create_new_revenue'                        => 'Crea un nuovo conto entrate',
     'create_new_piggy_bank'                     => 'Crea un nuovo salvadanaio',
     'create_new_bill'                           => 'Crea una nuova bolletta',
+    'create_new_subscription'                   => 'Create new subscription',
+    'create_new_rule'                           => 'Create new rule',
 
     // currencies:
     'create_currency'                           => 'Crea una nuova valuta',
@@ -1774,6 +1785,7 @@ return [
     'bill_repeats_half-year_skip'               => 'Ripeti ogni {skip} mezzi anni',
     'bill_repeats_yearly_skip'                  => 'Ripeti ogni {skip} anni',
     'subscriptions'                             => 'Abbonamenti',
+    'go_to_subscriptions'                       => 'Go to your subscriptions',
     'forever'                                   => 'Per sempre',
     'extension_date_is'                         => 'La data di estensione è {date}',
 
@@ -1815,8 +1827,10 @@ return [
     'asset_accounts'                            => 'Conti attività',
     'undefined_accounts'                        => 'Conti',
     'asset_accounts_inactive'                   => 'Conti attività (inattivi)',
+    'expense_account'                           => 'Expense account',
     'expense_accounts'                          => 'Conti uscite',
     'expense_accounts_inactive'                 => 'Conti spese (inattivi)',
+    'revenue_account'                           => 'Revenue account',
     'revenue_accounts'                          => 'Conti entrate',
     'revenue_accounts_inactive'                 => 'Conti entrate (inattivi)',
     'cash_accounts'                             => 'Conti contanti',
@@ -1905,6 +1919,7 @@ return [
     'categories'                                => 'Categorie',
     'edit_category'                             => 'Modifica categoria ":name"',
     'no_category'                               => '(nessuna categoria)',
+    'unknown_category_plain'                    => 'No category',
     'category'                                  => 'Categoria',
     'delete_category'                           => 'Elimina categoria ":name"',
     'deleted_category'                          => 'Categoria eliminata ":name"',
@@ -2072,6 +2087,12 @@ return [
     'searchPlaceholder'                         => 'Cerca...',
     'version'                                   => 'Versione',
     'dashboard'                                 => 'Cruscotto',
+    'income_and_expense'                        => 'Income and expense',
+    'all_money'                                 => 'All your money',
+    'unknown_source_plain'                      => 'Unknown source account',
+    'unknown_dest_plain'                        => 'Unknown destination account',
+    'unknown_any_plain'                         => 'Unknown account',
+    'unknown_budget_plain'                      => 'No budget',
     'available_budget'                          => 'Budget disponibile ({currency})',
     'currencies'                                => 'Valute',
     'activity'                                  => 'Attività',
@@ -2351,6 +2372,7 @@ return [
     'created_tag'               => 'Etichetta ":tag" creata correttamente',
 
     'transaction_journal_information'          => 'Informazioni transazione',
+    'transaction_journal_amount'               => 'Amount information',
     'transaction_journal_meta'                 => 'Meta informazioni',
     'transaction_journal_more'                 => 'Altre informazioni',
     'basic_journal_information'                => 'Informazioni di base sulla transazione',
@@ -2380,6 +2402,7 @@ return [
     'invite_user'                              => 'Invite user',
     'user_is_invited'                          => 'Email address ":address" was invited to Firefly III',
     'administration'                           => 'Amministrazione',
+    'system_settings'                          => 'System settings',
     'code_already_used'                        => 'Invite code has been used',
     'user_administration'                      => 'Amministrazione utenti',
     'list_all_users'                           => 'Tutti gli utenti',
@@ -2519,6 +2542,7 @@ return [
 
     // object groups
     'default_group_title_name'              => '(non in un gruppo)',
+    'default_group_title_name_plain'        => 'ungrouped',
 
     // empty lists? no objects? instructions:
     'no_accounts_title_asset'               => 'Creiamo un conto attività!',
@@ -2703,6 +2727,7 @@ return [
     'ale_action_clear_tag'               => 'Etichette cancellate',
     'ale_action_clear_all_tags'          => 'Tutte le etichette sono state cancellate',
     'ale_action_set_bill'                => 'Collegato alla fattura',
+    'ale_action_switch_accounts'         => 'Switched source and destination account',
     'ale_action_set_budget'              => 'Imposta un budget',
     'ale_action_set_category'            => 'Imposta una categoria',
     'ale_action_set_source'              => 'Imposta un conto di origine',

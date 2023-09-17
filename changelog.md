@@ -3,6 +3,77 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.0.24 - 2023-09-16
+
+### Fixed
+
+- [Issue 7920](https://github.com/firefly-iii/firefly-iii/issues/7920) Issues with automatic budgets
+- [Issue 7940](https://github.com/firefly-iii/firefly-iii/issues/7940) Edge cases in the data import routine
+- [Issue 7963](https://github.com/firefly-iii/firefly-iii/issues/7963) Fix audit items for rules
+- Fixed all issues with relative URLs (which I caused myself)
+
+### API
+
+- [Issue 7944](https://github.com/firefly-iii/firefly-iii/issues/7944) Make sure all IDs are strings in the API
+
+## 6.0.23 - 2023-09-04
+
+### Changed
+
+- New debug information tables are in HTML
+
+### Fixed
+
+- Remove extra slashes from paths, breaking CSS
+
+## 6.0.22 - 2023-09-02
+
+### API
+
+- [Issue 7917](https://github.com/firefly-iii/firefly-iii/issues/7917) Fixed an API issue where submitting an account name would not be accepted.
+
+## 6.0.21 - 2023-09-02
+
+### Added
+
+- Rules will now report failures if a Slack/Discord notification channel is configured
+- Notifications can be sent to Discord
+- Beta layout `v2`, activate with `FIREFLY_III_LAYOUT=v2`
+
+### Changed
+
+- Audit log settings are changed, refer to the `.env.example`-file.
+- Many URLs are new rendered as relative URLs.
+
+### Fixed
+
+- [Issue 7853](https://github.com/firefly-iii/firefly-iii/issues/7853) Left to spend on main page shows incorrect value
+- [Issue 7883](https://github.com/firefly-iii/firefly-iii/issues/7883) Missing translation
+- [Issue 7910](https://github.com/firefly-iii/firefly-iii/issues/7910) Type format error
+- Home page respects account order
+- JS errors for users using Firefly III in a subdir.
+
+### API
+
+- Bumped to v2.0.6 but only so the docs match again.
+
+## 6.0.20 - 2023-08-13
+
+### Fixed
+
+- [Issue 7787](https://github.com/firefly-iii/firefly-iii/issues/7787) Possible issue when deleting multiple tags from a transaction.
+- [Issue 7792](https://github.com/firefly-iii/firefly-iii/issues/7792) Search for tags was broken in rules
+- [Issue 7803](https://github.com/firefly-iii/firefly-iii/issues/7803) @zqye fixed an issue where the cron job would fire when not necessary.
+- [Issue 7771](https://github.com/firefly-iii/firefly-iii/issues/7771) Unclear use of language in rule trigger
+- [Issue 7818](https://github.com/firefly-iii/firefly-iii/issues/7818) Amount was negative instead of positive.
+- [Issue 7810](https://github.com/firefly-iii/firefly-iii/issues/7810) Bad math
+- Asset accounts will correctly show transaction groups
+
+### API
+
+- Lots of new, undocumented v2 API endpoints.
+- [Issue 7845](https://github.com/firefly-iii/firefly-iii/issues/7845) Could not reconcile over API
+
 ## 6.0.19 - 2023-07-29
 
 ### Fixed

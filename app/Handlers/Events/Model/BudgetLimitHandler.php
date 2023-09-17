@@ -63,18 +63,6 @@ class BudgetLimitHandler
     private function updateAvailableBudget(BudgetLimit $budgetLimit): void
     {
         Log::debug(sprintf('Now in updateAvailableBudget(#%d)', $budgetLimit->id));
-
-        // based on the view range of the user (month week quarter etc) the budget limit could
-        // either overlap multiple available budget periods or be contained in a single one.
-        // all have to be created or updated.
-        try {
-            $viewRange = app('preferences')->get('viewRange', '1M')->data;
-        } catch (ContainerExceptionInterface | NotFoundExceptionInterface $e) {
-            $viewRange = '1M';
-        }
-        $start  = app('navigation')->startOfPeriod($budgetLimit->start_date, $viewRange);
-        $end    = app('navigation')->startOfPeriod($budgetLimit->end_date, $viewRange);
-        $end    = app('navigation')->endOfPeriod($end, $viewRange);
         $budget = Budget::find($budgetLimit->budget_id);
         if (null === $budget) {
             Log::warning('Budget is null, probably deleted, find deleted version.');
@@ -94,8 +82,23 @@ class BudgetLimitHandler
             return;
         }
 
+        // based on the view range of the user (month week quarter etc) the budget limit could
+        // either overlap multiple available budget periods or be contained in a single one.
+        // all have to be created or updated.
+        try {
+            $viewRange = app('preferences')->getForUser($user, 'viewRange', '1M')->data;
+        } catch (ContainerExceptionInterface | NotFoundExceptionInterface $e) {
+            app('log')->error($e->getMessage());
+            $viewRange = '1M';
+        }
+
+        $start = app('navigation')->startOfPeriod($budgetLimit->start_date, $viewRange);
+        $end   = app('navigation')->startOfPeriod($budgetLimit->end_date, $viewRange);
+        $end   = app('navigation')->endOfPeriod($end, $viewRange);
+
         // limit period in total is:
         $limitPeriod = Period::make($start, $end, precision: Precision::DAY(), boundaries: Boundaries::EXCLUDE_NONE());
+        app('log')->debug(sprintf('Limit period is from %s to %s', $start->format('Y-m-d'), $end->format('Y-m-d')));
 
         // from the start until the end of the budget limit, need to loop!
         $current = clone $start;
@@ -131,6 +134,7 @@ class BudgetLimitHandler
                     $availableBudget = new AvailableBudget(
                         [
                             'user_id'                 => $budgetLimit->budget->user->id,
+                            'user_group_id'           => $budgetLimit->budget->user->user_group_id,
                             'transaction_currency_id' => $budgetLimit->transaction_currency_id,
                             'start_date'              => $current,
                             'end_date'                => $currentEnd,
@@ -165,7 +169,7 @@ class BudgetLimitHandler
                 $availableBudget->end_date->format('Y-m-d')
             )
         );
-        // have to recalc everything just in case.
+        // have to recalculate everything just in case.
         $set = $repository->getAllBudgetLimitsByCurrency($availableBudget->transactionCurrency, $availableBudget->start_date, $availableBudget->end_date);
         Log::debug(sprintf('Found %d interesting budget limit(s).', $set->count()));
         /** @var BudgetLimit $budgetLimit */
@@ -185,15 +189,18 @@ class BudgetLimitHandler
                 precision : Precision::DAY(),
                 boundaries: Boundaries::EXCLUDE_NONE()
             );
-            // if both equal eachother, amount from this BL must be added to the AB
+            // if both equal each other, amount from this BL must be added to the AB
             if ($limitPeriod->equals($abPeriod)) {
+                app('log')->debug('This budget limit is equal to the available budget period.');
                 $newAmount = bcadd($newAmount, $budgetLimit->amount);
             }
-            // if budget limit period inside AB period, can be added in full.
+            // if budget limit period is inside AB period, it can be added in full.
             if (!$limitPeriod->equals($abPeriod) && $abPeriod->contains($limitPeriod)) {
+                app('log')->debug('This budget limit is smaller than the available budget period.');
                 $newAmount = bcadd($newAmount, $budgetLimit->amount);
             }
-            if (!$limitPeriod->equals($abPeriod) && $abPeriod->overlapsWith($limitPeriod)) {
+            if (!$limitPeriod->equals($abPeriod) && !$abPeriod->contains($limitPeriod) && $abPeriod->overlapsWith($limitPeriod)) {
+                app('log')->debug('This budget limit is something else entirely!');
                 $overlap = $abPeriod->overlap($limitPeriod);
                 if (null !== $overlap) {
                     $length    = $overlap->length();
@@ -208,7 +215,7 @@ class BudgetLimitHandler
             return;
         }
         Log::debug(sprintf('Concluded new amount for this AB must be %s', $newAmount));
-        $availableBudget->amount = $newAmount;
+        $availableBudget->amount = app('steam')->bcround($newAmount, $availableBudget->transactionCurrency->decimal_places);
         $availableBudget->save();
     }
 

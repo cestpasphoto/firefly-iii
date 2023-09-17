@@ -864,12 +864,12 @@ return [
     'rule_trigger_transaction_type'                       => 'Transakcia je typu ":trigger_value“',
     'rule_trigger_category_is_choice'                     => 'Kategória je..',
     'rule_trigger_category_is'                            => 'Kategória je „:trigger_value“',
-    'rule_trigger_amount_less_choice'                     => 'Suma je nižšia než..',
-    'rule_trigger_amount_less'                            => 'Suma je nižšia než :trigger_value',
+    'rule_trigger_amount_less_choice'                     => 'Amount is less than or equal to ..',
+    'rule_trigger_amount_less'                            => 'Amount is less than or equal to :trigger_value',
     'rule_trigger_amount_is_choice'                       => 'Amount is..',
     'rule_trigger_amount_is'                              => 'Amount is :trigger_value',
-    'rule_trigger_amount_more_choice'                     => 'Suma je vyššia než..',
-    'rule_trigger_amount_more'                            => 'Suma je vyššia než :trigger_value',
+    'rule_trigger_amount_more_choice'                     => 'Amount is more than or equal to..',
+    'rule_trigger_amount_more'                            => 'Amount is more than or equal to :trigger_value',
     'rule_trigger_description_starts_choice'              => 'Popis začína..',
     'rule_trigger_description_starts'                     => 'Popis začína ":trigger_value“',
     'rule_trigger_description_ends_choice'                => 'Popis končí..',
@@ -934,10 +934,14 @@ return [
     'rule_trigger_internal_reference_is'                  => 'Internal reference is ":trigger_value"',
     'rule_trigger_journal_id_choice'                      => 'ID denníka transakcií je..',
     'rule_trigger_journal_id'                             => 'ID denníka transakcií je ":trigger_value"',
-    'rule_trigger_no_external_url'                        => 'Transaction has no external URL',
-    'rule_trigger_any_external_url'                       => 'Transaction has an external URL',
-    'rule_trigger_any_external_url_choice'                => 'Transaction has an external URL',
+    'rule_trigger_any_external_url'                       => 'Transaction has an (any) external URL',
+    'rule_trigger_any_external_url_choice'                => 'Transaction has an (any) external URL',
+    'rule_trigger_any_external_id'                        => 'Transaction has an (any) external ID',
+    'rule_trigger_any_external_id_choice'                 => 'Transaction has an (any) external ID',
     'rule_trigger_no_external_url_choice'                 => 'Transaction has no external URL',
+    'rule_trigger_no_external_url'                        => 'Transaction has no external URL',
+    'rule_trigger_no_external_id_choice'                  => 'Transaction has no external ID',
+    'rule_trigger_no_external_id'                         => 'Transaction has no external ID',
     'rule_trigger_id_choice'                              => 'Transaction ID is..',
     'rule_trigger_id'                                     => 'Transaction ID is ":trigger_value"',
     'rule_trigger_sepa_ct_is_choice'                      => 'SEPA CT is..',
@@ -1218,6 +1222,7 @@ return [
 
 
     // actions
+    // set, clear, add, remove, append/prepend
     'rule_action_delete_transaction_choice'               => 'DELETE transaction(!)',
     'rule_action_delete_transaction'                      => 'DELETE transaction(!)',
     'rule_action_set_category'                            => 'Nastaviť kategóriu na „:action_value“',
@@ -1255,6 +1260,8 @@ return [
     'rule_action_set_notes_choice'                        => 'Set notes to ..',
     'rule_action_link_to_bill_choice'                     => 'Link to a bill ..',
     'rule_action_link_to_bill'                            => 'Prepojiť s účtom ":action_value"',
+    'rule_action_switch_accounts_choice'                  => 'Switch source and destination accounts (transfers only!)',
+    'rule_action_switch_accounts'                         => 'Switch source and destination',
     'rule_action_set_notes'                               => 'Nastavit poznámky na „:action_value“',
     'rule_action_convert_deposit_choice'                  => 'Zmeniť túto transakciu na vklad',
     'rule_action_convert_deposit'                         => 'Zmeniť túto transakciu z vkladu na „:action_value“',
@@ -1388,6 +1395,7 @@ return [
     'pref_notification_new_access_token'        => 'Alert when a new API access token is created',
     'pref_notification_transaction_creation'    => 'Alert when a transaction is created automatically',
     'pref_notification_user_login'              => 'Alert when you login from a new location',
+    'pref_notification_rule_action_failures'    => 'Alert when rule actions fail to execute (Slack or Discord only)',
     'pref_notifications'                        => 'Notifications',
     'pref_notifications_help'                   => 'Indicate if these are notifications you would like to get. Some notifications may contain sensitive financial information.',
     'slack_webhook_url'                         => 'Slack Webhook URL',
@@ -1396,6 +1404,7 @@ return [
 
     // Financial administrations
     'administration_index'                      => 'Financial administration',
+    'administrations_index_menu'                => 'Financial administration(s)',
 
     // profile:
     'purge_data_title'                          => 'Purge data from Firefly III',
@@ -1616,6 +1625,8 @@ return [
     'create_new_revenue'                        => 'Vytvoriť nový príjmový účet',
     'create_new_piggy_bank'                     => 'Vytvoriť novú pokladničku',
     'create_new_bill'                           => 'Vytvoriť nový účet',
+    'create_new_subscription'                   => 'Create new subscription',
+    'create_new_rule'                           => 'Create new rule',
 
     // currencies:
     'create_currency'                           => 'Vytvoriť novú menu',
@@ -1774,6 +1785,7 @@ return [
     'bill_repeats_half-year_skip'               => 'Repeats every {skip} half years',
     'bill_repeats_yearly_skip'                  => 'Repeats every {skip} years',
     'subscriptions'                             => 'Subscriptions',
+    'go_to_subscriptions'                       => 'Go to your subscriptions',
     'forever'                                   => 'Forever',
     'extension_date_is'                         => 'Extension date is {date}',
 
@@ -1815,8 +1827,10 @@ return [
     'asset_accounts'                            => 'Účty aktív',
     'undefined_accounts'                        => 'Accounts',
     'asset_accounts_inactive'                   => 'Majetkový účet (neaktívny)',
+    'expense_account'                           => 'Expense account',
     'expense_accounts'                          => 'Výdavkové účty',
     'expense_accounts_inactive'                 => 'Výdajový účet (neaktívny)',
+    'revenue_account'                           => 'Revenue account',
     'revenue_accounts'                          => 'Výnosové účty',
     'revenue_accounts_inactive'                 => 'Výnosové účty (neaktívne)',
     'cash_accounts'                             => 'Hotovostné účty',
@@ -1905,6 +1919,7 @@ return [
     'categories'                                => 'Kategórie',
     'edit_category'                             => 'Upraviť kategóriu „:name“',
     'no_category'                               => '(žiadna kategória)',
+    'unknown_category_plain'                    => 'No category',
     'category'                                  => 'Kategória',
     'delete_category'                           => 'Odstrániť kategóriu „:name“',
     'deleted_category'                          => 'Kategorie „:name“ smazána',
@@ -2072,6 +2087,12 @@ return [
     'searchPlaceholder'                         => 'Vyhľadať...',
     'version'                                   => 'Verzia',
     'dashboard'                                 => 'Prehľad',
+    'income_and_expense'                        => 'Income and expense',
+    'all_money'                                 => 'All your money',
+    'unknown_source_plain'                      => 'Unknown source account',
+    'unknown_dest_plain'                        => 'Unknown destination account',
+    'unknown_any_plain'                         => 'Unknown account',
+    'unknown_budget_plain'                      => 'No budget',
     'available_budget'                          => 'Rozpočet k dispozícii ({currency})',
     'currencies'                                => 'Meny',
     'activity'                                  => 'Aktivita',
@@ -2351,6 +2372,7 @@ return [
     'created_tag'               => 'Štítok „:tag“ bol vytvorený!',
 
     'transaction_journal_information'          => 'Informácie o transakcii',
+    'transaction_journal_amount'               => 'Amount information',
     'transaction_journal_meta'                 => 'Meta informácie',
     'transaction_journal_more'                 => 'Ďalšie informácie',
     'basic_journal_information'                => 'Základné Informácie o transakcii',
@@ -2380,6 +2402,7 @@ return [
     'invite_user'                              => 'Invite user',
     'user_is_invited'                          => 'Email address ":address" was invited to Firefly III',
     'administration'                           => 'Správa',
+    'system_settings'                          => 'System settings',
     'code_already_used'                        => 'Invite code has been used',
     'user_administration'                      => 'Správa použivateľov',
     'list_all_users'                           => 'Všetci použivatelia',
@@ -2519,6 +2542,7 @@ return [
 
     // object groups
     'default_group_title_name'              => '(nezoskupené)',
+    'default_group_title_name_plain'        => 'ungrouped',
 
     // empty lists? no objects? instructions:
     'no_accounts_title_asset'               => 'Vytvorme účet aktív!',
@@ -2703,6 +2727,7 @@ return [
     'ale_action_clear_tag'               => 'Cleared tag',
     'ale_action_clear_all_tags'          => 'Cleared all tags',
     'ale_action_set_bill'                => 'Linked to bill',
+    'ale_action_switch_accounts'         => 'Switched source and destination account',
     'ale_action_set_budget'              => 'Set budget',
     'ale_action_set_category'            => 'Set category',
     'ale_action_set_source'              => 'Set source account',

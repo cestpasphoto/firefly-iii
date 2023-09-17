@@ -151,7 +151,7 @@ return [
     'destination_account'                  => '대상 계정',
     'destination_account_reconciliation'   => '조정 거래의 대상 계정은 편집할 수 없습니다.',
     'sum_of_expenses_in_budget'            => '":budget" 예산에서 총 지출',
-    'left_in_budget_limit'                 => '예산 책정에 따라 지출',
+    'left_in_budget_limit'                 => '예산 책정에 따른 남은 지출',
     'current_period'                       => '현재 기간',
     'show_the_current_period_and_overview' => '현재 기간 및 걔요 표시',
     'pref_languages_locale'                => '영어 외의 언어가 제대로 동작하려면 운영 체제에 올바른 로케일 정보가 있어야 합니다. 그렇지 않은 경우 통화 데이터, 날짜 및 금액의 형식이 잘못 지정될 수 있습니다.',
@@ -864,12 +864,12 @@ return [
     'rule_trigger_transaction_type'                       => '거래는 ":trigger_value" 유형입니다',
     'rule_trigger_category_is_choice'                     => '카테고리는 ..',
     'rule_trigger_category_is'                            => '카테고리는 ":trigger_value"입니다',
-    'rule_trigger_amount_less_choice'                     => '금액이 ... 미만입니다',
-    'rule_trigger_amount_less'                            => '금액이 :trigger_value 미만입니다.',
+    'rule_trigger_amount_less_choice'                     => '금액이 .. 와 작거나 같음',
+    'rule_trigger_amount_less'                            => '금액이 :trigger_value와 작거나 같음',
     'rule_trigger_amount_is_choice'                       => '금액은..',
     'rule_trigger_amount_is'                              => '금액은 :trigger_value입니다',
-    'rule_trigger_amount_more_choice'                     => '금액이 ... 이상입니다',
-    'rule_trigger_amount_more'                            => '금액이 :trigger_value 이상입니다',
+    'rule_trigger_amount_more_choice'                     => '금액이 .. 와 크거나 같음',
+    'rule_trigger_amount_more'                            => '금액이 :trigger_value와 크거나 같음',
     'rule_trigger_description_starts_choice'              => '설명이 ..로 시작합니다',
     'rule_trigger_description_starts'                     => '설명이 ":trigger_value"로 시작합니다',
     'rule_trigger_description_ends_choice'                => '설명이 ..로 끝납니다',
@@ -934,10 +934,14 @@ return [
     'rule_trigger_internal_reference_is'                  => '내부 참조는 ":trigger_value"임',
     'rule_trigger_journal_id_choice'                      => '거래 저널 ID는..',
     'rule_trigger_journal_id'                             => '거래 저널 ID는 ":trigger_value"임',
-    'rule_trigger_no_external_url'                        => '거래에 외부 URL이 없습니다',
-    'rule_trigger_any_external_url'                       => '거래에 외부 URL이 없습니다',
-    'rule_trigger_any_external_url_choice'                => '거래에 외부 URL이 없습니다',
+    'rule_trigger_any_external_url'                       => '거래에 (어떤) 외부 URL이 있음',
+    'rule_trigger_any_external_url_choice'                => '거래에 (어떤) 외부 URL이 있음',
+    'rule_trigger_any_external_id'                        => '거래에 (어떤) 외부 ID가 있음',
+    'rule_trigger_any_external_id_choice'                 => '거래에 (어떤) 외부 ID가 있음',
     'rule_trigger_no_external_url_choice'                 => '거래에 외부 URL이 없습니다',
+    'rule_trigger_no_external_url'                        => '거래에 외부 URL이 없습니다',
+    'rule_trigger_no_external_id_choice'                  => '거래에 외부 ID가 없음',
+    'rule_trigger_no_external_id'                         => '거래에 외부 ID가 없음',
     'rule_trigger_id_choice'                              => '거래 ID는..',
     'rule_trigger_id'                                     => '거래 ID는 ":trigger_value"임',
     'rule_trigger_sepa_ct_is_choice'                      => 'SEPA CT는..',
@@ -1218,6 +1222,7 @@ return [
 
 
     // actions
+    // set, clear, add, remove, append/prepend
     'rule_action_delete_transaction_choice'               => '거래 삭제(!)',
     'rule_action_delete_transaction'                      => '거래 삭제(!)',
     'rule_action_set_category'                            => '카테고리를 ":action_value"로 설정',
@@ -1255,6 +1260,8 @@ return [
     'rule_action_set_notes_choice'                        => '노트를 ..로 설정',
     'rule_action_link_to_bill_choice'                     => '청구서 링크 ..',
     'rule_action_link_to_bill'                            => '청구서 링크 ":action_value"',
+    'rule_action_switch_accounts_choice'                  => '소스와 대상 계정 전환 (이체 만!)',
+    'rule_action_switch_accounts'                         => '소스와 대상 계정 전환',
     'rule_action_set_notes'                               => '노트를 ":action_value"로 설정',
     'rule_action_convert_deposit_choice'                  => '거래를 입금으로 전환',
     'rule_action_convert_deposit'                         => '":action_value"에서 거래를 입금으로 전환합니다',
@@ -1388,6 +1395,7 @@ return [
     'pref_notification_new_access_token'        => '새 API 액세스 토큰이 생성되면 알림 받기',
     'pref_notification_transaction_creation'    => '거래가 자동으로 생성될 때 알림',
     'pref_notification_user_login'              => '새 위치에서 로그인할 때 알림',
+    'pref_notification_rule_action_failures'    => 'Alert when rule actions fail to execute (Slack or Discord only)',
     'pref_notifications'                        => '알림',
     'pref_notifications_help'                   => '수신할 알림인지 여부를 표시합니다. 일부 알림에는 민감한 금융 정보가 포함될 수 있습니다.',
     'slack_webhook_url'                         => 'Slack 웹훅 URL',
@@ -1396,6 +1404,7 @@ return [
 
     // Financial administrations
     'administration_index'                      => '재정 관리',
+    'administrations_index_menu'                => '재정 관리자(들)',
 
     // profile:
     'purge_data_title'                          => 'Firefly III에서 데이터 제거',
@@ -1616,6 +1625,8 @@ return [
     'create_new_revenue'                        => '새 수익 계정 생성',
     'create_new_piggy_bank'                     => '새 저금통 만들기',
     'create_new_bill'                           => '새 청구서 생성',
+    'create_new_subscription'                   => 'Create new subscription',
+    'create_new_rule'                           => 'Create new rule',
 
     // currencies:
     'create_currency'                           => '새로운 통화 생성',
@@ -1734,7 +1745,7 @@ return [
     'connected_journals'                        => '연결된 거래',
     'auto_match_on'                             => 'Firefly III에 의해 자동 매칭',
     'auto_match_off'                            => 'Firefly III에 의해 자동 매칭되지 않음',
-    'next_expected_match'                       => '다음 예상 매치',
+    'next_expected_match'                       => '다음 예상 지불일',
     'delete_bill'                               => '":name" 청구서 삭제',
     'deleted_bill'                              => '":name" 청구서 삭제됨',
     'edit_bill'                                 => '":name" 청구서 수정',
@@ -1774,6 +1785,7 @@ return [
     'bill_repeats_half-year_skip'               => '{skip} 반년마다 반복',
     'bill_repeats_yearly_skip'                  => '{skip} 년마다 반복',
     'subscriptions'                             => '구독',
+    'go_to_subscriptions'                       => 'Go to your subscriptions',
     'forever'                                   => '무기한',
     'extension_date_is'                         => '연장 날짜는 {date}입니다',
 
@@ -1815,8 +1827,10 @@ return [
     'asset_accounts'                            => '자산 계정',
     'undefined_accounts'                        => '계정',
     'asset_accounts_inactive'                   => '자산 계정 (비활성)',
+    'expense_account'                           => '지출 계정',
     'expense_accounts'                          => '지출 계정',
     'expense_accounts_inactive'                 => '지출 계정 (비활성)',
+    'revenue_account'                           => '수익 계정',
     'revenue_accounts'                          => '수익 계정',
     'revenue_accounts_inactive'                 => '수익 계정 (비활성)',
     'cash_accounts'                             => '현금 계정',
@@ -1905,6 +1919,7 @@ return [
     'categories'                                => '카테고리',
     'edit_category'                             => '":name" 카테고리 수정',
     'no_category'                               => '(카테고리 없음)',
+    'unknown_category_plain'                    => '카테고리 없음',
     'category'                                  => '카테고리',
     'delete_category'                           => '":name" 카테고리 삭제',
     'deleted_category'                          => '":name" 카테고리 삭제됨',
@@ -2072,6 +2087,12 @@ return [
     'searchPlaceholder'                         => '검색...',
     'version'                                   => '버전',
     'dashboard'                                 => '대시보드',
+    'income_and_expense'                        => '수입과 지출',
+    'all_money'                                 => '모든 돈',
+    'unknown_source_plain'                      => '알 수 없는 소스 계정',
+    'unknown_dest_plain'                        => '알 수 없는 대상 계정',
+    'unknown_any_plain'                         => '알 수 없는 계정',
+    'unknown_budget_plain'                      => '예산 없음',
     'available_budget'                          => '사용 가능한 예산 ({currency})',
     'currencies'                                => '통화',
     'activity'                                  => '활동',
@@ -2280,7 +2301,7 @@ return [
     'left_to_spend'                             => '남은 지출',
     'earned'                                    => '수입',
     'overspent'                                 => '초과 지출',
-    'left'                                      => '왼쪽',
+    'left'                                      => '남음',
     'max-amount'                                => '최대 금액',
     'min-amount'                                => '최소 금액',
     'journal-amount'                            => '현재 청구서 항목',
@@ -2312,7 +2333,7 @@ return [
     'left_for_piggy_banks'                      => '저금통 잔액',
     'sum_of_piggy_banks'                        => '저금통 합계',
     'saved_so_far'                              => '지금까지 저장됨',
-    'left_to_save'                              => '남은 저장',
+    'left_to_save'                              => '남은 금액',
     'suggested_amount'                          => '월별 권장 절약 금액',
     'add_money_to_piggy_title'                  => '":name" 저금통애 금액 추가',
     'remove_money_from_piggy_title'             => '":name" 저금통에서 금액 제거',
@@ -2351,6 +2372,7 @@ return [
     'created_tag'               => '":tag" 태그가 생성되었습니다!',
 
     'transaction_journal_information'          => '거래 정보',
+    'transaction_journal_amount'               => 'Amount information',
     'transaction_journal_meta'                 => '메타 정보',
     'transaction_journal_more'                 => '추가 정보',
     'basic_journal_information'                => '기본 거래 정보',
@@ -2380,6 +2402,7 @@ return [
     'invite_user'                              => '사용자 초대',
     'user_is_invited'                          => '":address" 이메일 주소가 Firefly III에 초대되었습니다',
     'administration'                           => '관리',
+    'system_settings'                          => '시스템 설정',
     'code_already_used'                        => '초대 코드가 사용되었습니다',
     'user_administration'                      => '사용자 관리',
     'list_all_users'                           => '모든 사용자',
@@ -2519,6 +2542,7 @@ return [
 
     // object groups
     'default_group_title_name'              => '(그룹화 해제)',
+    'default_group_title_name_plain'        => '그룹 해제됨',
 
     // empty lists? no objects? instructions:
     'no_accounts_title_asset'               => '자산 계정을 만들어 봅시다!',
@@ -2703,6 +2727,7 @@ return [
     'ale_action_clear_tag'               => '삭제된 태그',
     'ale_action_clear_all_tags'          => '모든 태그 지우기',
     'ale_action_set_bill'                => '청구서에 연결됨',
+    'ale_action_switch_accounts'         => '소스와 대상 계정 전환',
     'ale_action_set_budget'              => '예산 설정',
     'ale_action_set_category'            => '카테고리 설정',
     'ale_action_set_source'              => '소스 계정 설정',
@@ -2715,8 +2740,8 @@ return [
     'ale_action_add_tag'                 => '태그 추가',
 
     // dashboard
-    'enable_auto_convert'                => 'Enable currency conversion',
-    'disable_auto_convert'               => 'Disable currency conversion',
+    'enable_auto_convert'                => '통화 변환 활성화',
+    'disable_auto_convert'               => '통화 변환 비활성화',
 
 ];
 

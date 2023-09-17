@@ -101,6 +101,7 @@ class IndexController extends Controller
      */
     public function index(Request $request, Carbon $start = null, Carbon $end = null)
     {
+        $this->abRepository->cleanup();
         Log::debug(sprintf('Start of IndexController::index("%s", "%s")', $start?->format('Y-m-d'), $end?->format('Y-m-d')));
 
         // collect some basic vars:
@@ -226,6 +227,7 @@ class IndexController extends Controller
             Log::debug(sprintf('Working on budget #%d ("%s")', $current->id, $current->name));
             $array                = $current->toArray();
             $array['spent']       = [];
+            $array['spent_total'] = [];
             $array['budgeted']    = [];
             $array['attachments'] = $this->repository->getAttachments($current);
             $array['auto_budget'] = $this->repository->getAutoBudget($current);
@@ -234,9 +236,10 @@ class IndexController extends Controller
             foreach ($budgetLimits as $limit) {
                 Log::debug(sprintf('Working on budget limit #%d', $limit->id));
                 $currency            = $limit->transactionCurrency ?? $defaultCurrency;
+                $amount              = app('steam')->bcround($limit->amount, $currency->decimal_places);
                 $array['budgeted'][] = [
                     'id'                      => $limit->id,
-                    'amount'                  => app('steam')->bcround($limit->amount, $currency->decimal_places),
+                    'amount'                  => $amount,
                     'start_date'              => $limit->start_date->isoFormat($this->monthAndDayFormat),
                     'end_date'                => $limit->end_date->isoFormat($this->monthAndDayFormat),
                     'in_range'                => $limit->start_date->isSameDay($start) && $limit->end_date->isSameDay($end),
@@ -245,6 +248,7 @@ class IndexController extends Controller
                     'currency_name'           => $currency->name,
                     'currency_decimal_places' => $currency->decimal_places,
                 ];
+                Log::debug(sprintf('The amount budgeted for budget limit #%d is %s %s', $limit->id, $currency->code, $amount));
             }
 
             /** @var TransactionCurrency $currency */
@@ -337,6 +341,7 @@ class IndexController extends Controller
      */
     public function reorder(Request $request, BudgetRepositoryInterface $repository): JsonResponse
     {
+        $this->abRepository->cleanup();
         $budgetIds = $request->get('budgetIds');
 
         foreach ($budgetIds as $index => $budgetId) {

@@ -107,6 +107,7 @@ class RecurrenceFactory
         $recurrence = new Recurrence(
             [
                 'user_id'             => $this->user->id,
+                'user_group_id'       => $this->user->user_group_id,
                 'transaction_type_id' => $type->id,
                 'title'               => $title,
                 'description'         => $description,
@@ -129,6 +130,7 @@ class RecurrenceFactory
             $this->createTransactions($recurrence, $data['transactions'] ?? []);
         } catch (FireflyException $e) {
             Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
             $recurrence->forceDelete();
             $message = sprintf('Could not create recurring transaction: %s', $e->getMessage());
             $this->errors->add('store', $message);

@@ -864,12 +864,12 @@ return [
     'rule_trigger_transaction_type'                       => 'Transactiesoort is ":trigger_value" (Engels)',
     'rule_trigger_category_is_choice'                     => 'Categorie is..',
     'rule_trigger_category_is'                            => 'Categorie is ":trigger_value"',
-    'rule_trigger_amount_less_choice'                     => 'Bedrag is minder dan..',
-    'rule_trigger_amount_less'                            => 'Bedrag is minder dan :trigger_value',
+    'rule_trigger_amount_less_choice'                     => 'Bedrag is kleiner dan of gelijk aan ..',
+    'rule_trigger_amount_less'                            => 'Bedrag is kleiner dan of gelijk aan :trigger_value',
     'rule_trigger_amount_is_choice'                       => 'Bedrag is..',
     'rule_trigger_amount_is'                              => 'Bedrag is :trigger_value',
-    'rule_trigger_amount_more_choice'                     => 'Bedrag is meer dan..',
-    'rule_trigger_amount_more'                            => 'Bedrag is meer dan :trigger_value',
+    'rule_trigger_amount_more_choice'                     => 'Bedrag is groter dan of gelijk aan..',
+    'rule_trigger_amount_more'                            => 'Bedrag is groter dan of gelijk aan :trigger_value',
     'rule_trigger_description_starts_choice'              => 'Omschrijving begint met..',
     'rule_trigger_description_starts'                     => 'Omschrijving begint met ":trigger_value"',
     'rule_trigger_description_ends_choice'                => 'Omschrijving eindigt op..',
@@ -934,10 +934,14 @@ return [
     'rule_trigger_internal_reference_is'                  => 'Interne referentie is ":trigger_value"',
     'rule_trigger_journal_id_choice'                      => 'Transactiejournaal ID is..',
     'rule_trigger_journal_id'                             => 'Transactiejournaal ID is ":trigger_value"',
-    'rule_trigger_no_external_url'                        => 'De transactie heeft geen externe URL',
-    'rule_trigger_any_external_url'                       => 'De transactie heeft een externe URL',
-    'rule_trigger_any_external_url_choice'                => 'De transactie heeft een externe URL',
+    'rule_trigger_any_external_url'                       => 'Transactie heeft een externe URL',
+    'rule_trigger_any_external_url_choice'                => 'Transactie heeft een externe URL',
+    'rule_trigger_any_external_id'                        => 'Transactie heeft een extern ID',
+    'rule_trigger_any_external_id_choice'                 => 'Transactie heeft een extern ID',
     'rule_trigger_no_external_url_choice'                 => 'De transactie heeft geen externe URL',
+    'rule_trigger_no_external_url'                        => 'De transactie heeft geen externe URL',
+    'rule_trigger_no_external_id_choice'                  => 'Transactie heeft geen extern ID',
+    'rule_trigger_no_external_id'                         => 'Transactie heeft geen extern ID',
     'rule_trigger_id_choice'                              => 'Transactie-ID is..',
     'rule_trigger_id'                                     => 'Transactie-ID is ":trigger_value"',
     'rule_trigger_sepa_ct_is_choice'                      => 'SEPA CT is..',
@@ -1218,6 +1222,7 @@ return [
 
 
     // actions
+    // set, clear, add, remove, append/prepend
     'rule_action_delete_transaction_choice'               => 'VERWIJDER transactie(!)',
     'rule_action_delete_transaction'                      => 'VERWIJDER transactie(!)',
     'rule_action_set_category'                            => 'Verander categorie naar ":action_value"',
@@ -1255,6 +1260,8 @@ return [
     'rule_action_set_notes_choice'                        => 'Stel notities in op ..',
     'rule_action_link_to_bill_choice'                     => 'Link naar een contract ..',
     'rule_action_link_to_bill'                            => 'Link naar contract ":action_value"',
+    'rule_action_switch_accounts_choice'                  => 'Wissel bron- en doelrekening (alleen overboekingen!)',
+    'rule_action_switch_accounts'                         => 'Wissel bron- en doelrekening',
     'rule_action_set_notes'                               => 'Verander notitie in ":action_value"',
     'rule_action_convert_deposit_choice'                  => 'Verander de transactie in inkomsten',
     'rule_action_convert_deposit'                         => 'Verander de transactie in inkomsten van ":action_value"',
@@ -1335,7 +1342,7 @@ return [
     'pref_custom_fiscal_year_help'              => 'Voor in landen die een boekjaar gebruiken anders dan 1 januari tot 31 december',
     'pref_fiscal_year_start_label'              => 'Start van boekjaar',
     'pref_two_factor_auth'                      => 'Authenticatie in twee stappen',
-    'pref_two_factor_auth_help'                 => 'Als je authenticatie in twee stappen (ook wel twee-factor authenticatie genoemd) inschakelt voeg je een extra beveiligingslaag toe aan je account. Je logt in met iets dat je weet (je wachtwoord) en iets dat je hebt (een verificatiecode). Verificatiecodes worden gegeneerd door apps op je telefoon, zoals Authy en Google Authenticator.',
+    'pref_two_factor_auth_help'                 => 'Als je authenticatie in twee stappen (ook wel twee-factor authenticatie genoemd) inschakelt voeg je een extra beveiligingslaag toe aan je account. Je logt in met iets dat je weet (je wachtwoord) en iets dat je hebt (een verificatiecode). Verificatiecodes worden gegenereerd door apps op je telefoon, zoals Authy en Google Authenticator.',
     'pref_enable_two_factor_auth'               => 'Authenticatie in twee stappen inschakelen',
     'pref_two_factor_auth_disabled'             => 'Je verificatiecode voor authenticatie in twee stappen is verwijderd, en uitgeschakeld',
     'pref_two_factor_auth_remove_it'            => 'Vergeet niet om je Firefly III account uit je authenticatie appje te verwijderen!',
@@ -1388,6 +1395,7 @@ return [
     'pref_notification_new_access_token'        => 'Melding wanneer een nieuwe API-toegangstoken wordt aangemaakt',
     'pref_notification_transaction_creation'    => 'Melding wanneer een transactie automatisch wordt aangemaakt',
     'pref_notification_user_login'              => 'Melding wanneer u inlogt vanaf een nieuwe locatie',
+    'pref_notification_rule_action_failures'    => 'Waarschuwen wanneer regelacties niet utgevoerd kunnen worden (alleen via Slack of Discord)',
     'pref_notifications'                        => 'Meldingen',
     'pref_notifications_help'                   => 'Geef aan of dit meldingen zijn die je zou willen krijgen. Sommige meldingen kunnen gevoelige financiële informatie bevatten.',
     'slack_webhook_url'                         => 'Slack Webhook URL',
@@ -1396,6 +1404,7 @@ return [
 
     // Financial administrations
     'administration_index'                      => 'Financiële administratie',
+    'administrations_index_menu'                => 'Financiële administratie(s)',
 
     // profile:
     'purge_data_title'                          => 'Gegevens wissen uit Firefly III',
@@ -1616,6 +1625,8 @@ return [
     'create_new_revenue'                        => 'Nieuwe debiteur',
     'create_new_piggy_bank'                     => 'Nieuw spaarpotje',
     'create_new_bill'                           => 'Nieuw contract',
+    'create_new_subscription'                   => 'Maak een nieuw abonnement',
+    'create_new_rule'                           => 'Maak een nieuwe regel',
 
     // currencies:
     'create_currency'                           => 'Voeg nieuwe valuta toe',
@@ -1774,6 +1785,7 @@ return [
     'bill_repeats_half-year_skip'               => 'Herhaalt elke {skip} halve jaren',
     'bill_repeats_yearly_skip'                  => 'Herhaalt elke {skip} jaar',
     'subscriptions'                             => 'Abonnementen',
+    'go_to_subscriptions'                       => 'Ga naar je abonnementen',
     'forever'                                   => 'Voor altijd',
     'extension_date_is'                         => 'Verlengdatum is {date}',
 
@@ -1815,8 +1827,10 @@ return [
     'asset_accounts'                            => 'Betaalrekeningen',
     'undefined_accounts'                        => 'Rekeningen',
     'asset_accounts_inactive'                   => 'Betaalrekeningen (inactief)',
+    'expense_account'                           => 'Crediteur',
     'expense_accounts'                          => 'Crediteuren',
     'expense_accounts_inactive'                 => 'Crediteuren (inactief)',
+    'revenue_account'                           => 'Debiteur',
     'revenue_accounts'                          => 'Debiteuren',
     'revenue_accounts_inactive'                 => 'Debiteuren (inactief)',
     'cash_accounts'                             => 'Contant geldrekeningen',
@@ -1905,6 +1919,7 @@ return [
     'categories'                                => 'Categorieën',
     'edit_category'                             => 'Wijzig categorie ":name"',
     'no_category'                               => '(geen categorie)',
+    'unknown_category_plain'                    => 'Geen categorie',
     'category'                                  => 'Categorie',
     'delete_category'                           => 'Verwijder categorie ":name"',
     'deleted_category'                          => 'Categorie ":name" verwijderd',
@@ -2072,6 +2087,12 @@ return [
     'searchPlaceholder'                         => 'Zoeken...',
     'version'                                   => 'Versie',
     'dashboard'                                 => 'Dashboard',
+    'income_and_expense'                        => 'Inkomsten en uitgaven',
+    'all_money'                                 => 'Al je geld',
+    'unknown_source_plain'                      => 'Onbekend bronrekening',
+    'unknown_dest_plain'                        => 'Onbekende doelrekening',
+    'unknown_any_plain'                         => 'Onbekende rekening',
+    'unknown_budget_plain'                      => 'Geen budget',
     'available_budget'                          => 'Beschikbaar budget ({currency})',
     'currencies'                                => 'Valuta',
     'activity'                                  => 'Activiteit',
@@ -2351,6 +2372,7 @@ return [
     'created_tag'               => 'Tag ":tag" opgeslagen!',
 
     'transaction_journal_information'          => 'Transactieinformatie',
+    'transaction_journal_amount'               => 'Bedraginformatie',
     'transaction_journal_meta'                 => 'Metainformatie',
     'transaction_journal_more'                 => 'Meer informatie',
     'basic_journal_information'                => 'Standaard transactieinformatie',
@@ -2380,6 +2402,7 @@ return [
     'invite_user'                              => 'Gebruiker uitnodigen',
     'user_is_invited'                          => 'E-mailadres ":address" is uitgenodigd voor Firefly III',
     'administration'                           => 'Administratie',
+    'system_settings'                          => 'Systeeminstellingen',
     'code_already_used'                        => 'Uitnodigingscode is al gebruikt',
     'user_administration'                      => 'Gebruikersadministratie',
     'list_all_users'                           => 'Alle gebruikers',
@@ -2519,6 +2542,7 @@ return [
 
     // object groups
     'default_group_title_name'              => '(ongegroepeerd)',
+    'default_group_title_name_plain'        => 'ongegroepeerd',
 
     // empty lists? no objects? instructions:
     'no_accounts_title_asset'               => 'Je hebt een betaalrekening nodig!',
@@ -2703,6 +2727,7 @@ return [
     'ale_action_clear_tag'               => 'Tag gewist',
     'ale_action_clear_all_tags'          => 'Alle tags gewist',
     'ale_action_set_bill'                => 'Gekoppeld aan contract',
+    'ale_action_switch_accounts'         => 'Bron- en doelrekening gewisseld',
     'ale_action_set_budget'              => 'Budget ingesteld',
     'ale_action_set_category'            => 'Categorie ingesteld',
     'ale_action_set_source'              => 'Bronrekening veranderd',
@@ -2715,8 +2740,8 @@ return [
     'ale_action_add_tag'                 => 'Tag toegevoegd',
 
     // dashboard
-    'enable_auto_convert'                => 'Enable currency conversion',
-    'disable_auto_convert'               => 'Disable currency conversion',
+    'enable_auto_convert'                => 'Doe valutaconversie',
+    'disable_auto_convert'               => 'Doe geen valutaconversie',
 
 ];
 

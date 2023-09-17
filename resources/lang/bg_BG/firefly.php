@@ -864,12 +864,12 @@ return [
     'rule_trigger_transaction_type'                       => 'Транзакцията е от тип ":trigger_value"',
     'rule_trigger_category_is_choice'                     => 'Категорията е..',
     'rule_trigger_category_is'                            => 'Категорията е ":trigger_value"',
-    'rule_trigger_amount_less_choice'                     => 'Сумата е по-малко от..',
-    'rule_trigger_amount_less'                            => 'Сумата е по-малко от :trigger_value',
+    'rule_trigger_amount_less_choice'                     => 'Amount is less than or equal to ..',
+    'rule_trigger_amount_less'                            => 'Amount is less than or equal to :trigger_value',
     'rule_trigger_amount_is_choice'                       => 'Amount is..',
     'rule_trigger_amount_is'                              => 'Amount is :trigger_value',
-    'rule_trigger_amount_more_choice'                     => 'Сумата е по-голяма от..',
-    'rule_trigger_amount_more'                            => 'Сумата е по-голяма от :trigger_value',
+    'rule_trigger_amount_more_choice'                     => 'Amount is more than or equal to..',
+    'rule_trigger_amount_more'                            => 'Amount is more than or equal to :trigger_value',
     'rule_trigger_description_starts_choice'              => 'Описанието започва с..',
     'rule_trigger_description_starts'                     => 'Описанието започва с ":trigger_value"',
     'rule_trigger_description_ends_choice'                => 'Описанието завършва с..',
@@ -934,10 +934,14 @@ return [
     'rule_trigger_internal_reference_is'                  => 'Internal reference is ":trigger_value"',
     'rule_trigger_journal_id_choice'                      => 'ID на транзакцията е..',
     'rule_trigger_journal_id'                             => 'ID на транзакцията е ":trigger_value"',
-    'rule_trigger_no_external_url'                        => 'Transaction has no external URL',
-    'rule_trigger_any_external_url'                       => 'Transaction has an external URL',
-    'rule_trigger_any_external_url_choice'                => 'Transaction has an external URL',
+    'rule_trigger_any_external_url'                       => 'Transaction has an (any) external URL',
+    'rule_trigger_any_external_url_choice'                => 'Transaction has an (any) external URL',
+    'rule_trigger_any_external_id'                        => 'Transaction has an (any) external ID',
+    'rule_trigger_any_external_id_choice'                 => 'Transaction has an (any) external ID',
     'rule_trigger_no_external_url_choice'                 => 'Transaction has no external URL',
+    'rule_trigger_no_external_url'                        => 'Transaction has no external URL',
+    'rule_trigger_no_external_id_choice'                  => 'Transaction has no external ID',
+    'rule_trigger_no_external_id'                         => 'Transaction has no external ID',
     'rule_trigger_id_choice'                              => 'Transaction ID is..',
     'rule_trigger_id'                                     => 'Transaction ID is ":trigger_value"',
     'rule_trigger_sepa_ct_is_choice'                      => 'SEPA CT is..',
@@ -1218,6 +1222,7 @@ return [
 
 
     // actions
+    // set, clear, add, remove, append/prepend
     'rule_action_delete_transaction_choice'               => 'DELETE transaction(!)',
     'rule_action_delete_transaction'                      => 'DELETE transaction(!)',
     'rule_action_set_category'                            => 'Задайте категория на ":action_value"',
@@ -1255,6 +1260,8 @@ return [
     'rule_action_set_notes_choice'                        => 'Set notes to ..',
     'rule_action_link_to_bill_choice'                     => 'Link to a bill ..',
     'rule_action_link_to_bill'                            => 'Свържи към сметка ":action_value"',
+    'rule_action_switch_accounts_choice'                  => 'Switch source and destination accounts (transfers only!)',
+    'rule_action_switch_accounts'                         => 'Switch source and destination',
     'rule_action_set_notes'                               => 'Задай бележките на ":action_value"',
     'rule_action_convert_deposit_choice'                  => 'Преобразувайте транзакцията в депозит',
     'rule_action_convert_deposit'                         => 'Преобразувайте транзакцията в депозит в ":action_value"',
@@ -1388,6 +1395,7 @@ return [
     'pref_notification_new_access_token'        => 'Alert when a new API access token is created',
     'pref_notification_transaction_creation'    => 'Alert when a transaction is created automatically',
     'pref_notification_user_login'              => 'Alert when you login from a new location',
+    'pref_notification_rule_action_failures'    => 'Alert when rule actions fail to execute (Slack or Discord only)',
     'pref_notifications'                        => 'Notifications',
     'pref_notifications_help'                   => 'Indicate if these are notifications you would like to get. Some notifications may contain sensitive financial information.',
     'slack_webhook_url'                         => 'Slack Webhook URL',
@@ -1396,6 +1404,7 @@ return [
 
     // Financial administrations
     'administration_index'                      => 'Financial administration',
+    'administrations_index_menu'                => 'Financial administration(s)',
 
     // profile:
     'purge_data_title'                          => 'Purge data from Firefly III',
@@ -1616,6 +1625,8 @@ return [
     'create_new_revenue'                        => 'Създай нова сметка за приходи',
     'create_new_piggy_bank'                     => 'Създай нова касичка',
     'create_new_bill'                           => 'Създай нова сметка',
+    'create_new_subscription'                   => 'Create new subscription',
+    'create_new_rule'                           => 'Create new rule',
 
     // currencies:
     'create_currency'                           => 'Създай нова валута',
@@ -1774,6 +1785,7 @@ return [
     'bill_repeats_half-year_skip'               => 'Повтаря се през {skip} половин години',
     'bill_repeats_yearly_skip'                  => 'Повтаря се през {skip} години',
     'subscriptions'                             => 'Абонаменти',
+    'go_to_subscriptions'                       => 'Go to your subscriptions',
     'forever'                                   => 'Завинаги',
     'extension_date_is'                         => 'Extension date is {date}',
 
@@ -1815,8 +1827,10 @@ return [
     'asset_accounts'                            => 'Сметки за активи',
     'undefined_accounts'                        => 'Accounts',
     'asset_accounts_inactive'                   => 'Сметки за активи (деактивирани)',
+    'expense_account'                           => 'Expense account',
     'expense_accounts'                          => 'Сметки за разходи',
     'expense_accounts_inactive'                 => 'Сметки за разходи (деактивирани)',
+    'revenue_account'                           => 'Revenue account',
     'revenue_accounts'                          => 'Сметки за приходи',
     'revenue_accounts_inactive'                 => 'Сметки за приходи (деактивирани)',
     'cash_accounts'                             => 'Касови сметки',
@@ -1905,6 +1919,7 @@ return [
     'categories'                                => 'Категории',
     'edit_category'                             => 'Обнови категория ":name"',
     'no_category'                               => '(без категория)',
+    'unknown_category_plain'                    => 'No category',
     'category'                                  => 'Категория',
     'delete_category'                           => 'Изтрий категория ":name"',
     'deleted_category'                          => 'Категория ":name" бе изтрита',
@@ -2072,6 +2087,12 @@ return [
     'searchPlaceholder'                         => 'Търсене...',
     'version'                                   => 'Версия',
     'dashboard'                                 => 'Основно табло',
+    'income_and_expense'                        => 'Income and expense',
+    'all_money'                                 => 'All your money',
+    'unknown_source_plain'                      => 'Unknown source account',
+    'unknown_dest_plain'                        => 'Unknown destination account',
+    'unknown_any_plain'                         => 'Unknown account',
+    'unknown_budget_plain'                      => 'No budget',
     'available_budget'                          => 'Наличен бюджет ({currency})',
     'currencies'                                => 'Валути',
     'activity'                                  => 'Дейност',
@@ -2351,6 +2372,7 @@ return [
     'created_tag'               => 'Етикет ":tag" беше създаден!',
 
     'transaction_journal_information'          => 'Информация за транзакция',
+    'transaction_journal_amount'               => 'Amount information',
     'transaction_journal_meta'                 => 'Мета информация',
     'transaction_journal_more'                 => 'Повече информация',
     'basic_journal_information'                => 'Основна информация за транзакция',
@@ -2380,6 +2402,7 @@ return [
     'invite_user'                              => 'Invite user',
     'user_is_invited'                          => 'Email address ":address" was invited to Firefly III',
     'administration'                           => 'Управление',
+    'system_settings'                          => 'System settings',
     'code_already_used'                        => 'Invite code has been used',
     'user_administration'                      => 'Управление на потребители',
     'list_all_users'                           => 'Всички потребители',
@@ -2519,6 +2542,7 @@ return [
 
     // object groups
     'default_group_title_name'              => '(без група)',
+    'default_group_title_name_plain'        => 'ungrouped',
 
     // empty lists? no objects? instructions:
     'no_accounts_title_asset'               => 'Нека да създадем сметка за активи!',
@@ -2703,6 +2727,7 @@ return [
     'ale_action_clear_tag'               => 'Cleared tag',
     'ale_action_clear_all_tags'          => 'Cleared all tags',
     'ale_action_set_bill'                => 'Linked to bill',
+    'ale_action_switch_accounts'         => 'Switched source and destination account',
     'ale_action_set_budget'              => 'Set budget',
     'ale_action_set_category'            => 'Set category',
     'ale_action_set_source'              => 'Set source account',

@@ -33,7 +33,6 @@ use FireflyIII\Repositories\Account\AccountRepositoryInterface;
 use FireflyIII\Repositories\Administration\Account\AccountRepositoryInterface as AdminAccountRepositoryInterface;
 use FireflyIII\Support\Http\Api\AccountFilter;
 use Illuminate\Http\JsonResponse;
-use JsonException;
 
 /**
  * Class AccountController
@@ -65,12 +64,16 @@ class AccountController extends Controller
 
     /**
      * Documentation for this endpoint:
-     * TODO endpoint is not documented.
+     * TODO list of checks
+     * 1. use dates from ParameterBag
+     * 2. Request validates dates
+     * 3. Request includes user_group_id as administration_id
+     * 4. Endpoint is documented.
+     * 5. Collector uses administration_id
      *
      * @param AutocompleteRequest $request
      *
      * @return JsonResponse
-     * @throws JsonException
      * @throws FireflyException
      * @throws FireflyException
      */
@@ -79,7 +82,7 @@ class AccountController extends Controller
         $data  = $request->getData();
         $types = $data['types'];
         $query = $data['query'];
-        $date  = $data['date'] ?? today(config('app.timezone'));
+        $date  = $this->parameters->get('date') ?? today(config('app.timezone'));
         $this->adminRepository->setAdministrationId($data['administration_id']);
 
         $return          = [];
@@ -101,7 +104,7 @@ class AccountController extends Controller
                 'name'                    => $account->name,
                 'name_with_balance'       => $nameWithBalance,
                 'type'                    => $account->accountType->type,
-                'currency_id'             => $currency->id,
+                'currency_id'             => (string)$currency->id,
                 'currency_name'           => $currency->name,
                 'currency_code'           => $currency->code,
                 'currency_symbol'         => $currency->symbol,

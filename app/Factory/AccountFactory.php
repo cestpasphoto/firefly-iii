@@ -92,6 +92,7 @@ class AccountFactory
             $return = $this->create(
                 [
                     'user_id'           => $this->user->id,
+                    'user_group_id'     => $this->user->user_group_id,
                     'name'              => $accountName,
                     'account_type_id'   => $type->id,
                     'account_type_name' => null,
@@ -199,6 +200,7 @@ class AccountFactory
         $active         = array_key_exists('active', $data) ? $data['active'] : true;
         $databaseData   = [
             'user_id'         => $this->user->id,
+            'user_group_id'   => $this->user->user_group_id,
             'account_type_id' => $type->id,
             'name'            => $data['name'],
             'order'           => 25000,
@@ -216,6 +218,7 @@ class AccountFactory
         }
         // create account!
         $account = Account::create($databaseData);
+        Log::channel('audit')->info(sprintf('Account #%d ("%s") has been created.', $account->id, $account->name));
 
         // update meta data:
         $data = $this->cleanMetaDataArray($account, $data);
@@ -226,6 +229,7 @@ class AccountFactory
             $this->storeOpeningBalance($account, $data);
         } catch (FireflyException $e) {
             Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
         }
 
         // create credit liability data (only liabilities)
@@ -233,6 +237,7 @@ class AccountFactory
             $this->storeCreditLiability($account, $data);
         } catch (FireflyException $e) {
             Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
         }
 
         // create notes
