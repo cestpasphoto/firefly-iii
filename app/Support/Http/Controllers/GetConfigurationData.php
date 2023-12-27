@@ -25,22 +25,14 @@ namespace FireflyIII\Support\Http\Controllers;
 
 use Carbon\Carbon;
 use FireflyIII\Exceptions\FireflyException;
-use Illuminate\Support\Facades\Log;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Trait GetConfigurationData
- *
  */
 trait GetConfigurationData
 {
     /**
      * Some common combinations.
-     *
-     * @param int $value
-     *
-     * @return string
      */
     protected function errorReporting(int $value): string // get configuration
     {
@@ -59,10 +51,6 @@ trait GetConfigurationData
 
     /**
      * Get the basic steps from config.
-     *
-     * @param string $route
-     *
-     * @return array
      */
     protected function getBasicSteps(string $route): array // get config values
     {
@@ -74,13 +62,13 @@ trait GetConfigurationData
                 $currentStep = $options;
 
                 // get the text:
-                $currentStep['intro'] = (string)trans('intro.' . $route . '_' . $key);
+                $currentStep['intro'] = (string)trans('intro.'.$route.'_'.$key);
 
                 // save in array:
                 $steps[] = $currentStep;
             }
         }
-        Log::debug(sprintf('Total basic steps for %s is %d', $routeKey, count($steps)));
+        app('log')->debug(sprintf('Total basic steps for %s is %d', $routeKey, count($steps)));
 
         return $steps;
     }
@@ -88,18 +76,18 @@ trait GetConfigurationData
     /**
      * Get config for date range.
      *
-     * @return array
      * @throws FireflyException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     protected function getDateRangeConfig(): array // get configuration + get preferences.
     {
         $viewRange = app('navigation')->getViewRange(false);
+
         /** @var Carbon $start */
         $start = session('start');
+
         /** @var Carbon $end */
         $end = session('end');
+
         /** @var Carbon $first */
         $first    = session('first');
         $title    = sprintf('%s - %s', $start->isoFormat($this->monthAndDayFormat), $end->isoFormat($this->monthAndDayFormat));
@@ -187,12 +175,6 @@ trait GetConfigurationData
 
     /**
      * Get specific info for special routes.
-     *
-     * @param string $route
-     * @param string $specificPage
-     *
-     * @return array
-     *
      */
     protected function getSpecificSteps(string $route, string $specificPage): array // get config values
     {
@@ -202,33 +184,30 @@ trait GetConfigurationData
         // user is on page with specific instructions:
         if ('' !== $specificPage) {
             $routeKey = str_replace('.', '_', $route);
-            $elements = config(sprintf('intro.%s', $routeKey . '_' . $specificPage));
+            $elements = config(sprintf('intro.%s', $routeKey.'_'.$specificPage));
             if (is_array($elements) && count($elements) > 0) {
                 foreach ($elements as $key => $options) {
                     $currentStep = $options;
 
                     // get the text:
-                    $currentStep['intro'] = (string)trans('intro.' . $route . '_' . $specificPage . '_' . $key);
+                    $currentStep['intro'] = (string)trans('intro.'.$route.'_'.$specificPage.'_'.$key);
 
                     // save in array:
                     $steps[] = $currentStep;
                 }
             }
         }
-        Log::debug(sprintf('Total specific steps for route "%s" and page "%s" (routeKey is "%s") is %d', $route, $specificPage, $routeKey, count($steps)));
+        app('log')->debug(sprintf('Total specific steps for route "%s" and page "%s" (routeKey is "%s") is %d', $route, $specificPage, $routeKey, count($steps)));
 
         return $steps;
     }
 
-    /**
-     *
-     */
     protected function verifyRecurringCronJob(): void
     {
         $config   = app('fireflyconfig')->get('last_rt_job', 0);
-        $lastTime = (int)$config->data;
+        $lastTime = (int)$config?->data;
         $now      = time();
-        Log::debug(sprintf('verifyRecurringCronJob: last time is %d ("%s"), now is %d', $lastTime, $config->data, $now));
+        app('log')->debug(sprintf('verifyRecurringCronJob: last time is %d ("%s"), now is %d', $lastTime, $config?->data, $now));
         if (0 === $lastTime) {
             request()->session()->flash('info', trans('firefly.recurring_never_cron'));
 

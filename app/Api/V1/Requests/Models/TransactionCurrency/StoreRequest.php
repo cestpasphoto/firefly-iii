@@ -30,18 +30,14 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Class StoreRequest
- *
-
  */
 class StoreRequest extends FormRequest
 {
-    use ConvertsDataTypes;
     use ChecksLogin;
+    use ConvertsDataTypes;
 
     /**
      * Get all data from the request.
-     *
-     * @return array
      */
     public function getAll(): array
     {
@@ -66,8 +62,6 @@ class StoreRequest extends FormRequest
 
     /**
      * The rules that the incoming request must be matched against.
-     *
-     * @return array
      */
     public function rules(): array
     {
@@ -78,7 +72,6 @@ class StoreRequest extends FormRequest
             'decimal_places' => 'between:0,20|numeric|min:0|max:12',
             'enabled'        => [new IsBoolean()],
             'default'        => [new IsBoolean()],
-
         ];
     }
 }

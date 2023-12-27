@@ -45,15 +45,13 @@ use Illuminate\View\View;
  */
 class CreateController extends Controller
 {
-    use RuleManagement;
     use ModelInformation;
+    use RuleManagement;
 
     private RuleRepositoryInterface $ruleRepos;
 
     /**
      * RuleController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -74,10 +72,8 @@ class CreateController extends Controller
     /**
      * Create a new rule. It will be stored under the given $ruleGroup.
      *
-     * @param Request        $request
-     * @param RuleGroup|null $ruleGroup
-     *
      * @return Factory|View
+     *
      * @throws FireflyException
      */
     public function create(Request $request, RuleGroup $ruleGroup = null)
@@ -98,13 +94,17 @@ class CreateController extends Controller
             $operators = $search->getOperators()->toArray();
             if ('' !== $words) {
                 session()->flash('warning', trans('firefly.rule_from_search_words', ['string' => $words]));
-                $operators[] = ['type' => 'description_contains', 'value' => $words];
+                $operators[] = [
+                    'type'  => 'description_contains',
+                    'value' => $words,
+                ];
             }
             $oldTriggers = $this->parseFromOperators($operators);
         }
+        // var_dump($oldTriggers);exit;
 
         // restore actions and triggers from old input:
-        if ($request->old()) {
+        if (is_array($request->old()) && count($request->old()) > 0) {
             $oldTriggers = $this->getPreviousTriggers($request);
             $oldActions  = $this->getPreviousActions($request);
         }
@@ -137,10 +137,8 @@ class CreateController extends Controller
     /**
      * Create a new rule. It will be stored under the given $ruleGroup.
      *
-     * @param Request $request
-     * @param Bill    $bill
-     *
      * @return Factory|View
+     *
      * @throws FireflyException
      */
     public function createFromBill(Request $request, Bill $bill)
@@ -161,7 +159,7 @@ class CreateController extends Controller
         $oldActions  = $this->getActionsForBill($bill);
 
         // restore actions and triggers from old input:
-        if ($request->old()) {
+        if (null !== $request->old()) {
             $oldTriggers = $this->getPreviousTriggers($request);
             $oldActions  = $this->getPreviousActions($request);
         }
@@ -170,7 +168,7 @@ class CreateController extends Controller
         $actionCount  = count($oldActions);
         $subTitleIcon = 'fa-clone';
 
-        // title depends on whether or not there is a rule group:
+        // title depends on whether there is a rule group:
         $subTitle = (string)trans('firefly.make_new_rule_no_group');
 
         // flash old data
@@ -189,10 +187,8 @@ class CreateController extends Controller
     }
 
     /**
-     * @param Request            $request
-     * @param TransactionJournal $journal
-     *
      * @return Factory|\Illuminate\Contracts\View\View
+     *
      * @throws FireflyException
      */
     public function createFromJournal(Request $request, TransactionJournal $journal)
@@ -216,7 +212,7 @@ class CreateController extends Controller
         ];
 
         // restore actions and triggers from old input:
-        if ($request->old()) {
+        if (null !== $request->old() && is_array($request->old()) && count($request->old()) > 0) {
             $oldTriggers = $this->getPreviousTriggers($request);
             $oldActions  = $this->getPreviousActions($request);
         }
@@ -239,11 +235,6 @@ class CreateController extends Controller
         );
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
     public function duplicate(Request $request): JsonResponse
     {
         $ruleId = (int)$request->get('id');
@@ -258,10 +249,7 @@ class CreateController extends Controller
     /**
      * Store the new rule.
      *
-     * @param RuleFormRequest $request
-     *
-     * @return RedirectResponse|Redirector
-     *
+     * @return Redirector|RedirectResponse
      */
     public function store(RuleFormRequest $request)
     {

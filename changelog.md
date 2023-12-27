@@ -3,6 +3,175 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.1.1 - 2023-12-27
+
+### Changed
+
+- Rule overview is lower in height.
+
+### Removed
+
+- Removed fixed sidebar again
+
+### Fixed
+
+- Nullpointer in rule trigger render code
+- [Issue 8272](https://github.com/firefly-iii/firefly-iii/issues/8272) The sum for expected bills in a group includes unexpected bills as well
+- [Issue 8273](https://github.com/firefly-iii/firefly-iii/issues/8273) Frontpage preferences indicate all accounts are shown on the frontpage, even when not true
+- [Issue 8274](https://github.com/firefly-iii/firefly-iii/issues/8274) Semi specific dates do not work correctly with the "Transaction date is.." rule trigger
+- [Issue 8277](https://github.com/firefly-iii/firefly-iii/issues/8277) Expected bill next month, but shown as not expected
+- [Issue 8278](https://github.com/firefly-iii/firefly-iii/issues/8278) Net worth is empty in the dashboard due to division by zero
+- [Issue 8281](https://github.com/firefly-iii/firefly-iii/issues/8281) Database CPU utilization after v6.1.0 upgrade
+- [Issue 8291](https://github.com/firefly-iii/firefly-iii/issues/8291) Multiple "Any tag is" (negated or not) rule triggers don't all apply in strict mode
+
+### Security
+
+- HTML Injection Vulnerability in webhooks code, discovered by @stefan-schiller-sonarsource from Sonar. Thanks!
+
+### API
+
+- [Issue 8282](https://github.com/firefly-iii/firefly-iii/issues/8282) Update transaction via API does not update the "updated_at" parameter
+
+## 6.1.0 - 2023-12-17
+
+> ⚠️⚠️ This release required **PHP 8.3.0** and will not work on earlier releases of PHP ⚠️⚠️
+
+### Added
+
+- [Issue 7571](https://github.com/firefly-iii/firefly-iii/issues/7571) More tag search options
+- [Issue 7781](https://github.com/firefly-iii/firefly-iii/issues/7781) Nice wrapper script for artisan commands
+- UI also supports time for transactions
+
+### Changed
+
+- ⚠️⚠️ Requires PHP8.3 ⚠️⚠️
+- [Issue 8148](https://github.com/firefly-iii/firefly-iii/issues/8148) Slovenian language updates
+- [Issue 8023](https://github.com/firefly-iii/firefly-iii/issues/8023) Top bar is now fixed in place
+- Completely rewrote the documentation.
+
+### Deprecated
+
+- ⚠️⚠️ Removed support for PHP 8.2 ⚠️⚠️
+
+### Fixed
+
+- [Issue 8106](https://github.com/firefly-iii/firefly-iii/issues/8106) [issue 8195](https://github.com/firefly-iii/firefly-iii/issues/8195) [issue 8163](https://github.com/firefly-iii/firefly-iii/issues/8163) Various changes and fixes to bill date calculation
+- [Issue 8137](https://github.com/firefly-iii/firefly-iii/issues/8137) Fix uneven amount error from cron job
+- [Issue 8192](https://github.com/firefly-iii/firefly-iii/issues/8192) No matching transactions found.Rule with trigger NOT Transaction is reconciled returns
+- [Issue 8207](https://github.com/firefly-iii/firefly-iii/issues/8207) Broken links, thanks @Maxco10!
+- [Issue 8138](https://github.com/firefly-iii/firefly-iii/issues/8138) Reconciled transactions can't be "store(d) as new"
+- [Issue 7716](https://github.com/firefly-iii/firefly-iii/issues/7716) Removed bar in budget overview
+- [Issue 8251](https://github.com/firefly-iii/firefly-iii/issues/8251) Removing a budget would not remove available budget
+
+### API
+
+- [Issue 8022](https://github.com/firefly-iii/firefly-iii/issues/8022) API chart expansions
+- [Issue 8106](https://github.com/firefly-iii/firefly-iii/issues/8106) API reports empty string instead of NULL
+
+## 6.0.30 - 2023-10-29
+
+### Fixed
+
+- Missing method after refactoring.
+
+## 6.0.29 - 2023-10-29
+
+### Fixed
+
+- Null pointer in bill overview
+
+## 6.0.28 - 2023-10-29
+
+### Added
+
+- [Issue 8076](https://github.com/firefly-iii/firefly-iii/issues/8076) Added a "Clone and edit"-button
+- [Issue 7204](https://github.com/firefly-iii/firefly-iii/issues/7204) Added the ability to customize the URL protocol types Firefly III accepts 
+- [Issue 8098](https://github.com/firefly-iii/firefly-iii/issues/8098) More tests in the navigation class, thanks @tonicospinelli!
+
+### Changed
+
+- Refactored the Actions of GitHub
+- The transaction currencies are now linked to users, and can be enabled per user
+- A few upgrade commands are refactored
+- You can no longer edit vital parts of reconciled transactions
+
+### Deprecated
+
+- Remove old v3 layout.
+
+### Fixed
+
+- Bad math in the order of piggy banks
+- [Issue 8084](https://github.com/firefly-iii/firefly-iii/issues/8084) @JoSchrader fixed an issue with a duplicate button
+- [Issue 8103](https://github.com/firefly-iii/firefly-iii/issues/8103) Bulk edit would not accept transaction descriptions longer than 255 characters
+- [Issue 8099](https://github.com/firefly-iii/firefly-iii/issues/8099) The bill index would never skip the number of periods you indicated
+- [Issue 8069](https://github.com/firefly-iii/firefly-iii/issues/8069) Rule descriptions would always "1" as description. Thanks @Maxco10!
+
+### API
+
+- API will no longer accept changes to amount and account fields for reconciled transactions
+
+## v6.0.27 - 2023-10-16
+
+### Added
+
+- [Issue 8004](https://github.com/firefly-iii/firefly-iii/issues/8004) Warning in entrypoint script for missing variables.
+
+### Changed
+
+- Experimental database validation command.
+- Add some values to the debug form.
+- Better debug logs at various places
+
+### Fixed
+
+- [Issue 8020](https://github.com/firefly-iii/firefly-iii/issues/8020), [issue 8028](https://github.com/firefly-iii/firefly-iii/issues/8028) Liability calculation edge case found by @tieu1991
+- [Issue 7655](https://github.com/firefly-iii/firefly-iii/issues/7655), [issue 8026](https://github.com/firefly-iii/firefly-iii/issues/8026) Bill date calculation edge case found by @devfaz
+- [Issue 8051](https://github.com/firefly-iii/firefly-iii/issues/8051) Null pointer when deleting account
+- [Issue 8041](https://github.com/firefly-iii/firefly-iii/issues/8041) Confusing chart is no longer confusing
+- [Issue 8050](https://github.com/firefly-iii/firefly-iii/issues/8050) Path is normal for page 2.
+- [Issue 8057](https://github.com/firefly-iii/firefly-iii/issues/8057) negative query parameters are handled correctly.
+
+### API (v2.0.10)
+
+- All endpoints (v1 and v2) should now respect the `?limit=` param.
+
+## 6.0.26 - 2023-09-24
+
+### Fixed
+
+- [Issue 7986](https://github.com/firefly-iii/firefly-iii/issues/7986), [issue 7992](https://github.com/firefly-iii/firefly-iii/issues/7992) Fix exception when calling specific end points
+- [Issue 7990](https://github.com/firefly-iii/firefly-iii/issues/7990) Remove unused translations
+
+## 6.0.25 - 2023-09-24
+
+### Changed
+
+- v2 index has better overview of bills (now called subscriptions)
+
+### Deprecated
+
+- My attempt to build the `v3`-layout is now officially deprecated and removed. To see the new layout (in beta), use `FIREFLY_III_LAYOUT=v2`.
+
+### Fixed
+
+- [Issue 7970](https://github.com/firefly-iii/firefly-iii/issues/7970) Bad redirect for mass edit/delete forms.
+- [Issue 7983](https://github.com/firefly-iii/firefly-iii/issues/7983) Bad math in the calculation of liabilities
+- [Issue 7973](https://github.com/firefly-iii/firefly-iii/issues/7973) Bad account validation broke certain imports
+- [Issue 7981](https://github.com/firefly-iii/firefly-iii/issues/7981) Menu had a bad link, thanks @Maxco10!
+- Slack alerts now use the correct URL
+- Better htaccess files thanks to Softaculous.
+
+### Security
+
+- Change htaccess rules so certain files can't be accessed.
+
+### API
+
+- [Issue 7972](https://github.com/firefly-iii/firefly-iii/issues/7972) The API needed start
+  *and* end parameters for transactions, this is no longer the case.
+- New APIs for user group and rights management. Not yet documented.
+
 ## 6.0.24 - 2023-09-16
 
 ### Fixed
@@ -191,7 +360,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - 🇰🇷 Korean translations!
 - A new "adjusted" auto-budget type that will correct itself after
-  spending. [Read more](https://docs.firefly-iii.org/firefly-iii/financial-concepts/organizing/#adjusted-and-correct-for-overspending)
+  spending. [Read more](https://docs.firefly-iii.org/xfirefly-iii/financial-concepts/organizing/#adjusted-and-correct-for-overspending)
 - [Issue 6631](https://github.com/firefly-iii/firefly-iii/issues/6631) Can now link withdrawals and deposits to piggy
   banks, thanks @ChrisWin22!
 
@@ -404,10 +573,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 This is release
 
-*
-
-*6.0.0
-** of Firefly III.
+**6.0.0** of Firefly III.
 
 ### Warnings
 
@@ -984,7 +1150,7 @@ https://api-docs.firefly-iii.org/.
 - ⚠️ This is the last release that supports PHP 8.0
 - 👍 Want to try the new v3 layout? At your own risk, browse to `/v3/`.
 
-Please refer to the [documentation](https://docs.firefly-iii.org/firefly-iii/) and support channels if you run into
+Please refer to the [documentation](https://docs.firefly-iii.org/xfirefly-iii/) and support channels if you run into
 problems:
 
 - [Gitter.im](https://gitter.im/firefly-iii/firefly-iii)
@@ -1062,6 +1228,6 @@ problems:
 
 # Full change log
 
-Can be found here: https://docs.firefly-iii.org/firefly-iii/about-firefly-iii/changelog/
+Can be found here: https://docs.firefly-iii.org/references/firefly-iii/changelog/
 
 

@@ -33,13 +33,13 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 
 /**
- *
  * Class DoubleReportController
  */
 class DoubleReportController extends Controller
 {
     /** @var GeneratorInterface Chart generation methods. */
     private $generator;
+
     /** @var OperationsRepositoryInterface */
     private $opsRepository;
 
@@ -48,8 +48,6 @@ class DoubleReportController extends Controller
 
     /**
      * CategoryReportController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -65,14 +63,6 @@ class DoubleReportController extends Controller
         );
     }
 
-    /**
-     * @param Collection $accounts
-     * @param Collection $others
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
-     * @return JsonResponse
-     */
     public function budgetExpense(Collection $accounts, Collection $others, Carbon $start, Carbon $end): JsonResponse
     {
         $result   = [];
@@ -85,7 +75,7 @@ class DoubleReportController extends Controller
             foreach ($currency['transaction_journals'] as $journal) {
                 $categoryName             = $journal['budget_name'] ?? trans('firefly.no_budget');
                 $title                    = sprintf('%s (%s)', $categoryName, $currency['currency_name']);
-                $result[$title]           = $result[$title] ?? [
+                $result[$title]           ??= [
                     'amount'          => '0',
                     'currency_symbol' => $currency['currency_symbol'],
                     'currency_code'   => $currency['currency_code'],
@@ -100,14 +90,6 @@ class DoubleReportController extends Controller
         return response()->json($data);
     }
 
-    /**
-     * @param Collection $accounts
-     * @param Collection $others
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
-     * @return JsonResponse
-     */
     public function categoryExpense(Collection $accounts, Collection $others, Carbon $start, Carbon $end): JsonResponse
     {
         $result   = [];
@@ -120,7 +102,7 @@ class DoubleReportController extends Controller
             foreach ($currency['transaction_journals'] as $journal) {
                 $categoryName             = $journal['category_name'] ?? trans('firefly.no_category');
                 $title                    = sprintf('%s (%s)', $categoryName, $currency['currency_name']);
-                $result[$title]           = $result[$title] ?? [
+                $result[$title]           ??= [
                     'amount'          => '0',
                     'currency_symbol' => $currency['currency_symbol'],
                     'currency_code'   => $currency['currency_code'],
@@ -135,14 +117,6 @@ class DoubleReportController extends Controller
         return response()->json($data);
     }
 
-    /**
-     * @param Collection $accounts
-     * @param Collection $others
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
-     * @return JsonResponse
-     */
     public function categoryIncome(Collection $accounts, Collection $others, Carbon $start, Carbon $end): JsonResponse
     {
         $result   = [];
@@ -155,7 +129,7 @@ class DoubleReportController extends Controller
             foreach ($currency['transaction_journals'] as $journal) {
                 $categoryName             = $journal['category_name'] ?? trans('firefly.no_category');
                 $title                    = sprintf('%s (%s)', $categoryName, $currency['currency_name']);
-                $result[$title]           = $result[$title] ?? [
+                $result[$title]           ??= [
                     'amount'          => '0',
                     'currency_symbol' => $currency['currency_symbol'],
                     'currency_code'   => $currency['currency_code'],
@@ -170,15 +144,6 @@ class DoubleReportController extends Controller
         return response()->json($data);
     }
 
-    /**
-     * @param Collection $accounts
-     * @param Account    $account
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
-     * @return JsonResponse
-     *
-     */
     public function mainChart(Collection $accounts, Account $account, Carbon $start, Carbon $end): JsonResponse
     {
         $chartData = [];
@@ -195,7 +160,7 @@ class DoubleReportController extends Controller
             $spentKey = sprintf('%d-spent', $currency['currency_id']);
             $name     = $this->getCounterpartName($accounts, $account->id, $account->name, $account->iban);
 
-            $chartData[$spentKey] = $chartData[$spentKey] ?? [
+            $chartData[$spentKey] ??= [
                 'label'           => sprintf(
                     '%s (%s)',
                     (string)trans('firefly.spent_in_specific_double', ['account' => $name]),
@@ -211,7 +176,7 @@ class DoubleReportController extends Controller
             foreach ($currency['transaction_journals'] as $journal) {
                 $key                                   = $journal['date']->isoFormat($format);
                 $amount                                = app('steam')->positive($journal['amount']);
-                $chartData[$spentKey]['entries'][$key] = $chartData[$spentKey]['entries'][$key] ?? '0';
+                $chartData[$spentKey]['entries'][$key] ??= '0';
                 $chartData[$spentKey]['entries'][$key] = bcadd($chartData[$spentKey]['entries'][$key], $amount);
             }
         }
@@ -221,7 +186,7 @@ class DoubleReportController extends Controller
             $earnedKey = sprintf('%d-earned', $currency['currency_id']);
             $name      = $this->getCounterpartName($accounts, $account->id, $account->name, $account->iban);
 
-            $chartData[$earnedKey] = $chartData[$earnedKey] ?? [
+            $chartData[$earnedKey] ??= [
                 'label'           => sprintf(
                     '%s (%s)',
                     (string)trans('firefly.earned_in_specific_double', ['account' => $name]),
@@ -237,7 +202,7 @@ class DoubleReportController extends Controller
             foreach ($currency['transaction_journals'] as $journal) {
                 $key                                    = $journal['date']->isoFormat($format);
                 $amount                                 = app('steam')->positive($journal['amount']);
-                $chartData[$earnedKey]['entries'][$key] = $chartData[$earnedKey]['entries'][$key] ?? '0';
+                $chartData[$earnedKey]['entries'][$key] ??= '0';
                 $chartData[$earnedKey]['entries'][$key] = bcadd($chartData[$earnedKey]['entries'][$key], $amount);
             }
         }
@@ -247,64 +212,6 @@ class DoubleReportController extends Controller
         return response()->json($data);
     }
 
-    /**
-     * TODO duplicate function
-     *
-     * @param Collection  $accounts
-     * @param int         $id
-     * @param string      $name
-     * @param null|string $iban
-     *
-     * @return string
-     */
-    private function getCounterpartName(Collection $accounts, int $id, string $name, ?string $iban): string
-    {
-        /** @var Account $account */
-        foreach ($accounts as $account) {
-            if ($account->name === $name && $account->id !== $id) {
-                return $account->name;
-            }
-            if (null !== $account->iban && $account->iban === $iban && $account->id !== $id) {
-                return $account->iban;
-            }
-        }
-
-        return $name;
-    }
-
-    /**
-     * TODO duplicate function
-     *
-     * @param Carbon $start
-     * @param Carbon $end
-     *
-     * @return array
-     */
-    private function makeEntries(Carbon $start, Carbon $end): array
-    {
-        $return         = [];
-        $format         = app('navigation')->preferredCarbonLocalizedFormat($start, $end);
-        $preferredRange = app('navigation')->preferredRangeFormat($start, $end);
-        $currentStart   = clone $start;
-        while ($currentStart <= $end) {
-            $currentEnd   = app('navigation')->endOfPeriod($currentStart, $preferredRange);
-            $key          = $currentStart->isoFormat($format);
-            $return[$key] = '0';
-            $currentStart = clone $currentEnd;
-            $currentStart->addDay()->startOfDay();
-        }
-
-        return $return;
-    }
-
-    /**
-     * @param Collection $accounts
-     * @param Collection $others
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
-     * @return JsonResponse
-     */
     public function tagExpense(Collection $accounts, Collection $others, Carbon $start, Carbon $end): JsonResponse
     {
         $result           = [];
@@ -323,7 +230,7 @@ class DoubleReportController extends Controller
                     // do something
                     $tagName                  = trans('firefly.no_tags');
                     $title                    = sprintf('%s (%s)', $tagName, $currency['currency_name']);
-                    $result[$title]           = $result[$title] ?? [
+                    $result[$title]           ??= [
                         'amount'          => '0',
                         'currency_symbol' => $currency['currency_symbol'],
                         'currency_code'   => $currency['currency_code'],
@@ -331,6 +238,7 @@ class DoubleReportController extends Controller
                     $amount                   = app('steam')->positive($journal['amount']);
                     $result[$title]['amount'] = bcadd($result[$title]['amount'], $amount);
                 }
+
                 // loop each tag:
                 /** @var array $tag */
                 foreach ($journal['tags'] as $tag) {
@@ -341,7 +249,7 @@ class DoubleReportController extends Controller
                     // do something
                     $tagName                  = $tag['name'];
                     $title                    = sprintf('%s (%s)', $tagName, $currency['currency_name']);
-                    $result[$title]           = $result[$title] ?? [
+                    $result[$title]           ??= [
                         'amount'          => '0',
                         'currency_symbol' => $currency['currency_symbol'],
                         'currency_code'   => $currency['currency_code'],
@@ -357,14 +265,6 @@ class DoubleReportController extends Controller
         return response()->json($data);
     }
 
-    /**
-     * @param Collection $accounts
-     * @param Collection $others
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
-     * @return JsonResponse
-     */
     public function tagIncome(Collection $accounts, Collection $others, Carbon $start, Carbon $end): JsonResponse
     {
         $result           = [];
@@ -383,7 +283,7 @@ class DoubleReportController extends Controller
                     // do something
                     $tagName                  = trans('firefly.no_tags');
                     $title                    = sprintf('%s (%s)', $tagName, $currency['currency_name']);
-                    $result[$title]           = $result[$title] ?? [
+                    $result[$title]           ??= [
                         'amount'          => '0',
                         'currency_symbol' => $currency['currency_symbol'],
                         'currency_code'   => $currency['currency_code'],
@@ -391,6 +291,7 @@ class DoubleReportController extends Controller
                     $amount                   = app('steam')->positive($journal['amount']);
                     $result[$title]['amount'] = bcadd($result[$title]['amount'], $amount);
                 }
+
                 // loop each tag:
                 /** @var array $tag */
                 foreach ($journal['tags'] as $tag) {
@@ -401,7 +302,7 @@ class DoubleReportController extends Controller
                     // do something
                     $tagName                  = $tag['name'];
                     $title                    = sprintf('%s (%s)', $tagName, $currency['currency_name']);
-                    $result[$title]           = $result[$title] ?? [
+                    $result[$title]           ??= [
                         'amount'          => '0',
                         'currency_symbol' => $currency['currency_symbol'],
                         'currency_code'   => $currency['currency_code'],
@@ -415,5 +316,43 @@ class DoubleReportController extends Controller
         $data = $this->generator->multiCurrencyPieChart($result);
 
         return response()->json($data);
+    }
+
+    /**
+     * TODO duplicate function
+     */
+    private function getCounterpartName(Collection $accounts, int $id, string $name, ?string $iban): string
+    {
+        /** @var Account $account */
+        foreach ($accounts as $account) {
+            if ($account->name === $name && $account->id !== $id) {
+                return $account->name;
+            }
+            if (null !== $account->iban && $account->iban === $iban && $account->id !== $id) {
+                return $account->iban;
+            }
+        }
+
+        return $name;
+    }
+
+    /**
+     * TODO duplicate function
+     */
+    private function makeEntries(Carbon $start, Carbon $end): array
+    {
+        $return         = [];
+        $format         = app('navigation')->preferredCarbonLocalizedFormat($start, $end);
+        $preferredRange = app('navigation')->preferredRangeFormat($start, $end);
+        $currentStart   = clone $start;
+        while ($currentStart <= $end) {
+            $currentEnd   = app('navigation')->endOfPeriod($currentStart, $preferredRange);
+            $key          = $currentStart->isoFormat($format);
+            $return[$key] = '0';
+            $currentStart = clone $currentEnd;
+            $currentStart->addDay()->startOfDay();
+        }
+
+        return $return;
     }
 }

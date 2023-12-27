@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 /*
  * CleansChartData.php
  * Copyright (c) 2023 james@firefly-iii.org
@@ -21,6 +20,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace FireflyIII\Support\Http\Api;
 
 use FireflyIII\Exceptions\FireflyException;
@@ -35,14 +36,12 @@ trait CleansChartData
      * "main" entry used in the V2 API chart endpoints. This loop makes sure
      * IDs are strings and other values are present (or missing).
      *
-     * @param array $data
-     *
-     * @return array
      * @throws FireflyException
      */
     private function clean(array $data): array
     {
         $return = [];
+
         /**
          * @var mixed $index
          * @var array $array
@@ -65,7 +64,7 @@ trait CleansChartData
             }
             $return[] = $array;
         }
+
         return $return;
     }
-
 }

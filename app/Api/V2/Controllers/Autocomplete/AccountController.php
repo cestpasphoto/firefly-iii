@@ -30,7 +30,7 @@ use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Models\Account;
 use FireflyIII\Models\AccountType;
 use FireflyIII\Repositories\Account\AccountRepositoryInterface;
-use FireflyIII\Repositories\Administration\Account\AccountRepositoryInterface as AdminAccountRepositoryInterface;
+use FireflyIII\Repositories\UserGroups\Account\AccountRepositoryInterface as AdminAccountRepositoryInterface;
 use FireflyIII\Support\Http\Api\AccountFilter;
 use Illuminate\Http\JsonResponse;
 
@@ -56,10 +56,15 @@ class AccountController extends Controller
                 $this->repository      = app(AccountRepositoryInterface::class);
                 $this->adminRepository = app(AdminAccountRepositoryInterface::class);
 
+                $userGroup = $this->validateUserGroup($request);
+                if (null !== $userGroup) {
+                    $this->adminRepository->setUserGroup($userGroup);
+                }
+
                 return $next($request);
             }
         );
-        $this->balanceTypes = [AccountType::ASSET, AccountType::LOAN, AccountType::DEBT, AccountType::MORTGAGE,];
+        $this->balanceTypes = [AccountType::ASSET, AccountType::LOAN, AccountType::DEBT, AccountType::MORTGAGE];
     }
 
     /**
@@ -67,27 +72,23 @@ class AccountController extends Controller
      * TODO list of checks
      * 1. use dates from ParameterBag
      * 2. Request validates dates
-     * 3. Request includes user_group_id as administration_id
+     * 3. Request includes user_group_id
      * 4. Endpoint is documented.
-     * 5. Collector uses administration_id
+     * 5. Collector uses user_group_id
      *
-     * @param AutocompleteRequest $request
-     *
-     * @return JsonResponse
      * @throws FireflyException
      * @throws FireflyException
      */
     public function accounts(AutocompleteRequest $request): JsonResponse
     {
-        $data  = $request->getData();
-        $types = $data['types'];
-        $query = $data['query'];
-        $date  = $this->parameters->get('date') ?? today(config('app.timezone'));
-        $this->adminRepository->setAdministrationId($data['administration_id']);
-
-        $return          = [];
+        $data            = $request->getData();
+        $types           = $data['types'];
+        $query           = $data['query'];
+        $date            = $this->parameters->get('date') ?? today(config('app.timezone'));
         $result          = $this->adminRepository->searchAccount((string)$query, $types, $data['limit']);
         $defaultCurrency = app('amount')->getDefaultCurrency();
+        $groupedResult   = [];
+        $allItems        = [];
 
         /** @var Account $account */
         foreach ($result as $account) {
@@ -98,11 +99,17 @@ class AccountController extends Controller
                 $balance         = app('steam')->balance($account, $date);
                 $nameWithBalance = sprintf('%s (%s)', $account->name, app('amount')->formatAnything($currency, $balance, false));
             }
-
-            $return[] = [
+            $type                 = (string)trans(sprintf('firefly.%s', $account->accountType->type));
+            $groupedResult[$type] ??= [
+                'group ' => $type,
+                'items'  => [],
+            ];
+            $allItems[]           = [
                 'id'                      => (string)$account->id,
+                'value'                   => (string)$account->id,
                 'name'                    => $account->name,
                 'name_with_balance'       => $nameWithBalance,
+                'label'                   => $nameWithBalance,
                 'type'                    => $account->accountType->type,
                 'currency_id'             => (string)$currency->id,
                 'currency_name'           => $currency->name,
@@ -112,18 +119,17 @@ class AccountController extends Controller
             ];
         }
 
-        // custom order.
         usort(
-            $return,
-            function ($a, $b) {
-                $order = [AccountType::ASSET, AccountType::REVENUE, AccountType::EXPENSE];
-                $pos_a = array_search($a['type'], $order, true);
-                $pos_b = array_search($b['type'], $order, true);
+            $allItems,
+            static function (array $left, array $right): int {
+                $order    = [AccountType::ASSET, AccountType::REVENUE, AccountType::EXPENSE];
+                $posLeft  = (int)array_search($left['type'], $order, true);
+                $posRight = (int)array_search($right['type'], $order, true);
 
-                return $pos_a - $pos_b;
+                return $posLeft - $posRight;
             }
         );
 
-        return response()->json($return);
+        return response()->json($allItems);
     }
 }

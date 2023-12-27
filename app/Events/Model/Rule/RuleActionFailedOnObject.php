@@ -1,8 +1,7 @@
 <?php
 
-declare(strict_types=1);
 /*
- * RuleActionFailedOnArray.php
+ * RuleActionFailedOnObject.php
  * Copyright (c) 2023 james@firefly-iii.org
  *
  * This file is part of Firefly III (https://github.com/firefly-iii).
@@ -21,6 +20,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace FireflyIII\Events\Model\Rule;
 
 use FireflyIII\Models\RuleAction;
@@ -38,11 +39,6 @@ class RuleActionFailedOnObject
     public TransactionJournal $journal;
     public RuleAction         $ruleAction;
 
-    /**
-     * @param RuleAction         $ruleAction
-     * @param TransactionJournal $journal
-     * @param string             $error
-     */
     public function __construct(RuleAction $ruleAction, TransactionJournal $journal, string $error)
     {
         app('log')->debug('Created new RuleActionFailedOnObject');

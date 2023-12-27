@@ -40,11 +40,9 @@ use League\Fractal\Resource\Item;
  */
 class MessageController extends Controller
 {
-    public const RESOURCE_KEY = 'webhook_messages';
+    public const string RESOURCE_KEY = 'webhook_messages';
     private WebhookRepositoryInterface $repository;
 
-    /**
-     */
     public function __construct()
     {
         parent::__construct();
@@ -62,15 +60,12 @@ class MessageController extends Controller
      * This endpoint is documented at:
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/webhooks/getWebhookMessages
      *
-     * @param Webhook $webhook
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function index(Webhook $webhook): JsonResponse
     {
         $manager    = $this->getManager();
-        $pageSize   = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize   = $this->parameters->get('limit');
         $collection = $this->repository->getMessages($webhook);
 
         $count    = $collection->count();
@@ -78,7 +73,7 @@ class MessageController extends Controller
 
         // make paginator:
         $paginator = new LengthAwarePaginator($messages, $count, $pageSize, $this->parameters->get('page'));
-        $paginator->setPath(route('api.v1.webhooks.messages.index', [$webhook->id]) . $this->buildParams());
+        $paginator->setPath(route('api.v1.webhooks.messages.index', [$webhook->id]).$this->buildParams());
 
         /** @var WebhookMessageTransformer $transformer */
         $transformer = app(WebhookMessageTransformer::class);
@@ -96,10 +91,6 @@ class MessageController extends Controller
      *
      * Show single instance.
      *
-     * @param Webhook        $webhook
-     * @param WebhookMessage $message
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function show(Webhook $webhook, WebhookMessage $message): JsonResponse

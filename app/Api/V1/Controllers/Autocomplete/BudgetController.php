@@ -58,19 +58,15 @@ class BudgetController extends Controller
     /**
      * Documentation for this endpoint is at:
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/autocomplete/getBudgetsAC
-     *
-     * @param AutocompleteRequest $request
-     *
-     * @return JsonResponse
      */
     public function budgets(AutocompleteRequest $request): JsonResponse
     {
         $data     = $request->getData();
-        $result   = $this->repository->searchBudget($data['query'], $data['limit']);
+        $result   = $this->repository->searchBudget($data['query'], $this->parameters->get('limit'));
         $filtered = $result->map(
             static function (Budget $item) {
                 return [
-                    'id'   => (string)$item->id,
+                    'id'   => (string) $item->id,
                     'name' => $item->name,
                 ];
             }

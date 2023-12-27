@@ -30,7 +30,7 @@ use FireflyIII\Models\Account;
 use FireflyIII\Models\AccountMeta;
 use FireflyIII\Models\AccountType;
 use FireflyIII\Models\TransactionCurrency;
-use FireflyIII\Repositories\Currency\CurrencyRepositoryInterface;
+use FireflyIII\Repositories\UserGroups\Currency\CurrencyRepositoryInterface;
 use Illuminate\Support\Collection;
 
 /**
@@ -46,7 +46,6 @@ class AccountTransformer extends AbstractTransformer
     private TransactionCurrency $default;
 
     /**
-     * @inheritDoc
      * @throws FireflyException
      */
     public function collectMetaData(Collection $objects): void
@@ -56,64 +55,52 @@ class AccountTransformer extends AbstractTransformer
         $this->accountTypes      = [];
         $this->balances          = app('steam')->balancesByAccounts($objects, $this->getDate());
         $this->convertedBalances = app('steam')->balancesByAccountsConverted($objects, $this->getDate());
-        $repository              = app(CurrencyRepositoryInterface::class);
-        $this->default           = app('amount')->getDefaultCurrency();
+
+        /** @var CurrencyRepositoryInterface $repository */
+        $repository    = app(CurrencyRepositoryInterface::class);
+        $this->default = app('amount')->getDefaultCurrency();
 
         // get currencies:
         $accountIds  = $objects->pluck('id')->toArray();
         $meta        = AccountMeta::whereIn('account_id', $accountIds)
-                                  ->where('name', 'currency_id')
-                                  ->get(['account_meta.id', 'account_meta.account_id', 'account_meta.name', 'account_meta.data']);
+            ->where('name', 'currency_id')
+            ->get(['account_meta.id', 'account_meta.account_id', 'account_meta.name', 'account_meta.data'])
+        ;
         $currencyIds = $meta->pluck('data')->toArray();
 
         $currencies = $repository->getByIds($currencyIds);
         foreach ($currencies as $currency) {
-            $id                    = (int)$currency->id;
+            $id                    = $currency->id;
             $this->currencies[$id] = $currency;
         }
         foreach ($meta as $entry) {
-            $id                                   = (int)$entry->account_id;
+            $id                                   = $entry->account_id;
             $this->accountMeta[$id][$entry->name] = $entry->data;
         }
         // get account types:
         // select accounts.id, account_types.type from account_types left join accounts on accounts.account_type_id = account_types.id;
         $accountTypes = AccountType::leftJoin('accounts', 'accounts.account_type_id', '=', 'account_types.id')
-                                   ->whereIn('accounts.id', $accountIds)
-                                   ->get(['accounts.id', 'account_types.type']);
+            ->whereIn('accounts.id', $accountIds)
+            ->get(['accounts.id', 'account_types.type'])
+        ;
+
         /** @var AccountType $row */
         foreach ($accountTypes as $row) {
-            $this->accountTypes[(int)$row->id] = (string)config(sprintf('firefly.shortNamesByFullName.%s', $row->type));
+            $this->accountTypes[$row->id] = (string)config(sprintf('firefly.shortNamesByFullName.%s', $row->type));
         }
-    }
-
-    /**
-     * @return Carbon
-     */
-    private function getDate(): Carbon
-    {
-        $date = today(config('app.timezone'));
-        if (null !== $this->parameters->get('date')) {
-            $date = $this->parameters->get('date');
-        }
-
-        return $date;
     }
 
     /**
      * Transform the account.
-     *
-     * @param Account $account
-     *
-     * @return array
      */
     public function transform(Account $account): array
     {
-        $id = (int)$account->id;
+        $id = $account->id;
 
         // various meta
         $accountRole = $this->accountMeta[$id]['account_role'] ?? null;
         $accountType = $this->accountTypes[$id];
-        $order       = (int)$account->order;
+        $order       = $account->order;
 
         // no currency? use default
         $currency = $this->default;
@@ -142,17 +129,17 @@ class AccountTransformer extends AbstractTransformer
             'currency_id'             => (string)$currency->id,
             'currency_code'           => $currency->code,
             'currency_symbol'         => $currency->symbol,
-            'currency_decimal_places' => (int)$currency->decimal_places,
+            'currency_decimal_places' => $currency->decimal_places,
 
-            'native_id'              => (string)$this->default->id,
-            'native_code'            => $this->default->code,
-            'native_symbol'          => $this->default->symbol,
-            'native_decimal_places'  => (int)$this->default->decimal_places,
+            'native_currency_id'             => (string)$this->default->id,
+            'native_currency_code'           => $this->default->code,
+            'native_currency_symbol'         => $this->default->symbol,
+            'native_currency_decimal_places' => $this->default->decimal_places,
 
             // balance:
-            'current_balance'        => $balance,
-            'native_current_balance' => $nativeBalance,
-            'current_balance_date'   => $this->getDate(),
+            'current_balance'                => $balance,
+            'native_current_balance'         => $nativeBalance,
+            'current_balance_date'           => $this->getDate(),
 
             // more meta
 
@@ -173,12 +160,22 @@ class AccountTransformer extends AbstractTransformer
             //            'longitude'               => $longitude,
             //            'latitude'                => $latitude,
             //            'zoom_level'              => $zoomLevel,
-            'links'                  => [
+            'links'                          => [
                 [
                     'rel' => 'self',
-                    'uri' => '/accounts/' . $account->id,
+                    'uri' => '/accounts/'.$account->id,
                 ],
             ],
         ];
+    }
+
+    private function getDate(): Carbon
+    {
+        $date = today(config('app.timezone'));
+        if (null !== $this->parameters->get('date')) {
+            $date = $this->parameters->get('date');
+        }
+
+        return $date;
     }
 }

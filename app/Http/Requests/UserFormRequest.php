@@ -29,18 +29,14 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Class UserFormRequest.
- *
-
  */
 class UserFormRequest extends FormRequest
 {
-    use ConvertsDataTypes;
     use ChecksLogin;
+    use ConvertsDataTypes;
 
     /**
      * Get data for controller.
-     *
-     * @return array
      */
     public function getUserData(): array
     {
@@ -55,8 +51,6 @@ class UserFormRequest extends FormRequest
 
     /**
      * Rules for this request.
-     *
-     * @return array
      */
     public function rules(): array
     {

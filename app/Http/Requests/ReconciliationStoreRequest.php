@@ -27,20 +27,17 @@ use FireflyIII\Rules\ValidJournals;
 use FireflyIII\Support\Request\ChecksLogin;
 use FireflyIII\Support\Request\ConvertsDataTypes;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class ReconciliationStoreRequest
  */
 class ReconciliationStoreRequest extends FormRequest
 {
-    use ConvertsDataTypes;
     use ChecksLogin;
+    use ConvertsDataTypes;
 
     /**
      * Returns the data required by the controller.
-     *
-     * @return array
      */
     public function getAll(): array
     {
@@ -57,15 +54,13 @@ class ReconciliationStoreRequest extends FormRequest
             'journals'      => $transactions,
             'reconcile'     => $this->convertString('reconcile'),
         ];
-        Log::debug('In ReconciliationStoreRequest::getAll(). Will now return data.');
+        app('log')->debug('In ReconciliationStoreRequest::getAll(). Will now return data.');
 
         return $data;
     }
 
     /**
      * Rules for this request.
-     *
-     * @return array
      */
     public function rules(): array
     {

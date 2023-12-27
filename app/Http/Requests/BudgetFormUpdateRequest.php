@@ -35,14 +35,12 @@ use Illuminate\Validation\Validator;
  */
 class BudgetFormUpdateRequest extends FormRequest
 {
+    use ChecksLogin;
     use ConvertsDataTypes;
     use ValidatesAutoBudgetRequest;
-    use ChecksLogin;
 
     /**
      * Returns the data required by the controller.
-     *
-     * @return array
      */
     public function getBudgetData(): array
     {
@@ -58,18 +56,16 @@ class BudgetFormUpdateRequest extends FormRequest
 
     /**
      * Rules for this request.
-     *
-     * @return array
      */
     public function rules(): array
     {
         $nameRule = 'required|between:1,100|uniqueObjectForUser:budgets,name';
 
-        /** @var Budget $budget */
+        /** @var null|Budget $budget */
         $budget = $this->route()->parameter('budget');
 
         if (null !== $budget) {
-            $nameRule = 'required|between:1,100|uniqueObjectForUser:budgets,name,' . $budget->id;
+            $nameRule = 'required|between:1,100|uniqueObjectForUser:budgets,name,'.$budget->id;
         }
 
         return [
@@ -84,15 +80,11 @@ class BudgetFormUpdateRequest extends FormRequest
 
     /**
      * Configure the validator instance with special rules for after the basic validation rules.
-     *
-     * @param Validator $validator
-     *
-     * @return void
      */
     public function withValidator(Validator $validator): void
     {
         $validator->after(
-            function (Validator $validator) {
+            function (Validator $validator): void {
                 // validate all account info
                 $this->validateAutoBudgetAmount($validator);
             }

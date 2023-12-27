@@ -26,9 +26,6 @@ namespace FireflyIII\Console\Commands\Upgrade;
 use FireflyIII\Console\Commands\ShowsFriendlyMessages;
 use FireflyIII\Models\BudgetLimit;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class AppendBudgetLimitPeriods
@@ -37,26 +34,14 @@ class AppendBudgetLimitPeriods extends Command
 {
     use ShowsFriendlyMessages;
 
-    public const CONFIG_NAME = '550_budget_limit_periods';
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
+    public const string CONFIG_NAME = '550_budget_limit_periods';
+
     protected $description = 'Append budget limits with their (estimated) timeframe.';
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
+
     protected $signature = 'firefly-iii:budget-limit-periods {--F|force : Force the execution of this command.}';
 
     /**
      * Execute the console command.
-     *
-     * @return int
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function handle(): int
     {
@@ -72,11 +57,6 @@ class AppendBudgetLimitPeriods extends Command
         return 0;
     }
 
-    /**
-     * @return bool
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
     private function isExecuted(): bool
     {
         $configVar = app('fireflyconfig')->get(self::CONFIG_NAME, false);
@@ -84,22 +64,17 @@ class AppendBudgetLimitPeriods extends Command
         return (bool)$configVar->data;
     }
 
-    /**
-     *
-     */
     private function theresNoLimit(): void
     {
         $limits = BudgetLimit::whereNull('period')->get();
+
         /** @var BudgetLimit $limit */
         foreach ($limits as $limit) {
             $this->fixLimit($limit);
         }
     }
 
-    /**
-     * @param BudgetLimit $limit
-     */
-    private function fixLimit(BudgetLimit $limit)
+    private function fixLimit(BudgetLimit $limit): void
     {
         $period = $this->getLimitPeriod($limit);
 
@@ -125,14 +100,9 @@ class AppendBudgetLimitPeriods extends Command
             $limit->end_date->format('Y-m-d'),
             $period
         );
-        Log::debug($msg);
+        app('log')->debug($msg);
     }
 
-    /**
-     * @param BudgetLimit $limit
-     *
-     * @return string|null
-     */
     private function getLimitPeriod(BudgetLimit $limit): ?string
     {
         // is daily
@@ -181,9 +151,6 @@ class AppendBudgetLimitPeriods extends Command
         return null;
     }
 
-    /**
-     *
-     */
     private function markAsExecuted(): void
     {
         app('fireflyconfig')->set(self::CONFIG_NAME, true);

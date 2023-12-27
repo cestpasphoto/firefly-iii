@@ -37,17 +37,13 @@ use Illuminate\View\View;
 
 /**
  * Class AttachmentController.
- *
  */
 class AttachmentController extends Controller
 {
-    /** @var AttachmentRepositoryInterface Attachment repository */
-    private $repository;
+    private AttachmentRepositoryInterface $repository;
 
     /**
      * AttachmentController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -68,8 +64,6 @@ class AttachmentController extends Controller
     /**
      * Form to delete an attachment.
      *
-     * @param Attachment $attachment
-     *
      * @return Factory|View
      */
     public function delete(Attachment $attachment)
@@ -85,10 +79,7 @@ class AttachmentController extends Controller
     /**
      * Destroy attachment.
      *
-     * @param Request    $request
-     * @param Attachment $attachment
-     *
-     * @return RedirectResponse|Redirector
+     * @return Redirector|RedirectResponse
      */
     public function destroy(Request $request, Attachment $attachment)
     {
@@ -105,8 +96,6 @@ class AttachmentController extends Controller
     /**
      * Download attachment to PC.
      *
-     * @param Attachment $attachment
-     *
      * @return LaravelResponse
      *
      * @throws FireflyException
@@ -122,24 +111,23 @@ class AttachmentController extends Controller
             $response
                 ->header('Content-Description', 'File Transfer')
                 ->header('Content-Type', 'application/octet-stream')
-                ->header('Content-Disposition', 'attachment; filename=' . $quoted)
+                ->header('Content-Disposition', 'attachment; filename='.$quoted)
                 ->header('Content-Transfer-Encoding', 'binary')
                 ->header('Connection', 'Keep-Alive')
                 ->header('Expires', '0')
                 ->header('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
                 ->header('Pragma', 'public')
-                ->header('Content-Length', strlen($content));
+                ->header('Content-Length', (string)strlen($content))
+            ;
 
             return $response;
         }
+
         throw new FireflyException('Could not find the indicated attachment. The file is no longer there.');
     }
 
     /**
      * Edit an attachment.
-     *
-     * @param Request    $request
-     * @param Attachment $attachment
      *
      * @return Factory|View
      */
@@ -182,11 +170,6 @@ class AttachmentController extends Controller
 
     /**
      * Update attachment.
-     *
-     * @param AttachmentFormRequest $request
-     * @param Attachment            $attachment
-     *
-     * @return RedirectResponse
      */
     public function update(AttachmentFormRequest $request, Attachment $attachment): RedirectResponse
     {
@@ -210,14 +193,10 @@ class AttachmentController extends Controller
     /**
      * View attachment in browser.
      *
-     * @param Request    $request
-     * @param Attachment $attachment
-     *
-     * @return LaravelResponse
      * @throws FireflyException
      * @throws BindingResolutionException
      */
-    public function view(Request $request, Attachment $attachment): LaravelResponse
+    public function view(Attachment $attachment): LaravelResponse
     {
         if ($this->repository->exists($attachment)) {
             $content = $this->repository->getContent($attachment);
@@ -241,10 +220,11 @@ class AttachmentController extends Controller
                 [
                     'Content-Security-Policy' => implode('; ', $csp),
                     'Content-Type'            => $attachment->mime,
-                    'Content-Disposition'     => 'inline; filename="' . $attachment->filename . '"',
+                    'Content-Disposition'     => 'inline; filename="'.$attachment->filename.'"',
                 ]
             );
         }
+
         throw new FireflyException('Could not find the indicated attachment. The file is no longer there.');
     }
 }

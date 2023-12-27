@@ -12,8 +12,7 @@
     {# Firefly III version #}
     <tr>
         <td>Firefly III</td>
-        <td>v{{ FF_VERSION }} / v{{ config('firefly.api_version') }} / {{ system.db_version }}
-            (exp. {{ config('firefly.db_version') }})
+        <td>v{{ FF_VERSION }} / v{{ config('firefly.api_version') }} / {{ system.db_version }} (exp. {{ config('firefly.db_version') }})
         </td>
     </tr>
     {# PHP version + settings #}
@@ -65,15 +64,19 @@
     <tbody>
     <tr>
         <td>Timezone</td>
-        <td>{{ app.tz }} + [BrowserTZ]</td>
+        <td>{{ config('app.timezone') }} + [BrowserTZ]</td>
     </tr>
     <tr>
         <td>App environment</td>
         <td>{{ config('app.env') }}, debug: {{ app.debug }}</td>
     </tr>
     <tr>
+        <td>Layout</td>
+        <td>{{ config('firefly.layout') }}</td>
+    </tr>
+    <tr>
         <td>Logging</td>
-        <td>{{ config('logging.level') }}, {{ app.log_channel }} / {{ app.audit_log_channel }}</td>
+        <td>{{ config('logging.level') }}, {{ config('logging.default') }} / {{ app.audit_log_channel }}</td>
     </tr>
     <tr>
         <td>Cache driver</td>
@@ -99,6 +102,14 @@
         <td>Stateful domains</td>
         <td>{{ app.stateful_domains }}</td>
     </tr>
+    <tr>
+        <td>Last cron job</td>
+        <td>{{ app.last_cronjob }} ({{ app.last_cronjob_ago }})</td>
+    </tr>
+    <tr>
+        <td>Mailer</td>
+        <td>{{ config('mail.default') }}</td>
+    </tr>
     </tbody>
 </table>
 
@@ -119,7 +130,7 @@
     </tr>
     <tr>
         <td>User flags</td>
-        <td>{{ user.user_flags }}</td>
+        <td>{{ user.user_flags | raw }}</td>
     </tr>
     <tr>
         <td>Session start</td>

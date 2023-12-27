@@ -28,9 +28,6 @@ use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Models\Attachment;
 use FireflyIII\Models\Note;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class MigrateAttachments
@@ -39,27 +36,16 @@ class MigrateAttachments extends Command
 {
     use ShowsFriendlyMessages;
 
-    public const CONFIG_NAME = '480_migrate_attachments';
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
+    public const string CONFIG_NAME = '480_migrate_attachments';
+
     protected $description = 'Migrates attachment meta-data.';
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
+
     protected $signature = 'firefly-iii:migrate-attachments {--F|force : Force the execution of this command.}';
 
     /**
      * Execute the console command.
      *
-     * @return int
-     * @throws ContainerExceptionInterface
      * @throws FireflyException
-     * @throws NotFoundExceptionInterface
      */
     public function handle(): int
     {
@@ -69,7 +55,6 @@ class MigrateAttachments extends Command
 
             return 0;
         }
-
 
         $attachments = Attachment::get();
         $count       = 0;
@@ -92,8 +77,8 @@ class MigrateAttachments extends Command
                 $att->description = '';
                 $att->save();
 
-                Log::debug(sprintf('Migrated attachment #%s description to note #%d.', $att->id, $note->id));
-                $count++;
+                app('log')->debug(sprintf('Migrated attachment #%s description to note #%d.', $att->id, $note->id));
+                ++$count;
             }
         }
         if (0 === $count) {
@@ -109,11 +94,6 @@ class MigrateAttachments extends Command
         return 0;
     }
 
-    /**
-     * @return bool
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
     private function isExecuted(): bool
     {
         $configVar = app('fireflyconfig')->get(self::CONFIG_NAME, false);
@@ -124,9 +104,6 @@ class MigrateAttachments extends Command
         return false;
     }
 
-    /**
-     *
-     */
     private function markAsExecuted(): void
     {
         app('fireflyconfig')->set(self::CONFIG_NAME, true);

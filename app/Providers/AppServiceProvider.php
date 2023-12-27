@@ -28,7 +28,6 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
 use Laravel\Sanctum\Sanctum;
-use URL;
 
 /**
  * Class AppServiceProvider
@@ -37,8 +36,6 @@ class AppServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public function boot(): void
     {
@@ -48,19 +45,19 @@ class AppServiceProvider extends ServiceProvider
                 'Cache-Control' => 'no-store',
             ];
             $uuid    = (string)request()->header('X-Trace-Id');
-            if ('' !== trim($uuid) && (preg_match('/^[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}$/i', trim($uuid)) === 1)) {
+            if ('' !== trim($uuid) && (1 === preg_match('/^[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}$/i', trim($uuid)))) {
                 $headers['X-Trace-Id'] = $uuid;
             }
+
             return response()
                 ->json($value)
-                ->withHeaders($headers);
+                ->withHeaders($headers)
+            ;
         });
     }
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
     public function register(): void
     {

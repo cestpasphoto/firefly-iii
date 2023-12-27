@@ -7,8 +7,11 @@
             "spent": "Uitgegeven",
             "left": "Over",
             "paid": "Betaald",
+            "errors_submission": "Er ging iets mis. Check de errors.",
             "unpaid": "Niet betaald",
             "default_group_title_name_plain": "ongegroepeerd",
+            "subscriptions_in_group": "Abonnementen in groep \"%{title}\"",
+            "subscr_expected_x_times": "Verwacht %{amount} %{times} keer te betalen in deze periode",
             "overspent": "Teveel uitgegeven",
             "money_flowing_in": "In",
             "money_flowing_out": "Uit",
@@ -19,9 +22,16 @@
             "unknown_dest_plain": "Onbekende doelrekening",
             "unknown_any_plain": "Onbekende rekening",
             "unknown_budget_plain": "Geen budget",
+            "stored_journal_js": "Successfully created new transaction \"%{description}\"",
             "expense_account": "Crediteur",
             "revenue_account": "Debiteur",
-            "budget": "Budget"
+            "budget": "Budget",
+            "account_type_Asset account": "Betaalrekening",
+            "account_type_Expense account": "Crediteur",
+            "account_type_Revenue account": "Debiteur",
+            "account_type_Debt": "Schuld",
+            "account_type_Loan": "Lening",
+            "account_type_Mortgage": "Hypotheek"
         }
     }
 }

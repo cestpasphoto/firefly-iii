@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 /*
  * RuleHandler.php
  * Copyright (c) 2023 james@firefly-iii.org
@@ -21,12 +20,13 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace FireflyIII\Handlers\Events\Model;
 
 use FireflyIII\Events\Model\Rule\RuleActionFailedOnArray;
 use FireflyIII\Events\Model\Rule\RuleActionFailedOnObject;
 use FireflyIII\Notifications\User\RuleActionFailed;
-use FireflyIII\Support\Facades\Preferences;
 use Illuminate\Support\Facades\Notification;
 
 /**
@@ -34,16 +34,13 @@ use Illuminate\Support\Facades\Notification;
  */
 class RuleHandler
 {
-    /**
-     * @param RuleActionFailedOnArray $event
-     *
-     * @return void
-     */
     public function ruleActionFailedOnArray(RuleActionFailedOnArray $event): void
     {
         $ruleAction = $event->ruleAction;
         $rule       = $ruleAction->rule;
-        $preference = Preferences::getForUser($rule->user, 'notification_rule_action_failures', true)->data;
+
+        /** @var bool $preference */
+        $preference = app('preferences')->getForUser($rule->user, 'notification_rule_action_failures', true)->data;
         if (false === $preference) {
             return;
         }
@@ -59,20 +56,16 @@ class RuleHandler
         $ruleLink    = route('rules.edit', [$rule->id]);
         $params      = [$mainMessage, $groupTitle, $groupLink, $ruleTitle, $ruleLink];
 
-
         Notification::send($user, new RuleActionFailed($params));
     }
 
-    /**
-     * @param RuleActionFailedOnObject $event
-     *
-     * @return void
-     */
     public function ruleActionFailedOnObject(RuleActionFailedOnObject $event): void
     {
         $ruleAction = $event->ruleAction;
         $rule       = $ruleAction->rule;
-        $preference = Preferences::getForUser($rule->user, 'notification_rule_action_failures', true)->data;
+
+        /** @var bool $preference */
+        $preference = app('preferences')->getForUser($rule->user, 'notification_rule_action_failures', true)->data;
         if (false === $preference) {
             return;
         }
@@ -88,8 +81,6 @@ class RuleHandler
         $ruleLink    = route('rules.edit', [$rule->id]);
         $params      = [$mainMessage, $groupTitle, $groupLink, $ruleTitle, $ruleLink];
 
-
         Notification::send($user, new RuleActionFailed($params));
     }
-
 }

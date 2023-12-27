@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace FireflyIII\Console\Commands\Correction;
 
-use Exception;
 use FireflyIII\Console\Commands\ShowsFriendlyMessages;
 use FireflyIII\Repositories\User\UserRepositoryInterface;
 use FireflyIII\User;
@@ -36,24 +35,14 @@ class CreateAccessTokens extends Command
 {
     use ShowsFriendlyMessages;
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Creates user access tokens which are used for command line access to personal data.';
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
+
     protected $signature = 'firefly-iii:create-access-tokens';
 
     /**
      * Execute the console command.
      *
-     * @return int
-     * @throws Exception
+     * @throws \Exception
      */
     public function handle(): int
     {
@@ -63,6 +52,7 @@ class CreateAccessTokens extends Command
 
         $count = 0;
         $users = $repository->all();
+
         /** @var User $user */
         foreach ($users as $user) {
             $pref = app('preferences')->getForUser($user, 'access_token');

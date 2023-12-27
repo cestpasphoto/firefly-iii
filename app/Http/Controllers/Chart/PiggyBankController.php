@@ -46,8 +46,6 @@ class PiggyBankController extends Controller
 
     /**
      * PiggyBankController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -61,10 +59,6 @@ class PiggyBankController extends Controller
      *
      * TODO this chart is not multi currency aware.
      *
-     * @param PiggyBankRepositoryInterface $repository
-     * @param PiggyBank                    $piggyBank
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function history(PiggyBankRepositoryInterface $repository, PiggyBank $piggyBank): JsonResponse
@@ -83,7 +77,7 @@ class PiggyBankController extends Controller
         // get first event or start date of piggy bank or today
         $startDate = $piggyBank->startdate ?? today(config('app.timezone'));
 
-        /** @var PiggyBankEvent|null $firstEvent */
+        /** @var null|PiggyBankEvent $firstEvent */
         $firstEvent = $set->first();
         $firstDate  = null === $firstEvent ? new Carbon() : $firstEvent->date;
 
@@ -96,7 +90,7 @@ class PiggyBankController extends Controller
         $chartData = [];
         while ($oldest <= $today) {
             $filtered          = $set->filter(
-                function (PiggyBankEvent $event) use ($oldest) {
+                static function (PiggyBankEvent $event) use ($oldest) {
                     return $event->date->lte($oldest);
                 }
             );
@@ -106,7 +100,7 @@ class PiggyBankController extends Controller
             $oldest            = app('navigation')->addPeriod($oldest, $step, 0);
         }
         $finalFiltered          = $set->filter(
-            function (PiggyBankEvent $event) use ($today) {
+            static function (PiggyBankEvent $event) use ($today) {
                 return $event->date->lte($today);
             }
         );

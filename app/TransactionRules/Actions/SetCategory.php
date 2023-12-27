@@ -23,14 +23,12 @@ declare(strict_types=1);
 
 namespace FireflyIII\TransactionRules\Actions;
 
-use DB;
 use FireflyIII\Events\Model\Rule\RuleActionFailedOnArray;
 use FireflyIII\Events\TriggeredAuditLog;
 use FireflyIII\Factory\CategoryFactory;
 use FireflyIII\Models\RuleAction;
 use FireflyIII\Models\TransactionJournal;
 use FireflyIII\User;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class SetCategory.
@@ -41,24 +39,21 @@ class SetCategory implements ActionInterface
 
     /**
      * TriggerInterface constructor.
-     *
-     * @param RuleAction $action
      */
     public function __construct(RuleAction $action)
     {
         $this->action = $action;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function actOnArray(array $journal): bool
     {
+        /** @var null|User $user */
         $user   = User::find($journal['user_id']);
         $search = $this->action->action_value;
         if (null === $user) {
-            Log::error(sprintf('Journal has no valid user ID so action SetCategory("%s") cannot be applied', $search), $journal);
+            app('log')->error(sprintf('Journal has no valid user ID so action SetCategory("%s") cannot be applied', $search), $journal);
             event(new RuleActionFailedOnArray($this->action, $journal, trans('rules.no_such_journal')));
+
             return false;
         }
 
@@ -67,7 +62,7 @@ class SetCategory implements ActionInterface
         $factory->setUser($user);
         $category = $factory->findOrCreate(null, $search);
         if (null === $category) {
-            Log::debug(
+            app('log')->debug(
                 sprintf(
                     'RuleAction SetCategory could not set category of journal #%d to "%s" because no such category exists.',
                     $journal['transaction_journal_id'],
@@ -75,10 +70,11 @@ class SetCategory implements ActionInterface
                 )
             );
             event(new RuleActionFailedOnArray($this->action, $journal, trans('rules.cannot_find_category', ['name' => $search])));
+
             return false;
         }
 
-        Log::debug(
+        app('log')->debug(
             sprintf(
                 'RuleAction SetCategory set the category of journal #%d to category #%d ("%s").',
                 $journal['transaction_journal_id'],
@@ -92,13 +88,14 @@ class SetCategory implements ActionInterface
         $object          = $user->transactionJournals()->find($journal['transaction_journal_id']);
         $oldCategory     = $object->categories()->first();
         $oldCategoryName = $oldCategory?->name;
-        if ((int)$oldCategory?->id === (int)$category->id) {
+        if ((int)$oldCategory?->id === $category->id) {
             event(new RuleActionFailedOnArray($this->action, $journal, trans('rules.already_linked_to_category', ['name' => $category->name])));
+
             return false;
         }
 
-        DB::table('category_transaction_journal')->where('transaction_journal_id', '=', $journal['transaction_journal_id'])->delete();
-        DB::table('category_transaction_journal')->insert(['transaction_journal_id' => $journal['transaction_journal_id'], 'category_id' => $category->id]);
+        \DB::table('category_transaction_journal')->where('transaction_journal_id', '=', $journal['transaction_journal_id'])->delete();
+        \DB::table('category_transaction_journal')->insert(['transaction_journal_id' => $journal['transaction_journal_id'], 'category_id' => $category->id]);
 
         /** @var TransactionJournal $object */
         $object = TransactionJournal::where('user_id', $journal['user_id'])->find($journal['transaction_journal_id']);

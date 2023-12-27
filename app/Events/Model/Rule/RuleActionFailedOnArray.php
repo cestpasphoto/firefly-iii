@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 /*
  * RuleActionFailedOnArray.php
  * Copyright (c) 2023 james@firefly-iii.org
@@ -21,6 +20,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace FireflyIII\Events\Model\Rule;
 
 use FireflyIII\Models\RuleAction;
@@ -37,11 +38,6 @@ class RuleActionFailedOnArray
     public array      $journal;
     public RuleAction $ruleAction;
 
-    /**
-     * @param RuleAction $ruleAction
-     * @param array      $journal
-     * @param string     $error
-     */
     public function __construct(RuleAction $ruleAction, array $journal, string $error)
     {
         app('log')->debug('Created new RuleActionFailedOnArray');

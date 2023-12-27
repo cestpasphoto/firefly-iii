@@ -35,13 +35,6 @@ use Illuminate\Support\Collection;
  */
 class WholePeriodChartGenerator
 {
-    /**
-     * @param Category $category
-     * @param Carbon   $start
-     * @param Carbon   $end
-     *
-     * @return array
-     */
     public function generate(Category $category, Carbon $start, Carbon $end): array
     {
         $collection = new Collection([$category]);
@@ -116,11 +109,6 @@ class WholePeriodChartGenerator
 
     /**
      * TODO this method is duplicated
-     *
-     * @param Carbon $start
-     * @param Carbon $end
-     *
-     * @return string
      */
     protected function calculateStep(Carbon $start, Carbon $end): string
     {
@@ -142,17 +130,13 @@ class WholePeriodChartGenerator
     /**
      * Loop array of spent/earned info, and extract which currencies are present.
      * Key is the currency ID.
-     *
-     * @param array $array
-     *
-     * @return array
      */
     private function extractCurrencies(array $array): array
     {
         $return = [];
         foreach ($array as $block) {
             foreach ($block as $currencyId => $currencyRow) {
-                $return[$currencyId] = $return[$currencyId] ?? [
+                $return[$currencyId] ??= [
                     'currency_id'             => $currencyId,
                     'currency_name'           => $currencyRow['currency_name'],
                     'currency_symbol'         => $currencyRow['currency_symbol'],

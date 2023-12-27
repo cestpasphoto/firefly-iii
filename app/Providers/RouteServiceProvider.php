@@ -31,19 +31,7 @@ use Illuminate\Support\Facades\Route;
  */
 class RouteServiceProvider extends ServiceProvider
 {
-    /**
-     * The path to the "home" route for your application.
-     *
-     * @var string
-     */
-    public const    HOME = '/';
-    /**
-     * This namespace is applied to your controller routes.
-     *
-     * In addition, it is set as the URL generator's root namespace.
-     *
-     * @var string
-     */
+    public const string   HOME = '/';
     protected $namespace = '';
 
     /**
@@ -51,20 +39,23 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->routes(function () {
+        $this->routes(function (): void {
             Route::prefix('api')
-                 ->middleware('api')
-                 ->namespace($this->namespace)
-                 ->group(base_path('routes/api.php'));
+                ->middleware('api')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/api.php'))
+            ;
 
             Route::prefix('api/v1/cron')
-                 ->middleware('api_basic')
-                 ->namespace($this->namespace)
-                 ->group(base_path('routes/api-noauth.php'));
+                ->middleware('api_basic')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/api-noauth.php'))
+            ;
 
             Route::middleware('web')
-                 ->namespace($this->namespace)
-                 ->group(base_path('routes/web.php'));
+                ->namespace($this->namespace)
+                ->group(base_path('routes/web.php'))
+            ;
         });
     }
 }

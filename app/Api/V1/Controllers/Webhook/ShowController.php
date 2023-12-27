@@ -43,11 +43,9 @@ use League\Fractal\Resource\Item;
  */
 class ShowController extends Controller
 {
-    public const RESOURCE_KEY = 'webhooks';
+    public const string RESOURCE_KEY = 'webhooks';
     private WebhookRepositoryInterface $repository;
 
-    /**
-     */
     public function __construct()
     {
         parent::__construct();
@@ -67,20 +65,19 @@ class ShowController extends Controller
      *
      * Display a listing of the webhooks of the user.
      *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function index(): JsonResponse
     {
         $manager    = $this->getManager();
         $collection = $this->repository->all();
-        $pageSize   = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize   = $this->parameters->get('limit');
         $count      = $collection->count();
         $webhooks   = $collection->slice(($this->parameters->get('page') - 1) * $pageSize, $pageSize);
 
         // make paginator:
         $paginator = new LengthAwarePaginator($webhooks, $count, $pageSize, $this->parameters->get('page'));
-        $paginator->setPath(route('api.v1.webhooks.index') . $this->buildParams());
+        $paginator->setPath(route('api.v1.webhooks.index').$this->buildParams());
 
         /** @var WebhookTransformer $transformer */
         $transformer = app(WebhookTransformer::class);
@@ -97,10 +94,6 @@ class ShowController extends Controller
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/webhooks/getWebhook
      *
      * Show single instance.
-     *
-     * @param Webhook $webhook
-     *
-     * @return JsonResponse
      */
     public function show(Webhook $webhook): JsonResponse
     {
@@ -119,15 +112,11 @@ class ShowController extends Controller
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/webhooks/triggerWebhookTransaction
      *
      * This method recycles part of the code of the StoredGroupEventHandler.
-     *
-     * @param Webhook          $webhook
-     * @param TransactionGroup $group
-     *
-     * @return JsonResponse
      */
     public function triggerTransaction(Webhook $webhook, TransactionGroup $group): JsonResponse
     {
         app('log')->debug(sprintf('Now in triggerTransaction(%d, %d)', $webhook->id, $group->id));
+
         /** @var MessageGeneratorInterface $engine */
         $engine = app(MessageGeneratorInterface::class);
         $engine->setUser(auth()->user());

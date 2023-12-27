@@ -33,16 +33,13 @@ use Illuminate\View\View;
  */
 class CreateController extends Controller
 {
-    /**
-     *
-     */
     public function __construct()
     {
         parent::__construct();
 
         // translations:
         $this->middleware(
-            function ($request, $next) {
+            static function ($request, $next) {
                 app('view')->share('mainTitleIcon', 'fa-bolt');
                 app('view')->share('subTitleIcon', 'fa-plus');
                 app('view')->share('title', (string)trans('firefly.webhooks'));
@@ -61,6 +58,7 @@ class CreateController extends Controller
     public function index()
     {
         $previousUrl = $this->rememberPreviousUrl('webhooks.create.url');
+
         return view('webhooks.create', compact('previousUrl'));
     }
 }

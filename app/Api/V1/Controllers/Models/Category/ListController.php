@@ -49,8 +49,6 @@ class ListController extends Controller
 
     /**
      * CategoryController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -69,15 +67,12 @@ class ListController extends Controller
      * This endpoint is documented at:
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/categories/listAttachmentByCategory
      *
-     * @param Category $category
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function attachments(Category $category): JsonResponse
     {
         $manager    = $this->getManager();
-        $pageSize   = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize   = $this->parameters->get('limit');
         $collection = $this->repository->getAttachments($category);
 
         $count       = $collection->count();
@@ -85,7 +80,7 @@ class ListController extends Controller
 
         // make paginator:
         $paginator = new LengthAwarePaginator($attachments, $count, $pageSize, $this->parameters->get('page'));
-        $paginator->setPath(route('api.v1.categories.attachments', [$category->id]) . $this->buildParams());
+        $paginator->setPath(route('api.v1.categories.attachments', [$category->id]).$this->buildParams());
 
         /** @var AttachmentTransformer $transformer */
         $transformer = app(AttachmentTransformer::class);
@@ -103,16 +98,11 @@ class ListController extends Controller
      *
      * Show all transactions.
      *
-     * @param Request  $request
-     *
-     * @param Category $category
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function transactions(Request $request, Category $category): JsonResponse
     {
-        $pageSize = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize = $this->parameters->get('limit');
         $type     = $request->get('type') ?? 'default';
         $this->parameters->set('type', $type);
 
@@ -136,14 +126,18 @@ class ListController extends Controller
             // set page to retrieve
             ->setPage($this->parameters->get('page'))
             // set types of transactions to return.
-            ->setTypes($types);
+            ->setTypes($types)
+        ;
 
-        if (null !== $this->parameters->get('start') && null !== $this->parameters->get('end')) {
-            $collector->setRange($this->parameters->get('start'), $this->parameters->get('end'));
+        if (null !== $this->parameters->get('start')) {
+            $collector->setStart($this->parameters->get('start'));
+        }
+        if (null !== $this->parameters->get('end')) {
+            $collector->setEnd($this->parameters->get('end'));
         }
 
         $paginator = $collector->getPaginatedGroups();
-        $paginator->setPath(route('api.v1.categories.transactions', [$category->id]) . $this->buildParams());
+        $paginator->setPath(route('api.v1.categories.transactions', [$category->id]).$this->buildParams());
         $transactions = $paginator->getCollection();
 
         /** @var TransactionGroupTransformer $transformer */

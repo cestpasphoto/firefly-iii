@@ -33,13 +33,11 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class CategoryFormRequest extends FormRequest
 {
-    use ConvertsDataTypes;
     use ChecksLogin;
+    use ConvertsDataTypes;
 
     /**
      * Get information for the controller.
-     *
-     * @return array
      */
     public function getCategoryData(): array
     {
@@ -51,17 +49,16 @@ class CategoryFormRequest extends FormRequest
 
     /**
      * Rules for this request.
-     *
-     * @return array
      */
     public function rules(): array
     {
         $nameRule = 'required|between:1,100|uniqueObjectForUser:categories,name';
-        /** @var Category $category */
+
+        /** @var null|Category $category */
         $category = $this->route()->parameter('category');
 
         if (null !== $category) {
-            $nameRule = 'required|between:1,100|uniqueObjectForUser:categories,name,' . $category->id;
+            $nameRule = 'required|between:1,100|uniqueObjectForUser:categories,name,'.$category->id;
         }
 
         // fixed

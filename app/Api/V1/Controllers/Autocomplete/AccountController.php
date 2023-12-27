@@ -32,7 +32,6 @@ use FireflyIII\Repositories\Account\AccountRepositoryInterface;
 use FireflyIII\Support\Http\Api\AccountFilter;
 use FireflyIII\User;
 use Illuminate\Http\JsonResponse;
-use JsonException;
 
 /**
  * Class AccountController
@@ -41,6 +40,7 @@ class AccountController extends Controller
 {
     use AccountFilter;
 
+    /** @var array<int, string> */
     private array                      $balanceTypes;
     private AccountRepositoryInterface $repository;
 
@@ -60,17 +60,13 @@ class AccountController extends Controller
                 return $next($request);
             }
         );
-        $this->balanceTypes = [AccountType::ASSET, AccountType::LOAN, AccountType::DEBT, AccountType::MORTGAGE,];
+        $this->balanceTypes = [AccountType::ASSET, AccountType::LOAN, AccountType::DEBT, AccountType::MORTGAGE];
     }
 
     /**
      * Documentation for this endpoint:
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/autocomplete/getAccountsAC
      *
-     * @param AutocompleteRequest $request
-     *
-     * @return JsonResponse
-     * @throws JsonException
      * @throws FireflyException
      * @throws FireflyException
      */
@@ -82,7 +78,8 @@ class AccountController extends Controller
         $date  = $data['date'] ?? today(config('app.timezone'));
 
         $return = [];
-        $result = $this->repository->searchAccount((string)$query, $types, $data['limit']);
+
+        $result = $this->repository->searchAccount((string) $query, $types, $this->parameters->get('limit'));
         // TODO this code is duplicated in the V2 Autocomplete controller, which means this code is due to be deprecated.
         $defaultCurrency = app('amount')->getDefaultCurrency();
 
@@ -101,11 +98,11 @@ class AccountController extends Controller
             }
 
             $return[] = [
-                'id'                      => (string)$account->id,
+                'id'                      => (string) $account->id,
                 'name'                    => $account->name,
                 'name_with_balance'       => $nameWithBalance,
                 'type'                    => $account->accountType->type,
-                'currency_id'             => (string)$currency->id,
+                'currency_id'             => (string) $currency->id,
                 'currency_name'           => $currency->name,
                 'currency_code'           => $currency->code,
                 'currency_symbol'         => $currency->symbol,
@@ -116,10 +113,10 @@ class AccountController extends Controller
         // custom order.
         usort(
             $return,
-            function ($a, $b) {
+            static function (array $left, array $right) {
                 $order = [AccountType::ASSET, AccountType::REVENUE, AccountType::EXPENSE];
-                $posA  = array_search($a['type'], $order, true);
-                $posB  = array_search($b['type'], $order, true);
+                $posA  = (int) array_search($left['type'], $order, true);
+                $posB  = (int) array_search($right['type'], $order, true);
 
                 return $posA - $posB;
             }

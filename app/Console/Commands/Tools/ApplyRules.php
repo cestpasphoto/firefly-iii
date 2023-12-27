@@ -47,17 +47,8 @@ class ApplyRules extends Command
     use ShowsFriendlyMessages;
     use VerifiesAccessToken;
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'This command will apply your rules and rule groups on a selection of your transactions.';
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
+
     protected $signature
         = 'firefly-iii:apply-rules
                             {--user=1 : The user ID.}
@@ -82,7 +73,6 @@ class ApplyRules extends Command
     /**
      * Execute the console command.
      *
-     * @return int
      * @throws FireflyException
      */
     public function handle(): int
@@ -143,7 +133,7 @@ class ApplyRules extends Command
         // start running rules.
         $this->friendlyLine(sprintf('Will apply %d rule(s) to your transaction(s).', $count));
 
-        // file the rule(s)
+        // fire the rule(s)
         $ruleEngine->fire();
 
         $this->friendlyLine('');
@@ -157,8 +147,6 @@ class ApplyRules extends Command
      * Laravel will execute ALL __construct() methods for ALL commands whenever a SINGLE command is
      * executed. This leads to noticeable slow-downs and class calls. To prevent this, this method should
      * be called from the handle method instead of using the constructor to initialize the command.
-     *
-
      */
     private function stupidLaravel(): void
     {
@@ -173,7 +161,6 @@ class ApplyRules extends Command
     }
 
     /**
-     * @return bool
      * @throws FireflyException
      */
     private function verifyInput(): bool
@@ -196,7 +183,6 @@ class ApplyRules extends Command
     }
 
     /**
-     * @return bool
      * @throws FireflyException
      */
     private function verifyInputAccounts(): bool
@@ -231,9 +217,6 @@ class ApplyRules extends Command
         return true;
     }
 
-    /**
-     * @return bool
-     */
     private function verifyInputRuleGroups(): bool
     {
         $ruleGroupString = $this->option('rule_groups');
@@ -256,9 +239,6 @@ class ApplyRules extends Command
         return true;
     }
 
-    /**
-     * @return bool
-     */
     private function verifyInputRules(): bool
     {
         $ruleString = $this->option('rules');
@@ -305,6 +285,11 @@ class ApplyRules extends Command
         if (null !== $endString && '' !== $endString) {
             $inputEnd = Carbon::createFromFormat('Y-m-d', $endString);
         }
+        if (false === $inputEnd || false === $inputStart) {
+            Log::error('Could not parse start or end date in verifyInputDate().');
+
+            return;
+        }
 
         if ($inputStart > $inputEnd) {
             [$inputEnd, $inputStart] = [$inputStart, $inputEnd];
@@ -314,28 +299,25 @@ class ApplyRules extends Command
         $this->endDate   = $inputEnd;
     }
 
-    /**
-     */
     private function grabAllRules(): void
     {
         $this->groups = $this->ruleGroupRepository->getActiveGroups();
     }
 
-    /**
-     * @return Collection
-     */
     private function getRulesToApply(): Collection
     {
         $rulesToApply = new Collection();
+
         /** @var RuleGroup $group */
         foreach ($this->groups as $group) {
             $rules = $this->ruleGroupRepository->getActiveStoreRules($group);
+
             /** @var Rule $rule */
             foreach ($rules as $rule) {
                 // if in rule selection, or group in selection or all rules, it's included.
                 $test = $this->includeRule($rule, $group);
                 if (true === $test) {
-                    Log::debug(sprintf('Will include rule #%d "%s"', $rule->id, $rule->title));
+                    app('log')->debug(sprintf('Will include rule #%d "%s"', $rule->id, $rule->title));
                     $rulesToApply->push($rule);
                 }
             }
@@ -344,12 +326,6 @@ class ApplyRules extends Command
         return $rulesToApply;
     }
 
-    /**
-     * @param Rule      $rule
-     * @param RuleGroup $group
-     *
-     * @return bool
-     */
     private function includeRule(Rule $rule, RuleGroup $group): bool
     {
         return in_array($group->id, $this->ruleGroupSelection, true)

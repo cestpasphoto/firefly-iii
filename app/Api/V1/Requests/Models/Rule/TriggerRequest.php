@@ -34,12 +34,9 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class TriggerRequest extends FormRequest
 {
-    use ConvertsDataTypes;
     use ChecksLogin;
+    use ConvertsDataTypes;
 
-    /**
-     * @return array
-     */
     public function getTriggerParameters(): array
     {
         return [
@@ -49,27 +46,6 @@ class TriggerRequest extends FormRequest
         ];
     }
 
-    /**
-     * @param string $field
-     *
-     * @return Carbon|null
-     */
-    private function getDate(string $field): ?Carbon
-    {
-        return null === $this->query($field) ? null : Carbon::createFromFormat('Y-m-d', substr($this->query($field), 0, 10));
-    }
-
-    /**
-     * @return array
-     */
-    private function getAccounts(): array
-    {
-        return $this->get('accounts') ?? [];
-    }
-
-    /**
-     * @return array
-     */
     public function rules(): array
     {
         return [
@@ -78,5 +54,25 @@ class TriggerRequest extends FormRequest
             'accounts'   => '',
             'accounts.*' => 'exists:accounts,id|belongsToUser:accounts',
         ];
+    }
+
+    private function getDate(string $field): ?Carbon
+    {
+        $value = $this->query($field);
+        if (is_array($value)) {
+            return null;
+        }
+        $value  = (string)$value;
+        $result = null === $this->query($field) ? null : Carbon::createFromFormat('Y-m-d', substr($value, 0, 10));
+        if (false === $result) {
+            return null;
+        }
+
+        return $result;
+    }
+
+    private function getAccounts(): array
+    {
+        return $this->get('accounts') ?? [];
     }
 }

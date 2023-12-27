@@ -1,6 +1,5 @@
 <?php
 
-
 /*
  * TriggerRecurrenceRequest.php
  * Copyright (c) 2023 james@firefly-iii.org
@@ -34,13 +33,11 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class TriggerRecurrenceRequest extends FormRequest
 {
-    use ConvertsDataTypes;
     use ChecksLogin;
+    use ConvertsDataTypes;
 
     /**
      * Returns the data required by the controller.
-     *
-     * @return array
      */
     public function getAll(): array
     {
@@ -51,8 +48,6 @@ class TriggerRecurrenceRequest extends FormRequest
 
     /**
      * Rules for this request.
-     *
-     * @return array
      */
     public function rules(): array
     {

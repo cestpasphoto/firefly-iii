@@ -27,9 +27,7 @@ use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Models\ObjectGroup;
 use FireflyIII\Models\PiggyBank;
 use FireflyIII\Repositories\Account\AccountRepositoryInterface;
-use FireflyIII\Repositories\Currency\CurrencyRepositoryInterface;
 use FireflyIII\Repositories\PiggyBank\PiggyBankRepositoryInterface;
-use JsonException;
 
 /**
  * Class PiggyBankTransformer
@@ -37,29 +35,21 @@ use JsonException;
 class PiggyBankTransformer extends AbstractTransformer
 {
     private AccountRepositoryInterface   $accountRepos;
-    private CurrencyRepositoryInterface  $currencyRepos;
     private PiggyBankRepositoryInterface $piggyRepos;
 
     /**
      * PiggyBankTransformer constructor.
-     *
-
      */
     public function __construct()
     {
-        $this->accountRepos  = app(AccountRepositoryInterface::class);
-        $this->currencyRepos = app(CurrencyRepositoryInterface::class);
-        $this->piggyRepos    = app(PiggyBankRepositoryInterface::class);
+        $this->accountRepos = app(AccountRepositoryInterface::class);
+        $this->piggyRepos   = app(PiggyBankRepositoryInterface::class);
     }
 
     /**
      * Transform the piggy bank.
      *
-     * @param PiggyBank $piggyBank
-     *
-     * @return array
      * @throws FireflyException
-     * @throws JsonException
      */
     public function transform(PiggyBank $piggyBank): array
     {
@@ -67,11 +57,10 @@ class PiggyBankTransformer extends AbstractTransformer
 
         // set up repositories
         $this->accountRepos->setUser($account->user);
-        $this->currencyRepos->setUser($account->user);
         $this->piggyRepos->setUser($account->user);
 
         // get currency from account, or use default.
-        $currency = $this->accountRepos->getAccountCurrency($account) ?? app('amount')->getDefaultCurrencyByUser($account->user);
+        $currency = $this->accountRepos->getAccountCurrency($account) ?? app('amount')->getDefaultCurrencyByUserGroup($account->user->userGroup);
 
         // note
         $notes = $this->piggyRepos->getNoteText($piggyBank);
@@ -80,11 +69,12 @@ class PiggyBankTransformer extends AbstractTransformer
         $objectGroupId    = null;
         $objectGroupOrder = null;
         $objectGroupTitle = null;
-        /** @var ObjectGroup $objectGroup */
+
+        /** @var null|ObjectGroup $objectGroup */
         $objectGroup = $piggyBank->objectGroups->first();
         if (null !== $objectGroup) {
-            $objectGroupId    = (int)$objectGroup->id;
-            $objectGroupOrder = (int)$objectGroup->order;
+            $objectGroupId    = $objectGroup->id;
+            $objectGroupOrder = $objectGroup->order;
             $objectGroupTitle = $objectGroup->title;
         }
 
@@ -116,7 +106,7 @@ class PiggyBankTransformer extends AbstractTransformer
             'currency_id'             => (string)$currency->id,
             'currency_code'           => $currency->code,
             'currency_symbol'         => $currency->symbol,
-            'currency_decimal_places' => (int)$currency->decimal_places,
+            'currency_decimal_places' => $currency->decimal_places,
             'target_amount'           => $targetAmount,
             'percentage'              => $percentage,
             'current_amount'          => $currentAmount,
@@ -124,16 +114,16 @@ class PiggyBankTransformer extends AbstractTransformer
             'save_per_month'          => $savePerMonth,
             'start_date'              => $startDate,
             'target_date'             => $targetDate,
-            'order'                   => (int)$piggyBank->order,
+            'order'                   => $piggyBank->order,
             'active'                  => true,
             'notes'                   => $notes,
-            'object_group_id'         => $objectGroupId ? (string)$objectGroupId : null,
+            'object_group_id'         => null !== $objectGroupId ? (string)$objectGroupId : null,
             'object_group_order'      => $objectGroupOrder,
             'object_group_title'      => $objectGroupTitle,
             'links'                   => [
                 [
                     'rel' => 'self',
-                    'uri' => '/piggy_banks/' . $piggyBank->id,
+                    'uri' => '/piggy_banks/'.$piggyBank->id,
                 ],
             ],
         ];

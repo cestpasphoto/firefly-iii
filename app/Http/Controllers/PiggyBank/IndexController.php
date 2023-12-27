@@ -36,7 +36,6 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use JsonException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
@@ -50,8 +49,6 @@ class IndexController extends Controller
 
     /**
      * PiggyBankController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -74,18 +71,17 @@ class IndexController extends Controller
      *
      * TODO very complicated function.
      *
-     * @param Request $request
-     *
      * @return Factory|View
+     *
      * @throws FireflyException
-     * @throws JsonException
      */
-    public function index(Request $request)
+    public function index()
     {
         $this->cleanupObjectGroups();
         $this->piggyRepos->resetOrder();
         $collection = $this->piggyRepos->getPiggyBanks();
         $accounts   = [];
+
         /** @var Carbon $end */
         $end = session('end', today(config('app.timezone'))->endOfMonth());
 
@@ -103,12 +99,13 @@ class IndexController extends Controller
         /** @var AccountTransformer $accountTransformer */
         $accountTransformer = app(AccountTransformer::class);
         $accountTransformer->setParameters($parameters);
+
         /** @var PiggyBank $piggy */
         foreach ($collection as $piggy) {
             $array      = $transformer->transform($piggy);
             $groupOrder = (int)$array['object_group_order'];
             // make group array if necessary:
-            $piggyBanks[$groupOrder] = $piggyBanks[$groupOrder] ?? [
+            $piggyBanks[$groupOrder] ??= [
                 'object_group_id'    => $array['object_group_id'] ?? 0,
                 'object_group_title' => $array['object_group_title'] ?? trans('firefly.default_group_title_name'),
                 'piggy_banks'        => [],
@@ -145,10 +142,23 @@ class IndexController extends Controller
     }
 
     /**
-     * @param array $piggyBanks
-     *
-     * @return array
+     * Set the order of a piggy bank.
      */
+    public function setOrder(Request $request, PiggyBank $piggyBank): JsonResponse
+    {
+        $objectGroupTitle = (string)$request->get('objectGroupTitle');
+        $newOrder         = (int)$request->get('order');
+        $this->piggyRepos->setOrder($piggyBank, $newOrder);
+        if ('' !== $objectGroupTitle) {
+            $this->piggyRepos->setObjectGroup($piggyBank, $objectGroupTitle);
+        }
+        if ('' === $objectGroupTitle) {
+            $this->piggyRepos->removeObjectGroup($piggyBank);
+        }
+
+        return response()->json(['data' => 'OK']);
+    }
+
     private function makeSums(array $piggyBanks): array
     {
         $sums = [];
@@ -156,7 +166,7 @@ class IndexController extends Controller
             $groupId = $group['object_group_id'];
             foreach ($group['piggy_banks'] as $piggy) {
                 $currencyId                  = $piggy['currency_id'];
-                $sums[$groupId][$currencyId] = $sums[$groupId][$currencyId] ?? [
+                $sums[$groupId][$currencyId] ??= [
                     'target'                  => '0',
                     'saved'                   => '0',
                     'left_to_save'            => '0',
@@ -182,28 +192,5 @@ class IndexController extends Controller
         }
 
         return $piggyBanks;
-    }
-
-    /**
-     * Set the order of a piggy bank.
-     *
-     * @param Request   $request
-     * @param PiggyBank $piggyBank
-     *
-     * @return JsonResponse
-     */
-    public function setOrder(Request $request, PiggyBank $piggyBank): JsonResponse
-    {
-        $objectGroupTitle = (string)$request->get('objectGroupTitle');
-        $newOrder         = (int)$request->get('order');
-        $this->piggyRepos->setOrder($piggyBank, $newOrder);
-        if ('' !== $objectGroupTitle) {
-            $this->piggyRepos->setObjectGroup($piggyBank, $objectGroupTitle);
-        }
-        if ('' === $objectGroupTitle) {
-            $this->piggyRepos->removeObjectGroup($piggyBank);
-        }
-
-        return response()->json(['data' => 'OK']);
     }
 }

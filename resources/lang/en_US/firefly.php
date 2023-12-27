@@ -33,6 +33,7 @@ return [
     'split'                                => 'Split',
     'single_split'                         => 'Split',
     'clone'                                => 'Clone',
+    'clone_and_edit'                       => 'Clone and edit',
     'confirm_action'                       => 'Confirm action',
     'last_seven_days'                      => 'Last seven days',
     'last_thirty_days'                     => 'Last thirty days',
@@ -103,7 +104,7 @@ return [
     'two_factor_forgot'                    => 'I forgot my two-factor thing.',
     'two_factor_lost_header'               => 'Lost your two factor authentication?',
     'two_factor_lost_intro'                => 'If you lost your backup codes as well, you have bad luck. This is not something you can fix from the web interface. You have two choices.',
-    'two_factor_lost_fix_self'             => 'If you run your own instance of Firefly III, read <a href="https://docs.firefly-iii.org/faq/other#i-lost-my-two-factor-authentication-codes-and-backup-codes">this entry in the FAQ</a> for instructions.',
+    'two_factor_lost_fix_self'             => 'If you run your own instance of Firefly III, read <a href="https://docs.firefly-iii.org/references/faq/firefly-iii/using/#i-lost-my-2fa-token-generator-or-2fa-has-stopped-working>this entry in the FAQ</a> for instructions.',
     'two_factor_lost_fix_owner'            => 'Otherwise, email the site owner, <a href="mailto::site_owner">:site_owner</a> and ask them to reset your two factor authentication.',
     'mfa_backup_code'                      => 'You have used a backup code to login to Firefly III. It can\'t be used again, so cross it from your list.',
     'pref_two_factor_new_backup_codes'     => 'Get new backup codes',
@@ -193,7 +194,7 @@ return [
     'transfer_exchange_rate_instructions'  => 'Source asset account "@source_name" only accepts transactions in @source_currency. Destination asset account "@dest_name" only accepts transactions in @dest_currency. You must provide the transferred amount correctly in both currencies.',
     'transaction_data'                     => 'Transaction data',
     'invalid_server_configuration'         => 'Invalid server configuration',
-    'invalid_locale_settings'              => 'Firefly III is unable to format monetary amounts because your server is missing the required packages. There are <a href="https://docs.firefly-iii.org/firefly-iii/advanced-installation/locales/">instructions how to do this</a>.',
+    'invalid_locale_settings'              => 'Firefly III is unable to format monetary amounts because your server is missing the required packages. There are <a href="https://docs.firefly-iii.org/how-to/firefly-iii/advanced/locales/">instructions how to do this</a>.',
     'quickswitch'                          => 'Quickswitch',
     'sign_in_to_start'                     => 'Sign in to start your session',
     'sign_in'                              => 'Sign in',
@@ -448,6 +449,10 @@ return [
     'search_modifier_transaction_type'                    => 'Transaction type is ":value"',
     'search_modifier_not_transaction_type'                => 'Transaction type is not ":value"',
     'search_modifier_tag_is'                              => 'Tag is ":value"',
+    'search_modifier_tag_contains'                        => 'Tag contains ":value"',
+    'search_modifier_not_tag_contains'                    => 'Tag does not contain ":value"',
+    'search_modifier_tag_ends'                            => 'Tag ends with ":value"',
+    'search_modifier_tag_starts'                          => 'Tag starts with ":value"',
     'search_modifier_not_tag_is'                          => 'No tag is ":value"',
     'search_modifier_date_on_year'                        => 'Transaction is in year ":value"',
     'search_modifier_not_date_on_year'                    => 'Transaction is not in year ":value"',
@@ -461,7 +466,6 @@ return [
     'search_modifier_date_after_year'                     => 'Transaction is in or after year ":value"',
     'search_modifier_date_after_month'                    => 'Transaction is in or after month ":value"',
     'search_modifier_date_after_day'                      => 'Transaction is after or on day of month ":value"',
-
 
     // new
     'search_modifier_tag_is_not'                          => 'No tag is ":value"',
@@ -717,6 +721,8 @@ return [
     // rules
     'is_not_rule_trigger'                                 => 'Not',
     'cannot_fire_inactive_rules'                          => 'You cannot execute inactive rules.',
+    'show_triggers'                                       => 'Show triggers',
+    'show_actions'                                        => 'Show actions',
     'rules'                                               => 'Rules',
     'rule_name'                                           => 'Name of rule',
     'rule_triggers'                                       => 'Rule triggers when',
@@ -783,7 +789,6 @@ return [
     'rule_trigger_store_journal'                          => 'When a transaction is created',
     'rule_trigger_update_journal'                         => 'When a transaction is updated',
     'rule_trigger_user_action'                            => 'User action is ":trigger_value"',
-
 
     // OLD values (remove non-doubles later):
     'rule_trigger_source_account_starts_choice'           => 'Source account name starts with..',
@@ -1237,6 +1242,8 @@ return [
     'rule_action_append_notes_to_descr'                   => 'Append notes to description',
     'rule_action_move_descr_to_notes'                     => 'Replace notes with description',
     'rule_action_move_notes_to_descr'                     => 'Replace description with notes',
+    'rule_action_set_destination_to_cash_choice'          => 'Set destination account to (cash)',
+    'rule_action_set_source_to_cash_choice'               => 'Set source account to (cash)',
     'rulegroup_for_bills_title'                           => 'Rule group for bills',
     'rulegroup_for_bills_description'                     => 'A special rule group for all the rules that involve bills.',
     'rule_for_bill_title'                                 => 'Auto-generated rule for bill ":name"',
@@ -1266,7 +1273,6 @@ return [
     'deleted_x_tags'                            => 'Deleted :count tag.|Deleted :count tags.',
     'create_rule_from_transaction'              => 'Create rule based on transaction',
     'create_recurring_from_transaction'         => 'Create recurring transaction based on transaction',
-
 
     // preferences
     'dark_mode_option_browser'                  => 'Let your browser decide',
@@ -1516,6 +1522,7 @@ return [
     'list_all_attachments'                      => 'List of all attachments',
 
     // transaction index
+    'is_reconciled_fields_dropped'              => 'Because this transaction is reconciled, you will not be able to update the accounts, nor the amount(s).',
     'title_expenses'                            => 'Expenses',
     'title_withdrawal'                          => 'Expenses',
     'title_revenue'                             => 'Revenue / income',
@@ -1583,7 +1590,8 @@ return [
     'create_currency'                           => 'Create a new currency',
     'store_currency'                            => 'Store new currency',
     'update_currency'                           => 'Update currency',
-    'new_default_currency'                      => ':name is now the default currency.',
+    'new_default_currency'                      => '":name" is now the default currency.',
+    'default_currency_failed'                   => 'Could not make ":name" the default currency. Please check the logs.',
     'cannot_delete_currency'                    => 'Cannot delete :name because it is still in use.',
     'cannot_delete_fallback_currency'           => ':name is the system fallback currency and can\'t be deleted.',
     'cannot_disable_currency_journals'          => 'Cannot disable :name because transactions are still using it.',
@@ -1609,7 +1617,9 @@ return [
     'disable_currency'                          => 'Disable',
     'currencies_default_disabled'               => 'Most of these currencies are disabled by default. To use them, you must enable them first.',
     'currency_is_now_enabled'                   => 'Currency ":name" has been enabled',
+    'could_not_enable_currency'                 => 'Could not enable currency ":name". Please review the logs.',
     'currency_is_now_disabled'                  => 'Currency ":name" has been disabled',
+    'could_not_disable_currency'                => 'Could not disable currency ":name". Perhaps it is still in use?',
 
     // forms:
     'mandatoryFields'                           => 'Mandatory fields',
@@ -1682,7 +1692,10 @@ return [
     'remove_budgeted_amount'                    => 'Remove budgeted amount in :currency',
 
     // bills:
+    'subscription'                              => 'Subscription',
     'not_expected_period'                       => 'Not expected this period',
+    'subscriptions_in_group'                    => 'Subscriptions in group "%{title}"',
+    'subscr_expected_x_times'                   => 'Expect to pay %{amount} %{times} times this period',
     'not_or_not_yet'                            => 'Not (yet)',
     'visit_bill'                                => 'Visit bill ":name" at Firefly III',
     'match_between_amounts'                     => 'Bill matches transactions between :low and :high.',
@@ -1719,6 +1732,7 @@ return [
     'bill_edit_rules'                           => 'Firefly III will attempt to edit the rule related to this bill as well. If you\'ve edited this rule yourself however, Firefly III won\'t change anything.|Firefly III will attempt to edit the :count rules related to this bill as well. If you\'ve edited these rules yourself however, Firefly III won\'t change anything.',
     'bill_expected_date'                        => 'Expected :date',
     'bill_expected_date_js'                     => 'Expected {date}',
+    'expected_amount'                           => '(Expected) amount',
     'bill_paid_on'                              => 'Paid on {date}',
     'bill_repeats_weekly'                       => 'Repeats weekly',
     'bill_repeats_monthly'                      => 'Repeats monthly',
@@ -1881,6 +1895,7 @@ return [
     // Ignore this comment
 
     // transactions:
+    'unreconcile'                               => 'Undo reconciliation',
     'update_withdrawal'                         => 'Update withdrawal',
     'update_deposit'                            => 'Update deposit',
     'update_transaction'                        => 'Update transaction',
@@ -1899,6 +1914,7 @@ return [
     'deleted_transfer'                          => 'Successfully deleted transfer ":description"',
     'deleted_reconciliation'                    => 'Successfully deleted reconciliation transaction ":description"',
     'stored_journal'                            => 'Successfully created new transaction ":description"',
+    'stored_journal_js'                         => 'Successfully created new transaction "%{description}"',
     'stored_journal_no_descr'                   => 'Successfully created your new transaction',
     'updated_journal_no_descr'                  => 'Successfully updated your transaction',
     'select_transactions'                       => 'Select transactions',
@@ -2044,6 +2060,9 @@ return [
     'Expense account'                           => 'Expense account',
     'Revenue account'                           => 'Revenue account',
     'Initial balance account'                   => 'Initial balance account',
+    'account_type_Asset account'                => 'Asset account',
+    'account_type_Expense account'              => 'Expense account',
+    'account_type_Revenue account'              => 'Revenue account',
     'account_type_Debt'                         => 'Debt',
     'account_type_Loan'                         => 'Loan',
     'account_type_Mortgage'                     => 'Mortgage',
@@ -2364,14 +2383,12 @@ return [
     'save_notification_settings'               => 'Save settings',
     'notification_settings_saved'              => 'The notification settings have been saved',
 
-
     'split_transaction_title'               => 'Description of the split transaction',
     'split_transaction_title_help'          => 'If you create a split transaction, there must be a global description for all splits of the transaction.',
     'split_title_help'                      => 'If you create a split transaction, there must be a global description for all splits of the transaction.',
     'you_create_transfer'                   => 'You\'re creating a transfer.',
     'you_create_withdrawal'                 => 'You\'re creating a withdrawal.',
     'you_create_deposit'                    => 'You\'re creating a deposit.',
-
 
     // links
     'journal_link_configuration'            => 'Transaction links configuration',
@@ -2643,7 +2660,6 @@ return [
     // dashboard
     'enable_auto_convert'                => 'Enable currency conversion',
     'disable_auto_convert'               => 'Disable currency conversion',
-
 ];
 
 // Ignore this comment

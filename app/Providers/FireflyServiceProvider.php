@@ -47,6 +47,8 @@ use FireflyIII\Repositories\TransactionType\TransactionTypeRepository;
 use FireflyIII\Repositories\TransactionType\TransactionTypeRepositoryInterface;
 use FireflyIII\Repositories\User\UserRepository;
 use FireflyIII\Repositories\User\UserRepositoryInterface;
+use FireflyIII\Repositories\UserGroup\UserGroupRepository;
+use FireflyIII\Repositories\UserGroup\UserGroupRepositoryInterface;
 use FireflyIII\Repositories\Webhook\WebhookRepository;
 use FireflyIII\Repositories\Webhook\WebhookRepositoryInterface;
 use FireflyIII\Services\FireflyIIIOrg\Update\UpdateRequest;
@@ -70,13 +72,11 @@ use FireflyIII\TransactionRules\Engine\SearchRuleEngine;
 use FireflyIII\Validation\FireflyValidator;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
-use Validator;
 
 /**
- *
  * Class FireflyServiceProvider.
  *
- *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class FireflyServiceProvider extends ServiceProvider
 {
@@ -85,7 +85,7 @@ class FireflyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Validator::resolver(
+        \Validator::resolver(
             static function ($translator, $data, $rules, $messages) {
                 return new FireflyValidator($translator, $data, $rules, $messages);
             }
@@ -95,6 +95,7 @@ class FireflyServiceProvider extends ServiceProvider
     /**
      * Register stuff.
      *
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function register(): void
     {
@@ -209,6 +210,19 @@ class FireflyServiceProvider extends ServiceProvider
                 }
 
                 return $engine;
+            }
+        );
+
+        $this->app->bind(
+            UserGroupRepositoryInterface::class,
+            static function (Application $app) {
+                /** @var UserGroupRepository $repository */
+                $repository = app(UserGroupRepository::class);
+                if ($app->auth->check()) { // @phpstan-ignore-line (phpstan does not understand the reference to auth)
+                    $repository->setUser(auth()->user());
+                }
+
+                return $repository;
             }
         );
 

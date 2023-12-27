@@ -36,8 +36,6 @@ class EditController extends Controller
 {
     /**
      * DeleteController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -45,7 +43,7 @@ class EditController extends Controller
 
         // translations:
         $this->middleware(
-            function ($request, $next) {
+            static function ($request, $next) {
                 app('view')->share('mainTitleIcon', 'fa-bolt');
                 app('view')->share('subTitleIcon', 'fa-pencil');
                 app('view')->share('title', (string)trans('firefly.webhooks'));
@@ -58,9 +56,7 @@ class EditController extends Controller
     /**
      * Delete account screen.
      *
-     * @param Webhook $webhook
-     *
-     * @return Factory|Application|View
+     * @return Application|Factory|View
      */
     public function index(Webhook $webhook)
     {

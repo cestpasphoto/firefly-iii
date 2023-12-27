@@ -26,7 +26,7 @@ namespace FireflyIII\Api\V1\Controllers\Autocomplete;
 use FireflyIII\Api\V1\Controllers\Controller;
 use FireflyIII\Api\V1\Requests\Autocomplete\AutocompleteRequest;
 use FireflyIII\Models\TransactionCurrency;
-use FireflyIII\Repositories\Currency\CurrencyRepositoryInterface;
+use FireflyIII\Repositories\UserGroups\Currency\CurrencyRepositoryInterface;
 use FireflyIII\User;
 use Illuminate\Http\JsonResponse;
 
@@ -58,21 +58,17 @@ class CurrencyController extends Controller
     /**
      * Documentation for this endpoint is at:
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/autocomplete/getCurrenciesAC
-     *
-     * @param AutocompleteRequest $request
-     *
-     * @return JsonResponse
      */
     public function currencies(AutocompleteRequest $request): JsonResponse
     {
         $data       = $request->getData();
-        $collection = $this->repository->searchCurrency($data['query'], $data['limit']);
+        $collection = $this->repository->searchCurrency($data['query'], $this->parameters->get('limit'));
         $result     = [];
 
         /** @var TransactionCurrency $currency */
         foreach ($collection as $currency) {
             $result[] = [
-                'id'             => (string)$currency->id,
+                'id'             => (string) $currency->id,
                 'name'           => $currency->name,
                 'code'           => $currency->code,
                 'symbol'         => $currency->symbol,
@@ -87,21 +83,18 @@ class CurrencyController extends Controller
      * Documentation for this endpoint is at:
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/autocomplete/getCurrenciesCodeAC
      *
-     * @param AutocompleteRequest $request
-     *
-     * @return JsonResponse
      * @deprecated
      */
     public function currenciesWithCode(AutocompleteRequest $request): JsonResponse
     {
         $data       = $request->getData();
-        $collection = $this->repository->searchCurrency($data['query'], $data['limit']);
+        $collection = $this->repository->searchCurrency($data['query'], $this->parameters->get('limit'));
         $result     = [];
 
         /** @var TransactionCurrency $currency */
         foreach ($collection as $currency) {
             $result[] = [
-                'id'             => (string)$currency->id,
+                'id'             => (string) $currency->id,
                 'name'           => sprintf('%s (%s)', $currency->name, $currency->code),
                 'code'           => $currency->code,
                 'symbol'         => $currency->symbol,

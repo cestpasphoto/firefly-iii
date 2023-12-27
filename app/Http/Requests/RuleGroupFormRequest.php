@@ -34,13 +34,11 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class RuleGroupFormRequest extends FormRequest
 {
-    use ConvertsDataTypes;
     use ChecksLogin;
+    use ConvertsDataTypes;
 
     /**
      * Get all data for controller.
-     *
-     * @return array
      */
     public function getRuleGroupData(): array
     {
@@ -58,18 +56,16 @@ class RuleGroupFormRequest extends FormRequest
 
     /**
      * Rules for this request.
-     *
-     * @return array
      */
     public function rules(): array
     {
         $titleRule = 'required|between:1,100|uniqueObjectForUser:rule_groups,title';
 
-        /** @var RuleGroup $ruleGroup */
+        /** @var null|RuleGroup $ruleGroup */
         $ruleGroup = $this->route()->parameter('ruleGroup');
 
         if (null !== $ruleGroup) {
-            $titleRule = 'required|between:1,100|uniqueObjectForUser:rule_groups,title,' . $ruleGroup->id;
+            $titleRule = 'required|between:1,100|uniqueObjectForUser:rule_groups,title,'.$ruleGroup->id;
         }
 
         return [

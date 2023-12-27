@@ -25,8 +25,8 @@ namespace FireflyIII\Providers;
 
 use FireflyIII\Repositories\Bill\BillRepository;
 use FireflyIII\Repositories\Bill\BillRepositoryInterface;
-use FireflyIII\Repositories\Administration\Bill\BillRepository as AdminBillRepository;
-use FireflyIII\Repositories\Administration\Bill\BillRepositoryInterface as AdminBillRepositoryInterface;
+use FireflyIII\Repositories\UserGroups\Bill\BillRepository as AdminBillRepository;
+use FireflyIII\Repositories\UserGroups\Bill\BillRepositoryInterface as AdminBillRepositoryInterface;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
@@ -38,9 +38,7 @@ class BillServiceProvider extends ServiceProvider
     /**
      * Bootstrap the application services.
      */
-    public function boot(): void
-    {
-    }
+    public function boot(): void {}
 
     /**
      * Register the application services.
@@ -49,7 +47,7 @@ class BillServiceProvider extends ServiceProvider
     {
         $this->app->bind(
             BillRepositoryInterface::class,
-            function (Application $app) {
+            static function (Application $app) {
                 /** @var BillRepositoryInterface $repository */
                 $repository = app(BillRepository::class);
 
@@ -65,7 +63,7 @@ class BillServiceProvider extends ServiceProvider
         // administration variant
         $this->app->bind(
             AdminBillRepositoryInterface::class,
-            function (Application $app) {
+            static function (Application $app) {
                 /** @var AdminBillRepositoryInterface $repository */
                 $repository = app(AdminBillRepository::class);
 

@@ -29,19 +29,20 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
-use Route;
 
 /**
  * Class Controller.
  *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
 abstract class Controller extends BaseController
 {
     use AuthorizesRequests;
     use DispatchesJobs;
-    use ValidatesRequests;
     use RequestInformation;
     use UserNavigation;
+    use ValidatesRequests;
 
     protected string $dateTimeFormat;
     protected string $monthAndDayFormat;
@@ -50,14 +51,12 @@ abstract class Controller extends BaseController
 
     /**
      * Controller constructor.
-     *
-
      */
     public function __construct()
     {
         // is site a demo site?
         $isDemoSiteConfig = app('fireflyconfig')->get('is_demo_site', config('firefly.configuration.is_demo_site', false));
-        $isDemoSite       = $isDemoSiteConfig ? $isDemoSiteConfig->data : false;
+        $isDemoSite       = (bool)$isDemoSiteConfig->data;
         app('view')->share('IS_DEMO_SITE', $isDemoSite);
         app('view')->share('DEMO_USERNAME', config('firefly.demo_username'));
         app('view')->share('DEMO_PASSWORD', config('firefly.demo_password'));
@@ -74,8 +73,8 @@ abstract class Controller extends BaseController
         app('view')->share('logoutUrl', $logoutUrl);
 
         // upload size
-        $maxFileSize = app('steam')->phpBytes(ini_get('upload_max_filesize'));
-        $maxPostSize = app('steam')->phpBytes(ini_get('post_max_size'));
+        $maxFileSize = app('steam')->phpBytes((string)ini_get('upload_max_filesize'));
+        $maxPostSize = app('steam')->phpBytes((string)ini_get('post_max_size'));
         $uploadSize  = min($maxFileSize, $maxPostSize);
         app('view')->share('uploadSize', $uploadSize);
 
@@ -112,7 +111,7 @@ abstract class Controller extends BaseController
                     app('view')->share('locale', $locale);
                     app('view')->share('shownDemo', $shownDemo);
                     app('view')->share('current_route_name', $page);
-                    app('view')->share('original_route_name', Route::currentRouteName());
+                    app('view')->share('original_route_name', \Route::currentRouteName());
                 }
                 app('view')->share('darkMode', $darkMode);
 

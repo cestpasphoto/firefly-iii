@@ -1,6 +1,5 @@
 <?php
 
-
 /*
  * ShowController.php
  * Copyright (c) 2023 james@firefly-iii.org
@@ -33,14 +32,12 @@ use Illuminate\Http\JsonResponse;
 
 /**
  * Class ShowController
+ * TODO lots of deprecated code here.
  */
 class ShowController extends Controller
 {
     private BudgetRepositoryInterface $repository;
 
-    /**
-     *
-     */
     public function __construct()
     {
         parent::__construct();
@@ -54,32 +51,29 @@ class ShowController extends Controller
     }
 
     /**
+     * 2023-10-29 removed the cerSum reference, not sure where this is used atm
+     * so removed from api.php. Also applies to "spent" method.
+     *
      * This endpoint is documented at:
      * TODO add URL
-     *
      */
     public function budgeted(DateRequest $request, Budget $budget): JsonResponse
     {
-        die('deprecated use of thing.');
-        $data      = $request->getAll();
-        $result    = $this->repository->budgetedInPeriodForBudget($budget, $data['start'], $data['end']);
-        $converted = $this->cerSum(array_values($result));
+        $data   = $request->getAll();
+        $result = $this->repository->budgetedInPeriodForBudget($budget, $data['start'], $data['end']);
 
-        return response()->json($converted);
+        return response()->json($result);
     }
 
     /**
      * This endpoint is documented at:
      * TODO add URL
-     *
      */
     public function spent(DateRequest $request, Budget $budget): JsonResponse
     {
-        die('deprecated use of thing.');
-        $data      = $request->getAll();
-        $result    = $this->repository->spentInPeriodForBudget($budget, $data['start'], $data['end']);
-        $converted = $this->cerSum(array_values($result));
+        $data   = $request->getAll();
+        $result = $this->repository->spentInPeriodForBudget($budget, $data['start'], $data['end']);
 
-        return response()->json($converted);
+        return response()->json($result);
     }
 }

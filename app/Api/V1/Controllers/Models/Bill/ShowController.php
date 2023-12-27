@@ -43,8 +43,6 @@ class ShowController extends Controller
 
     /**
      * BillController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -65,7 +63,6 @@ class ShowController extends Controller
      *
      * Display a listing of the resource.
      *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function index(): JsonResponse
@@ -73,7 +70,7 @@ class ShowController extends Controller
         $this->repository->correctOrder();
         $bills     = $this->repository->getBills();
         $manager   = $this->getManager();
-        $pageSize  = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize  = $this->parameters->get('limit');
         $count     = $bills->count();
         $bills     = $bills->slice(($this->parameters->get('page') - 1) * $pageSize, $pageSize);
         $paginator = new LengthAwarePaginator($bills, $count, $pageSize, $this->parameters->get('page'));
@@ -93,14 +90,11 @@ class ShowController extends Controller
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/bills/getBill
      *
      * Show the specified bill.
-     *
-     * @param Bill $bill
-     *
-     * @return JsonResponse
      */
     public function show(Bill $bill): JsonResponse
     {
         $manager = $this->getManager();
+
         /** @var BillTransformer $transformer */
         $transformer = app(BillTransformer::class);
         $transformer->setParameters($this->parameters);

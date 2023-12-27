@@ -39,22 +39,17 @@ use FireflyIII\Repositories\Journal\JournalAPIRepositoryInterface;
 use FireflyIII\Repositories\Journal\JournalRepositoryInterface;
 use FireflyIII\Repositories\PiggyBank\PiggyBankRepositoryInterface;
 use FireflyIII\Repositories\Tag\TagRepositoryInterface;
-use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 /**
  * Class IsValidAttachmentModel
  */
-class IsValidAttachmentModel implements Rule
+class IsValidAttachmentModel implements ValidationRule
 {
-    /** @var string */
-    private $model;
+    private string $model;
 
     /**
      * IsValidAttachmentModel constructor.
-     *
-     *
-     * @param string $model
      */
     public function __construct(string $model)
     {
@@ -63,10 +58,32 @@ class IsValidAttachmentModel implements Rule
     }
 
     /**
-     * @param string $model
-     *
-     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
+    public function validate(string $attribute, mixed $value, \Closure $fail): void
+    {
+        if (!auth()->check()) {
+            $fail('validation.model_id_invalid')->translate();
+
+            return;
+        }
+        $result = match ($this->model) {
+            Account::class            => $this->validateAccount((int)$value),
+            Bill::class               => $this->validateBill((int)$value),
+            Budget::class             => $this->validateBudget((int)$value),
+            Category::class           => $this->validateCategory((int)$value),
+            PiggyBank::class          => $this->validatePiggyBank((int)$value),
+            Tag::class                => $this->validateTag((int)$value),
+            Transaction::class        => $this->validateTransaction((int)$value),
+            TransactionJournal::class => $this->validateJournal((int)$value),
+            default                   => false,
+        };
+
+        if (false === $result) {
+            $fail('validation.model_id_invalid')->translate();
+        }
+    }
+
     private function normalizeModel(string $model): string
     {
         $search  = ['FireflyIII\Models\\'];
@@ -76,54 +93,6 @@ class IsValidAttachmentModel implements Rule
         return sprintf('FireflyIII\Models\%s', $model);
     }
 
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
-    public function message(): string
-    {
-        return (string)trans('validation.model_id_invalid');
-    }
-
-    /**
-     * Determine if the validation rule passes.
-     *
-     * @param string $attribute
-     * @param mixed  $value
-     *
-     * @return bool
-     */
-    public function passes($attribute, $value): bool
-    {
-        if (!auth()->check()) {
-            return false;
-        }
-        $methods = [
-            Account::class            => 'validateAccount',
-            Bill::class               => 'validateBill',
-            Budget::class             => 'validateBudget',
-            Category::class           => 'validateCategory',
-            PiggyBank::class          => 'validatePiggyBank',
-            Tag::class                => 'validateTag',
-            Transaction::class        => 'validateTransaction',
-            TransactionJournal::class => 'validateJournal',
-        ];
-        if (!array_key_exists($this->model, $methods)) {
-            Log::error(sprintf('Cannot validate model "%s" in %s.', substr($this->model, 0, 20), __METHOD__));
-
-            return false;
-        }
-        $method = $methods[$this->model];
-
-        return $this->$method((int)$value);
-    }
-
-    /**
-     * @param int $value
-     *
-     * @return bool
-     */
     private function validateAccount(int $value): bool
     {
         /** @var AccountRepositoryInterface $repository */
@@ -133,11 +102,6 @@ class IsValidAttachmentModel implements Rule
         return null !== $repository->find($value);
     }
 
-    /**
-     * @param int $value
-     *
-     * @return bool
-     */
     private function validateBill(int $value): bool
     {
         /** @var BillRepositoryInterface $repository */
@@ -147,11 +111,6 @@ class IsValidAttachmentModel implements Rule
         return null !== $repository->find($value);
     }
 
-    /**
-     * @param int $value
-     *
-     * @return bool
-     */
     private function validateBudget(int $value): bool
     {
         /** @var BudgetRepositoryInterface $repository */
@@ -161,11 +120,6 @@ class IsValidAttachmentModel implements Rule
         return null !== $repository->find($value);
     }
 
-    /**
-     * @param int $value
-     *
-     * @return bool
-     */
     private function validateCategory(int $value): bool
     {
         /** @var CategoryRepositoryInterface $repository */
@@ -175,24 +129,6 @@ class IsValidAttachmentModel implements Rule
         return null !== $repository->find($value);
     }
 
-    /**
-     * @param int $value
-     *
-     * @return bool
-     */
-    private function validateJournal(int $value): bool
-    {
-        $repository = app(JournalRepositoryInterface::class);
-        $repository->setUser(auth()->user());
-
-        return null !== $repository->find($value);
-    }
-
-    /**
-     * @param int $value
-     *
-     * @return bool
-     */
     private function validatePiggyBank(int $value): bool
     {
         /** @var PiggyBankRepositoryInterface $repository */
@@ -202,11 +138,6 @@ class IsValidAttachmentModel implements Rule
         return null !== $repository->find($value);
     }
 
-    /**
-     * @param int $value
-     *
-     * @return bool
-     */
     private function validateTag(int $value): bool
     {
         /** @var TagRepositoryInterface $repository */
@@ -216,17 +147,20 @@ class IsValidAttachmentModel implements Rule
         return null !== $repository->find($value);
     }
 
-    /**
-     * @param int $value
-     *
-     * @return bool
-     */
     private function validateTransaction(int $value): bool
     {
         /** @var JournalAPIRepositoryInterface $repository */
         $repository = app(JournalAPIRepositoryInterface::class);
         $repository->setUser(auth()->user());
 
-        return null !== $repository->findTransaction((int)$value);
+        return null !== $repository->findTransaction($value);
+    }
+
+    private function validateJournal(int $value): bool
+    {
+        $repository = app(JournalRepositoryInterface::class);
+        $repository->setUser(auth()->user());
+
+        return null !== $repository->find($value);
     }
 }

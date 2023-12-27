@@ -27,7 +27,7 @@ use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Http\Requests\NewUserFormRequest;
 use FireflyIII\Models\AccountType;
 use FireflyIII\Repositories\Account\AccountRepositoryInterface;
-use FireflyIII\Repositories\Currency\CurrencyRepositoryInterface;
+use FireflyIII\Repositories\UserGroups\Currency\CurrencyRepositoryInterface;
 use FireflyIII\Support\Http\Controllers\CreateStuff;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
@@ -41,8 +41,7 @@ class NewUserController extends Controller
 {
     use CreateStuff;
 
-    /** @var AccountRepositoryInterface The account repository */
-    private $repository;
+    private AccountRepositoryInterface $repository;
 
     /**
      * NewUserController constructor.
@@ -63,7 +62,7 @@ class NewUserController extends Controller
     /**
      * Form the user gets when he has no data in the system.
      *
-     * @return RedirectResponse|Redirector|Factory|View
+     * @return Factory|Redirector|RedirectResponse|View
      */
     public function index()
     {
@@ -85,10 +84,8 @@ class NewUserController extends Controller
     /**
      * Store his new settings.
      *
-     * @param NewUserFormRequest          $request
-     * @param CurrencyRepositoryInterface $currencyRepository
+     * @return Redirector|RedirectResponse
      *
-     * @return RedirectResponse|Redirector
      * @throws FireflyException
      */
     public function submit(NewUserFormRequest $request, CurrencyRepositoryInterface $currencyRepository)
@@ -105,7 +102,7 @@ class NewUserController extends Controller
 
         // if is null, set to EUR:
         if (null === $currency) {
-            $currency = $currencyRepository->findByCodeNull('EUR');
+            $currency = $currencyRepository->findByCode('EUR');
         }
         $currencyRepository->enable($currency);
 
@@ -114,7 +111,7 @@ class NewUserController extends Controller
         $this->createCashWalletAccount($currency, $language);        // create cash wallet account
 
         // store currency preference:
-        app('preferences')->set('currencyPreference', $currency->code);
+        $currencyRepository->makeDefault($currency);
 
         // store frontpage preferences:
         $accounts = $this->repository->getAccountsByType([AccountType::ASSET])->pluck('id')->toArray();

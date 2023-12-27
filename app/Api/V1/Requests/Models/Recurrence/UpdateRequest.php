@@ -40,17 +40,15 @@ use Illuminate\Validation\Validator;
  */
 class UpdateRequest extends FormRequest
 {
+    use ChecksLogin;
     use ConvertsDataTypes;
-    use RecurrenceValidation;
-    use TransactionValidation;
     use CurrencyValidation;
     use GetRecurrenceData;
-    use ChecksLogin;
+    use RecurrenceValidation;
+    use TransactionValidation;
 
     /**
      * Get all data from the request.
-     *
-     * @return array
      */
     public function getAll(): array
     {
@@ -73,81 +71,13 @@ class UpdateRequest extends FormRequest
         if (null !== $reps) {
             $return['repetitions'] = $reps;
         }
-        if (null !== $transactions) {
-            $return['transactions'] = $transactions;
-        }
-
-        return $return;
-    }
-
-    /**
-     * Returns the repetition data as it is found in the submitted data.
-     *
-     * @return array|null
-     */
-    private function getRepetitionData(): ?array
-    {
-        $return = [];
-        // repetition data:
-        /** @var array|null $repetitions */
-        $repetitions = $this->get('repetitions');
-        if (null === $repetitions) {
-            return null;
-        }
-        /** @var array $repetition */
-        foreach ($repetitions as $repetition) {
-            $current = [];
-            if (array_key_exists('type', $repetition)) {
-                $current['type'] = $repetition['type'];
-            }
-
-            if (array_key_exists('moment', $repetition)) {
-                $current['moment'] = (string)$repetition['moment'];
-            }
-
-            if (array_key_exists('skip', $repetition)) {
-                $current['skip'] = (int)$repetition['skip'];
-            }
-
-            if (array_key_exists('weekend', $repetition)) {
-                $current['weekend'] = (int)$repetition['weekend'];
-            }
-            $return[] = $current;
-        }
-        if (0 === count($return)) {
-            return null;
-        }
-
-        return $return;
-    }
-
-    /**
-     * Returns the transaction data as it is found in the submitted data. It's a complex method according to code
-     * standards but it just has a lot of ??-statements because of the fields that may or may not exist.
-     *
-     * @return array|null
-     */
-    private function getTransactionData(): ?array
-    {
-        $return = [];
-        // transaction data:
-        /** @var array|null $transactions */
-        $transactions = $this->get('transactions');
-        if (null === $transactions) {
-            return null;
-        }
-        /** @var array $transaction */
-        foreach ($transactions as $transaction) {
-            $return[] = $this->getSingleTransactionData($transaction);
-        }
+        $return['transactions'] = $transactions;
 
         return $return;
     }
 
     /**
      * The rules that the incoming request must be matched against.
-     *
-     * @return array
      */
     public function rules(): array
     {
@@ -188,24 +118,18 @@ class UpdateRequest extends FormRequest
             'transactions.*.piggy_bank_id'         => ['nullable', 'numeric', 'mustExist:piggy_banks,id', new BelongsUser()],
             'transactions.*.piggy_bank_name'       => ['between:1,255', 'nullable', new BelongsUser()],
             'transactions.*.tags'                  => 'nullable|between:1,64000',
-
         ];
     }
 
     /**
      * Configure the validator instance.
-     *
-     * @param Validator $validator
-     *
-     * @return void
      */
     public function withValidator(Validator $validator): void
     {
         $validator->after(
-            function (Validator $validator) {
-                //$this->validateOneRecurrenceTransaction($validator);
-                //$this->validateOneRepetitionUpdate($validator);
-
+            function (Validator $validator): void {
+                // $this->validateOneRecurrenceTransaction($validator);
+                // $this->validateOneRepetitionUpdate($validator);
 
                 /** @var Recurrence $recurrence */
                 $recurrence = $this->route()->parameter('recurrence');
@@ -218,4 +142,67 @@ class UpdateRequest extends FormRequest
         );
     }
 
+    /**
+     * Returns the repetition data as it is found in the submitted data.
+     */
+    private function getRepetitionData(): ?array
+    {
+        $return = [];
+
+        // repetition data:
+        /** @var null|array $repetitions */
+        $repetitions = $this->get('repetitions');
+        if (null === $repetitions) {
+            return null;
+        }
+
+        /** @var array $repetition */
+        foreach ($repetitions as $repetition) {
+            $current = [];
+            if (array_key_exists('type', $repetition)) {
+                $current['type'] = $repetition['type'];
+            }
+
+            if (array_key_exists('moment', $repetition)) {
+                $current['moment'] = (string)$repetition['moment'];
+            }
+
+            if (array_key_exists('skip', $repetition)) {
+                $current['skip'] = (int)$repetition['skip'];
+            }
+
+            if (array_key_exists('weekend', $repetition)) {
+                $current['weekend'] = (int)$repetition['weekend'];
+            }
+            $return[] = $current;
+        }
+        if (0 === count($return)) {
+            return null;
+        }
+
+        return $return;
+    }
+
+    /**
+     * Returns the transaction data as it is found in the submitted data. It's a complex method according to code
+     * standards but it just has a lot of ??-statements because of the fields that may or may not exist.
+     */
+    private function getTransactionData(): array
+    {
+        $return = [];
+
+        // transaction data:
+        /** @var null|array $transactions */
+        $transactions = $this->get('transactions');
+        if (null === $transactions) {
+            return [];
+        }
+
+        /** @var array $transaction */
+        foreach ($transactions as $transaction) {
+            $return[] = $this->getSingleTransactionData($transaction);
+        }
+
+        return $return;
+    }
 }

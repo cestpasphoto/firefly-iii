@@ -30,14 +30,11 @@ use FireflyIII\Api\V1\Requests\Data\DateRequest;
 use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Models\Account;
 use FireflyIII\Models\AccountType;
+use FireflyIII\Models\Preference;
 use FireflyIII\Repositories\Account\AccountRepositoryInterface;
-use FireflyIII\Repositories\Currency\CurrencyRepositoryInterface;
 use FireflyIII\Support\Http\Api\ApiSupport;
 use FireflyIII\User;
 use Illuminate\Http\JsonResponse;
-use JsonException;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class AccountController
@@ -46,13 +43,10 @@ class AccountController extends Controller
 {
     use ApiSupport;
 
-    private CurrencyRepositoryInterface $currencyRepository;
-    private AccountRepositoryInterface  $repository;
+    private AccountRepositoryInterface $repository;
 
     /**
      * AccountController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -64,9 +58,6 @@ class AccountController extends Controller
                 $this->repository = app(AccountRepositoryInterface::class);
                 $this->repository->setUser($user);
 
-                $this->currencyRepository = app(CurrencyRepositoryInterface::class);
-                $this->currencyRepository->setUser($user);
-
                 return $next($request);
             }
         );
@@ -76,37 +67,35 @@ class AccountController extends Controller
      * This endpoint is documented at:
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/charts/getChartAccountOverview
      *
-     * @param DateRequest $request
-     *
-     * @return JsonResponse
      * @throws FireflyException
-     * @throws JsonException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function overview(DateRequest $request): JsonResponse
     {
         // parameters for chart:
         $dates = $request->getAll();
+
         /** @var Carbon $start */
         $start = $dates['start'];
+
         /** @var Carbon $end */
         $end = $dates['end'];
 
         // user's preferences
         $defaultSet = $this->repository->getAccountsByType([AccountType::ASSET])->pluck('id')->toArray();
-        $frontPage  = app('preferences')->get('frontPageAccounts', $defaultSet);
-        $default    = app('amount')->getDefaultCurrency();
+
+        /** @var Preference $frontPage */
+        $frontPage = app('preferences')->get('frontPageAccounts', $defaultSet);
+        $default   = app('amount')->getDefaultCurrency();
 
         if (!(is_array($frontPage->data) && count($frontPage->data) > 0)) {
             $frontPage->data = $defaultSet;
             $frontPage->save();
         }
 
-
         // get accounts:
         $accounts  = $this->repository->getAccountsById($frontPage->data);
         $chartData = [];
+
         /** @var Account $account */
         foreach ($accounts as $account) {
             $currency = $this->repository->getAccountCurrency($account);
@@ -115,7 +104,7 @@ class AccountController extends Controller
             }
             $currentSet = [
                 'label'                   => $account->name,
-                'currency_id'             => (string)$currency->id,
+                'currency_id'             => (string) $currency->id,
                 'currency_code'           => $currency->code,
                 'currency_symbol'         => $currency->symbol,
                 'currency_decimal_places' => $currency->decimal_places,

@@ -32,8 +32,6 @@ use FireflyIII\Support\Http\Controllers\PeriodOverview;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class IndexController
@@ -46,8 +44,6 @@ class IndexController extends Controller
 
     /**
      * IndexController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -69,15 +65,9 @@ class IndexController extends Controller
     /**
      * Index for a range of transactions.
      *
-     * @param Request     $request
-     * @param string      $objectType
-     * @param Carbon|null $start
-     * @param Carbon|null $end
-     *
      * @return Factory|View
+     *
      * @throws FireflyException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function index(Request $request, string $objectType, Carbon $start = null, Carbon $end = null)
     {
@@ -85,8 +75,8 @@ class IndexController extends Controller
             $objectType = 'transfer';
         }
 
-        $subTitleIcon = config('firefly.transactionIconsByType.' . $objectType);
-        $types        = config('firefly.transactionTypesByType.' . $objectType);
+        $subTitleIcon = config('firefly.transactionIconsByType.'.$objectType);
+        $types        = config('firefly.transactionTypesByType.'.$objectType);
         $page         = (int)$request->get('page');
         $pageSize     = (int)app('preferences')->get('listPageSize', 50)->data;
         if (null === $start) {
@@ -96,7 +86,7 @@ class IndexController extends Controller
         if (null === $end) {
             // get last transaction ever?
             $last = $this->repository->getLast();
-            $end  = $last ? $last->date : session('end');
+            $end  = null !== $last ? $last->date : session('end');
         }
 
         [$start, $end] = $end < $start ? [$end, $start] : [$start, $end];
@@ -114,13 +104,14 @@ class IndexController extends Controller
         $collector = app(GroupCollectorInterface::class);
 
         $collector->setRange($start, $end)
-                  ->setTypes($types)
-                  ->setLimit($pageSize)
-                  ->setPage($page)
-                  ->withBudgetInformation()
-                  ->withCategoryInformation()
-                  ->withAccountInformation()
-                  ->withAttachmentInformation();
+            ->setTypes($types)
+            ->setLimit($pageSize)
+            ->setPage($page)
+            ->withBudgetInformation()
+            ->withCategoryInformation()
+            ->withAccountInformation()
+            ->withAttachmentInformation()
+        ;
         $groups = $collector->getPaginatedGroups();
         $groups->setPath($path);
 
@@ -130,37 +121,33 @@ class IndexController extends Controller
     /**
      * Index for ALL transactions.
      *
-     * @param Request $request
-     * @param string  $objectType
-     *
      * @return Factory|View
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function indexAll(Request $request, string $objectType)
     {
-        $subTitleIcon = config('firefly.transactionIconsByType.' . $objectType);
-        $types        = config('firefly.transactionTypesByType.' . $objectType);
+        $subTitleIcon = config('firefly.transactionIconsByType.'.$objectType);
+        $types        = config('firefly.transactionTypesByType.'.$objectType);
         $page         = (int)$request->get('page');
         $pageSize     = (int)app('preferences')->get('listPageSize', 50)->data;
         $path         = route('transactions.index.all', [$objectType]);
         $first        = $this->repository->firstNull();
         $start        = null === $first ? new Carbon() : $first->date;
         $last         = $this->repository->getLast();
-        $end          = $last ? $last->date : today(config('app.timezone'));
-        $subTitle     = (string)trans('firefly.all_' . $objectType);
+        $end          = null !== $last ? $last->date : today(config('app.timezone'));
+        $subTitle     = (string)trans('firefly.all_'.$objectType);
 
         /** @var GroupCollectorInterface $collector */
         $collector = app(GroupCollectorInterface::class);
 
         $collector->setRange($start, $end)
-                  ->setTypes($types)
-                  ->setLimit($pageSize)
-                  ->setPage($page)
-                  ->withAccountInformation()
-                  ->withBudgetInformation()
-                  ->withCategoryInformation()
-                  ->withAttachmentInformation();
+            ->setTypes($types)
+            ->setLimit($pageSize)
+            ->setPage($page)
+            ->withAccountInformation()
+            ->withBudgetInformation()
+            ->withCategoryInformation()
+            ->withAttachmentInformation()
+        ;
         $groups = $collector->getPaginatedGroups();
         $groups->setPath($path);
 

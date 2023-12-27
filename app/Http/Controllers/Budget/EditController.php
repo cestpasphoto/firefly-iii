@@ -35,7 +35,6 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
- *
  * Class EditController
  */
 class EditController extends Controller
@@ -45,8 +44,6 @@ class EditController extends Controller
 
     /**
      * EditController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -66,9 +63,6 @@ class EditController extends Controller
 
     /**
      * Budget edit form.
-     *
-     * @param Request $request
-     * @param Budget  $budget
      *
      * @return Factory|View
      */
@@ -100,8 +94,12 @@ class EditController extends Controller
             'active'                  => $hasOldInput ? (bool)$request->old('active') : $budget->active,
             'auto_budget_currency_id' => $hasOldInput ? (int)$request->old('auto_budget_currency_id') : $currency->id,
         ];
-        if ($autoBudget) {
-            $amount                          = $hasOldInput ? $request->old('auto_budget_amount') : $autoBudget->amount;
+        if (null !== $autoBudget) {
+            $amount = $hasOldInput ? $request->old('auto_budget_amount') : $autoBudget->amount;
+            if (is_array($amount)) {
+                $amount = '0';
+            }
+            $amount                          = (string)$amount;
             $preFilled['auto_budget_amount'] = app('steam')->bcround($amount, $autoBudget->transactionCurrency->decimal_places);
         }
 
@@ -117,11 +115,6 @@ class EditController extends Controller
 
     /**
      * Budget update routine.
-     *
-     * @param BudgetFormUpdateRequest $request
-     * @param Budget                  $budget
-     *
-     * @return RedirectResponse
      */
     public function update(BudgetFormUpdateRequest $request, Budget $budget): RedirectResponse
     {
@@ -135,6 +128,7 @@ class EditController extends Controller
         $redirect = redirect($this->getPreviousUrl('budgets.edit.url'));
 
         // store new attachment(s):
+        /** @var null|array $files */
         $files = $request->hasFile('attachments') ? $request->file('attachments') : null;
         if (null !== $files && !auth()->user()->hasRole('demo')) {
             $this->attachments->saveAttachmentsForModel($budget, $files);

@@ -37,7 +37,6 @@ use Illuminate\Support\Collection;
  * Separate controller because many helper functions are shared.
  *
  * Class BudgetReportController
- *
  */
 class BudgetReportController extends Controller
 {
@@ -52,8 +51,6 @@ class BudgetReportController extends Controller
 
     /**
      * BudgetReportController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -70,13 +67,6 @@ class BudgetReportController extends Controller
 
     /**
      * Chart that groups the expenses by budget.
-     *
-     * @param Collection $accounts
-     * @param Collection $budgets
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
-     * @return JsonResponse
      */
     public function budgetExpense(Collection $accounts, Collection $budgets, Carbon $start, Carbon $end): JsonResponse
     {
@@ -87,7 +77,7 @@ class BudgetReportController extends Controller
         foreach ($spent as $currency) {
             foreach ($currency['budgets'] as $budget) {
                 $title          = sprintf('%s (%s)', $budget['name'], $currency['currency_name']);
-                $result[$title] = $result[$title] ?? [
+                $result[$title] ??= [
                     'amount'          => '0',
                     'currency_symbol' => $currency['currency_symbol'],
                     'currency_code'   => $currency['currency_code'],
@@ -106,13 +96,6 @@ class BudgetReportController extends Controller
 
     /**
      * Chart that groups the expenses by budget.
-     *
-     * @param Collection $accounts
-     * @param Collection $budgets
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
-     * @return JsonResponse
      */
     public function categoryExpense(Collection $accounts, Collection $budgets, Carbon $start, Carbon $end): JsonResponse
     {
@@ -124,7 +107,7 @@ class BudgetReportController extends Controller
                 foreach ($budget['transaction_journals'] as $journal) {
                     $categoryName   = $journal['category_name'] ?? trans('firefly.no_category');
                     $title          = sprintf('%s (%s)', $categoryName, $currency['currency_name']);
-                    $result[$title] = $result[$title] ?? [
+                    $result[$title] ??= [
                         'amount'          => '0',
                         'currency_symbol' => $currency['currency_symbol'],
                         'currency_code'   => $currency['currency_code'],
@@ -143,13 +126,6 @@ class BudgetReportController extends Controller
 
     /**
      * Chart that groups expenses by the account.
-     *
-     * @param Collection $accounts
-     * @param Collection $budgets
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
-     * @return JsonResponse
      */
     public function destinationAccountExpense(Collection $accounts, Collection $budgets, Carbon $start, Carbon $end): JsonResponse
     {
@@ -161,7 +137,7 @@ class BudgetReportController extends Controller
             foreach ($currency['budgets'] as $budget) {
                 foreach ($budget['transaction_journals'] as $journal) {
                     $title          = sprintf('%s (%s)', $journal['destination_account_name'], $currency['currency_name']);
-                    $result[$title] = $result[$title] ?? [
+                    $result[$title] ??= [
                         'amount'          => '0',
                         'currency_symbol' => $currency['currency_symbol'],
                         'currency_code'   => $currency['currency_code'],
@@ -180,13 +156,6 @@ class BudgetReportController extends Controller
 
     /**
      * Main overview of a budget in the budget report.
-     *
-     * @param Collection $accounts
-     * @param Budget     $budget
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
-     * @return JsonResponse
      */
     public function mainChart(Collection $accounts, Budget $budget, Carbon $start, Carbon $end): JsonResponse
     {
@@ -198,7 +167,7 @@ class BudgetReportController extends Controller
         foreach ($spent as $currency) {
             // add things to chart Data for each currency:
             $spentKey             = sprintf('%d-spent', $currency['currency_id']);
-            $chartData[$spentKey] = $chartData[$spentKey] ?? [
+            $chartData[$spentKey] ??= [
                 'label'           => sprintf(
                     '%s (%s)',
                     (string)trans('firefly.spent_in_specific_budget', ['budget' => $budget->name]),
@@ -215,7 +184,7 @@ class BudgetReportController extends Controller
                 foreach ($currentBudget['transaction_journals'] as $journal) {
                     $key                                   = $journal['date']->isoFormat($format);
                     $amount                                = app('steam')->positive($journal['amount']);
-                    $chartData[$spentKey]['entries'][$key] = $chartData[$spentKey]['entries'][$key] ?? '0';
+                    $chartData[$spentKey]['entries'][$key] ??= '0';
                     $chartData[$spentKey]['entries'][$key] = bcadd($chartData[$spentKey]['entries'][$key], $amount);
                 }
             }
@@ -227,11 +196,35 @@ class BudgetReportController extends Controller
     }
 
     /**
-     * @param Carbon $start
-     * @param Carbon $end
-     *
-     * @return array
+     * Chart that groups expenses by the account.
      */
+    public function sourceAccountExpense(Collection $accounts, Collection $budgets, Carbon $start, Carbon $end): JsonResponse
+    {
+        $result = [];
+        $spent  = $this->opsRepository->listExpenses($start, $end, $accounts, $budgets);
+
+        // loop expenses.
+        foreach ($spent as $currency) {
+            foreach ($currency['budgets'] as $budget) {
+                foreach ($budget['transaction_journals'] as $journal) {
+                    $title          = sprintf('%s (%s)', $journal['source_account_name'], $currency['currency_name']);
+                    $result[$title] ??= [
+                        'amount'          => '0',
+                        'currency_symbol' => $currency['currency_symbol'],
+                        'currency_code'   => $currency['currency_code'],
+                    ];
+
+                    $amount                   = app('steam')->positive($journal['amount']);
+                    $result[$title]['amount'] = bcadd($result[$title]['amount'], $amount);
+                }
+            }
+        }
+
+        $data = $this->generator->multiCurrencyPieChart($result);
+
+        return response()->json($data);
+    }
+
     private function makeEntries(Carbon $start, Carbon $end): array
     {
         $return         = [];
@@ -247,42 +240,5 @@ class BudgetReportController extends Controller
         }
 
         return $return;
-    }
-
-    /**
-     * Chart that groups expenses by the account.
-     *
-     * @param Collection $accounts
-     * @param Collection $budgets
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
-     * @return JsonResponse
-     */
-    public function sourceAccountExpense(Collection $accounts, Collection $budgets, Carbon $start, Carbon $end): JsonResponse
-    {
-        $result = [];
-        $spent  = $this->opsRepository->listExpenses($start, $end, $accounts, $budgets);
-
-        // loop expenses.
-        foreach ($spent as $currency) {
-            foreach ($currency['budgets'] as $budget) {
-                foreach ($budget['transaction_journals'] as $journal) {
-                    $title          = sprintf('%s (%s)', $journal['source_account_name'], $currency['currency_name']);
-                    $result[$title] = $result[$title] ?? [
-                        'amount'          => '0',
-                        'currency_symbol' => $currency['currency_symbol'],
-                        'currency_code'   => $currency['currency_code'],
-                    ];
-
-                    $amount                   = app('steam')->positive($journal['amount']);
-                    $result[$title]['amount'] = bcadd($result[$title]['amount'], $amount);
-                }
-            }
-        }
-
-        $data = $this->generator->multiCurrencyPieChart($result);
-
-        return response()->json($data);
     }
 }

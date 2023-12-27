@@ -32,7 +32,7 @@ use FireflyIII\Models\TransactionCurrency;
 use FireflyIII\Repositories\Budget\BudgetLimitRepositoryInterface;
 use FireflyIII\Repositories\Budget\BudgetRepositoryInterface;
 use FireflyIII\Repositories\Budget\OperationsRepositoryInterface;
-use FireflyIII\Repositories\Currency\CurrencyRepositoryInterface;
+use FireflyIII\Repositories\UserGroups\Currency\CurrencyRepositoryInterface;
 use FireflyIII\Support\Http\Controllers\DateCalculation;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
@@ -40,11 +40,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 /**
- *
  * Class BudgetLimitController
  */
 class BudgetLimitController extends Controller
@@ -77,10 +75,6 @@ class BudgetLimitController extends Controller
     }
 
     /**
-     * @param Budget $budget
-     * @param Carbon $start
-     * @param Carbon $end
-     *
      * @return Factory|View
      */
     public function create(Budget $budget, Carbon $start, Carbon $end)
@@ -107,12 +101,9 @@ class BudgetLimitController extends Controller
     }
 
     /**
-     * @param Request     $request
-     * @param BudgetLimit $budgetLimit
-     *
-     * @return RedirectResponse|Redirector
+     * @return Redirector|RedirectResponse
      */
-    public function delete(Request $request, BudgetLimit $budgetLimit)
+    public function delete(BudgetLimit $budgetLimit)
     {
         $this->blRepository->destroyBudgetLimit($budgetLimit);
         session()->flash('success', trans('firefly.deleted_bl'));
@@ -123,22 +114,24 @@ class BudgetLimitController extends Controller
     /**
      * TODO why redirect AND json response?
      *
-     * @param Request $request
-     *
-     * @return RedirectResponse|JsonResponse
      * @throws FireflyException
      */
-    public function store(Request $request): RedirectResponse | JsonResponse
+    public function store(Request $request): JsonResponse|RedirectResponse
     {
-        Log::debug('Going to store new budget-limit.', $request->all());
+        app('log')->debug('Going to store new budget-limit.', $request->all());
         // first search for existing one and update it if necessary.
         $currency = $this->currencyRepos->find((int)$request->get('transaction_currency_id'));
         $budget   = $this->repository->find((int)$request->get('budget_id'));
         if (null === $currency || null === $budget) {
             throw new FireflyException('No valid currency or budget.');
         }
-        $start  = Carbon::createFromFormat('Y-m-d', $request->get('start'));
-        $end    = Carbon::createFromFormat('Y-m-d', $request->get('end'));
+        $start = Carbon::createFromFormat('Y-m-d', $request->get('start'));
+        $end   = Carbon::createFromFormat('Y-m-d', $request->get('end'));
+
+        if (false === $start || false === $end) {
+            return response()->json([]);
+        }
+
         $amount = (string)$request->get('amount');
         $start->startOfDay();
         $end->startOfDay();
@@ -147,7 +140,7 @@ class BudgetLimitController extends Controller
             return response()->json([]);
         }
 
-        Log::debug(sprintf('Start: %s, end: %s', $start->format('Y-m-d'), $end->format('Y-m-d')));
+        app('log')->debug(sprintf('Start: %s, end: %s', $start->format('Y-m-d'), $end->format('Y-m-d')));
 
         $limit = $this->blRepository->find($budget, $currency, $start, $end);
 
@@ -156,6 +149,7 @@ class BudgetLimitController extends Controller
             if (null !== $limit) {
                 $this->blRepository->destroyBudgetLimit($limit);
             }
+
             // return empty=ish array:
             return response()->json([]);
         }
@@ -202,12 +196,6 @@ class BudgetLimitController extends Controller
         return redirect(route('budgets.index'));
     }
 
-    /**
-     * @param Request     $request
-     * @param BudgetLimit $budgetLimit
-     *
-     * @return JsonResponse
-     */
     public function update(Request $request, BudgetLimit $budgetLimit): JsonResponse
     {
         $amount = (string)$request->get('amount');
@@ -226,6 +214,7 @@ class BudgetLimitController extends Controller
                 'left_per_day_formatted'  => app('amount')->formatAnything($currency, '0'),
                 'transaction_currency_id' => $currency->id,
             ];
+
             return response()->json($array);
         }
         if ((int)$amount > 268435456) { // 268 million, intentional integer

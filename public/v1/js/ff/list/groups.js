@@ -24,6 +24,7 @@ $(document).ready(function () {
     updateListButtons();
     addSort();
     $('.clone-transaction').click(cloneTransaction);
+    $('.clone-transaction-and-edit').click(cloneTransactionAndEdit);
 });
 
 var fixHelper = function (e, tr) {
@@ -163,22 +164,22 @@ function getBaseUrl() {
  */
 function goToMassEdit() {
     var baseHref = getBaseUrl();
-    console.log('Mass edit URL is ' + baseHref + mass_edit_url + '/' + getCheckboxes());
-    window.location.href = baseHref + mass_edit_url + '/' + getCheckboxes();
+    console.log('Mass edit URL is ' + mass_edit_url + '/' + getCheckboxes());
+    window.location.href = mass_edit_url + '/' + getCheckboxes();
     return false;
 }
 
 function goToBulkEdit() {
     var baseHref = getBaseUrl();
-    console.log('Bulk edit URL is ' + baseHref + bulk_edit_url + '/' + getCheckboxes());
-    window.location.href = baseHref + bulk_edit_url + '/' + getCheckboxes();
+    console.log('Bulk edit URL is ' + bulk_edit_url + '/' + getCheckboxes());
+    window.location.href = bulk_edit_url + '/' + getCheckboxes();
     return false;
 }
 
 function goToMassDelete() {
     var baseHref = getBaseUrl();
-    console.log('Mass delete URL is ' + baseHref + mass_delete_url + '/' + getCheckboxes());
-    window.location.href = baseHref + mass_delete_url + '/' + getCheckboxes();
+    console.log('Mass delete URL is ' + mass_delete_url + '/' + getCheckboxes());
+    window.location.href = mass_delete_url + '/' + getCheckboxes();
     return false;
 }
 
@@ -233,6 +234,21 @@ function cloneTransaction(e) {
 
     $.post(cloneGroupUrl, {
         _token: token,
+        id: groupId
+    }).done(function (data) {
+        // lame but it works
+        location.href = data.redirect;
+    }).fail(function () {
+        console.error('I failed :(');
+    });
+    return false;
+}
+
+function cloneTransactionAndEdit(e) {
+    var button = $(e.currentTarget);
+    var groupId = parseInt(button.data('id'));
+
+    $.post(cloneAndEditUrl, {
         id: groupId
     }).done(function (data) {
         // lame but it works

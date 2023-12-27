@@ -24,7 +24,6 @@ declare(strict_types=1);
 
 namespace FireflyIII\Validation;
 
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Validator;
 
 /**
@@ -34,19 +33,17 @@ use Illuminate\Validation\Validator;
  */
 trait CurrencyValidation
 {
-    public const TEST = 'Test';
+    public const string TEST = 'Test';
 
     /**
      * If the transactions contain foreign amounts, there must also be foreign currency information.
-     *
-     * @param Validator $validator
      */
     protected function validateForeignCurrencyInformation(Validator $validator): void
     {
         if ($validator->errors()->count() > 0) {
             return;
         }
-        Log::debug('Now in validateForeignCurrencyInformation()');
+        app('log')->debug('Now in validateForeignCurrencyInformation()');
         $transactions = $this->getTransactionsArray($validator);
 
         foreach ($transactions as $index => $transaction) {
@@ -63,7 +60,7 @@ trait CurrencyValidation
                 && 0 !== bccomp('0', $transaction['foreign_amount'])
             ) {
                 $validator->errors()->add(
-                    'transactions.' . $index . '.foreign_amount',
+                    'transactions.'.$index.'.foreign_amount',
                     (string)trans('validation.require_currency_info')
                 );
             }
@@ -74,17 +71,12 @@ trait CurrencyValidation
                     $transaction
                 )) {
                 $validator->errors()->add(
-                    'transactions.' . $index . '.foreign_amount',
+                    'transactions.'.$index.'.foreign_amount',
                     (string)trans('validation.require_currency_amount')
                 );
             }
         }
     }
 
-    /**
-     * @param Validator $validator
-     *
-     * @return array
-     */
     abstract protected function getTransactionsArray(Validator $validator): array;
 }

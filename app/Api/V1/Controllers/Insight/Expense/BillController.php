@@ -60,10 +60,6 @@ class BillController extends Controller
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/insight/insightExpenseBill
      *
      * Expenses per bill, possibly filtered by bill and account.
-     *
-     * @param GenericRequest $request
-     *
-     * @return JsonResponse
      */
     public function bill(GenericRequest $request): JsonResponse
     {
@@ -92,7 +88,7 @@ class BillController extends Controller
             $foreignKey        = sprintf('%d-%d', $billId, $foreignCurrencyId);
 
             if (0 !== $currencyId) {
-                $response[$key]                     = $response[$key] ?? [
+                $response[$key]                     ??= [
                     'id'               => (string)$billId,
                     'name'             => $journal['bill_name'],
                     'difference'       => '0',
@@ -104,7 +100,7 @@ class BillController extends Controller
                 $response[$key]['difference_float'] = (float)$response[$key]['difference']; // intentional float
             }
             if (0 !== $foreignCurrencyId) {
-                $response[$foreignKey]                     = $response[$foreignKey] ?? [
+                $response[$foreignKey]                     ??= [
                     'difference'       => '0',
                     'difference_float' => 0,
                     'currency_id'      => (string)$foreignCurrencyId,
@@ -123,10 +119,6 @@ class BillController extends Controller
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/insight/insightExpenseNoBill
      *
      * Expenses for no bill filtered by account.
-     *
-     * @param GenericRequest $request
-     *
-     * @return JsonResponse
      */
     public function noBill(GenericRequest $request): JsonResponse
     {
@@ -147,7 +139,7 @@ class BillController extends Controller
             $foreignCurrencyId = (int)$journal['foreign_currency_id'];
 
             if (0 !== $currencyId) {
-                $response[$currencyId]                     = $response[$currencyId] ?? [
+                $response[$currencyId]                     ??= [
                     'difference'       => '0',
                     'difference_float' => 0,
                     'currency_id'      => (string)$currencyId,
@@ -157,7 +149,7 @@ class BillController extends Controller
                 $response[$currencyId]['difference_float'] = (float)$response[$currencyId]['difference']; // intentional float
             }
             if (0 !== $foreignCurrencyId) {
-                $response[$foreignCurrencyId]                     = $response[$foreignCurrencyId] ?? [
+                $response[$foreignCurrencyId]                     ??= [
                     'difference'       => '0',
                     'difference_float' => 0,
                     'currency_id'      => (string)$foreignCurrencyId,

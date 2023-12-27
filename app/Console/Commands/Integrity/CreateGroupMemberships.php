@@ -25,6 +25,7 @@ declare(strict_types=1);
 namespace FireflyIII\Console\Commands\Integrity;
 
 use FireflyIII\Console\Commands\ShowsFriendlyMessages;
+use FireflyIII\Enums\UserRoleEnum;
 use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Models\GroupMembership;
 use FireflyIII\Models\UserGroup;
@@ -39,14 +40,13 @@ class CreateGroupMemberships extends Command
 {
     use ShowsFriendlyMessages;
 
-    public const CONFIG_NAME = '560_create_group_memberships';
+    public const string CONFIG_NAME = '560_create_group_memberships';
     protected $description = 'Update group memberships';
     protected $signature   = 'firefly-iii:create-group-memberships';
 
     /**
      * Execute the console command.
      *
-     * @return int
      * @throws FireflyException
      */
     public function handle(): int
@@ -58,22 +58,7 @@ class CreateGroupMemberships extends Command
     }
 
     /**
-     *
-     * @throws FireflyException
-     */
-    private function createGroupMemberships(): void
-    {
-        $users = User::get();
-        /** @var User $user */
-        foreach ($users as $user) {
-            self::createGroupMembership($user);
-        }
-    }
-
-    /**
      * TODO move to helper.
-     *
-     * @param User $user
      *
      * @throws FireflyException
      */
@@ -85,14 +70,15 @@ class CreateGroupMemberships extends Command
             $userGroup = UserGroup::create(['title' => $user->email]);
         }
 
-        $userRole = UserRole::where('title', UserRole::OWNER)->first();
+        $userRole = UserRole::where('title', UserRoleEnum::OWNER->value)->first();
 
         if (null === $userRole) {
             throw new FireflyException('Firefly III could not find a user role. Please make sure all migrations have run.');
         }
         $membership = GroupMembership::where('user_id', $user->id)
-                                     ->where('user_group_id', $userGroup->id)
-                                     ->where('user_role_id', $userRole->id)->first();
+            ->where('user_group_id', $userGroup->id)
+            ->where('user_role_id', $userRole->id)->first()
+        ;
         if (null === $membership) {
             GroupMembership::create(
                 [
@@ -105,6 +91,19 @@ class CreateGroupMemberships extends Command
         if (null === $user->user_group_id) {
             $user->user_group_id = $userGroup->id;
             $user->save();
+        }
+    }
+
+    /**
+     * @throws FireflyException
+     */
+    private function createGroupMemberships(): void
+    {
+        $users = User::get();
+
+        /** @var User $user */
+        foreach ($users as $user) {
+            self::createGroupMembership($user);
         }
     }
 }

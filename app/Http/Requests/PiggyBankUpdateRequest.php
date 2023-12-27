@@ -33,13 +33,11 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class PiggyBankUpdateRequest extends FormRequest
 {
-    use ConvertsDataTypes;
     use ChecksLogin;
+    use ConvertsDataTypes;
 
     /**
      * Returns the data required by the controller.
-     *
-     * @return array
      */
     public function getPiggyBankData(): array
     {
@@ -56,8 +54,6 @@ class PiggyBankUpdateRequest extends FormRequest
 
     /**
      * Rules for this request.
-     *
-     * @return array
      */
     public function rules(): array
     {

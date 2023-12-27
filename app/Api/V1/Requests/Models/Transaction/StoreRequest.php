@@ -35,7 +35,6 @@ use FireflyIII\Validation\CurrencyValidation;
 use FireflyIII\Validation\GroupValidation;
 use FireflyIII\Validation\TransactionValidation;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Validator;
 
 /**
@@ -43,21 +42,19 @@ use Illuminate\Validation\Validator;
  */
 class StoreRequest extends FormRequest
 {
-    use TransactionValidation;
-    use GroupValidation;
-    use CurrencyValidation;
-    use ConvertsDataTypes;
-    use ChecksLogin;
     use AppendsLocationData;
+    use ChecksLogin;
+    use ConvertsDataTypes;
+    use CurrencyValidation;
+    use GroupValidation;
+    use TransactionValidation;
 
     /**
      * Get all data. Is pretty complex because of all the ??-statements.
-     *
-     * @return array
      */
     public function getAll(): array
     {
-        Log::debug('get all data in TransactionStoreRequest');
+        app('log')->debug('get all data in TransactionStoreRequest');
 
         return [
             'group_title'             => $this->convertString('group_title'),
@@ -70,110 +67,12 @@ class StoreRequest extends FormRequest
     }
 
     /**
-     * Get transaction data.
-     *
-     * @return array
-     */
-    private function getTransactionData(): array
-    {
-        $return = [];
-        /**
-         * @var array $transaction
-         */
-        foreach ($this->get('transactions') as $transaction) {
-            $object   = new NullArrayObject($transaction);
-            $return[] = [
-                'type'  => $this->clearString($object['type'], false),
-                'date'  => $this->dateFromValue($object['date']),
-                'order' => $this->integerFromValue((string)$object['order']),
-
-                'currency_id'           => $this->integerFromValue((string)$object['currency_id']),
-                'currency_code'         => $this->clearString((string)$object['currency_code'], false),
-
-                // foreign currency info:
-                'foreign_currency_id'   => $this->integerFromValue((string)$object['foreign_currency_id']),
-                'foreign_currency_code' => $this->clearString((string)$object['foreign_currency_code'], false),
-
-                // amount and foreign amount. Cannot be 0.
-                'amount'                => $this->clearString((string)$object['amount'], false),
-                'foreign_amount'        => $this->clearString((string)$object['foreign_amount'], false),
-
-                // description.
-                'description'           => $this->clearString($object['description'], false),
-
-                // source of transaction. If everything is null, assume cash account.
-                'source_id'             => $this->integerFromValue((string)$object['source_id']),
-                'source_name'           => $this->clearString((string)$object['source_name'], false),
-                'source_iban'           => $this->clearString((string)$object['source_iban'], false),
-                'source_number'         => $this->clearString((string)$object['source_number'], false),
-                'source_bic'            => $this->clearString((string)$object['source_bic'], false),
-
-                // destination of transaction. If everything is null, assume cash account.
-                'destination_id'        => $this->integerFromValue((string)$object['destination_id']),
-                'destination_name'      => $this->clearString((string)$object['destination_name'], false),
-                'destination_iban'      => $this->clearString((string)$object['destination_iban'], false),
-                'destination_number'    => $this->clearString((string)$object['destination_number'], false),
-                'destination_bic'       => $this->clearString((string)$object['destination_bic'], false),
-
-                // budget info
-                'budget_id'             => $this->integerFromValue((string)$object['budget_id']),
-                'budget_name'           => $this->clearString((string)$object['budget_name'], false),
-
-                // category info
-                'category_id'           => $this->integerFromValue((string)$object['category_id']),
-                'category_name'         => $this->clearString((string)$object['category_name'], false),
-
-                // journal bill reference. Optional. Will only work for withdrawals
-                'bill_id'               => $this->integerFromValue((string)$object['bill_id']),
-                'bill_name'             => $this->clearString((string)$object['bill_name'], false),
-
-                // piggy bank reference. Optional. Will only work for transfers
-                'piggy_bank_id'         => $this->integerFromValue((string)$object['piggy_bank_id']),
-                'piggy_bank_name'       => $this->clearString((string)$object['piggy_bank_name'], false),
-
-                // some other interesting properties
-                'reconciled'            => $this->convertBoolean((string)$object['reconciled']),
-                'notes'                 => $this->clearString((string)$object['notes']),
-                'tags'                  => $this->arrayFromValue($object['tags']),
-
-                // all custom fields:
-                'internal_reference'    => $this->clearString((string)$object['internal_reference'], false),
-                'external_id'           => $this->clearString((string)$object['external_id'], false),
-                'original_source'       => sprintf('ff3-v%s|api-v%s', config('firefly.version'), config('firefly.api_version')),
-                'recurrence_id'         => $this->integerFromValue($object['recurrence_id']),
-                'bunq_payment_id'       => $this->clearString((string)$object['bunq_payment_id'], false),
-                'external_url'          => $this->clearString((string)$object['external_url'], false),
-
-                'sepa_cc'       => $this->clearString((string)$object['sepa_cc'], false),
-                'sepa_ct_op'    => $this->clearString((string)$object['sepa_ct_op'], false),
-                'sepa_ct_id'    => $this->clearString((string)$object['sepa_ct_id'], false),
-                'sepa_db'       => $this->clearString((string)$object['sepa_db'], false),
-                'sepa_country'  => $this->clearString((string)$object['sepa_country'], false),
-                'sepa_ep'       => $this->clearString((string)$object['sepa_ep'], false),
-                'sepa_ci'       => $this->clearString((string)$object['sepa_ci'], false),
-                'sepa_batch_id' => $this->clearString((string)$object['sepa_batch_id'], false),
-                // custom date fields. Must be Carbon objects. Presence is optional.
-                'interest_date' => $this->dateFromValue($object['interest_date']),
-                'book_date'     => $this->dateFromValue($object['book_date']),
-                'process_date'  => $this->dateFromValue($object['process_date']),
-                'due_date'      => $this->dateFromValue($object['due_date']),
-                'payment_date'  => $this->dateFromValue($object['payment_date']),
-                'invoice_date'  => $this->dateFromValue($object['invoice_date']),
-
-            ];
-        }
-
-        return $return;
-    }
-
-    /**
      * The rules that the incoming request must be matched against.
-     *
-     * @return array
      */
     public function rules(): array
     {
-        Log::debug('Collect rules of TransactionStoreRequest');
+        app('log')->debug('Collect rules of TransactionStoreRequest');
+        $validProtocols = config('firefly.valid_url_protocols');
 
         return [
             // basic fields for group:
@@ -233,7 +132,7 @@ class StoreRequest extends FormRequest
             'transactions.*.external_id'           => 'min:1|max:255|nullable',
             'transactions.*.recurrence_id'         => 'min:1|max:255|nullable',
             'transactions.*.bunq_payment_id'       => 'min:1|max:255|nullable',
-            'transactions.*.external_url'          => 'min:1|max:255|nullable|url',
+            'transactions.*.external_url'          => sprintf('min:1|max:255|nullable|url:%s', $validProtocols),
 
             // SEPA fields:
             'transactions.*.sepa_cc'               => 'min:1|max:255|nullable',
@@ -257,22 +156,18 @@ class StoreRequest extends FormRequest
 
     /**
      * Configure the validator instance.
-     *
-     * @param Validator $validator
-     *
-     * @return void
      */
     public function withValidator(Validator $validator): void
     {
         $validator->after(
-            function (Validator $validator) {
+            function (Validator $validator): void {
                 // must be valid array.
                 $this->validateTransactionArray($validator);
 
                 // must submit at least one transaction.
-                Log::debug('Now going to validateOneTransaction');
+                app('log')->debug('Now going to validateOneTransaction');
                 $this->validateOneTransaction($validator);
-                Log::debug('Now done with validateOneTransaction');
+                app('log')->debug('Now done with validateOneTransaction');
 
                 // all journals must have a description
                 $this->validateDescriptions($validator);
@@ -293,5 +188,100 @@ class StoreRequest extends FormRequest
                 $this->validateGroupDescription($validator);
             }
         );
+    }
+
+    /**
+     * Get transaction data.
+     */
+    private function getTransactionData(): array
+    {
+        $return = [];
+
+        /**
+         * @var array $transaction
+         */
+        foreach ($this->get('transactions') as $transaction) {
+            $object   = new NullArrayObject($transaction);
+            $return[] = [
+                'type'  => $this->clearString($object['type']),
+                'date'  => $this->dateFromValue($object['date']),
+                'order' => $this->integerFromValue((string)$object['order']),
+
+                'currency_id'           => $this->integerFromValue((string)$object['currency_id']),
+                'currency_code'         => $this->clearString((string)$object['currency_code']),
+
+                // foreign currency info:
+                'foreign_currency_id'   => $this->integerFromValue((string)$object['foreign_currency_id']),
+                'foreign_currency_code' => $this->clearString((string)$object['foreign_currency_code']),
+
+                // amount and foreign amount. Cannot be 0.
+                'amount'                => $this->clearString((string)$object['amount']),
+                'foreign_amount'        => $this->clearString((string)$object['foreign_amount']),
+
+                // description.
+                'description'           => $this->clearString($object['description']),
+
+                // source of transaction. If everything is null, assume cash account.
+                'source_id'             => $this->integerFromValue((string)$object['source_id']),
+                'source_name'           => $this->clearString((string)$object['source_name']),
+                'source_iban'           => $this->clearString((string)$object['source_iban']),
+                'source_number'         => $this->clearString((string)$object['source_number']),
+                'source_bic'            => $this->clearString((string)$object['source_bic']),
+
+                // destination of transaction. If everything is null, assume cash account.
+                'destination_id'        => $this->integerFromValue((string)$object['destination_id']),
+                'destination_name'      => $this->clearString((string)$object['destination_name']),
+                'destination_iban'      => $this->clearString((string)$object['destination_iban']),
+                'destination_number'    => $this->clearString((string)$object['destination_number']),
+                'destination_bic'       => $this->clearString((string)$object['destination_bic']),
+
+                // budget info
+                'budget_id'             => $this->integerFromValue((string)$object['budget_id']),
+                'budget_name'           => $this->clearString((string)$object['budget_name']),
+
+                // category info
+                'category_id'           => $this->integerFromValue((string)$object['category_id']),
+                'category_name'         => $this->clearString((string)$object['category_name']),
+
+                // journal bill reference. Optional. Will only work for withdrawals
+                'bill_id'               => $this->integerFromValue((string)$object['bill_id']),
+                'bill_name'             => $this->clearString((string)$object['bill_name']),
+
+                // piggy bank reference. Optional. Will only work for transfers
+                'piggy_bank_id'         => $this->integerFromValue((string)$object['piggy_bank_id']),
+                'piggy_bank_name'       => $this->clearString((string)$object['piggy_bank_name']),
+
+                // some other interesting properties
+                'reconciled'            => $this->convertBoolean((string)$object['reconciled']),
+                'notes'                 => $this->clearStringKeepNewlines((string)$object['notes']),
+                'tags'                  => $this->arrayFromValue($object['tags']),
+
+                // all custom fields:
+                'internal_reference'    => $this->clearString((string)$object['internal_reference']),
+                'external_id'           => $this->clearString((string)$object['external_id']),
+                'original_source'       => sprintf('ff3-v%s|api-v%s', config('firefly.version'), config('firefly.api_version')),
+                'recurrence_id'         => $this->integerFromValue($object['recurrence_id']),
+                'bunq_payment_id'       => $this->clearString((string)$object['bunq_payment_id']),
+                'external_url'          => $this->clearString((string)$object['external_url']),
+
+                'sepa_cc'       => $this->clearString((string)$object['sepa_cc']),
+                'sepa_ct_op'    => $this->clearString((string)$object['sepa_ct_op']),
+                'sepa_ct_id'    => $this->clearString((string)$object['sepa_ct_id']),
+                'sepa_db'       => $this->clearString((string)$object['sepa_db']),
+                'sepa_country'  => $this->clearString((string)$object['sepa_country']),
+                'sepa_ep'       => $this->clearString((string)$object['sepa_ep']),
+                'sepa_ci'       => $this->clearString((string)$object['sepa_ci']),
+                'sepa_batch_id' => $this->clearString((string)$object['sepa_batch_id']),
+                // custom date fields. Must be Carbon objects. Presence is optional.
+                'interest_date' => $this->dateFromValue($object['interest_date']),
+                'book_date'     => $this->dateFromValue($object['book_date']),
+                'process_date'  => $this->dateFromValue($object['process_date']),
+                'due_date'      => $this->dateFromValue($object['due_date']),
+                'payment_date'  => $this->dateFromValue($object['payment_date']),
+                'invoice_date'  => $this->dateFromValue($object['invoice_date']),
+            ];
+        }
+
+        return $return;
     }
 }

@@ -48,8 +48,6 @@ class ListController extends Controller
 
     /**
      * LinkTypeController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -70,15 +68,11 @@ class ListController extends Controller
      * This endpoint is documented at:
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/links/listTransactionByLinkType
      *
-     * @param Request  $request
-     * @param LinkType $linkType
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function transactions(Request $request, LinkType $linkType): JsonResponse
     {
-        $pageSize = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize = $this->parameters->get('limit');
         $type     = $request->get('type') ?? 'default';
         $this->parameters->set('type', $type);
 
@@ -105,12 +99,16 @@ class ListController extends Controller
             // set page to retrieve
             ->setPage($this->parameters->get('page'))
             // set types of transactions to return.
-            ->setTypes($types);
-        if (null !== $this->parameters->get('start') && null !== $this->parameters->get('end')) {
-            $collector->setRange($this->parameters->get('start'), $this->parameters->get('end'));
+            ->setTypes($types)
+        ;
+        if (null !== $this->parameters->get('start')) {
+            $collector->setStart($this->parameters->get('start'));
+        }
+        if (null !== $this->parameters->get('end')) {
+            $collector->setEnd($this->parameters->get('end'));
         }
         $paginator = $collector->getPaginatedGroups();
-        $paginator->setPath(route('api.v1.transactions.index') . $this->buildParams());
+        $paginator->setPath(route('api.v1.transactions.index').$this->buildParams());
         $transactions = $paginator->getCollection();
 
         /** @var TransactionGroupTransformer $transformer */

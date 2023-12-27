@@ -42,8 +42,6 @@ class UserRegistration extends Notification
 
     /**
      * Create a new notification instance.
-     *
-     * @return void
      */
     public function __construct(User $user)
     {
@@ -56,11 +54,12 @@ class UserRegistration extends Notification
      * @param mixed $notifiable
      *
      * @return array
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function toArray($notifiable)
     {
         return [
-            //
         ];
     }
 
@@ -70,12 +69,15 @@ class UserRegistration extends Notification
      * @param mixed $notifiable
      *
      * @return MailMessage
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function toMail($notifiable)
     {
         return (new MailMessage())
             ->markdown('emails.registered-admin', ['email' => $this->user->email, 'id' => $this->user->id])
-            ->subject((string)trans('email.registered_subject_admin'));
+            ->subject((string)trans('email.registered_subject_admin'))
+        ;
     }
 
     /**
@@ -84,6 +86,8 @@ class UserRegistration extends Notification
      * @param mixed $notifiable
      *
      * @return SlackMessage
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function toSlack($notifiable)
     {
@@ -96,15 +100,16 @@ class UserRegistration extends Notification
      * @param mixed $notifiable
      *
      * @return array
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function via($notifiable)
     {
-        /** @var User|null $user */
-        $user     = auth()->user();
-        $slackUrl = null === $user ? '' : (string)app('preferences')->getForUser(auth()->user(), 'slack_webhook_url', '')->data;
+        $slackUrl = app('fireflyconfig')->get('slack_webhook_url', '')->data;
         if (UrlValidator::isValidWebhookURL($slackUrl)) {
             return ['mail', 'slack'];
         }
+
         return ['mail'];
     }
 }

@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 /*
  * rules.php
  * Copyright (c) 2023 james@firefly-iii.org
@@ -21,6 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
 
 return [
     'main_message'                                => 'Action ":action", present in rule ":rule", could not be applied to transaction #:group: :error',
@@ -38,7 +38,7 @@ return [
     'is_already_withdrawal'                       => 'This transaction is already a withdrawal',
     'is_already_deposit'                          => 'This transaction is already a deposit',
     'is_already_transfer'                         => 'This transaction is already a transfer',
-    'is_not_transfer'                             => 'This transaction is not a transfer',
+    'is_not_transfer'                             => 'Denna transaktion är inte en överföring',
     'complex_error'                               => 'Something complicated went wrong. Sorry about that. Please inspect the logs of Firefly III',
     'no_valid_opposing'                           => 'Conversion failed because there is no valid account named ":account"',
     'new_notes_empty'                             => 'The notes to be set are empty',
@@ -55,6 +55,8 @@ return [
     'cannot_find_subscription'                    => 'Firefly III can\'t find subscription ":name"',
     'no_notes_to_move'                            => 'The transaction has no notes to move to the description field',
     'no_tags_to_remove'                           => 'The transaction has no tags to remove',
+    'not_withdrawal'                              => 'The transaction is not a withdrawal',
+    'not_deposit'                                 => 'The transaction is not a deposit',
     'cannot_find_tag'                             => 'Firefly III can\'t find tag ":tag"',
     'cannot_find_asset'                           => 'Firefly III can\'t find asset account ":name"',
     'cannot_find_accounts'                        => 'Firefly III can\'t find the source or destination account',

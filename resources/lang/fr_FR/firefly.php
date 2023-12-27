@@ -33,7 +33,6 @@ declare(strict_types=1);
  *
  */
 
-
 return [
     // general stuff:
     'close'                                => 'Fermer',
@@ -43,6 +42,7 @@ return [
     'split'                                => 'Ventiler',
     'single_split'                         => 'Ventilation',
     'clone'                                => 'Cloner',
+    'clone_and_edit'                       => 'Cloner et modifier',
     'confirm_action'                       => 'Confirmer l\'action',
     'last_seven_days'                      => '7 Derniers Jours',
     'last_thirty_days'                     => 'Trente derniers jours',
@@ -113,7 +113,7 @@ return [
     'two_factor_forgot'                    => 'J’ai oublié mon code d\'identification à deux facteurs.',
     'two_factor_lost_header'               => 'Perdu votre authentification à deux facteurs ?',
     'two_factor_lost_intro'                => 'Si vous avez aussi perdu vos codes de récupération, vous n\'avez pas de chance. Ce n\'est pas quelque chose que vous pouvez corriger depuis l\'interface web. Vous avez deux choix.',
-    'two_factor_lost_fix_self'             => 'Si vous exécutez votre propre instance de Firefly III, lisez <a href="https://docs.firefly-iii.org/faq/other#i-lost-my-two-factor-authentication-codes-and-backup-codes">cette entrée dans la FAQ</a> pour obtenir des instructions.',
+    'two_factor_lost_fix_self'             => 'If you run your own instance of Firefly III, read <a href="https://docs.firefly-iii.org/references/faq/firefly-iii/using/#i-lost-my-2fa-token-generator-or-2fa-has-stopped-working>this entry in the FAQ</a> for instructions.',
     'two_factor_lost_fix_owner'            => 'Dans le cas contraire, contactez le propriétaire du site par courriel <a href="mailto::site_owner">:site_owner</a> et demandez-lui de réinitialiser votre authentification à deux facteurs.',
     'mfa_backup_code'                      => 'Vous avez utilisé un code de récupération pour vous connecter à Firefly III. Il ne peut être réutilisé, donc rayez-le de votre liste.',
     'pref_two_factor_new_backup_codes'     => 'Obtenir de nouveaux codes de récupération',
@@ -155,11 +155,11 @@ return [
     'current_period'                       => 'Période en cours',
     'show_the_current_period_and_overview' => 'Afficher l’exercice en cours et sa vue d’ensemble',
     'pref_languages_locale'                => 'Pour une langue autre que l’anglais et pour fonctionner correctement, votre système d’exploitation doit être équipé avec les paramètres régionaux corrects. S\'ils ne sont pas présents, les données de devises, les dates et les montants peuvent être mal formatés.',
-    'budget_in_period'                     => 'Toutes les opérations pour le budget ":name" entre :start et :end dans la monnaie :currency',
+    'budget_in_period'                     => "Toutes les opérations pour le budget\u{a0}\":name\" entre\u{a0}:start et\u{a0}:end dans la monnaie :currency",
     'chart_budget_in_period'               => 'Graphique pour toutes les opérations pour le budget ":name" entre :start et :end dans :currency',
     'chart_budget_in_period_only_currency' => 'Le montant que vous avez budgété était en :currency, ce graphique ne montrera donc que les opérations en :currency.',
-    'chart_account_in_period'              => 'Graphique pour toutes les opérations pour le compte ":name" (:balance) entre :start et :end',
-    'chart_category_in_period'             => 'Graphique pour toutes les opérations pour la catégorie ":name" entre :start et :end',
+    'chart_account_in_period'              => "Graphique pour toutes les opérations pour le compte \":name\" (:balance) entre\u{a0}:start et :end",
+    'chart_category_in_period'             => "Graphique pour toutes les opérations pour la catégorie \":name\" entre\u{a0}:start et :end",
     'chart_category_all'                   => 'Graphique pour toutes les opérations pour la catégorie ":name"',
     'clone_withdrawal'                     => 'Cloner cette dépense',
     'clone_deposit'                        => 'Cloner ce dépôt',
@@ -173,37 +173,37 @@ return [
     'intro_prev_label'                     => 'Précédent',
     'intro_skip_label'                     => 'Ignorer',
     'intro_done_label'                     => 'Terminé',
-    'between_dates_breadcrumb'             => 'Entre :start et :end',
+    'between_dates_breadcrumb'             => "Entre\u{a0}:start et\u{a0}:end",
     'all_journals_without_budget'          => 'Toutes les opérations sans budget',
     'journals_without_budget'              => 'Opérations sans budget',
     'all_journals_without_category'        => 'Toutes les opérations sans catégorie',
     'journals_without_category'            => 'Opérations sans catégorie',
-    'all_journals_for_account'             => 'Toutes les opérations pour le compte :name',
-    'chart_all_journals_for_account'       => 'Tableau de toutes les opérations pour le compte :name',
-    'journals_in_period_for_account'       => 'Toutes les opérations pour le compte :name entre :start et :end',
+    'all_journals_for_account'             => "Toutes les opérations pour le compte\u{a0}:name",
+    'chart_all_journals_for_account'       => "Tableau de toutes les opérations pour le compte\u{a0}:name",
+    'journals_in_period_for_account'       => "Toutes les opérations pour le compte\u{a0}:name entre\u{a0}:start et\u{a0}:end",
     'journals_in_period_for_account_js'    => 'Toutes les opérations pour le compte {title} entre {start} et {end}',
     'transferred'                          => 'Transféré',
     'all_withdrawal'                       => 'Toutes les dépenses',
     'all_transactions'                     => 'Toutes les opérations',
-    'title_withdrawal_between'             => 'Toutes les dépenses entre :start et :end',
+    'title_withdrawal_between'             => "Toutes les dépenses entre\u{a0}:start et\u{a0}:end",
     'all_deposit'                          => 'Toutes les recettes',
-    'title_deposit_between'                => 'Toutes les recettes entre :start et :end',
+    'title_deposit_between'                => "Toutes les recettes entre\u{a0}:start et\u{a0}:end",
     'all_transfers'                        => 'Tous les transferts',
-    'title_transfers_between'              => 'Tous les transferts entre :start et :end',
+    'title_transfers_between'              => "Tous les transferts entre\u{a0}:start et\u{a0}:end",
     'all_transfer'                         => 'Tous les transferts',
     'all_journals_for_tag'                 => 'Toutes les opérations pour le tag ":tag"',
-    'title_transfer_between'               => 'Tous les transferts entre :start et :end',
-    'all_journals_for_category'            => 'Toutes les opérations pour la catégorie :name',
-    'all_journals_for_budget'              => 'Toutes les opérations pour le budget :name',
+    'title_transfer_between'               => "Tous les transferts entre\u{a0}:start et\u{a0}:end",
+    'all_journals_for_category'            => "Toutes les opérations pour la catégorie\u{a0}:name",
+    'all_journals_for_budget'              => "Toutes les opérations pour le budget\u{a0}:name",
     'chart_all_journals_for_budget'        => 'Graphique pour toutes les opérations pour le budget :name',
-    'journals_in_period_for_category'      => 'Toutes les opérations pour la catégorie :name entre :start et :end',
-    'journals_in_period_for_tag'           => 'Toutes les opérations de tag :tag entre :start et :end',
+    'journals_in_period_for_category'      => "Toutes les opérations pour la catégorie\u{a0}:name entre\u{a0}:start et\u{a0}:end",
+    'journals_in_period_for_tag'           => "Toutes les opérations de tag\u{a0}:tag entre\u{a0}:start et\u{a0}:end",
     'not_available_demo_user'              => 'La fonctionnalité à laquelle vous essayez d’accéder n’est pas disponible pour les utilisateurs de la démo.',
-    'exchange_rate_instructions'           => 'Le compte d’actif "@name" n’accepte que les opérations en @native_currency. Si vous souhaitez utiliser @foreign_currency à la place, assurez-vous que le montant en @native_currency est aussi bien connu :',
+    'exchange_rate_instructions'           => "Le compte d’actif \"@name\" n’accepte que les opérations en @native_currency. Si vous souhaitez utiliser @foreign_currency à la place, assurez-vous que le montant en @native_currency est aussi bien connu\u{a0}:",
     'transfer_exchange_rate_instructions'  => 'Compte d’actif source "@source_name" n’accepte que les opérations en @source_currency. Compte d’actif "@dest_name" de destination n’accepte que les opérations en @dest_currency. Vous devez fournir le montant transféré correctement dans les deux devises.',
     'transaction_data'                     => 'Données d\'opération',
     'invalid_server_configuration'         => 'Configuration de serveur invalide',
-    'invalid_locale_settings'              => 'Firefly III ne parvient pas à formater les montants monétaires car il manque des paquets logiciels sur votre serveur. Voici <a href="https://docs.firefly-iii.org/firefly-iii/advanced-installation/locales/">des instructions sur comment procéder</a>.',
+    'invalid_locale_settings'              => 'Firefly III is unable to format monetary amounts because your server is missing the required packages. There are <a href="https://docs.firefly-iii.org/how-to/firefly-iii/advanced/locales/">instructions how to do this</a>.',
     'quickswitch'                          => 'Changement rapide',
     'sign_in_to_start'                     => 'Identifiez-vous pour commencer votre session',
     'sign_in'                              => 'S\'identifier',
@@ -338,7 +338,7 @@ return [
 
     // old
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -348,7 +348,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     'search_modifier_date_on'                             => 'La date de l\'opération est ":value"',
     'search_modifier_not_date_on'                         => 'La date de l\'opération n\'est pas ":value"',
@@ -468,6 +467,10 @@ return [
     'search_modifier_transaction_type'                    => 'Le type de transaction est ":value"',
     'search_modifier_not_transaction_type'                => 'Le type de l\'opération n\'est pas :value',
     'search_modifier_tag_is'                              => 'Le tag est ":value"',
+    'search_modifier_tag_contains'                        => 'Le tag contient ":value"',
+    'search_modifier_not_tag_contains'                    => 'Le tag ne contient pas «:value»',
+    'search_modifier_tag_ends'                            => 'Le tag se termine par «:value»',
+    'search_modifier_tag_starts'                          => 'Le tag commence par «:value»',
     'search_modifier_not_tag_is'                          => 'Aucun tag n\'est ":value"',
     'search_modifier_date_on_year'                        => 'L\'opération est dans l\'année ":value"',
     'search_modifier_not_date_on_year'                    => 'L\'opération n\'est pas dans l\'année ":value"',
@@ -481,7 +484,6 @@ return [
     'search_modifier_date_after_year'                     => 'L\'opération est dans ou après l\'année ":value"',
     'search_modifier_date_after_month'                    => 'L\'opération est dans ou après le mois ":value"',
     'search_modifier_date_after_day'                      => 'L\'opération est après ou le jour du mois ":value"',
-
 
     // new
     'search_modifier_tag_is_not'                          => 'Aucun tag n\'est ":value"',
@@ -710,7 +712,7 @@ return [
     'create_rule_from_query'                              => 'Créer une nouvelle règle à partir de la requête de recherche',
     'rule_from_search_words'                              => 'Le moteur de règles a du mal à gérer ":string". La règle suggérée qui correspond à votre requête de recherche peut donner des résultats différents. Veuillez vérifier que la règle se déclenche correctement.',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -720,7 +722,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // END
     'modifiers_applies_are'                               => 'Les modificateurs suivants sont aussi appliqués à la recherche :',
@@ -747,6 +748,8 @@ return [
     // rules
     'is_not_rule_trigger'                                 => 'Pas',
     'cannot_fire_inactive_rules'                          => 'Vous ne pouvez pas exécuter des règles inactives.',
+    'show_triggers'                                       => 'Show triggers',
+    'show_actions'                                        => 'Show actions',
     'rules'                                               => 'Règles',
     'rule_name'                                           => 'Nom de la règle',
     'rule_triggers'                                       => 'La règle se déclenchera lorsque',
@@ -772,7 +775,7 @@ return [
     'save_rules_by_moving'                                => 'Enregistrer cette règle en la déplaçant dans un autre groupe de règles :|Enregistrer ces règles en les déplaçant dans un autre groupe de règles :',
     'make_new_rule'                                       => 'Créer une nouvelle règle dans le groupe de règles ":title"',
     'make_new_rule_no_group'                              => 'Créer une nouvelle règle',
-    'instructions_rule_from_bill'                         => 'Afin d’associer des opérations à votre nouvelle facture « :name », Firefly III peut créer une règle qui sera automatiquement appliquée sur toutes les opérations déjà enregistrées. Veuillez vérifier les détails ci-après et enregistrer la règle pour que Firefly III associe automatiquement des opérations à votre nouvelle facture.',
+    'instructions_rule_from_bill'                         => "Afin d’associer des opérations à votre nouvelle facture «\u{a0}:name\u{a0}», Firefly III peut créer une règle qui sera automatiquement appliquée sur toutes les opérations déjà enregistrées. Veuillez vérifier les détails ci-après et enregistrer la règle pour que Firefly III associe automatiquement des opérations à votre nouvelle facture.",
     'instructions_rule_from_journal'                      => 'Créez une règle basée sur une de vos opérations. Complétez ou soumettez le formulaire ci-dessous.',
     'rule_is_strict'                                      => 'règle stricte',
     'rule_is_not_strict'                                  => 'règle non stricte',
@@ -780,7 +783,7 @@ return [
     'rule_help_strict'                                    => 'En mode strict, TOUS les déclencheurs doivent être activés pour que les actions s\'exécutent. Si décoché, N\'IMPORTE QUEL déclencheur est suffisant pour que les actions soit exécutées.',
     'rule_help_active'                                    => 'Les règles inactives ne se déclencheront jamais.',
     'stored_new_rule'                                     => 'Nouvelle règle créée avec le titre ":title"',
-    'deleted_rule'                                        => 'Règle supprimée avec le titre ":title"',
+    'deleted_rule'                                        => 'Règle avec le titre ":title" supprimée',
     'store_new_rule'                                      => 'Créer une nouvelle règle',
     'updated_rule'                                        => 'Règle avec le titre ":title" mise à jour',
     'default_rule_group_name'                             => 'Règles par défaut',
@@ -813,7 +816,6 @@ return [
     'rule_trigger_store_journal'                          => 'Lorsqu’une opération est créée',
     'rule_trigger_update_journal'                         => 'Lorsqu’une opération est mise à jour',
     'rule_trigger_user_action'                            => 'L\'action de l’utilisateur est ":trigger_value"',
-
 
     // OLD values (remove non-doubles later):
     'rule_trigger_source_account_starts_choice'           => 'Le nom du compte source commence par..',
@@ -897,20 +899,20 @@ return [
     'rule_trigger_foreign_currency_is_choice'             => 'La devise étrangère de l\'opération est..',
     'rule_trigger_foreign_currency_is'                    => 'La devise étrangère de l\'opération est ":trigger_value"',
     'rule_trigger_has_attachments_choice'                 => 'A au moins autant de pièces jointes',
-    'rule_trigger_has_attachments'                        => 'A au moins :trigger_value pièce(s) jointe(s)',
+    'rule_trigger_has_attachments'                        => "A au moins\u{a0}:trigger_value pièce(s) jointe(s)",
     'rule_trigger_has_no_category_choice'                 => 'N\'a pas de catégorie',
     'rule_trigger_has_no_category'                        => 'L\'opération n\'a pas de catégorie',
     'rule_trigger_has_any_category_choice'                => 'A une catégorie',
     'rule_trigger_has_any_category'                       => 'L\'opération comporte une catégorie',
     'rule_trigger_has_no_budget_choice'                   => 'N\'a pas de budget',
     'rule_trigger_has_no_budget'                          => 'L\'opération n\'a pas de budget',
-    'rule_trigger_has_any_budget_choice'                  => 'A un (des) budget',
+    'rule_trigger_has_any_budget_choice'                  => 'A un budget',
     'rule_trigger_has_any_budget'                         => 'L\'opération a un(des) budget(s)',
     'rule_trigger_has_no_bill_choice'                     => 'N\'a pas de facture',
     'rule_trigger_has_no_bill'                            => 'L\'opération n\'a pas de facture',
     'rule_trigger_has_any_bill_choice'                    => 'A (au moins) une facture',
     'rule_trigger_has_any_bill'                           => 'L\'opération transaction a (au moins) une facture',
-    'rule_trigger_has_no_tag_choice'                      => 'N\'a pas de tag(s)',
+    'rule_trigger_has_no_tag_choice'                      => 'N\'a pas de tag·s',
     'rule_trigger_has_no_tag'                             => 'L\'opération n\'a pas de tag·s',
     'rule_trigger_has_any_tag_choice'                     => 'Dispose d\'un ou de plusieurs tags',
     'rule_trigger_has_any_tag'                            => 'L\'opération comporte un ou plusieurs tags',
@@ -1209,7 +1211,7 @@ return [
     'rule_trigger_not_destination_is_cash'                => 'Le compte de destination n\'est pas un compte en espèces',
     'rule_trigger_not_account_is_cash'                    => 'Aucun compte n\'est un compte en espèces',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -1219,7 +1221,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // actions
     // set, clear, add, remove, append/prepend
@@ -1248,7 +1249,7 @@ return [
     'rule_action_append_description_choice'               => 'Suffixer la description avec..',
     'rule_action_prepend_description_choice'              => 'Préfixer la description avec..',
     'rule_action_set_source_account_choice'               => 'Définir le compte source à..',
-    'rule_action_set_source_account'                      => 'Définir le compte source à :action_value',
+    'rule_action_set_source_account'                      => "Définir le compte source à\u{a0}:action_value",
     'rule_action_set_destination_account_choice'          => 'Définir le compte de destination à..',
     'rule_action_set_destination_account'                 => 'Définir le compte de destination à :action_value',
     'rule_action_append_notes_choice'                     => 'Ajouter aux notes ..',
@@ -1277,6 +1278,8 @@ return [
     'rule_action_append_notes_to_descr'                   => 'Ajouter les notes à la description',
     'rule_action_move_descr_to_notes'                     => 'Remplacer les notes par la description',
     'rule_action_move_notes_to_descr'                     => 'Remplacer la description par les notes',
+    'rule_action_set_destination_to_cash_choice'          => 'Définir le compte de destination à (espèces)',
+    'rule_action_set_source_to_cash_choice'               => 'Définir le compte source à (espèces)',
     'rulegroup_for_bills_title'                           => 'Groupe de règles pour les factures',
     'rulegroup_for_bills_description'                     => 'Un groupe de règles spécial pour toutes les règles impliquant des factures.',
     'rule_for_bill_title'                                 => 'Règle générée automatiquement pour la facture ":name"',
@@ -1307,7 +1310,6 @@ return [
     'create_rule_from_transaction'              => 'Créer une règle basée sur une opération',
     'create_recurring_from_transaction'         => 'Créer une opération récurrente sur base d\'une opération',
 
-
     // preferences
     'dark_mode_option_browser'                  => 'Laisser le navigateur décider',
     'dark_mode_option_light'                    => 'Toujours clair',
@@ -1318,7 +1320,7 @@ return [
     'pref_home_screen_accounts'                 => 'Comptes de l’écran d’accueil',
     'pref_home_screen_accounts_help'            => 'Quels sont les comptes à afficher sur la page d’accueil ?',
     'pref_view_range'                           => 'Intervalle d\'affichage',
-    'pref_view_range_help'                      => 'Certains graphiques sont automatiquement regroupés par périodes. Vos budgets seront aussi organisés par périodes. Quelle période préférez-vous ?',
+    'pref_view_range_help'                      => "Certains graphiques sont automatiquement regroupés par périodes. Vos budgets seront aussi organisés par périodes. Quelle période préférez-vous\u{a0}?",
     'pref_1D'                                   => 'Un jour',
     'pref_1W'                                   => 'Une semaine',
     'pref_3W'                                   => 'Trois semaines centrees',
@@ -1351,7 +1353,7 @@ return [
     'pref_two_factor_auth_code_help'            => 'Scanner le code QR avec une application sur votre téléphone comme Authy ou Google Authenticator et entrez le code généré.',
     'pref_two_factor_auth_reset_code'           => 'Réinitialiser le code de vérification',
     'pref_two_factor_auth_disable_2fa'          => 'Désactiver l\'authentification en deux étapes',
-    '2fa_use_secret_instead'                    => 'Si vous ne pouvez pas scanner le code QR, vous pouvez utiliser le code suivant à la place : <code>:secret</code>.',
+    '2fa_use_secret_instead'                    => "Si vous ne pouvez pas scanner le code QR, vous pouvez utiliser le code suivant à\u{a0}la place :\u{a0}<code>:secret</code>.",
     '2fa_backup_codes'                          => 'Stockez ces codes de récupération pour vous connecter au cas où vous perdez votre appareil.',
     '2fa_already_enabled'                       => 'La vérification à deux étapes est déjà activée.',
     'wrong_mfa_code'                            => 'Le code MFA n\'est pas valide.',
@@ -1458,8 +1460,8 @@ return [
     'change_your_password'                      => 'Modifier votre mot de passe',
     'delete_account'                            => 'Supprimer le compte',
     'current_password'                          => 'Mot de passe actuel',
-    'new_password'                              => 'Nouveau mot de passe ',
-    'new_password_again'                        => 'Nouveau mot de passe (confirmation)',
+    'new_password'                              => "Nouveau mot de passe\u{a0}",
+    'new_password_again'                        => "Nouveau mot de passe\u{a0}(confirmation)",
     'delete_your_account'                       => 'Supprimer votre compte',
     'delete_your_account_help'                  => 'La suppression de votre compte supprimera également les comptes, les opérations, <em>tout</em> ce que vous pourriez avoir enregistré dans Firefly III. Tout sera SUPPRIMÉ.',
     'delete_your_account_password'              => 'Entrez votre mot de passe pour continuer.',
@@ -1476,7 +1478,7 @@ return [
     'secure_pw_history'                         => 'Pas une semaine ne se passe sans que vous lisiez dans la presse qu\'un site s\'est fait dérober les mots de passe de ses utilisateurs. Les pirates et les voleurs utilisent ces mots de passe pour tenter de voler vos informations personnelles. Cette information est précieuse.',
     'secure_pw_ff'                              => 'Vous utilisez le même mot de passe partout sur Internet ? Si un seul site se fait dérober ce mot de passe, c\'est l\'ensemble de vos comptes et données qui sont exposées aux pirates. Firefly III compte sur vous pour choisir un mot de passe unique et fort pour protéger vos informations financières.',
     'secure_pw_check_box'                       => 'Pour vous y aider Firefly III peut vérifier que le mot de passe que vous souhaitez utiliser n\'a jamais été dérobé auparavant. Si c\'est le cas, Firefly III vous conseille de NE PAS utiliser ce mot de passe.',
-    'secure_pw_working_title'                   => 'Comment est-ce que cela fonctionne ?',
+    'secure_pw_working_title'                   => "Comment est-ce que cela fonctionne\u{a0}?",
     'secure_pw_working'                         => 'Si vous cochez l\'option, Firefly III enverra les 5 premiers caractères de l\'empreinte SHA1 de votre mot de passe au <a href="https://www.troyhunt.com/introducing-306-million-freely-downloadable-pwned-passwords/">site Web de Troy Hunt</a> pour contrôler si elle y apparait. Cela vous empêchera d\'utiliser des mots de passe non sûrs tel que recommandé par la dernière <a href="https://pages.nist.gov/800-63-3/sp800-63b.html">publication spéciale NIST</a> sur le sujet.',
     'secure_pw_should'                          => 'Dois-je cocher la case ?',
     'secure_pw_long_password'                   => 'Oui. Toujours vérifier que votre mot de passe est sûr.',
@@ -1532,7 +1534,7 @@ return [
     'multi_account_warning_deposit'             => 'Gardez en tête que le compte de destination des ventilations suivantes peut être remplacé par celui de la première ventilation du dépôt.',
     'multi_account_warning_transfer'            => 'Gardez en tête que les comptes source et de destination des ventilations suivantes peuvent être remplacés par ceux de la première ventilation du transfert.',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -1542,7 +1544,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // export data:
     'export_data_title'                         => 'Exporter des données depuis Firefly III',
@@ -1566,6 +1567,7 @@ return [
     'list_all_attachments'                      => 'Liste de toutes les pièces jointes',
 
     // transaction index
+    'is_reconciled_fields_dropped'              => 'Comme cette opération est rapprochée, vous ne pourrez pas modifier les comptes, ni le(s) montant(s).',
     'title_expenses'                            => 'Dépenses',
     'title_withdrawal'                          => 'Dépenses',
     'title_revenue'                             => 'Recette / revenu',
@@ -1633,7 +1635,8 @@ return [
     'create_currency'                           => 'Créer une nouvelle devise',
     'store_currency'                            => 'Créer une nouvelle devise',
     'update_currency'                           => 'Mise à jour de la devise',
-    'new_default_currency'                      => ':name est maintenant la devise par défaut.',
+    'new_default_currency'                      => '«:name» est maintenant la devise par défaut.',
+    'default_currency_failed'                   => 'Impossible de faire de modifier la devise par défaut à «:name». Veuillez vérifier les logs.',
     'cannot_delete_currency'                    => 'Impossible de supprimer :name car il est encore utilisé.',
     'cannot_delete_fallback_currency'           => ':name est la devise par défaut du système et ne peut pas être supprimée.',
     'cannot_disable_currency_journals'          => 'Impossible de désactiver la devise :name car les opérations l\'utilisent toujours.',
@@ -1659,7 +1662,9 @@ return [
     'disable_currency'                          => 'Désactiver',
     'currencies_default_disabled'               => 'La plupart de ces devises sont désactivées par défaut. Vous devez d\'abord les activer pour pouvoir les utiliser.',
     'currency_is_now_enabled'                   => 'La devise ":name" a été activée',
+    'could_not_enable_currency'                 => 'Impossible d\'activer la devise ":name". Veuillez consulter les logs.',
     'currency_is_now_disabled'                  => 'La devise ":name" a été désactivée',
+    'could_not_disable_currency'                => 'Impossible de désactiver la devise «:name». Peut-être est-elle encore utilisée ?',
 
     // forms:
     'mandatoryFields'                           => 'Champs obligatoires',
@@ -1732,7 +1737,10 @@ return [
     'remove_budgeted_amount'                    => 'Supprimer le montant budgétisé en :currency',
 
     // bills:
+    'subscription'                              => 'Abonnement',
     'not_expected_period'                       => 'Pas attendu cette période',
+    'subscriptions_in_group'                    => 'Abonnements dans le groupe "%{title}"',
+    'subscr_expected_x_times'                   => '%{amount} à payer %{times} fois cette période',
     'not_or_not_yet'                            => 'Non (pas encore)',
     'visit_bill'                                => 'Consultez la facture ":name" sur Firefly III',
     'match_between_amounts'                     => 'La facture correspond à des opérations entre :low et :high.',
@@ -1758,7 +1766,7 @@ return [
     'stored_new_bill'                           => 'Nouvelle facture ":name" créée',
     'cannot_scan_inactive_bill'                 => 'Les factures inactives ne peuvent pas être analysées.',
     'rescanned_bill'                            => 'Tout a été à nouveau scanné. :count opération a été liée à la facture.|Tout a été à nouveau scanné. :count opérations ont été liées à la facture.',
-    'average_bill_amount_year'                  => 'Montant moyen des factures ( :year)',
+    'average_bill_amount_year'                  => "Montant moyen des factures (\u{a0}:year)",
     'average_bill_amount_overall'               => 'Montant moyen des factures (global)',
     'bill_is_active'                            => 'Facture en cours',
     'bill_expected_between'                     => 'Attendu entre le :start et le :end',
@@ -1769,6 +1777,7 @@ return [
     'bill_edit_rules'                           => 'Firefly III tentera également de modifier la règle relative à cette facture. Si vous avez modifié cette règle vous-même, Firefly III ne changera rien. Firefly III tentera également de modifier les :count règles relatives à cette facture. Si vous avez modifié ces règles vous-même, Firefly III ne changera rien.',
     'bill_expected_date'                        => 'Prévu :date',
     'bill_expected_date_js'                     => 'Attendu le {date}',
+    'expected_amount'                           => 'Montant (attendu)',
     'bill_paid_on'                              => 'Payé le {date}',
     'bill_repeats_weekly'                       => 'Se répète toutes les semaines',
     'bill_repeats_monthly'                      => 'Se répète tous les mois',
@@ -1843,7 +1852,7 @@ return [
     'delete_reconciliation'                     => 'Supprimer le rapprochement',
     'update_reconciliation'                     => 'Mettre à jour le rapprochement',
     'amount_cannot_be_zero'                     => 'Le montant ne peut pas être zéro',
-    'end_of_reconcile_period'                   => 'Fin de la période de rapprochement: :period',
+    'end_of_reconcile_period'                   => 'Fin de la période de rapptrochement : :period',
     'start_of_reconcile_period'                 => 'Début de la période de rapprochement : :period',
     'start_balance'                             => 'Solde initial',
     'end_balance'                               => 'Solde de clôture',
@@ -1928,7 +1937,7 @@ return [
     'stored_category'                           => 'Nouvelle catégorie stockée ":name"',
     'without_category_between'                  => 'Sans catégorie entre :start et :end',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -1939,8 +1948,8 @@ return [
  *
  */
 
-
     // transactions:
+    'unreconcile'                               => 'Annuler le rapprochement',
     'update_withdrawal'                         => 'Mettre à jour une dépense',
     'update_deposit'                            => 'Mettre à jour un dépôt',
     'update_transaction'                        => 'Mettre à jour l\'opération',
@@ -1959,6 +1968,7 @@ return [
     'deleted_transfer'                          => 'Opération ":description" correctement supprimée',
     'deleted_reconciliation'                    => 'Opération ":description" supprimée avec succès',
     'stored_journal'                            => 'Opération ":description" créée avec succès',
+    'stored_journal_js'                         => 'Opération "%{description}" créée avec succès',
     'stored_journal_no_descr'                   => 'Nouvelle opération créée avec succès',
     'updated_journal_no_descr'                  => 'Votre opération a été mise à jour avec succès',
     'select_transactions'                       => 'Sélectionner des opérations',
@@ -2104,6 +2114,9 @@ return [
     'Expense account'                           => 'Compte de dépenses',
     'Revenue account'                           => 'Compte de recettes',
     'Initial balance account'                   => 'Balance initiale',
+    'account_type_Asset account'                => 'Compte d’actif',
+    'account_type_Expense account'              => 'Compte de dépenses',
+    'account_type_Revenue account'              => 'Compte de recettes',
     'account_type_Debt'                         => 'Dette',
     'account_type_Loan'                         => 'Prêt',
     'account_type_Mortgage'                     => 'Prêt hypothécaire',
@@ -2164,7 +2177,7 @@ return [
     'classification'                            => 'Classification',
     'store_transaction'                         => 'Enregistrer l\'opération',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -2175,14 +2188,13 @@ return [
  *
  */
 
-
     // reports:
     'report_default'                            => 'Rapport financier par défaut entre le :start et le :end',
     'report_audit'                              => 'Aperçu de l\'historique des opérations entre le :start et le :end',
     'report_category'                           => 'Rapport de catégorie entre :start et :end',
     'report_double'                             => 'Rapport de compte de dépenses / recettes entre le :start et le :end',
     'report_budget'                             => 'Rapport du budget entre le :start et le :end',
-    'report_tag'                                => 'Rapport de tag entre le :start et le :end',
+    'report_tag'                                => "Rapport de tag entre le\u{a0}:start et le :end",
     'quick_link_reports'                        => 'Liens rapides',
     'quick_link_examples'                       => 'Voici quelques exemples de liens pour vous aider à démarrer. Consultez les pages d\'aide en cliquant le bouton (?) pour plus d\'informations sur les rapports et les mots magiques que vous pouvez utiliser.',
     'quick_link_default_report'                 => 'Rapport financier par défaut',
@@ -2198,7 +2210,7 @@ return [
     'balanceStart'                              => 'Solde au début de la période',
     'balanceEnd'                                => 'Solde à la fin de la période',
     'splitByAccount'                            => 'Ventilé par compte',
-    'coveredWithTags'                           => 'Recouvert de tags',
+    'coveredWithTags'                           => 'Couvert par des tags',
     'leftInBudget'                              => 'Budget restant',
     'left_in_debt'                              => 'Montant dû',
     'sumOfSums'                                 => 'Somme des montants',
@@ -2231,7 +2243,7 @@ return [
     'budget_spent_amount'                       => 'Dépenses dans le budget ":budget" entre le :start et le :end',
     'balance_amount'                            => 'Dépenses dans le budget ":budget" payé depuis le compte ":account" entre le :start et le :end',
     'no_audit_activity'                         => 'Aucune activité n\'a été enregistrée sur le compte <a href=":url" title=":account_name">:account_name</a> entre le :start et le :end.',
-    'audit_end_balance'                         => 'Solde du compte de <a href=":url" title=":account_name">:account_name</a> à la fin de :end était: :balance',
+    'audit_end_balance'                         => 'Le solde du compte <a href=":url" title=":account_name">:account_name</a> à la fin du :end était de : :balance',
     'reports_extra_options'                     => 'Options supplémentaires',
     'report_has_no_extra_options'               => 'Ce rapport n\'a pas d\'options supplémentaires',
     'reports_submit'                            => 'Afficher le rapport',
@@ -2278,9 +2290,9 @@ return [
     'select_expense_revenue'                    => 'Sélectionner le compte de dépenses / recettes',
     'multi_currency_report_sum'                 => 'Cette liste contenant des comptes dans des devises différentes, les sommes que vous voyez peuvent ne pas faire sens. Le rapport sera lui toujours généré dans votre devise par défaut.',
     'sum_in_default_currency'                   => 'La somme sera toujours dans votre devise par défaut.',
-    'net_filtered_prefs'                        => 'Ce graphique n’inclura jamais les comptes dont l\'option « inclure dans l\'avoir net » n\'est pas cochée.',
+    'net_filtered_prefs'                        => "Ce graphique n’inclura jamais les comptes dont l'option «\u{a0}inclure dans l'avoir net » n'est pas cochée.",
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -2290,7 +2302,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // charts:
     'chart'                                     => 'Graphique',
@@ -2346,8 +2357,8 @@ return [
     'max_amount_add'            => 'Le montant maximum que vous pouvez ajouter est',
     'max_amount_remove'         => 'Le montant maximum que vous pouvez supprimer est',
     'update_piggy_button'       => 'Mise à jour de la tirelire',
-    'update_piggy_title'        => 'Mise à jour de tirelire ":name"',
-    'updated_piggy_bank'        => 'Mise à jour de la tirelire ":name"',
+    'update_piggy_title'        => 'Mise à jour de la tirelire ":name"',
+    'updated_piggy_bank'        => 'Tirelire ":name" mise à jour',
     'details'                   => 'Détails',
     'events'                    => 'Evènements',
     'target_amount'             => 'Montant cible',
@@ -2357,10 +2368,10 @@ return [
     'no_target_date'            => 'Aucune date butoir',
     'table'                     => 'Tableau',
     'delete_piggy_bank'         => 'Supprimer la tirelire ":name"',
-    'cannot_add_amount_piggy'   => 'Impossible d\'ajouter :amount à ":name".',
-    'cannot_remove_from_piggy'  => 'Impossible de supprimer :amount à ":name".',
+    'cannot_add_amount_piggy'   => "Impossible d'ajouter\u{a0}:amount à \":name\".",
+    'cannot_remove_from_piggy'  => "Impossible de supprimer\u{a0}:amount à \":name\".",
     'deleted_piggy_bank'        => 'Tirelire ":name" supprimée',
-    'added_amount_to_piggy'     => 'Ajouté :amount à ":name"',
+    'added_amount_to_piggy'     => "Ajouté\u{a0}:amount à \":name\"",
     'removed_amount_from_piggy' => ':amount retiré de ":name"',
     'piggy_events'              => 'Tirelires associées',
 
@@ -2369,8 +2380,8 @@ return [
     'deleted_tag'               => 'Tag ":tag" supprimé',
     'new_tag'                   => 'Créer un nouveau tag',
     'edit_tag'                  => 'Modifier le tag ":tag"',
-    'updated_tag'               => 'Mise à jour de la balise ":tag"',
-    'created_tag'               => 'Tag ":tag" a été créé !',
+    'updated_tag'               => 'Mise à jour du tag ":tag"',
+    'created_tag'               => "Tag \" : tag\" a été créé\u{a0}!",
 
     'transaction_journal_information'          => 'Informations sur l\'opération',
     'transaction_journal_amount'               => 'Informations sur les montants',
@@ -2382,7 +2393,7 @@ return [
     'total_amount'                             => 'Montant total',
     'number_of_decimals'                       => 'Nombre de décimales',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -2392,7 +2403,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // administration
     'invite_is_already_redeemed'               => 'L\'invitation à ":address" a déjà été utilisée.',
@@ -2413,8 +2423,8 @@ return [
     'setting_single_user_mode'                 => 'Mode utilisateur unique',
     'setting_single_user_mode_explain'         => 'Par défaut, Firefly III accepte uniquement une (1) inscription : vous. Il s\'agit d\'une mesure de sécurité qui empêche les inconnus d\'utiliser votre instance, à moins que vous ne les y autorisiez. Les inscriptions futures sont bloquées. Lorsque vous désactivez cette case, d\'autres personnes peuvent utiliser votre instance, en supposant qu\'elles puissent l\'atteindre (quand elle est connectée à Internet).',
     'store_configuration'                      => 'Sauvegarder la configuration',
-    'single_user_administration'               => 'Gestion de l\'utilisateur pour :email',
-    'edit_user'                                => 'Modifier l\'utilisateur :email',
+    'single_user_administration'               => "Gestion de l'utilisateur pour\u{a0}:email",
+    'edit_user'                                => "Modifier l'utilisateur\u{a0}:email",
     'hidden_fields_preferences'                => 'Vous pouvez activer plus d\'options d\'opérations dans vos <a href="preferences">paramètres</a>.',
     'user_data_information'                    => 'Données utilisateur',
     'user_information'                         => 'Informations utilisateur',
@@ -2454,14 +2464,12 @@ return [
     'save_notification_settings'               => 'Enregistrer les paramètres',
     'notification_settings_saved'              => 'Les paramètres de notification ont été enregistrés',
 
-
     'split_transaction_title'               => 'Description de l\'opération ventilée',
     'split_transaction_title_help'          => 'Si vous créez une opération ventilée, il doit y avoir une description globale pour chaque fraction de l\'opération.',
     'split_title_help'                      => 'Si vous créez une opération ventilée, il doit y avoir une description globale pour chaque fractions de l\'opération.',
     'you_create_transfer'                   => 'Vous saisissez un transfert.',
     'you_create_withdrawal'                 => 'Vous saisissez une dépense.',
     'you_create_deposit'                    => 'Vous saisissez un dépôt.',
-
 
     // links
     'journal_link_configuration'            => 'Configuration des liens d\'opération',
@@ -2546,11 +2554,11 @@ return [
     'default_group_title_name_plain'        => 'non groupé',
 
     // empty lists? no objects? instructions:
-    'no_accounts_title_asset'               => 'Nous allons créer un compte d’actif !',
+    'no_accounts_title_asset'               => "Nous allons créer un compte d’actif\u{a0}!",
     'no_accounts_intro_asset'               => 'Vous n\'avez pas encore de compte d\'actif. Les comptes d\'actifs sont vos comptes principaux : votre compte courant, votre compte d\'épargne, votre compte partagé ou même votre carte de crédit.',
     'no_accounts_imperative_asset'          => 'Pour commencer à utiliser Firefly III, vous devez créer au moins un compte d\'actif. Faisons-le maintenant :',
     'no_accounts_create_asset'              => 'Créer un compte d\'actif',
-    'no_accounts_title_expense'             => 'Nous allons créer un compte de dépenses !',
+    'no_accounts_title_expense'             => "Nous allons créer un compte de dépenses\u{a0}!",
     'no_accounts_intro_expense'             => 'Vous n\'avez pas encore de compte de dépenses. Les comptes de dépenses sont les endroits où vous dépensez, comme les magasins et les supermarchés.',
     'no_accounts_imperative_expense'        => 'Les comptes de dépenses sont créés automatiquement lorsque vous créez des opérations, mais vous pouvez en créer manuellement, si vous le souhaitez. Nous allons en créer un maintenant :',
     'no_accounts_create_expense'            => 'Créer un compte de dépenses',
@@ -2558,7 +2566,7 @@ return [
     'no_accounts_intro_revenue'             => 'Vous n\'avez pas encore de compte de revenus. Les comptes de revenus sont les endroits où vous recevez de l\'argent, comme votre employeur.',
     'no_accounts_imperative_revenue'        => 'Les comptes de revenus sont créés automatiquement lorsque vous créez des opérations, mais vous pouvez en créer manuellement, si vous le souhaitez. Nous allons en créer un maintenant :',
     'no_accounts_create_revenue'            => 'Créer un compte de revenus',
-    'no_accounts_title_liabilities'         => 'Nous allons créer un passif !',
+    'no_accounts_title_liabilities'         => "Nous allons créer un passif\u{a0}!",
     'no_accounts_intro_liabilities'         => 'Vous n’avez encore aucun passif. Les passifs sont des comptes qui inscrivent vos emprunts et autres dettes.',
     'no_accounts_imperative_liabilities'    => 'Vous n’êtes pas obligé d\'utiliser cette fonctionnalité, mais elle peut être utile si vous souhaitez garder une trace de ces éléments.',
     'no_accounts_create_liabilities'        => 'Créer un passif',
@@ -2567,34 +2575,34 @@ return [
     'no_budgets_intro_default'              => 'Vous n\'avez pas encore de budget. Les budgets sont utilisés pour organiser vos dépenses en groupes logiques, ce que vous permet d\'établir des seuils pour limiter ces dépenses.',
     'no_rules_intro_default'                => 'Vous n\'avez pas encore de règles. Les règles sont des automatisations puissantes qui peuvent gérer les opérations pour vous.',
     'no_rules_imperative_default'           => 'Les règles peuvent être très utiles lorsque vous gérez des opérations. Créons-en une maintenant :',
-    'no_budgets_imperative_default'         => 'Les budgets sont les outils de base de la gestion financière. Nous allons en créer un maintenant :',
+    'no_budgets_imperative_default'         => "Les budgets sont les outils de base de la gestion financière. Nous allons en créer un maintenant\u{a0}:",
     'no_budgets_create_default'             => 'Créer un budget',
     'no_rules_create_default'               => 'Créer une règle',
-    'no_categories_title_default'           => 'Nous allons créer une catégorie !',
+    'no_categories_title_default'           => "Nous allons créer une catégorie\u{a0}!",
     'no_categories_intro_default'           => 'Vous n\'avez pas encore de catégories. Les catégories sont utilisées pour affiner vos opérations et les étiqueter avec leur catégorie désignée.',
     'no_categories_imperative_default'      => 'Les catégories sont créées automatiquement lorsque vous créez des opérations, mais vous pouvez en créer manuellement. Nous allons en créer une maintenant :',
     'no_categories_create_default'          => 'Créer une catégorie',
-    'no_tags_title_default'                 => 'Nous allons créer un tag !',
+    'no_tags_title_default'                 => "Nous allons créer un tag\u{a0}!",
     'no_tags_intro_default'                 => 'Vous n\'avez pas encore de tags. Les tags sont utilisés pour affiner vos opérations en les associant avec des mots-clés spécifiques.',
-    'no_tags_imperative_default'            => 'Les tags sont créés automatiquement lorsque vous créez des opérations, mais vous pouvez en créer manuellement. Nous allons en créer un maintenant :',
+    'no_tags_imperative_default'            => "Les tags sont créés automatiquement lorsque vous créez des opérations, mais vous pouvez en créer manuellement. Nous allons en créer un maintenant\u{a0}:",
     'no_tags_create_default'                => 'Créer un tag',
-    'no_transactions_title_withdrawal'      => 'Nous allons créer une dépense !',
+    'no_transactions_title_withdrawal'      => "Nous allons créer une dépense\u{a0}!",
     'no_transactions_intro_withdrawal'      => 'Vous n\'avez pas encore de dépenses. Vous devriez créer des dépenses pour commencer à gérer vos finances.',
-    'no_transactions_imperative_withdrawal' => 'Avez-vous dépensé de l’argent ? Alors vous devriez l’écrire :',
+    'no_transactions_imperative_withdrawal' => "Avez-vous dépensé de l’argent\u{a0}? Alors vous devriez l’écrire\u{a0}:",
     'no_transactions_create_withdrawal'     => 'Créer une dépense',
-    'no_transactions_title_deposit'         => 'Nous allons créer un revenu !',
+    'no_transactions_title_deposit'         => "Nous allons créer un revenu\u{a0}!",
     'no_transactions_intro_deposit'         => 'Vous n\'avez pas encore enregistré de revenus. Vous devriez créer des entrées de revenus pour commencer à gérer vos finances.',
-    'no_transactions_imperative_deposit'    => 'Est-ce que vous avez reçu de l’argent ? Alors vous devriez l’écrire :',
+    'no_transactions_imperative_deposit'    => "Est-ce que vous avez reçu de l’argent\u{a0}? Alors vous devriez l’écrire\u{a0}:",
     'no_transactions_create_deposit'        => 'Créer un dépôt',
-    'no_transactions_title_transfers'       => 'Nous allons créer un transfert !',
+    'no_transactions_title_transfers'       => "Nous allons créer un transfert\u{a0}!",
     'no_transactions_intro_transfers'       => 'Vous n\'avez pas encore de transferts. Lorsque vous transférez de l\'argent entre les comptes d\'actifs, c\'est enregistré comme un transfert.',
-    'no_transactions_imperative_transfers'  => 'Avez vous déplacé de l’argent ? Alors vous devriez l’écrire :',
+    'no_transactions_imperative_transfers'  => "Avez vous déplacé de l’argent\u{a0}? Alors vous devriez l’écrire\u{a0}:",
     'no_transactions_create_transfers'      => 'Créer un transfert',
-    'no_piggies_title_default'              => 'Nous allons créer une tirelire !',
+    'no_piggies_title_default'              => "Nous allons créer une tirelire\u{a0}!",
     'no_piggies_intro_default'              => 'Vous n\'avez encore pas de tirelire. Vous pouvez créer des tirelires pour diviser vos économies et garder une trace de ce que vous économisez.',
     'no_piggies_imperative_default'         => 'Avez-vous des choses pour lesquelles vous économisez de l\'argent ? Créer une tirelire et suivez-là :',
     'no_piggies_create_default'             => 'Créer une nouvelle tirelire',
-    'no_bills_title_default'                => 'Nous allons créer une facture !',
+    'no_bills_title_default'                => "Nous allons créer une facture\u{a0}!",
     'no_bills_intro_default'                => 'Vous n\'avez pas encore de factures. Vous pouvez créer des factures pour suivre les dépenses ordinaires, comme votre loyer ou l\'assurance.',
     'no_bills_imperative_default'           => 'Avez-vous des factures régulières ? Créez une facture et suivez vos paiements :',
     'no_bills_create_default'               => 'Créer une facture',
@@ -2605,7 +2613,7 @@ return [
     'recurrences'                           => 'Opérations périodiques',
     'repeat_until_in_past'                  => 'Cette opération récurrente a cessé de se répéter le :date.',
     'recurring_calendar_view'               => 'Calendrier',
-    'no_recurring_title_default'            => 'Créons une opération périodique !',
+    'no_recurring_title_default'            => "Créons une opération périodique\u{a0}!",
     'no_recurring_intro_default'            => 'Vous n’avez pas encore d\'opérations périodiques. Vous pouvez en utiliser pour que Firefly III crée automatiquement des opérations pour vous.',
     'no_recurring_imperative_default'       => 'Il s’agit d’une fonctionnalité plutôt poussée, mais elle peut être très utile. Assurez-vous de lire la documentation ( icône ? en haut à droite) avant de continuer.',
     'no_recurring_create_default'           => 'Créer une opération périodique',
@@ -2658,7 +2666,7 @@ return [
     'recurrence_is_inactive'             => 'Cette opération périodique n’est pas active et ne génère pas de nouvelles opérations.',
     'delete_recurring'                   => 'Supprimer l\'opération périodique ":title"',
     'new_recurring_transaction'          => 'Nouvelle opération périodique',
-    'help_weekend'                       => 'Que doit faire Firefly III lorsque l’opération périodique tombe un samedi ou un dimanche ?',
+    'help_weekend'                       => "Que doit faire Firefly III lorsque l’opération périodique tombe un samedi ou un dimanche\u{a0}?",
     'do_nothing'                         => 'Créer l\'opération tout de même',
     'skip_transaction'                   => 'Ignorer l\'occurrence',
     'jump_to_friday'                     => 'Créer l\'opération le vendredi précédent',
@@ -2668,7 +2676,7 @@ return [
     'except_weekends'                    => 'Sauf les week-ends',
     'recurrence_deleted'                 => 'Opération périodique ":title" supprimée',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -2678,7 +2686,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // new lines for summary controller.
     'box_balance_in_currency'            => 'Solde (:currency)',
@@ -2743,7 +2750,6 @@ return [
     // dashboard
     'enable_auto_convert'                => 'Activer la conversion des devises',
     'disable_auto_convert'               => 'Désactiver la conversion des devises',
-
 ];
 
 /*

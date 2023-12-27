@@ -25,6 +25,7 @@ function getAccount() {
     return {
         id: '',
         name: '',
+        alpine_name: '',
     };
 }
 
@@ -32,10 +33,21 @@ export function createEmptySplit() {
     let now = new Date();
     let formatted = format(now, 'yyyy-MM-dd HH:mm');
     return {
-        description: 'OK then',
+        description: '',
+
+        // amount information:
         amount: '',
+        currency_code: 'EUR',
+
+        // source and destination
         source_account: getAccount(),
         destination_account: getAccount(),
-        date: formatted
+
+        // date and time
+        date: formatted,
+
+        errors: {
+            'amount': [],
+        },
     };
 }

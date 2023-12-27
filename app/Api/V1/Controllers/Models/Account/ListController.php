@@ -47,14 +47,12 @@ class ListController extends Controller
 {
     use TransactionFilter;
 
-    public const RESOURCE_KEY = 'accounts';
+    public const string RESOURCE_KEY = 'accounts';
 
     private AccountRepositoryInterface $repository;
 
     /**
      * AccountController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -73,15 +71,12 @@ class ListController extends Controller
      * This endpoint is documented at:
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/accounts/listAttachmentByAccount
      *
-     * @param Account $account
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function attachments(Account $account): JsonResponse
     {
         $manager    = $this->getManager();
-        $pageSize   = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize   = $this->parameters->get('limit');
         $collection = $this->repository->getAttachments($account);
 
         $count       = $collection->count();
@@ -89,7 +84,7 @@ class ListController extends Controller
 
         // make paginator:
         $paginator = new LengthAwarePaginator($attachments, $count, $pageSize, $this->parameters->get('page'));
-        $paginator->setPath(route('api.v1.accounts.attachments', [$account->id]) . $this->buildParams());
+        $paginator->setPath(route('api.v1.accounts.attachments', [$account->id]).$this->buildParams());
 
         /** @var AttachmentTransformer $transformer */
         $transformer = app(AttachmentTransformer::class);
@@ -105,9 +100,6 @@ class ListController extends Controller
      * This endpoint is documented at:
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/accounts/listPiggyBankByAccount
      *
-     * @param Account $account
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function piggyBanks(Account $account): JsonResponse
@@ -116,7 +108,7 @@ class ListController extends Controller
         $manager = $this->getManager();
 
         // types to get, page size:
-        $pageSize = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize = $this->parameters->get('limit');
 
         // get list of budgets. Count it and split it.
         $collection = $this->repository->getPiggyBanks($account);
@@ -125,7 +117,7 @@ class ListController extends Controller
 
         // make paginator:
         $paginator = new LengthAwarePaginator($piggyBanks, $count, $pageSize, $this->parameters->get('page'));
-        $paginator->setPath(route('api.v1.accounts.piggy-banks', [$account->id]) . $this->buildParams());
+        $paginator->setPath(route('api.v1.accounts.piggy-banks', [$account->id]).$this->buildParams());
 
         /** @var PiggyBankTransformer $transformer */
         $transformer = app(PiggyBankTransformer::class);
@@ -143,26 +135,16 @@ class ListController extends Controller
      *
      * Show all transaction groups related to the account.
      *
-     *
-     * @param Request $request
-     * @param Account $account
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function transactions(Request $request, Account $account): JsonResponse
     {
-        $pageSize = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize = $this->parameters->get('limit');
         $type     = $request->get('type') ?? 'default';
         $this->parameters->set('type', $type);
-
-        // user can overrule page size with limit parameter.
-        $limit = $this->parameters->get('limit');
-        if (null !== $limit && $limit > 0) {
-            $pageSize = $limit;
-        }
         $types   = $this->mapTransactionTypes($this->parameters->get('type'));
         $manager = $this->getManager();
+
         /** @var User $admin */
         $admin = auth()->user();
 
@@ -170,14 +152,18 @@ class ListController extends Controller
         /** @var GroupCollectorInterface $collector */
         $collector = app(GroupCollectorInterface::class);
         $collector->setUser($admin)->setAccounts(new Collection([$account]))
-                  ->withAPIInformation()->setLimit($pageSize)->setPage($this->parameters->get('page'))->setTypes($types);
+            ->withAPIInformation()->setLimit($pageSize)->setPage($this->parameters->get('page'))->setTypes($types)
+        ;
 
-        if (null !== $this->parameters->get('start') && null !== $this->parameters->get('end')) {
-            $collector->setRange($this->parameters->get('start'), $this->parameters->get('end'));
+        if (null !== $this->parameters->get('start')) {
+            $collector->setStart($this->parameters->get('start'));
+        }
+        if (null !== $this->parameters->get('end')) {
+            $collector->setEnd($this->parameters->get('end'));
         }
 
         $paginator = $collector->getPaginatedGroups();
-        $paginator->setPath(route('api.v1.accounts.transactions', [$account->id]) . $this->buildParams());
+        $paginator->setPath(route('api.v1.accounts.transactions', [$account->id]).$this->buildParams());
         $groups = $paginator->getCollection();
 
         /** @var TransactionGroupTransformer $transformer */

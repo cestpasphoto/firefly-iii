@@ -8,31 +8,34 @@ Hash: SHA256
 #
 # 1. Your security report must be related to Firefly III or the associated tools
 # 2. There is no bug bounty program
-# 3. Don't report denial of service attacks on the login form
+# 3. Please don't report denial of service attacks on the login form
 #
 
 Contact: mailto:james@firefly-iii.org
 Expires: 2024-12-31T23:00:00.000Z
 Preferred-Languages: en, nl
-Policy: https://docs.firefly-iii.org/firefly-iii/support/
+Policy: https://docs.firefly-iii.org/explanation/support/
 
 #
 # Thank you for your time!
 #
+# Cheers,
+# James
+#
 -----BEGIN PGP SIGNATURE-----
 
-iQJKBAABCAA0FiEEAvQEbEsjbgYJVxYStJoyS36tbYAFAmUEl4MWHGphbWVzQGZp
-cmVmbHktaWlpLm9yZwAKCRC0mjJLfq1tgKipEADC1bsgtE7YNY+2W/qkX3sBlKc3
-E8tDV/dr7D+jWMpV81poGyDzEe8sytJ5DmZWGTFiQez6jxZN5czT5KxZ7fMQOzbw
-kjT+S6CxKrvD2H05pe5v2ziY+lfDIVe4kI1vxYRB6bgTYi0pfGJF9woSH4qhwMMa
-5cai0Rj6Ew9pHPx06BvcHOoNjOcmqPWRoBt5a1LOK8EqSMJHbdUv8deAbQSkO/8t
-gDEA7FVRXXB0QRIraOR2cMtU2uW/o7NymDzZeaqWR9+g4eWeosRJjLA4K05akPx+
-3mrKG0qV76dBexfMC99IEfjgk+xiffxg2iiKh37uBbsgK74aakAujYta1q4SsX8d
-BXMvBpSi6mFuw13tgeueQS7IKqZsbh3vb6M325Dkv+hRe1e/Tw+qE9OWNFBQ2WS4
-H+sJZ8u1Ke++BctttaNkAkOZF0l8+f7+aEZhEaIan31hq0Y1KpFNPLiPMvMEDDBZ
-9OhqIZaWmpZv0vUu/pK+0IU5ESRAU8dSPLi1anj+LWSF+YkaOW8gmA5Di0Oiqta8
-xRDOaDSDgLN9ESd5gF8rca263AXeH1iPoPRHWPEFWgQPTcxVruwAhe7P+0dclCMx
-8eIaHoc21VGk299lwiCy4X9Wxp2+tQFH9iQG+Lnd/koxnufE6vGEIBLMzPxij6L4
-2oFicDqAMXd0Ls8kWA==
-=8skS
+iQJKBAABCAA0FiEEAvQEbEsjbgYJVxYStJoyS36tbYAFAmV37E8WHGphbWVzQGZp
+cmVmbHktaWlpLm9yZwAKCRC0mjJLfq1tgFtzD/4lrhVkCi4mRAroSMbz7ZHbLwLi
+RAgiaFmnDI48LqkX/jJJTWSy8czl9gkKO9uVJzXwmjVzFg5vJTkRfjvNlTyOpL/l
+gB+REFYGadp8ulMCZcBlFgLbyAWtvHKV3UW//G8fzrASAEe+2eiuPQooLmwaKows
+X+ty2zZEH282uAiR36otlGR2UpUcYAy0XcAuE7hIxfHA8bsh5uqzAkm74OsynC8E
+6vBEi1QzarE+cfoZqBtriWELyownM9Z5a/cIzm47RfBkFUKXaQBL3pYN1kX2TAi5
+1//0WLrDiotkIwPmdYiYFmVmaJDjcapcAkDoD/wAv8BxxjPZ900RCTF4jzMTxIu0
+t6umbm3SaA/vaINv8ilmMMj6ep49GE8EssHvRBUaGnv7JjHe+XCZrOsk3a5+Z4zQ
+Sd9nuryLCX/G3Bz63rU/V1evuCT7ouNEWKUlwtYCqU+6BfumTdbJCPEH/4szxoi2
+cPvIw5Y5sA9ue5Wm4RIX7G0DyIRJJf3CB0PJWuujzF548hn60MPBLDw7xSraTQNX
+v1GRwTHIOo6e1U47naz9U3Dv3pK2J5aibL4K6pjyZG1bTqfE/0uY0hEXVFuNqAxT
+B6LSAcrP4j+bU4oZlWRx99yHv1ComWZzi/JvRKp9Y0aTcWbAeT+oz3PFw8K5lff/
+eweJG/H9BuHgDXdYQg==
+=Z9Gk
 -----END PGP SIGNATURE-----

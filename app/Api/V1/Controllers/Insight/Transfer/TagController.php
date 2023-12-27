@@ -57,10 +57,6 @@ class TagController extends Controller
     /**
      * This endpoint is documented at:
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/insight/insightTransferNoTag
-     *
-     * @param GenericRequest $request
-     *
-     * @return JsonResponse
      */
     public function noTag(GenericRequest $request): JsonResponse
     {
@@ -81,7 +77,7 @@ class TagController extends Controller
             $foreignCurrencyId = (int)$journal['foreign_currency_id'];
 
             if (0 !== $currencyId) {
-                $response[$currencyId]                     = $response[$currencyId] ?? [
+                $response[$currencyId]                     ??= [
                     'difference'       => '0',
                     'difference_float' => 0,
                     'currency_id'      => (string)$currencyId,
@@ -91,7 +87,7 @@ class TagController extends Controller
                 $response[$currencyId]['difference_float'] = (float)$response[$currencyId]['difference'];
             }
             if (0 !== $foreignCurrencyId) {
-                $response[$foreignCurrencyId]                     = $response[$foreignCurrencyId] ?? [
+                $response[$foreignCurrencyId]                     ??= [
                     'difference'       => '0',
                     'difference_float' => 0,
                     'currency_id'      => (string)$foreignCurrencyId,
@@ -113,10 +109,6 @@ class TagController extends Controller
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/insight/insightTransferTag
      *
      * Transfers per tag, possibly filtered by tag and account.
-     *
-     * @param GenericRequest $request
-     *
-     * @return JsonResponse
      */
     public function tag(GenericRequest $request): JsonResponse
     {
@@ -136,6 +128,7 @@ class TagController extends Controller
         $collector->setTypes([TransactionType::TRANSFER])->setRange($start, $end)->setDestinationAccounts($accounts);
         $collector->setTags($tags);
         $genericSet = $collector->getExtractedJournals();
+
         /** @var array $journal */
         foreach ($genericSet as $journal) {
             $currencyId        = (int)$journal['currency_id'];
@@ -149,7 +142,7 @@ class TagController extends Controller
 
                 // on currency ID
                 if (0 !== $currencyId) {
-                    $response[$key]                     = $response[$key] ?? [
+                    $response[$key]                     ??= [
                         'id'               => (string)$tagId,
                         'name'             => $tag['name'],
                         'difference'       => '0',

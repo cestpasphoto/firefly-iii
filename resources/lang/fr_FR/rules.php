@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 /*
  * rules.php
  * Copyright (c) 2023 james@firefly-iii.org
@@ -21,6 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
 
 return [
     'main_message'                                => 'L\'action ":action", présente dans la règle ":rule", n\'a pas pu être appliquée à l\'opération #:group : :error',
@@ -50,11 +50,13 @@ return [
     'already_has_destination'                     => 'Cette opération a déjà «:name» comme compte de destination',
     'already_has_source'                          => 'Cette opération a déjà ":name" comme compte source',
     'already_linked_to_subscription'              => 'L\'opération est déjà liée à l\'abonnement ":name"',
-    'already_linked_to_category'                  => 'The transaction is already linked to category ":name"',
-    'already_linked_to_budget'                    => 'The transaction is already linked to budget ":name"',
+    'already_linked_to_category'                  => 'L\'opération est déjà liée à la catégorie ":name"',
+    'already_linked_to_budget'                    => 'L\'opération est déjà liée au budget ":name"',
     'cannot_find_subscription'                    => 'Firefly III ne trouve pas l\'abonnement ":name"',
     'no_notes_to_move'                            => 'L\'opération n\'a pas de notes à déplacer dans le champ description',
     'no_tags_to_remove'                           => 'L\'opération n\'a pas de tags à supprimer',
+    'not_withdrawal'                              => 'L\'opération n\'est pas une dépense',
+    'not_deposit'                                 => 'L\'opération n\'est pas un dépôt',
     'cannot_find_tag'                             => 'Firefly III ne trouve pas le tag ":tag"',
     'cannot_find_asset'                           => 'Firefly III ne trouve pas le compte d\'actif ":name"',
     'cannot_find_accounts'                        => 'Firefly III ne trouve pas le compte source ou le compte de destination',

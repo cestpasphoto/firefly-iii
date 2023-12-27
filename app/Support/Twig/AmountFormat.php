@@ -35,9 +35,6 @@ use Twig\TwigFunction;
  */
 class AmountFormat extends AbstractExtension
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getFilters(): array
     {
         return [
@@ -46,9 +43,15 @@ class AmountFormat extends AbstractExtension
         ];
     }
 
-    /**
-     * @return TwigFilter
-     */
+    public function getFunctions(): array
+    {
+        return [
+            $this->formatAmountByAccount(),
+            $this->formatAmountBySymbol(),
+            $this->formatAmountByCurrency(),
+        ];
+    }
+
     protected function formatAmount(): TwigFilter
     {
         return new TwigFilter(
@@ -62,9 +65,6 @@ class AmountFormat extends AbstractExtension
         );
     }
 
-    /**
-     * @return TwigFilter
-     */
     protected function formatAmountPlain(): TwigFilter
     {
         return new TwigFilter(
@@ -79,29 +79,18 @@ class AmountFormat extends AbstractExtension
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getFunctions(): array
-    {
-        return [
-            $this->formatAmountByAccount(),
-            $this->formatAmountBySymbol(),
-            $this->formatAmountByCurrency(),
-        ];
-    }
-
-    /**
      * Will format the amount by the currency related to the given account.
      *
-     * @return TwigFunction
-     * TODO remove me when layout v1 is deprecated.
+     * @return twigFunction
+     *                      TODO remove me when layout v1 is deprecated
      */
     protected function formatAmountByAccount(): TwigFunction
     {
         return new TwigFunction(
             'formatAmountByAccount',
             static function (AccountModel $account, string $amount, bool $coloured = null): string {
-                $coloured = $coloured ?? true;
+                $coloured ??= true;
+
                 /** @var AccountRepositoryInterface $accountRepos */
                 $accountRepos = app(AccountRepositoryInterface::class);
                 $currency     = $accountRepos->getAccountCurrency($account) ?? app('amount')->getDefaultCurrency();
@@ -114,16 +103,14 @@ class AmountFormat extends AbstractExtension
 
     /**
      * Will format the amount by the currency related to the given account.
-     *
-     * @return TwigFunction
      */
     protected function formatAmountBySymbol(): TwigFunction
     {
         return new TwigFunction(
             'formatAmountBySymbol',
             static function (string $amount, string $symbol, int $decimalPlaces = null, bool $coloured = null): string {
-                $decimalPlaces            = $decimalPlaces ?? 2;
-                $coloured                 = $coloured ?? true;
+                $decimalPlaces            ??= 2;
+                $coloured                 ??= true;
                 $currency                 = new TransactionCurrency();
                 $currency->symbol         = $symbol;
                 $currency->decimal_places = $decimalPlaces;
@@ -136,15 +123,13 @@ class AmountFormat extends AbstractExtension
 
     /**
      * Will format the amount by the currency related to the given account.
-     *
-     * @return TwigFunction
      */
     protected function formatAmountByCurrency(): TwigFunction
     {
         return new TwigFunction(
             'formatAmountByCurrency',
             static function (TransactionCurrency $currency, string $amount, bool $coloured = null): string {
-                $coloured = $coloured ?? true;
+                $coloured ??= true;
 
                 return app('amount')->formatAnything($currency, $amount, $coloured);
             },

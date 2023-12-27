@@ -23,24 +23,27 @@ declare(strict_types=1);
 
 namespace FireflyIII\Models;
 
+use Carbon\Carbon;
 use Eloquent;
+use FireflyIII\Support\Models\ReturnsIntegerIdTrait;
+use FireflyIII\Support\Models\ReturnsIntegerUserIdTrait;
 use FireflyIII\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * FireflyIII\Models\Preference
  *
  * @property int                   $id
- * @property Carbon|null           $created_at
- * @property Carbon|null           $updated_at
+ * @property null|Carbon           $created_at
+ * @property null|Carbon           $updated_at
  * @property int                   $user_id
  * @property string                $name
- * @property int|string|array|null $data
- * @property-read User             $user
+ * @property null|array|int|string $data
+ * @property User                  $user
+ *
  * @method static Builder|Preference newModelQuery()
  * @method static Builder|Preference newQuery()
  * @method static Builder|Preference query()
@@ -50,15 +53,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static Builder|Preference whereName($value)
  * @method static Builder|Preference whereUpdatedAt($value)
  * @method static Builder|Preference whereUserId($value)
+ *
  * @mixin Eloquent
  */
 class Preference extends Model
 {
-    /**
-     * The attributes that should be casted to native types.
-     *
-     * @var array
-     */
+    use ReturnsIntegerIdTrait;
+    use ReturnsIntegerUserIdTrait;
+
     protected $casts
         = [
             'created_at' => 'datetime',
@@ -66,23 +68,20 @@ class Preference extends Model
             'data'       => 'array',
         ];
 
-    /** @var array Fields that can be filled */
     protected $fillable = ['user_id', 'data', 'name'];
 
     /**
      * Route binder. Converts the key in the URL to the specified object (or throw 404).
      *
-     * @param string $value
-     *
-     * @return Preference
      * @throws NotFoundHttpException
      */
-    public static function routeBinder(string $value): Preference
+    public static function routeBinder(string $value): self
     {
         if (auth()->check()) {
             /** @var User $user */
             $user = auth()->user();
-            /** @var Preference|null $preference */
+
+            /** @var null|Preference $preference */
             $preference = $user->preferences()->where('name', $value)->first();
             if (null === $preference) {
                 $preference = $user->preferences()->where('id', (int)$value)->first();
@@ -92,21 +91,19 @@ class Preference extends Model
             }
             $default = config('firefly.default_preferences');
             if (array_key_exists($value, $default)) {
-                $preference          = new Preference();
+                $preference          = new self();
                 $preference->name    = $value;
                 $preference->data    = $default[$value];
-                $preference->user_id = $user->id;
+                $preference->user_id = (int)$user->id;
                 $preference->save();
 
                 return $preference;
             }
         }
+
         throw new NotFoundHttpException();
     }
 
-    /**
-     * @return BelongsTo
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

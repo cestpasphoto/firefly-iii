@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 /*
  * ShowController.php
  * Copyright (c) 2023 james@firefly-iii.org
@@ -21,22 +20,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace FireflyIII\Api\V2\Controllers\Model\Bill;
 
 use FireflyIII\Api\V2\Controllers\Controller;
 use FireflyIII\Models\Bill;
-use FireflyIII\Repositories\Administration\Bill\BillRepositoryInterface;
-use FireflyIII\Transformers\V2\AccountTransformer;
+use FireflyIII\Repositories\UserGroups\Bill\BillRepositoryInterface;
+use FireflyIII\Support\Http\Api\ValidatesUserGroupTrait;
 use FireflyIII\Transformers\V2\BillTransformer;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * Class ShowController
  */
 class ShowController extends Controller
 {
+    use ValidatesUserGroupTrait;
+
     private BillRepositoryInterface $repository;
 
     public function __construct()
@@ -45,45 +46,29 @@ class ShowController extends Controller
         $this->middleware(
             function ($request, $next) {
                 $this->repository = app(BillRepositoryInterface::class);
-                $this->repository->setAdministrationId(auth()->user()->user_group_id);
+
+                // new way of user group validation
+                $userGroup = $this->validateUserGroup($request);
+                if (null !== $userGroup) {
+                    $this->repository->setUserGroup($userGroup);
+                }
+
                 return $next($request);
             }
         );
     }
 
     /**
-     * @param Request $request
-     *
-     * TODO see autocomplete/accountcontroller for list.
-     *
-     * @return JsonResponse
-     */
-    public function index(Request $request): JsonResponse
-    {
-        $this->repository->correctOrder();
-        $bills       = $this->repository->getBills();
-        $pageSize    = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
-        $count       = $bills->count();
-        $bills       = $bills->slice(($this->parameters->get('page') - 1) * $pageSize, $pageSize);
-        $paginator   = new LengthAwarePaginator($bills, $count, $pageSize, $this->parameters->get('page'));
-        $transformer = new BillTransformer();
-        $transformer->setParameters($this->parameters); // give params to transformer
-
-        return response()
-            ->json($this->jsonApiList('subscriptions', $paginator, $transformer))
-            ->header('Content-Type', self::CONTENT_TYPE);
-    }
-
-    /**
      * TODO this endpoint is not documented
      */
-    public function show(Request $request, Bill $bill): JsonResponse
+    public function show(Bill $bill): JsonResponse
     {
         $transformer = new BillTransformer();
         $transformer->setParameters($this->parameters);
 
         return response()
             ->api($this->jsonApiObject('subscriptions', $bill, $transformer))
-            ->header('Content-Type', self::CONTENT_TYPE);
+            ->header('Content-Type', self::CONTENT_TYPE)
+        ;
     }
 }

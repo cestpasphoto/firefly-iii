@@ -32,7 +32,6 @@ use FireflyIII\Repositories\RuleGroup\RuleGroupRepositoryInterface;
 use FireflyIII\Services\Internal\Support\CreditRecalculateService;
 use FireflyIII\TransactionRules\Engine\RuleEngineInterface;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class StoredGroupEventHandler
@@ -41,26 +40,25 @@ class StoredGroupEventHandler
 {
     /**
      * This method grabs all the users rules and processes them.
-     *
-     * @param StoredTransactionGroup $storedGroupEvent
      */
     public function processRules(StoredTransactionGroup $storedGroupEvent): void
     {
         if (false === $storedGroupEvent->applyRules) {
-            Log::info(sprintf('Will not run rules on group #%d', $storedGroupEvent->transactionGroup->id));
+            app('log')->info(sprintf('Will not run rules on group #%d', $storedGroupEvent->transactionGroup->id));
 
             return;
         }
-        Log::debug('Now in StoredGroupEventHandler::processRules()');
+        app('log')->debug('Now in StoredGroupEventHandler::processRules()');
 
         $journals = $storedGroupEvent->transactionGroup->transactionJournals;
         $array    = [];
+
         /** @var TransactionJournal $journal */
         foreach ($journals as $journal) {
             $array[] = $journal->id;
         }
         $journalIds = implode(',', $array);
-        Log::debug(sprintf('Add local operator for journal(s): %s', $journalIds));
+        app('log')->debug(sprintf('Add local operator for journal(s): %s', $journalIds));
 
         // collect rules:
         $ruleGroupRepository = app(RuleGroupRepositoryInterface::class);
@@ -78,12 +76,10 @@ class StoredGroupEventHandler
         $newRuleEngine->fire();
     }
 
-    /**
-     * @param StoredTransactionGroup $event
-     */
     public function recalculateCredit(StoredTransactionGroup $event): void
     {
         $group = $event->transactionGroup;
+
         /** @var CreditRecalculateService $object */
         $object = app(CreditRecalculateService::class);
         $object->setGroup($group);
@@ -92,20 +88,19 @@ class StoredGroupEventHandler
 
     /**
      * This method processes all webhooks that respond to the "stored transaction group" trigger (100)
-     *
-     * @param StoredTransactionGroup $storedGroupEvent
      */
     public function triggerWebhooks(StoredTransactionGroup $storedGroupEvent): void
     {
-        Log::debug(__METHOD__);
+        app('log')->debug(__METHOD__);
         $group = $storedGroupEvent->transactionGroup;
         if (false === $storedGroupEvent->fireWebhooks) {
-            Log::info(sprintf('Will not fire webhooks for transaction group #%d', $group->id));
+            app('log')->info(sprintf('Will not fire webhooks for transaction group #%d', $group->id));
 
             return;
         }
 
         $user = $group->user;
+
         /** @var MessageGeneratorInterface $engine */
         $engine = app(MessageGeneratorInterface::class);
         $engine->setUser($user);

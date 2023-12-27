@@ -28,11 +28,8 @@ use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Generator\Chart\Basic\GeneratorInterface;
 use FireflyIII\Models\Account;
 use FireflyIII\Repositories\Account\AccountRepositoryInterface;
-use FireflyIII\Repositories\Currency\CurrencyRepositoryInterface;
 use FireflyIII\Support\CacheProperties;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use JsonException;
 
 /**
  * Trait ChartGeneration
@@ -42,13 +39,7 @@ trait ChartGeneration
     /**
      * Shows an overview of the account balances for a set of accounts.
      *
-     * @param Collection $accounts
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
-     * @return array
      * @throws FireflyException
-     * @throws JsonException
      */
     protected function accountBalanceChart(Collection $accounts, Carbon $start, Carbon $end): array // chart helper method.
     {
@@ -61,22 +52,22 @@ trait ChartGeneration
         if ($cache->has()) {
             return $cache->get();
         }
-        Log::debug('Regenerate chart.account.account-balance-chart from scratch.');
+        app('log')->debug('Regenerate chart.account.account-balance-chart from scratch.');
         $locale = app('steam')->getLocale();
+
         /** @var GeneratorInterface $generator */
         $generator = app(GeneratorInterface::class);
 
-        /** @var CurrencyRepositoryInterface $repository */
-        $repository = app(CurrencyRepositoryInterface::class);
         /** @var AccountRepositoryInterface $accountRepos */
         $accountRepos = app(AccountRepositoryInterface::class);
 
         $default   = app('amount')->getDefaultCurrency();
         $chartData = [];
+
         /** @var Account $account */
         foreach ($accounts as $account) {
             // TODO we can use getAccountCurrency instead.
-            $currency = $repository->find((int)$accountRepos->getMetaValue($account, 'currency_id'));
+            $currency = $accountRepos->getAccountCurrency($account);
             if (null === $currency) {
                 $currency = $default;
             }

@@ -18,10 +18,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+let loaded = false;
+
 async function loadTranslations(i18n, locale) {
-    const response = await fetch(`./v2/i18n/${locale}.json`);
-    const translations = await response.json();
-    i18n.store(translations);
+    if (false === loaded) {
+        locale = locale.replace('-', '_');
+        const response = await fetch(`./v2/i18n/${locale}.json`);
+        const translations = await response.json();
+        i18n.store(translations);
+    }
+    //loaded = true;
 }
 
 export {loadTranslations};

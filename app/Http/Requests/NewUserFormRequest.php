@@ -29,18 +29,14 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Class NewUserFormRequest.
- *
-
  */
 class NewUserFormRequest extends FormRequest
 {
-    use ConvertsDataTypes;
     use ChecksLogin;
+    use ConvertsDataTypes;
 
     /**
      * Rules for this request.
-     *
-     * @return array
      */
     public function rules(): array
     {

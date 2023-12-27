@@ -32,18 +32,14 @@ use FireflyIII\Models\RecurrenceTransaction;
 use FireflyIII\Services\Internal\Support\RecurringTransactionTrait;
 use FireflyIII\Services\Internal\Support\TransactionTypeTrait;
 use FireflyIII\User;
-use Illuminate\Support\Facades\Log;
-use JsonException;
 
 /**
  * Class RecurrenceUpdateService
- *
-
  */
 class RecurrenceUpdateService
 {
-    use TransactionTypeTrait;
     use RecurringTransactionTrait;
+    use TransactionTypeTrait;
 
     private User $user;
 
@@ -52,10 +48,6 @@ class RecurrenceUpdateService
      *
      * TODO if the user updates the type, the accounts must be validated again.
      *
-     * @param Recurrence $recurrence
-     * @param array      $data
-     *
-     * @return Recurrence
      * @throws FireflyException
      */
     public function update(Recurrence $recurrence, array $data): Recurrence
@@ -79,7 +71,7 @@ class RecurrenceUpdateService
                 $recurrence->repetitions  = 0;
             }
             if (array_key_exists('nr_of_repetitions', $info)) {
-                if (0 !== (int)$info['nr_of_repetitions']) {
+                if (0 !== (int) $info['nr_of_repetitions']) {
                     $recurrence->repeat_until = null;
                 }
                 $recurrence->repetitions = $info['nr_of_repetitions'];
@@ -99,7 +91,7 @@ class RecurrenceUpdateService
 
         // update all repetitions
         if (array_key_exists('repetitions', $data)) {
-            Log::debug('Will update repetitions array');
+            app('log')->debug('Will update repetitions array');
             // update each repetition or throw error yay
             $this->updateRepetitions($recurrence, $data['repetitions'] ?? []);
         }
@@ -112,10 +104,6 @@ class RecurrenceUpdateService
         return $recurrence;
     }
 
-    /**
-     * @param Recurrence $recurrence
-     * @param string     $text
-     */
     private function setNoteText(Recurrence $recurrence, string $text): void
     {
         $dbNote = $recurrence->notes()->first();
@@ -133,10 +121,6 @@ class RecurrenceUpdateService
     }
 
     /**
-     *
-     * @param Recurrence $recurrence
-     * @param array      $repetitions
-     *
      * @throws FireflyException
      */
     private function updateRepetitions(Recurrence $recurrence, array $repetitions): void
@@ -148,14 +132,14 @@ class RecurrenceUpdateService
         }
         // user added or removed repetitions, delete all and recreate:
         if ($originalCount !== count($repetitions)) {
-            Log::debug('Delete existing repetitions and create new ones.');
+            app('log')->debug('Delete existing repetitions and create new ones.');
             $this->deleteRepetitions($recurrence);
             $this->createRepetitions($recurrence, $repetitions);
 
             return;
         }
         // loop all and try to match them:
-        Log::debug('Loop and find');
+        app('log')->debug('Loop and find');
         foreach ($repetitions as $current) {
             $match = $this->matchRepetition($recurrence, $current);
             if (null === $match) {
@@ -169,25 +153,20 @@ class RecurrenceUpdateService
             ];
             foreach ($fields as $field => $column) {
                 if (array_key_exists($field, $current)) {
-                    $match->$column = $current[$field];
+                    $match->{$column} = $current[$field];
                     $match->save();
                 }
             }
         }
     }
 
-    /**
-     * @param Recurrence $recurrence
-     * @param array      $data
-     *
-     * @return RecurrenceRepetition|null
-     */
     private function matchRepetition(Recurrence $recurrence, array $data): ?RecurrenceRepetition
     {
         $originalCount = $recurrence->recurrenceRepetitions()->count();
         if (1 === $originalCount) {
-            Log::debug('Return the first one');
-            /** @var RecurrenceRepetition|null */
+            app('log')->debug('Return the first one');
+
+            // @var RecurrenceRepetition|null
             return $recurrence->recurrenceRepetitions()->first();
         }
         // find it:
@@ -204,53 +183,46 @@ class RecurrenceUpdateService
                 $query->where($column, $data[$field]);
             }
         }
-        /** @var RecurrenceRepetition|null */
+
+        // @var RecurrenceRepetition|null
         return $query->first();
     }
 
     /**
      * TODO this method is very complex.
      *
-     * @param Recurrence $recurrence
-     * @param array      $transactions
-     *
      * @throws FireflyException
-     * @throws JsonException
      */
     private function updateTransactions(Recurrence $recurrence, array $transactions): void
     {
-        Log::debug('Now in updateTransactions()');
+        app('log')->debug('Now in updateTransactions()');
         $originalCount = $recurrence->recurrenceTransactions()->count();
-        Log::debug(sprintf('Original count is %d', $originalCount));
+        app('log')->debug(sprintf('Original count is %d', $originalCount));
         if (0 === count($transactions)) {
             // won't drop transactions, rather avoid.
-            Log::warning('No transactions to update, too scared to continue!');
+            app('log')->warning('No transactions to update, too scared to continue!');
+
             return;
         }
         $combinations         = [];
         $originalTransactions = $recurrence->recurrenceTransactions()->get()->toArray();
-        /**
-         * First, make sure to loop all existing transactions and match them to a counterpart in the submitted transactions array.
-         */
+        // First, make sure to loop all existing transactions and match them to a counterpart in the submitted transactions array.
         foreach ($originalTransactions as $i => $originalTransaction) {
             foreach ($transactions as $ii => $submittedTransaction) {
-                if (array_key_exists('id', $submittedTransaction) && (int)$originalTransaction['id'] === (int)$submittedTransaction['id']) {
-                    Log::debug(sprintf('Match original transaction #%d with an entry in the submitted array.', $originalTransaction['id']));
+                if (array_key_exists('id', $submittedTransaction) && (int) $originalTransaction['id'] === (int) $submittedTransaction['id']) {
+                    app('log')->debug(sprintf('Match original transaction #%d with an entry in the submitted array.', $originalTransaction['id']));
                     $combinations[] = [
                         'original'  => $originalTransaction,
                         'submitted' => $submittedTransaction,
                     ];
-                    unset($originalTransactions[$i]);
-                    unset($transactions[$ii]);
+                    unset($originalTransactions[$i], $transactions[$ii]);
                 }
             }
         }
-        /**
-         * If one left of both we can match those as well and presto.
-         */
+        // If one left of both we can match those as well and presto.
         if (1 === count($originalTransactions) && 1 === count($transactions)) {
             $first = array_shift($originalTransactions);
-            Log::debug(sprintf('One left of each, link them (ID is #%d)', $first['id']));
+            app('log')->debug(sprintf('One left of each, link them (ID is #%d)', $first['id']));
             $combinations[] = [
                 'original'  => $first,
                 'submitted' => array_shift($transactions),
@@ -265,49 +237,55 @@ class RecurrenceUpdateService
         }
         // anything left in the original transactions array can be deleted.
         foreach ($originalTransactions as $original) {
-            Log::debug(sprintf('Original transaction #%d is unmatched, delete it!', $original['id']));
-            $this->deleteTransaction($recurrence, (int)$original['id']);
+            app('log')->debug(sprintf('Original transaction #%d is unmatched, delete it!', $original['id']));
+            $this->deleteTransaction($recurrence, (int) $original['id']);
         }
         // anything left is new.
         $this->createTransactions($recurrence, $transactions);
     }
 
     /**
-     * @param Recurrence $recurrence
-     * @param array      $combination
+     * It's a complex method but nothing surprising.
      *
-     * @return void
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     private function updateCombination(Recurrence $recurrence, array $combination): void
     {
-        $original  = $combination['original'];
-        $submitted = $combination['submitted'];
+        $original        = $combination['original'];
+        $submitted       = $combination['submitted'];
+        $currencyFactory = app(TransactionCurrencyFactory::class);
+
         /** @var RecurrenceTransaction $transaction */
         $transaction = $recurrence->recurrenceTransactions()->find($original['id']);
-        Log::debug(sprintf('Now in updateCombination(#%d)', $original['id']));
-
-        $currencyFactory = app(TransactionCurrencyFactory::class);
+        app('log')->debug(sprintf('Now in updateCombination(#%d)', $original['id']));
 
         // loop all and try to match them:
         $currency        = null;
         $foreignCurrency = null;
         if (array_key_exists('currency_id', $submitted) || array_key_exists('currency_code', $submitted)) {
-            $currency = $currencyFactory->find($submitted['currency_id'] ?? null, $currency['currency_code'] ?? null);
+            $currency = $currencyFactory->find(
+                array_key_exists('currency_id', $submitted) ? (int) $submitted['currency_id'] : null,
+                array_key_exists('currency_code', $submitted) ? $submitted['currency_code'] : null
+            );
         }
         if (null === $currency) {
             unset($submitted['currency_id'], $submitted['currency_code']);
         }
         if (null !== $currency) {
-            $submitted['currency_id'] = (int)$currency->id;
+            $submitted['currency_id'] = $currency->id;
         }
         if (array_key_exists('foreign_currency_id', $submitted) || array_key_exists('foreign_currency_code', $submitted)) {
-            $foreignCurrency = $currencyFactory->find($submitted['foreign_currency_id'] ?? null, $currency['foreign_currency_code'] ?? null);
+            $foreignCurrency = $currencyFactory->find(
+                array_key_exists('foreign_currency_id', $submitted) ? (int) $submitted['foreign_currency_id'] : null,
+                array_key_exists('foreign_currency_code', $submitted) ? $submitted['foreign_currency_code'] : null
+            );
         }
         if (null === $foreignCurrency) {
             unset($submitted['foreign_currency_id'], $currency['foreign_currency_code']);
         }
         if (null !== $foreignCurrency) {
-            $submitted['foreign_currency_id'] = (int)$foreignCurrency->id;
+            $submitted['foreign_currency_id'] = $foreignCurrency->id;
         }
 
         // update fields that are part of the recurring transaction itself.
@@ -322,47 +300,41 @@ class RecurrenceUpdateService
         ];
         foreach ($fields as $field => $column) {
             if (array_key_exists($field, $submitted)) {
-                $transaction->$column = $submitted[$field];
+                $transaction->{$column} = $submitted[$field];
                 $transaction->save();
             }
         }
         // update meta data
         if (array_key_exists('budget_id', $submitted)) {
-            $this->setBudget($transaction, (int)$submitted['budget_id']);
+            $this->setBudget($transaction, (int) $submitted['budget_id']);
         }
         if (array_key_exists('bill_id', $submitted)) {
-            $this->setBill($transaction, (int)$submitted['bill_id']);
+            $this->setBill($transaction, (int) $submitted['bill_id']);
         }
         // reset category if name is set but empty:
         // can be removed when v1 is retired.
-        if (array_key_exists('category_name', $submitted) && '' === (string)$submitted['category_name']) {
-            Log::debug('Category name is submitted but is empty. Set category to be empty.');
+        if (array_key_exists('category_name', $submitted) && '' === (string) $submitted['category_name']) {
+            app('log')->debug('Category name is submitted but is empty. Set category to be empty.');
             $submitted['category_name'] = null;
             $submitted['category_id']   = 0;
         }
 
         if (array_key_exists('category_id', $submitted)) {
-            Log::debug(sprintf('Category ID is submitted, set category to be %d.', (int)$submitted['category_id']));
-            $this->setCategory($transaction, (int)$submitted['category_id']);
+            app('log')->debug(sprintf('Category ID is submitted, set category to be %d.', (int) $submitted['category_id']));
+            $this->setCategory($transaction, (int) $submitted['category_id']);
         }
 
         if (array_key_exists('tags', $submitted) && is_array($submitted['tags'])) {
             $this->updateTags($transaction, $submitted['tags']);
         }
         if (array_key_exists('piggy_bank_id', $submitted)) {
-            $this->updatePiggyBank($transaction, (int)$submitted['piggy_bank_id']);
+            $this->updatePiggyBank($transaction, (int) $submitted['piggy_bank_id']);
         }
     }
 
-    /**
-     * @param Recurrence $recurrence
-     * @param int        $transactionId
-     *
-     * @return void
-     */
     private function deleteTransaction(Recurrence $recurrence, int $transactionId): void
     {
-        Log::debug(sprintf('Will delete transaction #%d in recurrence #%d.', $transactionId, $recurrence->id));
+        app('log')->debug(sprintf('Will delete transaction #%d in recurrence #%d.', $transactionId, $recurrence->id));
         $recurrence->recurrenceTransactions()->where('id', $transactionId)->delete();
     }
 }

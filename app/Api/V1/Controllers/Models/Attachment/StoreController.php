@@ -34,7 +34,6 @@ use FireflyIII\Transformers\AttachmentTransformer;
 use FireflyIII\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use League\Fractal\Resource\Item;
 
 /**
@@ -46,8 +45,6 @@ class StoreController extends Controller
 
     /**
      * StoreController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -71,14 +68,11 @@ class StoreController extends Controller
      *
      * Store a newly created resource in storage.
      *
-     * @param StoreRequest $request
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function store(StoreRequest $request): JsonResponse
     {
-        Log::debug(sprintf('Now in %s', __METHOD__));
+        app('log')->debug(sprintf('Now in %s', __METHOD__));
         $data       = $request->getAll();
         $attachment = $this->repository->store($data);
         $manager    = $this->getManager();
@@ -94,12 +88,6 @@ class StoreController extends Controller
 
     /**
      * Upload an attachment.
-     *
-     *
-     * @param Request    $request
-     * @param Attachment $attachment
-     *
-     * @return JsonResponse
      */
     public function upload(Request $request, Attachment $attachment): JsonResponse
     {
@@ -107,7 +95,7 @@ class StoreController extends Controller
         $helper = app(AttachmentHelperInterface::class);
         $body   = $request->getContent();
         if ('' === $body) {
-            Log::error('Body of attachment is empty.');
+            app('log')->error('Body of attachment is empty.');
 
             return response()->json([], 422);
         }

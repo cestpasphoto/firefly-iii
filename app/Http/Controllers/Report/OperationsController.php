@@ -29,8 +29,6 @@ use FireflyIII\Http\Controllers\Controller;
 use FireflyIII\Repositories\Account\AccountTaskerInterface;
 use FireflyIII\Support\CacheProperties;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use Throwable;
 
 /**
  * Class OperationsController.
@@ -42,8 +40,6 @@ class OperationsController extends Controller
 
     /**
      * OperationsController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -62,11 +58,8 @@ class OperationsController extends Controller
     /**
      * View of income and expense.
      *
-     * @param Collection $accounts
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
      * @return mixed|string
+     *
      * @throws FireflyException
      */
     public function expenses(Collection $accounts, Carbon $start, Carbon $end)
@@ -82,12 +75,14 @@ class OperationsController extends Controller
         }
         $report = $this->tasker->getExpenseReport($start, $end, $accounts);
         $type   = 'expense-entry';
+
         try {
             $result = view('reports.partials.income-expenses', compact('report', 'type'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Could not render reports.partials.income-expense: %s', $e->getMessage()));
-            Log::error($e->getTraceAsString());
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Could not render reports.partials.income-expense: %s', $e->getMessage()));
+            app('log')->error($e->getTraceAsString());
             $result = 'Could not render view.';
+
             throw new FireflyException($result, 0, $e);
         }
 
@@ -99,11 +94,6 @@ class OperationsController extends Controller
     /**
      * View of income.
      *
-     * @param Collection $accounts
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
-     * @return string
      * @throws FireflyException
      */
     public function income(Collection $accounts, Carbon $start, Carbon $end): string
@@ -119,12 +109,14 @@ class OperationsController extends Controller
         }
         $report = $this->tasker->getIncomeReport($start, $end, $accounts);
         $type   = 'income-entry';
+
         try {
             $result = view('reports.partials.income-expenses', compact('report', 'type'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Could not render reports.partials.income-expenses: %s', $e->getMessage()));
-            Log::error($e->getTraceAsString());
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Could not render reports.partials.income-expenses: %s', $e->getMessage()));
+            app('log')->error($e->getTraceAsString());
             $result = 'Could not render view.';
+
             throw new FireflyException($result, 0, $e);
         }
 
@@ -136,11 +128,8 @@ class OperationsController extends Controller
     /**
      * Overview of income and expense.
      *
-     * @param Collection $accounts
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
      * @return mixed|string
+     *
      * @throws FireflyException
      */
     public function operations(Collection $accounts, Carbon $start, Carbon $end)
@@ -163,7 +152,7 @@ class OperationsController extends Controller
         /** @var int $currencyId */
         foreach ($keys as $currencyId) {
             $currencyInfo             = $incomes['sums'][$currencyId] ?? $expenses['sums'][$currencyId];
-            $sums[$currencyId]        = $sums[$currencyId] ?? [
+            $sums[$currencyId]        ??= [
                 'currency_id'             => $currencyId,
                 'currency_name'           => $currencyInfo['currency_name'],
                 'currency_code'           => $currencyInfo['currency_code'],
@@ -178,10 +167,11 @@ class OperationsController extends Controller
 
         try {
             $result = view('reports.partials.operations', compact('sums'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Could not render reports.partials.operations: %s', $e->getMessage()));
-            Log::error($e->getTraceAsString());
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Could not render reports.partials.operations: %s', $e->getMessage()));
+            app('log')->error($e->getTraceAsString());
             $result = 'Could not render view.';
+
             throw new FireflyException($result, 0, $e);
         }
         $cache->store($result);

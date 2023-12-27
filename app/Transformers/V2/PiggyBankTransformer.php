@@ -36,7 +36,6 @@ use FireflyIII\Models\TransactionJournal;
 use FireflyIII\Support\Http\Api\ExchangeRateConverter;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use JsonException;
 
 /**
  * Class PiggyBankTransformer
@@ -56,8 +55,6 @@ class PiggyBankTransformer extends AbstractTransformer
 
     /**
      * PiggyBankTransformer constructor.
-     *
-
      */
     public function __construct()
     {
@@ -71,53 +68,55 @@ class PiggyBankTransformer extends AbstractTransformer
         //        $this->piggyRepos    = app(PiggyBankRepositoryInterface::class);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function collectMetaData(Collection $objects): void
     {
         // TODO move to repository (does not exist yet)
         $piggyBanks          = $objects->pluck('id')->toArray();
         $accountInfo         = Account::whereIn('id', $objects->pluck('account_id')->toArray())->get();
         $currencyPreferences = AccountMeta::where('name', '"currency_id"')->whereIn('account_id', $objects->pluck('account_id')->toArray())->get();
+        $currencies          = [];
+
         /** @var Account $account */
         foreach ($accountInfo as $account) {
-            $id                  = (int)$account->id;
+            $id                  = $account->id;
             $this->accounts[$id] = [
                 'name' => $account->name,
             ];
         }
+
         /** @var AccountMeta $preference */
         foreach ($currencyPreferences as $preference) {
             $currencyId                   = (int)$preference->data;
-            $accountId                    = (int)$preference->account_id;
-            $currencies[$currencyId]      = $currencies[$currencyId] ?? TransactionJournal::find($currencyId);
+            $accountId                    = $preference->account_id;
+            $currencies[$currencyId]      ??= TransactionJournal::find($currencyId);
             $this->currencies[$accountId] = $currencies[$currencyId];
         }
 
         // grab object groups:
         $set = DB::table('object_groupables')
-                 ->leftJoin('object_groups', 'object_groups.id', '=', 'object_groupables.object_group_id')
-                 ->where('object_groupables.object_groupable_type', PiggyBank::class)
-                 ->get(['object_groupables.*', 'object_groups.title', 'object_groups.order']);
+            ->leftJoin('object_groups', 'object_groups.id', '=', 'object_groupables.object_group_id')
+            ->where('object_groupables.object_groupable_type', PiggyBank::class)
+            ->get(['object_groupables.*', 'object_groups.title', 'object_groups.order'])
+        ;
+
         /** @var ObjectGroup $entry */
         foreach ($set as $entry) {
             $piggyBankId                = (int)$entry->object_groupable_id;
             $id                         = (int)$entry->object_group_id;
-            $order                      = (int)$entry->order;
+            $order                      = $entry->order;
             $this->groups[$piggyBankId] = [
                 'object_group_id'    => $id,
                 'object_group_title' => $entry->title,
                 'object_group_order' => $order,
             ];
-
         }
 
         // grab repetitions (for current amount):
         $repetitions = PiggyBankRepetition::whereIn('piggy_bank_id', $piggyBanks)->get();
+
         /** @var PiggyBankRepetition $repetition */
         foreach ($repetitions as $repetition) {
-            $this->repetitions[(int)$repetition->piggy_bank_id] = [
+            $this->repetitions[$repetition->piggy_bank_id] = [
                 'amount' => $repetition->currentamount,
             ];
         }
@@ -125,24 +124,21 @@ class PiggyBankTransformer extends AbstractTransformer
         // grab notes
         // continue with notes
         $notes = Note::whereNoteableType(PiggyBank::class)->whereIn('noteable_id', array_keys($piggyBanks))->get();
+
         /** @var Note $note */
         foreach ($notes as $note) {
-            $id               = (int)$note->noteable_id;
+            $id               = $note->noteable_id;
             $this->notes[$id] = $note;
         }
 
-        $this->default   = app('amount')->getDefaultCurrencyByUser(auth()->user());
+        $this->default   = app('amount')->getDefaultCurrencyByUserGroup(auth()->user()->userGroup);
         $this->converter = new ExchangeRateConverter();
     }
 
     /**
      * Transform the piggy bank.
      *
-     * @param PiggyBank $piggyBank
-     *
-     * @return array
      * @throws FireflyException
-     * @throws JsonException
      */
     public function transform(PiggyBank $piggyBank): array
     {
@@ -179,15 +175,15 @@ class PiggyBankTransformer extends AbstractTransformer
         $nativeSavePerMonth  = null;
         $startDate           = $piggyBank->startdate?->format('Y-m-d');
         $targetDate          = $piggyBank->targetdate?->format('Y-m-d');
-        $accountId           = (int)$piggyBank->account_id;
+        $accountId           = $piggyBank->account_id;
         $accountName         = $this->accounts[$accountId]['name'] ?? null;
         $currency            = $this->currencies[$accountId] ?? $this->default;
-        $currentAmount       = app('steam')->bcround($this->repetitions[(int)$piggyBank->id]['amount'] ?? '0', $currency->decimal_places);
+        $currentAmount       = app('steam')->bcround($this->repetitions[$piggyBank->id]['amount'] ?? '0', $currency->decimal_places);
         $nativeCurrentAmount = $this->converter->convert($this->default, $currency, today(), $currentAmount);
         $targetAmount        = $piggyBank->targetamount;
         $nativeTargetAmount  = $this->converter->convert($this->default, $currency, today(), $targetAmount);
-        $note                = $this->notes[(int)$piggyBank->id] ?? null;
-        $group               = $this->groups[(int)$piggyBank->id] ?? null;
+        $note                = $this->notes[$piggyBank->id] ?? null;
+        $group               = $this->groups[$piggyBank->id] ?? null;
 
         if (0 !== bccomp($targetAmount, '0')) { // target amount is not 0.00
             $leftToSave         = bcsub($targetAmount, $currentAmount);
@@ -196,51 +192,49 @@ class PiggyBankTransformer extends AbstractTransformer
             $savePerMonth       = $this->getSuggestedMonthlyAmount($currentAmount, $targetAmount, $piggyBank->startdate, $piggyBank->targetdate);
             $nativeSavePerMonth = $this->converter->convert($this->default, $currency, today(), $savePerMonth);
         }
+        $this->converter->summarize();
 
         return [
-            'id'                      => (string)$piggyBank->id,
-            'created_at'              => $piggyBank->created_at->toAtomString(),
-            'updated_at'              => $piggyBank->updated_at->toAtomString(),
-            'account_id'              => (string)$piggyBank->account_id,
-            'account_name'            => $accountName,
-            'name'                    => $piggyBank->name,
-            'currency_id'             => (string)$currency->id,
-            'currency_code'           => $currency->code,
-            'currency_symbol'         => $currency->symbol,
-            'currency_decimal_places' => (int)$currency->decimal_places,
-            'native_id'               => (string)$this->default->id,
-            'native_code'             => $this->default->code,
-            'native_symbol'           => $this->default->symbol,
-            'native_decimal_places'   => (int)$this->default->decimal_places,
-            'current_amount'          => $currentAmount,
-            'native_current_amount'   => $nativeCurrentAmount,
-            'target_amount'           => $targetAmount,
-            'native_target_amount'    => $nativeTargetAmount,
-            'percentage'              => $percentage,
-            'left_to_save'            => $leftToSave,
-            'native_left_to_save'     => $nativeLeftToSave,
-            'save_per_month'          => $savePerMonth,
-            'native_save_per_month'   => $nativeSavePerMonth,
-            'start_date'              => $startDate,
-            'target_date'             => $targetDate,
-            'order'                   => (int)$piggyBank->order,
-            'active'                  => $piggyBank->active,
-            'notes'                   => $note,
-            'object_group_id'         => $group ? $group['object_group_id'] : null,
-            'object_group_order'      => $group ? $group['object_group_order'] : null,
-            'object_group_title'      => $group ? $group['object_group_title'] : null,
-            'links'                   => [
+            'id'                             => (string)$piggyBank->id,
+            'created_at'                     => $piggyBank->created_at->toAtomString(),
+            'updated_at'                     => $piggyBank->updated_at->toAtomString(),
+            'account_id'                     => (string)$piggyBank->account_id,
+            'account_name'                   => $accountName,
+            'name'                           => $piggyBank->name,
+            'currency_id'                    => (string)$currency->id,
+            'currency_code'                  => $currency->code,
+            'currency_symbol'                => $currency->symbol,
+            'currency_decimal_places'        => $currency->decimal_places,
+            'native_currency_id'             => (string)$this->default->id,
+            'native_currency_code'           => $this->default->code,
+            'native_currency_symbol'         => $this->default->symbol,
+            'native_currency_decimal_places' => $this->default->decimal_places,
+            'current_amount'                 => $currentAmount,
+            'native_current_amount'          => $nativeCurrentAmount,
+            'target_amount'                  => $targetAmount,
+            'native_target_amount'           => $nativeTargetAmount,
+            'percentage'                     => $percentage,
+            'left_to_save'                   => $leftToSave,
+            'native_left_to_save'            => $nativeLeftToSave,
+            'save_per_month'                 => $savePerMonth,
+            'native_save_per_month'          => $nativeSavePerMonth,
+            'start_date'                     => $startDate,
+            'target_date'                    => $targetDate,
+            'order'                          => $piggyBank->order,
+            'active'                         => $piggyBank->active,
+            'notes'                          => $note,
+            'object_group_id'                => $group ? $group['object_group_id'] : null,
+            'object_group_order'             => $group ? $group['object_group_order'] : null,
+            'object_group_title'             => $group ? $group['object_group_title'] : null,
+            'links'                          => [
                 [
                     'rel' => 'self',
-                    'uri' => '/piggy_banks/' . $piggyBank->id,
+                    'uri' => '/piggy_banks/'.$piggyBank->id,
                 ],
             ],
         ];
     }
 
-    /**
-     * @return string|null
-     */
     private function getSuggestedMonthlyAmount(string $currentAmount, string $targetAmount, ?Carbon $startDate, ?Carbon $targetDate): string
     {
         $savePerMonth = '0';

@@ -28,12 +28,12 @@ use FireflyIII\Api\V1\Controllers\Controller;
 use FireflyIII\Api\V1\Requests\Models\TransactionCurrency\UpdateRequest;
 use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Models\TransactionCurrency;
-use FireflyIII\Repositories\Currency\CurrencyRepositoryInterface;
+use FireflyIII\Repositories\UserGroups\Currency\CurrencyRepositoryInterface;
 use FireflyIII\Support\Http\Api\AccountFilter;
 use FireflyIII\Support\Http\Api\TransactionFilter;
 use FireflyIII\Transformers\CurrencyTransformer;
+use FireflyIII\User;
 use Illuminate\Http\JsonResponse;
-use JsonException;
 use League\Fractal\Resource\Item;
 
 /**
@@ -48,8 +48,6 @@ class UpdateController extends Controller
 
     /**
      * CurrencyRepository constructor.
-     *
-
      */
     public function __construct()
     {
@@ -70,11 +68,7 @@ class UpdateController extends Controller
      *
      * Disable a currency.
      *
-     * @param TransactionCurrency $currency
-     *
-     * @return JsonResponse
      * @throws FireflyException
-     * @throws JsonException
      */
     public function disable(TransactionCurrency $currency): JsonResponse
     {
@@ -82,11 +76,17 @@ class UpdateController extends Controller
         if ($this->repository->currencyInUse($currency)) {
             return response()->json([], 409);
         }
+        // must not be the only one in use:
+        if (1 === $this->repository->get()->count()) {
+            return response()->json([], 409);
+        }
+
+        /** @var User $user */
+        $user = auth()->user();
         $this->repository->disable($currency);
         $manager = $this->getManager();
 
-        $defaultCurrency = app('amount')->getDefaultCurrencyByUser(auth()->user());
-        $this->parameters->set('defaultCurrency', $defaultCurrency);
+        $currency->refreshForUser($user);
 
         /** @var CurrencyTransformer $transformer */
         $transformer = app(CurrencyTransformer::class);
@@ -103,21 +103,19 @@ class UpdateController extends Controller
      *
      * Make the currency a default currency.
      *
-     * @param TransactionCurrency $currency
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function makeDefault(TransactionCurrency $currency): JsonResponse
     {
+        /** @var User $user */
+        $user = auth()->user();
         $this->repository->enable($currency);
+        $this->repository->makeDefault($currency);
 
-        app('preferences')->set('currencyPreference', $currency->code);
         app('preferences')->mark();
 
         $manager = $this->getManager();
-
-        $this->parameters->set('defaultCurrency', $currency);
+        $currency->refreshForUser($user);
 
         /** @var CurrencyTransformer $transformer */
         $transformer = app(CurrencyTransformer::class);
@@ -134,19 +132,17 @@ class UpdateController extends Controller
      *
      * Enable a currency.
      *
-     * @param TransactionCurrency $currency
-     *
-     * @return JsonResponse
      * @throws FireflyException
-     * @throws JsonException
      */
     public function enable(TransactionCurrency $currency): JsonResponse
     {
         $this->repository->enable($currency);
         $manager = $this->getManager();
 
-        $defaultCurrency = app('amount')->getDefaultCurrencyByUser(auth()->user());
-        $this->parameters->set('defaultCurrency', $defaultCurrency);
+        /** @var User $user */
+        $user = auth()->user();
+
+        $currency->refreshForUser($user);
 
         /** @var CurrencyTransformer $transformer */
         $transformer = app(CurrencyTransformer::class);
@@ -163,27 +159,26 @@ class UpdateController extends Controller
      *
      * Update a currency.
      *
-     * @param UpdateRequest       $request
-     * @param TransactionCurrency $currency
-     *
-     * @return JsonResponse
      * @throws FireflyException
-     * @throws JsonException
      */
     public function update(UpdateRequest $request, TransactionCurrency $currency): JsonResponse
     {
-        $data     = $request->getAll();
+        $data = $request->getAll();
+
+        /** @var User $user */
+        $user = auth()->user();
+
+        // safety catch on currency disablement.
+        $set = $this->repository->get();
+        if (array_key_exists('enabled', $data) && false === $data['enabled'] && 1 === count($set) && $set->first()->id === $currency->id) {
+            return response()->json([], 409);
+        }
         $currency = $this->repository->update($currency, $data);
 
-        if (true === $request->boolean('default')) {
-            app('preferences')->set('currencyPreference', $currency->code);
-            app('preferences')->mark();
-        }
+        app('preferences')->mark();
 
         $manager = $this->getManager();
-
-        $defaultCurrency = app('amount')->getDefaultCurrencyByUser(auth()->user());
-        $this->parameters->set('defaultCurrency', $defaultCurrency);
+        $currency->refreshForUser($user);
 
         /** @var CurrencyTransformer $transformer */
         $transformer = app(CurrencyTransformer::class);

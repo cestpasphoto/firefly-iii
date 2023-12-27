@@ -44,8 +44,6 @@ class ListController extends Controller
 
     /**
      * ObjectGroupController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -68,16 +66,13 @@ class ListController extends Controller
      *
      * List all bills in this object group
      *
-     * @param ObjectGroup $objectGroup
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function bills(ObjectGroup $objectGroup): JsonResponse
     {
         $manager = $this->getManager();
 
-        $pageSize = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize = $this->parameters->get('limit');
         // get list of piggy banks. Count it and split it.
         $collection = $this->repository->getBills($objectGroup);
         $count      = $collection->count();
@@ -85,7 +80,7 @@ class ListController extends Controller
 
         // make paginator:
         $paginator = new LengthAwarePaginator($bills, $count, $pageSize, $this->parameters->get('page'));
-        $paginator->setPath(route('api.v1.currencies.bills', [$objectGroup->id]) . $this->buildParams());
+        $paginator->setPath(route('api.v1.currencies.bills', [$objectGroup->id]).$this->buildParams());
 
         /** @var BillTransformer $transformer */
         $transformer = app(BillTransformer::class);
@@ -103,9 +98,6 @@ class ListController extends Controller
      *
      * List all piggies under the object group.
      *
-     * @param ObjectGroup $objectGroup
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function piggyBanks(ObjectGroup $objectGroup): JsonResponse
@@ -114,7 +106,7 @@ class ListController extends Controller
         $manager = $this->getManager();
 
         // types to get, page size:
-        $pageSize = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize = $this->parameters->get('limit');
 
         // get list of piggy banks. Count it and split it.
         $collection = $this->repository->getPiggyBanks($objectGroup);
@@ -123,7 +115,7 @@ class ListController extends Controller
 
         // make paginator:
         $paginator = new LengthAwarePaginator($piggyBanks, $count, $pageSize, $this->parameters->get('page'));
-        $paginator->setPath(route('api.v1.object-groups.piggy-banks', [$objectGroup->id]) . $this->buildParams());
+        $paginator->setPath(route('api.v1.object-groups.piggy-banks', [$objectGroup->id]).$this->buildParams());
 
         /** @var PiggyBankTransformer $transformer */
         $transformer = app(PiggyBankTransformer::class);

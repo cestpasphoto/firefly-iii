@@ -32,28 +32,20 @@ use FireflyIII\Repositories\Account\OperationsRepositoryInterface;
 use FireflyIII\Support\Http\Controllers\AugumentData;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
-use Throwable;
 
 /**
  * Class DoubleController
- *
  */
 class DoubleController extends Controller
 {
     use AugumentData;
 
-    /** @var AccountRepositoryInterface The account repository */
-    protected $accountRepository;
-
-    /** @var OperationsRepositoryInterface */
-    private $opsRepository;
+    protected AccountRepositoryInterface $accountRepository;
+    private OperationsRepositoryInterface $opsRepository;
 
     /**
      * Constructor for ExpenseController
-     *
-
      */
     public function __construct()
     {
@@ -71,12 +63,8 @@ class DoubleController extends Controller
     }
 
     /**
-     * @param Collection $accounts
-     * @param Collection $doubles
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
      * @return string
+     *
      * @throws FireflyException
      */
     public function avgExpenses(Collection $accounts, Collection $doubles, Carbon $start, Carbon $end)
@@ -89,7 +77,7 @@ class DoubleController extends Controller
             foreach ($currency['transaction_journals'] as $journal) {
                 $sourceId     = $journal['source_account_id'];
                 $key          = sprintf('%d-%d', $sourceId, $currency['currency_id']);
-                $result[$key] = $result[$key] ?? [
+                $result[$key] ??= [
                     'transactions'            => 0,
                     'sum'                     => '0',
                     'avg'                     => '0',
@@ -101,7 +89,7 @@ class DoubleController extends Controller
                     'currency_symbol'         => $currency['currency_symbol'],
                     'currency_decimal_places' => $currency['currency_decimal_places'],
                 ];
-                $result[$key]['transactions']++;
+                ++$result[$key]['transactions'];
                 $result[$key]['sum']       = bcadd($journal['amount'], $result[$key]['sum']);
                 $result[$key]['avg']       = bcdiv($result[$key]['sum'], (string)$result[$key]['transactions']);
                 $result[$key]['avg_float'] = (float)$result[$key]['avg'];
@@ -114,9 +102,10 @@ class DoubleController extends Controller
 
         try {
             $result = view('reports.double.partials.avg-expenses', compact('result'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Could not render reports.partials.budget-period: %s', $e->getMessage()));
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Could not render reports.partials.budget-period: %s', $e->getMessage()));
             $result = sprintf('Could not render view: %s', $e->getMessage());
+
             throw new FireflyException($e->getMessage(), 0, $e);
         }
 
@@ -124,12 +113,8 @@ class DoubleController extends Controller
     }
 
     /**
-     * @param Collection $accounts
-     * @param Collection $doubles
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
      * @return string
+     *
      * @throws FireflyException
      */
     public function avgIncome(Collection $accounts, Collection $doubles, Carbon $start, Carbon $end)
@@ -142,7 +127,7 @@ class DoubleController extends Controller
             foreach ($currency['transaction_journals'] as $journal) {
                 $destinationId = $journal['destination_account_id'];
                 $key           = sprintf('%d-%d', $destinationId, $currency['currency_id']);
-                $result[$key]  = $result[$key] ?? [
+                $result[$key]  ??= [
                     'transactions'             => 0,
                     'sum'                      => '0',
                     'avg'                      => '0',
@@ -154,7 +139,7 @@ class DoubleController extends Controller
                     'currency_symbol'          => $currency['currency_symbol'],
                     'currency_decimal_places'  => $currency['currency_decimal_places'],
                 ];
-                $result[$key]['transactions']++;
+                ++$result[$key]['transactions'];
                 $result[$key]['sum']       = bcadd($journal['amount'], $result[$key]['sum']);
                 $result[$key]['avg']       = bcdiv($result[$key]['sum'], (string)$result[$key]['transactions']);
                 $result[$key]['avg_float'] = (float)$result[$key]['avg'];
@@ -167,9 +152,10 @@ class DoubleController extends Controller
 
         try {
             $result = view('reports.double.partials.avg-income', compact('result'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Could not render reports.partials.budget-period: %s', $e->getMessage()));
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Could not render reports.partials.budget-period: %s', $e->getMessage()));
             $result = sprintf('Could not render view: %s', $e->getMessage());
+
             throw new FireflyException($e->getMessage(), 0, $e);
         }
 
@@ -177,12 +163,9 @@ class DoubleController extends Controller
     }
 
     /**
-     * @param Collection $accounts
-     * @param Collection $double
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
      * @return Factory|View
+     *
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function operations(Collection $accounts, Collection $double, Carbon $start, Carbon $end)
     {
@@ -199,7 +182,7 @@ class DoubleController extends Controller
         foreach ($spent as $currency) {
             $currencyId = $currency['currency_id'];
 
-            $sums[$currencyId] = $sums[$currencyId] ?? [
+            $sums[$currencyId] ??= [
                 'spent'                   => '0',
                 'earned'                  => '0',
                 'sum'                     => '0',
@@ -217,7 +200,7 @@ class DoubleController extends Controller
                 $destIban            = $journal['destination_account_iban'];
                 $genericName         = $this->getCounterpartName($withCounterpart, $destId, $destName, $destIban);
                 $objectName          = sprintf('%s (%s)', $genericName, $currency['currency_name']);
-                $report[$objectName] = $report[$objectName] ?? [
+                $report[$objectName] ??= [
                     'dest_name'               => '',
                     'dest_iban'               => '',
                     'source_name'             => '',
@@ -247,7 +230,7 @@ class DoubleController extends Controller
         foreach ($earned as $currency) {
             $currencyId = $currency['currency_id'];
 
-            $sums[$currencyId] = $sums[$currencyId] ?? [
+            $sums[$currencyId] ??= [
                 'spent'                   => '0',
                 'earned'                  => '0',
                 'sum'                     => '0',
@@ -265,7 +248,7 @@ class DoubleController extends Controller
                 $sourceIban          = $journal['source_account_iban'];
                 $genericName         = $this->getCounterpartName($withCounterpart, $sourceId, $sourceName, $sourceIban);
                 $objectName          = sprintf('%s (%s)', $genericName, $currency['currency_name']);
-                $report[$objectName] = $report[$objectName] ?? [
+                $report[$objectName] ??= [
                     'dest_name'               => '',
                     'dest_iban'               => '',
                     'source_name'             => '',
@@ -296,36 +279,6 @@ class DoubleController extends Controller
     }
 
     /**
-     * TODO this method is duplicated.
-     *
-     * @param Collection  $accounts
-     * @param int         $id
-     * @param string      $name
-     * @param string|null $iban
-     *
-     * @return string
-     */
-    private function getCounterpartName(Collection $accounts, int $id, string $name, ?string $iban): string
-    {
-        /** @var Account $account */
-        foreach ($accounts as $account) {
-            if ($account->name === $name && $account->id !== $id) {
-                return $account->name;
-            }
-            if (null !== $account->iban && $account->iban === $iban && $account->id !== $id) {
-                return $account->iban;
-            }
-        }
-
-        return $name;
-    }
-
-    /**
-     * @param Collection $accounts
-     * @param Collection $double
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
      * @return Factory|View
      */
     public function operationsPerAsset(Collection $accounts, Collection $double, Carbon $start, Carbon $end)
@@ -343,7 +296,7 @@ class DoubleController extends Controller
         foreach ($spent as $currency) {
             $currencyId = $currency['currency_id'];
 
-            $sums[$currencyId] = $sums[$currencyId] ?? [
+            $sums[$currencyId] ??= [
                 'spent'                   => '0',
                 'earned'                  => '0',
                 'sum'                     => '0',
@@ -357,7 +310,7 @@ class DoubleController extends Controller
             /** @var array $journal */
             foreach ($currency['transaction_journals'] as $journal) {
                 $objectName          = sprintf('%s (%s)', $journal['source_account_name'], $currency['currency_name']);
-                $report[$objectName] = $report[$objectName] ?? [
+                $report[$objectName] ??= [
                     'account_id'              => $journal['source_account_id'],
                     'account_name'            => $objectName,
                     'currency_id'             => $currency['currency_id'],
@@ -382,7 +335,7 @@ class DoubleController extends Controller
         foreach ($earned as $currency) {
             $currencyId = $currency['currency_id'];
 
-            $sums[$currencyId] = $sums[$currencyId] ?? [
+            $sums[$currencyId] ??= [
                 'spent'                   => '0',
                 'earned'                  => '0',
                 'sum'                     => '0',
@@ -396,7 +349,7 @@ class DoubleController extends Controller
             /** @var array $journal */
             foreach ($currency['transaction_journals'] as $journal) {
                 $objectName          = sprintf('%s (%s)', $journal['destination_account_name'], $currency['currency_name']);
-                $report[$objectName] = $report[$objectName] ?? [
+                $report[$objectName] ??= [
                     'account_id'              => $journal['destination_account_id'],
                     'account_name'            => $objectName,
                     'currency_id'             => $currency['currency_id'],
@@ -421,12 +374,8 @@ class DoubleController extends Controller
     }
 
     /**
-     * @param Collection $accounts
-     * @param Collection $doubles
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
      * @return string
+     *
      * @throws FireflyException
      */
     public function topExpenses(Collection $accounts, Collection $doubles, Carbon $start, Carbon $end)
@@ -462,9 +411,10 @@ class DoubleController extends Controller
 
         try {
             $result = view('reports.double.partials.top-expenses', compact('result'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Could not render reports.partials.budget-period: %s', $e->getMessage()));
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Could not render reports.partials.budget-period: %s', $e->getMessage()));
             $result = sprintf('Could not render view: %s', $e->getMessage());
+
             throw new FireflyException($e->getMessage(), 0, $e);
         }
 
@@ -472,12 +422,8 @@ class DoubleController extends Controller
     }
 
     /**
-     * @param Collection $accounts
-     * @param Collection $doubles
-     * @param Carbon     $start
-     * @param Carbon     $end
-     *
      * @return string
+     *
      * @throws FireflyException
      */
     public function topIncome(Collection $accounts, Collection $doubles, Carbon $start, Carbon $end)
@@ -513,12 +459,31 @@ class DoubleController extends Controller
 
         try {
             $result = view('reports.double.partials.top-income', compact('result'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Could not render reports.partials.budget-period: %s', $e->getMessage()));
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Could not render reports.partials.budget-period: %s', $e->getMessage()));
             $result = sprintf('Could not render view: %s', $e->getMessage());
+
             throw new FireflyException($e->getMessage(), 0, $e);
         }
 
         return $result;
+    }
+
+    /**
+     * TODO this method is duplicated.
+     */
+    private function getCounterpartName(Collection $accounts, int $id, string $name, ?string $iban): string
+    {
+        /** @var Account $account */
+        foreach ($accounts as $account) {
+            if ($account->name === $name && $account->id !== $id) {
+                return $account->name;
+            }
+            if (null !== $account->iban && $account->iban === $iban && $account->id !== $id) {
+                return $account->iban;
+            }
+        }
+
+        return $name;
     }
 }

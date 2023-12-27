@@ -31,7 +31,6 @@
  *
  */
 
-
 declare(strict_types=1);
 
 return [
@@ -44,13 +43,15 @@ return [
     'invalid_query_currency'         => 'Søket inneheld kontoar som har ulike valuta-innstillingar, det er ikkje tillatt.',
     'iban'                           => 'Dette er ikkje ein gyldig IBAN.',
     'zero_or_more'                   => 'Verdien kan ikkje vera negativ.',
+    'no_asset_account'               => 'This is not an asset account.',
     'date_or_time'                   => 'Verdien må vera eit gyldig dato- eller klokkeslettformat (ISO 8601).',
     'source_equals_destination'      => 'Kjeldekontoen er lik destinasjonskonto.',
     'unique_account_number_for_user' => 'Det ser ut som dette kontonummeret er allereie i bruk.',
     'unique_iban_for_user'           => 'Det ser ut som dette IBAN er allereie i bruk.',
+    'reconciled_forbidden_field'     => 'This transaction is already reconciled, you cannot change the ":field"',
     'deleted_user'                   => 'På grunn av sikkerhetsbegrensninger kan du ikkje registreres med denne e-postadresse.',
     'rule_trigger_value'             => 'Denne verdien er ugyldig for den valde triggeren.',
-    'rule_action_value'              => 'Denne verdien er ugyldig for den valde handlingen.',
+    'rule_action_value'              => 'Denne verdien er ugyldig for den valde handlinga.',
     'file_already_attached'          => 'Opplastede fil ":name" er allereie knytt til dette objektet.',
     'file_attached'                  => 'Opplasting av fil ":name" var vellukka.',
     'must_exist'                     => 'IDen i feltet :attribute eksisterar ikkje i databasen.',
@@ -59,17 +60,18 @@ return [
     'transaction_types_equal'        => 'Alle deler må vera av samme type.',
     'invalid_transaction_type'       => 'Ugyldig transaksjonstype.',
     'invalid_selection'              => 'Dine val er ugyldig.',
-    'belongs_user'                   => 'Denne verdien er ugyldig for dette feltet.',
+    'belongs_user'                   => 'This value is linked to an object that does not seem to exist.',
+    'belongs_user_or_user_group'     => 'This value is linked to an object that does not seem to exist in your current financial administration.',
     'at_least_one_transaction'       => 'Trenger minst ein transaksjon.',
     'recurring_transaction_id'       => 'Need at least one transaction.',
     'need_id_to_match'               => 'You need to submit this entry with an ID for the API to be able to match it.',
-    'too_many_unmatched'             => 'Too many submitted transactions cannot be matched to their respective database entries. Make sure existing entries have a valid ID.',
-    'id_does_not_match'              => 'Submitted ID #:id does not match expected ID. Make sure it matches or omit the field.',
-    'at_least_one_repetition'        => 'Trenger minst ein gjentagelse.',
+    'too_many_unmatched'             => 'Det er for mange sendte transaksjonar som ikkje passar til sine respektive databaseoppføringar. Pass på at eksisterende oppføringer har ein gyldig ID.',
+    'id_does_not_match'              => 'Innsendt ID #:id samsvarar ikkje med forventa ID. Kontroller at den samsvarer, eller utelat feltet.',
+    'at_least_one_repetition'        => 'Trenge minst ei gjentaking.',
     'require_repeat_until'           => 'Krever enten eit antal repetisjoner eller ein slutt dato (gjentas til). Ikke begge.',
-    'require_currency_info'          => 'Innholdet i dette feltet er ugyldig uten valutainformasjon.',
+    'require_currency_info'          => 'Innhaldet i dette feltet er ugyldig uten valutainformasjon.',
     'not_transfer_account'           => 'Denne kontoen er ikkje ein konto som kan benyttes for overføringer.',
-    'require_currency_amount'        => 'Innholdet i dette feltet er ugyldig uten utenlandsk beløpsinformasjon.',
+    'require_currency_amount'        => 'Innhaldet i dette feltet er ugyldig uten utenlandsk beløpsinformasjon.',
     'require_foreign_currency'       => 'Dette feltet krever eit tal',
     'require_foreign_dest'           => 'Denne feltverdien må samsvare med valutaen til målkontoen.',
     'require_foreign_src'            => 'Denne feltverdien må samsvare med valutaen til kildekontoen.',
@@ -89,16 +91,16 @@ return [
     'active_url'                     => ':attribute er ikkje ein gyldig URL.',
     'after'                          => ':attribute må vera ein dato etter :date.',
     'date_after'                     => 'Startdatoen må vera før sluttdato.',
-    'alpha'                          => ':attribute kan kun inneholde bokstaver.',
-    'alpha_dash'                     => ':attribute kan berre inneholde bokstaver, tal og bindestreker.',
-    'alpha_num'                      => ':attribute kan berre inneholde bokstaver og tal.',
+    'alpha'                          => ':attribute kan kun innehalda bokstavar.',
+    'alpha_dash'                     => ':attribute kan berre innehalda bokstavar, tal og bindestrekar.',
+    'alpha_num'                      => ':attribute kan berre inneholda bokstavar og tal.',
     'array'                          => ':attribute må vera ein liste.',
     'unique_for_user'                => 'Det eksisterar allereie ein førekomst med :attribute.',
     'before'                         => ':attribute må vera ein dato før :date.',
     'unique_object_for_user'         => 'Dette namnet er allereie i bruk.',
     'unique_account_for_user'        => 'Dette konto namnet er allereie i bruk.',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -108,7 +110,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     'between.numeric'            => ':attribute må vera ein verdi mellom :min og :max.',
     'between.file'               => ':attribute må vera mellom :min og :max kilobyte.',
@@ -132,13 +133,13 @@ return [
     'max.numeric'                => ':attribute ikkje kan vera større enn :max.',
     'max.file'                   => ':attribute ikkje kan vera større enn :max kilobytes.',
     'max.string'                 => ':attribute ikkje kan vera større enn :max teikn.',
-    'max.array'                  => ':attribute kan ikkje inneholde meir enn :max element.',
+    'max.array'                  => ':attribute kan ikkje innehalda meir enn :max element.',
     'mimes'                      => ':attribute må vera ein fil av type: :values.',
     'min.numeric'                => ':attribute må vera minst :min.',
     'lte.numeric'                => ':attribute må vera mindre enn eller lik :value.',
     'min.file'                   => ':attribute må vera minst :min kilobytes.',
     'min.string'                 => ':attribute må vera minst :min teikn.',
-    'min.array'                  => ':attribute må inneholde minst :min element.',
+    'min.array'                  => ':attribute må innehalde minst :min element.',
     'not_in'                     => 'Den valde :attribute er ikkje gyldig.',
     'numeric'                    => ':attribute må vera eit tal.',
     'numeric_native'             => 'Den normale beløpet må vera eit nummer.',
@@ -157,7 +158,7 @@ return [
     'amount_min_over_max'        => 'Minimumsbeløpet kan ikkje vera større enn maksimumsbeløpet.',
     'size.file'                  => ':attribute må vera :size kilobyte.',
     'size.string'                => ':attribute må vera :size teikn.',
-    'size.array'                 => ':attribute må inneholde :size element.',
+    'size.array'                 => ':attribute må innehalda :size element.',
     'unique'                     => ':attribute har allereie vorte tatt.',
     'string'                     => ':attribute må vera ein streng.',
     'url'                        => ':attribute formatet er ugyldig.',
@@ -178,7 +179,7 @@ return [
     'same_account_type'          => 'Begge kontoar må vera av samme kontotype',
     'same_account_currency'      => 'Begge kontoar må ha samme valuta-innstilling',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -189,8 +190,7 @@ return [
  *
  */
 
-
-    'secure_password'             => 'Dette er ikkje eit sikkert passord. Vennligst prøv igjen. For meir informasjon, sjå https://bit.ly/FF3-password-security',
+    'secure_password'             => 'Dette er ikkje eit sikkert passord. Ver venleg å prøv igjen. For meir informasjon, sjå https://bit.ly/FF3-password-security',
     'valid_recurrence_rep_type'   => 'Ugyldig repetisjons type for gjentakande transaksjonar.',
     'valid_recurrence_rep_moment' => 'Ugyldig repetisjons tid for denne type repetisjon.',
     'invalid_account_info'        => 'Ugyldig konto informasjon.',
@@ -208,7 +208,7 @@ return [
         'amount_min'              => 'minimumsbeløp',
         'amount_max'              => 'maksimumsbeløp',
         'title'                   => 'tittel',
-        'tag'                     => 'tag',
+        'tag'                     => 'nøkkelord',
         'transaction_description' => 'transaksjonsbeskriving',
         'rule-action-value.1'     => 'regel aksjonsverdi #1',
         'rule-action-value.2'     => 'regel aksjonsverdi #2',
@@ -251,7 +251,7 @@ return [
     'deposit_dest_bad_data'    => 'Kunne ikkje finna ein gyldig destinasjons konto ved å søke etter ID ":id" eller namn ":name".',
     'deposit_dest_wrong_type'  => 'Den oppgitte målkontoen er ikkje av rett type.',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -261,7 +261,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     'transfer_source_need_data' => 'Trenger ein gyldig kilde konto-ID og/eller gyldig kilde kontonamn for å fortsetja.',
     'transfer_source_bad_data'  => '[c] Could not find a valid source account when searching for ID ":id" or name ":name".',
@@ -292,7 +291,7 @@ return [
     'auto_budget_period_mandatory'    => 'Auto budsjett perioden er eit obligatorisk felt.',
 
     // no access to administration:
-    'no_access_user_group'            => 'Du har ikkje rettigheter til denne handlingen.',
+    'no_access_user_group'            => 'Du har ikkje rettigheter til denne handlinga.',
 ];
 
 /*

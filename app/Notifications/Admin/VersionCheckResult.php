@@ -25,7 +25,6 @@ declare(strict_types=1);
 namespace FireflyIII\Notifications\Admin;
 
 use FireflyIII\Support\Notifications\UrlValidator;
-use FireflyIII\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\SlackMessage;
@@ -33,7 +32,6 @@ use Illuminate\Notifications\Notification;
 
 /**
  * Class VersionCheckResult
- *
  */
 class VersionCheckResult extends Notification
 {
@@ -43,8 +41,6 @@ class VersionCheckResult extends Notification
 
     /**
      * Create a new notification instance.
-     *
-     * @return void
      */
     public function __construct(string $message)
     {
@@ -57,11 +53,12 @@ class VersionCheckResult extends Notification
      * @param mixed $notifiable
      *
      * @return array
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function toArray($notifiable)
     {
         return [
-            //
         ];
     }
 
@@ -71,12 +68,15 @@ class VersionCheckResult extends Notification
      * @param mixed $notifiable
      *
      * @return MailMessage
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function toMail($notifiable)
     {
         return (new MailMessage())
             ->markdown('emails.new-version', ['message' => $this->message])
-            ->subject((string)trans('email.new_version_email_subject'));
+            ->subject((string)trans('email.new_version_email_subject'))
+        ;
     }
 
     /**
@@ -85,13 +85,16 @@ class VersionCheckResult extends Notification
      * @param mixed $notifiable
      *
      * @return SlackMessage
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function toSlack($notifiable)
     {
         return (new SlackMessage())->content($this->message)
-                                   ->attachment(function ($attachment) {
-                                       $attachment->title('Firefly III @ GitHub', 'https://github.com/firefly-iii/firefly-iii/releases');
-                                   });
+            ->attachment(static function ($attachment): void {
+                $attachment->title('Firefly III @ GitHub', 'https://github.com/firefly-iii/firefly-iii/releases');
+            })
+        ;
     }
 
     /**
@@ -100,15 +103,16 @@ class VersionCheckResult extends Notification
      * @param mixed $notifiable
      *
      * @return array
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function via($notifiable)
     {
-        /** @var User|null $user */
-        $user     = auth()->user();
-        $slackUrl = null === $user ? '' : (string)app('preferences')->getForUser(auth()->user(), 'slack_webhook_url', '')->data;
+        $slackUrl = app('fireflyconfig')->get('slack_webhook_url', '')->data;
         if (UrlValidator::isValidWebhookURL($slackUrl)) {
             return ['mail', 'slack'];
         }
+
         return ['mail'];
     }
 }

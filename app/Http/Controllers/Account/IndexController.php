@@ -32,14 +32,9 @@ use FireflyIII\Support\Http\Controllers\BasicDataSupport;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
-use JsonException;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 /**
- *
  * Class IndexController
  */
 class IndexController extends Controller
@@ -50,8 +45,6 @@ class IndexController extends Controller
 
     /**
      * IndexController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -71,15 +64,10 @@ class IndexController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param string  $objectType
-     *
      * @return Factory|View
+     *
      * @throws FireflyException
-     * @throws JsonException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
+     *                                              */
     public function inactive(Request $request, string $objectType)
     {
         $inactivePage = true;
@@ -92,8 +80,10 @@ class IndexController extends Controller
         $pageSize     = (int)app('preferences')->get('listPageSize', 50)->data;
         $accounts     = $collection->slice(($page - 1) * $pageSize, $pageSize);
         unset($collection);
+
         /** @var Carbon $start */
         $start = clone session('start', today(config('app.timezone'))->startOfMonth());
+
         /** @var Carbon $end */
         $end = clone session('end', today(config('app.timezone'))->endOfMonth());
         $start->subDay();
@@ -104,7 +94,7 @@ class IndexController extends Controller
         $activities    = app('steam')->getLastActivities($ids);
 
         $accounts->each(
-            function (Account $account) use ($activities, $startBalances, $endBalances) {
+            function (Account $account) use ($activities, $startBalances, $endBalances): void {
                 $account->lastActivityDate  = $this->isInArrayDate($activities, $account->id);
                 $account->startBalance      = $this->isInArray($startBalances, $account->id);
                 $account->endBalance        = $this->isInArray($endBalances, $account->id);
@@ -127,18 +117,13 @@ class IndexController extends Controller
     /**
      * Show list of accounts.
      *
-     * @param Request $request
-     * @param string  $objectType
-     *
      * @return Factory|View
+     *
      * @throws FireflyException
-     * @throws JsonException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
+     *                                              */
     public function index(Request $request, string $objectType)
     {
-        Log::debug(sprintf('Now at %s', __METHOD__));
+        app('log')->debug(sprintf('Now at %s', __METHOD__));
         $subTitle     = (string)trans(sprintf('firefly.%s_accounts', $objectType));
         $subTitleIcon = config(sprintf('firefly.subIconsByIdentifier.%s', $objectType));
         $types        = config(sprintf('firefly.accountTypesByIdentifier.%s', $objectType));
@@ -152,11 +137,13 @@ class IndexController extends Controller
         $accounts      = $collection->slice(($page - 1) * $pageSize, $pageSize);
         $inactiveCount = $this->repository->getInactiveAccountsByType($types)->count();
 
-        Log::debug(sprintf('Count of collection: %d, count of accounts: %d', $total, $accounts->count()));
+        app('log')->debug(sprintf('Count of collection: %d, count of accounts: %d', $total, $accounts->count()));
 
         unset($collection);
+
         /** @var Carbon $start */
         $start = clone session('start', today(config('app.timezone'))->startOfMonth());
+
         /** @var Carbon $end */
         $end = clone session('end', today(config('app.timezone'))->endOfMonth());
         $start->subDay();
@@ -166,9 +153,8 @@ class IndexController extends Controller
         $endBalances   = app('steam')->balancesByAccounts($accounts, $end);
         $activities    = app('steam')->getLastActivities($ids);
 
-
         $accounts->each(
-            function (Account $account) use ($activities, $startBalances, $endBalances) {
+            function (Account $account) use ($activities, $startBalances, $endBalances): void {
                 $interest = (string)$this->repository->getMetaValue($account, 'interest');
                 $interest = '' === $interest ? '0' : $interest;
 
@@ -189,13 +175,14 @@ class IndexController extends Controller
             }
         );
         // make paginator:
-        Log::debug(sprintf('Count of accounts before LAP: %d', $accounts->count()));
+        app('log')->debug(sprintf('Count of accounts before LAP: %d', $accounts->count()));
+
         /** @var LengthAwarePaginator $accounts */
         $accounts = new LengthAwarePaginator($accounts, $total, $pageSize, $page);
         $accounts->setPath(route('accounts.index', [$objectType]));
 
-        Log::debug(sprintf('Count of accounts after LAP (1): %d', $accounts->count()));
-        Log::debug(sprintf('Count of accounts after LAP (2): %d', $accounts->getCollection()->count()));
+        app('log')->debug(sprintf('Count of accounts after LAP (1): %d', $accounts->count()));
+        app('log')->debug(sprintf('Count of accounts after LAP (2): %d', $accounts->getCollection()->count()));
 
         return view('accounts.index', compact('objectType', 'inactiveCount', 'subTitleIcon', 'subTitle', 'page', 'accounts'));
     }

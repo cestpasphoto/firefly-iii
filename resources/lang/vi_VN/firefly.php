@@ -33,7 +33,6 @@ declare(strict_types=1);
  *
  */
 
-
 return [
     // general stuff:
     'close'                                => 'Đóng',
@@ -43,13 +42,14 @@ return [
     'split'                                => 'Chia ra',
     'single_split'                         => 'Chia ra',
     'clone'                                => 'Nhân ra',
-    'confirm_action'                       => 'Confirm action',
+    'clone_and_edit'                       => 'Nhân bản và sửa',
+    'confirm_action'                       => 'Xác nhận thao tác',
     'last_seven_days'                      => 'Bảy ngày gần đây',
     'last_thirty_days'                     => 'Ba mươi ngày gần đây',
     'last_180_days'                        => '180 ngày qua',
-    'month_to_date'                        => 'Month to date',
-    'year_to_date'                         => 'Year to date',
-    'YTD'                                  => 'YTD',
+    'month_to_date'                        => 'Tháng đến ngày',
+    'year_to_date'                         => 'Năm đến ngày',
+    'YTD'                                  => 'NĐN',
     'welcome_back'                         => 'Chào mừng trở lại?',
     'everything'                           => 'Tất cả mọi thứ',
     'today'                                => 'hôm nay',
@@ -103,7 +103,7 @@ return [
     'flash_error_multiple'                 => 'Có lỗi :lỗi',
     'net_worth'                            => 'Tài sản thực',
     'help_for_this_page'                   => 'Trợ giúp cho trang này',
-    'help_for_this_page_body'              => 'You can find more information about this page <a href="https://docs.firefly-iii.org/">in the documentation</a>.',
+    'help_for_this_page_body'              => 'Bạn có thể tìm thêm thông tin về trang này trong <a href="https://docs.firefly-iii.org/">liên kết này</a>.',
     'two_factor_welcome'                   => 'Xin chào!',
     'two_factor_enter_code'                => 'Để tiếp tục, vui lòng nhập mã xác thực hai yếu tố của bạn. Ứng dụng của bạn có thể tạo ra nó cho bạn.',
     'two_factor_code_here'                 => 'Nhập mã vào đây',
@@ -113,7 +113,7 @@ return [
     'two_factor_forgot'                    => 'Tôi quên mất hai yếu tố.',
     'two_factor_lost_header'               => 'Mất xác thực hai yếu tố của bạn?',
     'two_factor_lost_intro'                => 'Nếu bạn bị mất mã dự phòng. Bạn có hai lựa chọn.',
-    'two_factor_lost_fix_self'             => 'Nếu bạn chạy phiên bản Firefly III của riêng mình, hãy kiểm tra nhật ký trong <code>storage/logs</code> để được hướng dẫn, hoặc chạy <code>docker logs &lt;container_id&gt;</code> để xem hướng dẫn (làm mới trang này).',
+    'two_factor_lost_fix_self'             => 'If you run your own instance of Firefly III, read <a href="https://docs.firefly-iii.org/references/faq/firefly-iii/using/#i-lost-my-2fa-token-generator-or-2fa-has-stopped-working>this entry in the FAQ</a> for instructions.',
     'two_factor_lost_fix_owner'            => 'Nếu không, gửi email cho chủ sở hữu trang web, <a href="mailto::site_owner">:site_owner</a> và yêu cầu họ đặt lại xác thực hai yếu tố của bạn.',
     'mfa_backup_code'                      => 'Bạn đã sử dụng mã dự phòng để đăng nhập vào Firefly III. Nó không thể được sử dụng lại, vì vậy hãy gạch chéo nó khỏi danh sách của bạn.',
     'pref_two_factor_new_backup_codes'     => 'Nhận mã dự phòng mới',
@@ -122,8 +122,8 @@ return [
     'warning_much_data'                    => ': ngày ngày dữ liệu có thể mất một lúc để tải.',
     'registered'                           => 'Bạn đã đăng ký thành công!',
     'Default asset account'                => 'Mặc định tài khoản',
-    'no_budget_pointer'                    => 'You seem to have no budgets yet. You should create some on the <a href="budgets">budgets</a>-page. Budgets can help you keep track of expenses.',
-    'no_bill_pointer'                      => 'You seem to have no bills yet. You should create some on the <a href="bills">bills</a>-page. Bills can help you keep track of expenses.',
+    'no_budget_pointer'                    => 'Dường như bạn chưa có ngân sách. Bạn nên tạo vài cái tại trang <a href="budgets">ngân sách</a>-. Ngân sách có thể giúp bạn theo dõi chi tiêu.',
+    'no_bill_pointer'                      => 'Dường như bạn chưa có hóa đơn. Bạn nên tạo vài cái tại trang <a href="bills">hóa đơn</a>-. Hóa đơn có thể giúp bạn theo dõi chi tiêu.',
     'Savings account'                      => 'Tài khoản tiết kiệm',
     'Credit card'                          => 'Thẻ tín dụng',
     'source_accounts'                      => 'Tài khoản gửi',
@@ -181,7 +181,7 @@ return [
     'all_journals_for_account'             => 'Tất cả các giao dịch của tài khoản :name',
     'chart_all_journals_for_account'       => 'Biểu đồ của tất cả các giao dịch cho tài khoản :name',
     'journals_in_period_for_account'       => 'Tất cả các giao dịch cho tài khoản :name giữa :start và :end',
-    'journals_in_period_for_account_js'    => 'All transactions for account {title} between {start} and {end}',
+    'journals_in_period_for_account_js'    => 'Tất cả giao dịch của tài khoản {title} giữa {start} và {end}',
     'transferred'                          => 'Chuyển nhượng',
     'all_withdrawal'                       => 'Mọi chi phí',
     'all_transactions'                     => 'Tất cả các giao dịch',
@@ -203,7 +203,7 @@ return [
     'transfer_exchange_rate_instructions'  => 'Tài khoản nguồn tài sản "@source_name" chỉ chấp nhận giao dịch bằng tiền tệ nguồn. tài khoản đícht "@dest_name" chỉ chấp nhận giao dịch bằng tiền tệ. Bạn phải cung cấp số tiền được chuyển chính xác bằng cả hai loại tiền tệ.',
     'transaction_data'                     => 'Dữ liệu giao dịch',
     'invalid_server_configuration'         => 'Cấu hình máy chủ không hợp lệ',
-    'invalid_locale_settings'              => 'Firefly III is unable to format monetary amounts because your server is missing the required packages. There are <a href="https://docs.firefly-iii.org/firefly-iii/advanced-installation/locales/">instructions how to do this</a>.',
+    'invalid_locale_settings'              => 'Firefly III is unable to format monetary amounts because your server is missing the required packages. There are <a href="https://docs.firefly-iii.org/how-to/firefly-iii/advanced/locales/">instructions how to do this</a>.',
     'quickswitch'                          => 'Chuyển đổi nhanh',
     'sign_in_to_start'                     => 'Đăng nhập để bắt đầu',
     'sign_in'                              => 'Đăng nhập',
@@ -243,49 +243,49 @@ return [
     // Webhooks
     'webhooks'                             => 'Webhooks',
     'webhooks_breadcrumb'                  => 'Webhooks',
-    'no_webhook_messages'                  => 'There are no webhook messages',
-    'webhook_trigger_STORE_TRANSACTION'    => 'After transaction creation',
-    'webhook_trigger_UPDATE_TRANSACTION'   => 'After transaction update',
-    'webhook_trigger_DESTROY_TRANSACTION'  => 'After transaction delete',
-    'webhook_response_TRANSACTIONS'        => 'Transaction details',
-    'webhook_response_ACCOUNTS'            => 'Account details',
-    'webhook_response_none_NONE'           => 'No details',
+    'no_webhook_messages'                  => 'Không có tin nhắn webhook',
+    'webhook_trigger_STORE_TRANSACTION'    => 'Sau khi tạo giao dịch',
+    'webhook_trigger_UPDATE_TRANSACTION'   => 'Sau khi cập nhật giao dịch',
+    'webhook_trigger_DESTROY_TRANSACTION'  => 'Sau khi xóa giao dịch',
+    'webhook_response_TRANSACTIONS'        => 'Chi tiết giao dịch',
+    'webhook_response_ACCOUNTS'            => 'Chi tiết tài khoản',
+    'webhook_response_none_NONE'           => 'Không có chi tiết',
     'webhook_delivery_JSON'                => 'JSON',
-    'inspect'                              => 'Inspect',
-    'create_new_webhook'                   => 'Create new webhook',
-    'webhooks_create_breadcrumb'           => 'Create new webhook',
-    'webhook_trigger_form_help'            => 'Indicate on what event the webhook will trigger',
-    'webhook_response_form_help'           => 'Indicate what the webhook must submit to the URL.',
-    'webhook_delivery_form_help'           => 'Which format the webhook must deliver data in.',
-    'webhook_active_form_help'             => 'The webhook must be active or it won\'t be called.',
-    'stored_new_webhook'                   => 'Stored new webhook ":title"',
-    'delete_webhook'                       => 'Delete webhook',
-    'deleted_webhook'                      => 'Deleted webhook ":title"',
-    'edit_webhook'                         => 'Edit webhook ":title"',
-    'updated_webhook'                      => 'Updated webhook ":title"',
-    'edit_webhook_js'                      => 'Edit webhook "{title}"',
+    'inspect'                              => 'Kiểm tra',
+    'create_new_webhook'                   => 'Tạo webhook mới',
+    'webhooks_create_breadcrumb'           => 'Tạo webhook mới',
+    'webhook_trigger_form_help'            => 'Chọn loại sự kiện nào webhook sẽ kích hoạt',
+    'webhook_response_form_help'           => 'Chọn URL nào webhook sẽ gửi thông tin.',
+    'webhook_delivery_form_help'           => 'Loại định dạng webhook gửi dữ liệu vào.',
+    'webhook_active_form_help'             => 'Webhook phải được kích hoạt hoặc nó sẽ được gọi.',
+    'stored_new_webhook'                   => 'Lưu trữ webhook mới ":title"',
+    'delete_webhook'                       => 'Xóa webhook',
+    'deleted_webhook'                      => 'Webhook đã bị xóa ":title"',
+    'edit_webhook'                         => 'Sửa webhook ":title"',
+    'updated_webhook'                      => 'Cập nhật webhook ":title"',
+    'edit_webhook_js'                      => 'Sửa webhook "{title}"',
     'show_webhook'                         => 'Webhook ":title"',
-    'webhook_was_triggered'                => 'The webhook was triggered on the indicated transaction. Please wait for results to appear.',
-    'webhook_messages'                     => 'Webhook message',
-    'view_message'                         => 'View message',
-    'view_attempts'                        => 'View failed attempts',
-    'message_content_title'                => 'Webhook message content',
-    'message_content_help'                 => 'This is the content of the message that was sent (or tried) using this webhook.',
-    'attempt_content_title'                => 'Webhook attempts',
-    'attempt_content_help'                 => 'These are all the unsuccessful attempts of this webhook message to submit to the configured URL. After some time, Firefly III will stop trying.',
-    'no_attempts'                          => 'There are no unsuccessful attempts. That\'s a good thing!',
-    'webhook_attempt_at'                   => 'Attempt at {moment}',
-    'logs'                                 => 'Logs',
-    'response'                             => 'Response',
-    'visit_webhook_url'                    => 'Visit webhook URL',
-    'reset_webhook_secret'                 => 'Reset webhook secret',
-    'webhook_stored_link'                  => '<a href="webhooks/show/{ID}">Webhook #{ID} ("{title}")</a> has been stored.',
-    'webhook_updated_link'                 => '<a href="webhooks/show/{ID}">Webhook #{ID}</a> ("{title}") has been updated.',
+    'webhook_was_triggered'                => 'Webhook sẽ kích hoạt trên những giao dịch này. Xin đợi một lúc để kết quả hiện ra.',
+    'webhook_messages'                     => 'Tin nhắn webhook',
+    'view_message'                         => 'Xem tin nhắn',
+    'view_attempts'                        => 'Xem những lần thử lỗi',
+    'message_content_title'                => 'Nội dung tin nhắn webhook',
+    'message_content_help'                 => 'Đây là nội dung của tin nhắn đã được gửi (hay đã thử) bằng những webhook này.',
+    'attempt_content_title'                => 'Các lần thử webhook',
+    'attempt_content_help'                 => 'Đây là tất cả những lần thử gửi các tin nhắn webhook đến URL chỉ định nhưng không thành công. Sau một khoảng thời gian Firefly III sẽ dừng thử.',
+    'no_attempts'                          => 'Không có lần thử không thành công nào. Thật là tốt!',
+    'webhook_attempt_at'                   => 'Thử lúc {moment}',
+    'logs'                                 => 'Nhật ký',
+    'response'                             => 'Đáp lại',
+    'visit_webhook_url'                    => 'Đi đến webhook URL',
+    'reset_webhook_secret'                 => 'Cài lại khóa webhook',
+    'webhook_stored_link'                  => '<a href="webhooks/show/{ID}">Webhook #{ID} ("{title}")</a> đã được lưu trữ.',
+    'webhook_updated_link'                 => '<a href="webhooks/show/{ID}">Webhook #{ID}</a> ("{title}") đã được cập nhật.',
 
     // API access
     'authorization_request'                => 'Firefly III v: phiên bản Yêu cầu ủy quyền',
-    'authorization_request_intro'          => 'Application "<strong>:client</strong>" is requesting permission to access your financial administration. Would you like to authorize <strong>:client</strong> to access these records?',
-    'authorization_request_site'           => 'You will be redirected to <code>:url</code> which will then be able to access your Firefly III data.',
+    'authorization_request_intro'          => 'Ứng dụng <strong>:client</strong> đang yêu cầu sự cho phép truy cập quản trị tài chính của bạn. Bạn có muốn ủy quyền <strong>:client</strong> để truy cập những hồ sơ này?',
+    'authorization_request_site'           => 'Bạn sẽ được điều hướng đến <code>:url</code> nơi mà có thể truy cập thông tin Firefly III của bạn.',
     'authorization_request_invalid'        => 'This access request is invalid. Please never follow this link again.',
     'scopes_will_be_able'                  => 'Ứng dụng này sẽ có thể:',
     'button_authorize'                     => 'Ủy quyền',
@@ -338,7 +338,7 @@ return [
 
     // old
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -349,76 +349,75 @@ return [
  *
  */
 
-
-    'search_modifier_date_on'                             => 'Transaction date is ":value"',
-    'search_modifier_not_date_on'                         => 'Transaction date is not ":value"',
-    'search_modifier_reconciled'                          => 'Transaction is reconciled',
-    'search_modifier_not_reconciled'                      => 'Transaction is not reconciled',
+    'search_modifier_date_on'                             => 'Ngày giao dịch là ":value"',
+    'search_modifier_not_date_on'                         => 'Ngày giao dịch không phải ":value"',
+    'search_modifier_reconciled'                          => 'Giao dịch đã đối chiếu',
+    'search_modifier_not_reconciled'                      => 'Giao dịch chưa đối chiếu',
     'search_modifier_id'                                  => 'ID giao dịch là ":value"',
-    'search_modifier_not_id'                              => 'Transaction ID is not ":value"',
+    'search_modifier_not_id'                              => 'ID giao dịch không phải ":value"',
     'search_modifier_date_before'                         => 'Ngày giao dịch phải trước hoặc ngay ":value"',
     'search_modifier_date_after'                          => 'Ngày giao dịch phải sau hoặc ngay ":value"',
-    'search_modifier_external_id_is'                      => 'External ID is ":value"',
-    'search_modifier_not_external_id_is'                  => 'External ID is not ":value"',
+    'search_modifier_external_id_is'                      => 'ID ngoài là ":value"',
+    'search_modifier_not_external_id_is'                  => 'ID ngoài không phải ":value"',
     'search_modifier_no_external_url'                     => 'Giao dịch không có URL bên ngoài',
-    'search_modifier_no_external_id'                      => 'The transaction has no external ID',
-    'search_modifier_not_any_external_url'                => 'The transaction has no external URL',
-    'search_modifier_not_any_external_id'                 => 'The transaction has no external ID',
+    'search_modifier_no_external_id'                      => 'Giao dịch không có ID bên ngoài',
+    'search_modifier_not_any_external_url'                => 'Giao dịch không có URL bên ngoài',
+    'search_modifier_not_any_external_id'                 => 'Giao dịch không có ID bên ngoài',
     'search_modifier_any_external_url'                    => 'Giao dịch phải có 1 (hoặc nhiều) URL bên ngoài',
-    'search_modifier_any_external_id'                     => 'The transaction must have a (any) external ID',
-    'search_modifier_not_no_external_url'                 => 'The transaction must have a (any) external URL',
-    'search_modifier_not_no_external_id'                  => 'The transaction must have a (any) external ID',
-    'search_modifier_internal_reference_is'               => 'Internal reference is ":value"',
-    'search_modifier_not_internal_reference_is'           => 'Internal reference is not ":value"',
-    'search_modifier_description_starts'                  => 'Description starts with ":value"',
-    'search_modifier_not_description_starts'              => 'Description does not start with ":value"',
-    'search_modifier_description_ends'                    => 'Description ends on ":value"',
-    'search_modifier_not_description_ends'                => 'Description does not end on ":value"',
+    'search_modifier_any_external_id'                     => 'Giao dịch phải có 1 (hoặc nhiều) ID ngoài',
+    'search_modifier_not_no_external_url'                 => 'Giao dịch phải có 1 (hoặc nhiều) URL bên ngoài',
+    'search_modifier_not_no_external_id'                  => 'Giao dịch phải có 1 (bất kì) ID ngoài',
+    'search_modifier_internal_reference_is'               => 'Tham chiếu nội bộ là ":value"',
+    'search_modifier_not_internal_reference_is'           => 'Tham chiếu nội bộ không phải ":value"',
+    'search_modifier_description_starts'                  => 'Mô tả bắt đầu bằng ":value"',
+    'search_modifier_not_description_starts'              => 'Mô tả không bắt đầu bằng ":value"',
+    'search_modifier_description_ends'                    => 'Mô tả kết thúc bằng ":value"',
+    'search_modifier_not_description_ends'                => 'Mô tả không kết thúc bằng ":value"',
     'search_modifier_description_contains'                => 'Mô tả có chứa ":value"',
-    'search_modifier_not_description_contains'            => 'Description does not contain ":value"',
+    'search_modifier_not_description_contains'            => 'Mô tả không có chứa ":value"',
     'search_modifier_description_is'                      => 'Mô tả chính xác ":value"',
-    'search_modifier_not_description_is'                  => 'Description is exactly not ":value"',
+    'search_modifier_not_description_is'                  => 'Mô tả chắc chắn không phải ":value"',
     'search_modifier_currency_is'                         => 'Đơn vị tiền tệ của giao dịch (nước ngoài) là ":value"',
-    'search_modifier_not_currency_is'                     => 'Transaction (foreign) currency is not ":value"',
+    'search_modifier_not_currency_is'                     => 'Tiền (ngoại tệ) giao dịch không phải là ":value"',
     'search_modifier_foreign_currency_is'                 => 'Ngoại tệ giao dịch là ":value"',
-    'search_modifier_not_foreign_currency_is'             => 'Transaction foreign currency is not ":value"',
+    'search_modifier_not_foreign_currency_is'             => 'Ngoại tệ của giao dịch không phải là ":value"',
     'search_modifier_has_attachments'                     => 'Giao dịch phải có tệp đính kèm',
     'search_modifier_has_no_category'                     => 'Giao dịch phải không có danh mục',
-    'search_modifier_not_has_no_category'                 => 'The transaction must have a (any) category',
-    'search_modifier_not_has_any_category'                => 'The transaction must have no category',
+    'search_modifier_not_has_no_category'                 => 'Giao dịch phải có 1 (bất kì) danh mục',
+    'search_modifier_not_has_any_category'                => 'Giao dịch phải không có danh mục',
     'search_modifier_has_any_category'                    => 'Giao dịch phải có danh mục',
     'search_modifier_has_no_budget'                       => 'Giao dịch phải không có ngân sách',
-    'search_modifier_not_has_any_budget'                  => 'The transaction must have no budget',
+    'search_modifier_not_has_any_budget'                  => 'Giao dịch phải không có ngân sách',
     'search_modifier_has_any_budget'                      => 'Giao dịch có ngân sách (bất kỳ)',
-    'search_modifier_not_has_no_budget'                   => 'The transaction must have a (any) budget',
+    'search_modifier_not_has_no_budget'                   => 'Giao dịch có 1 (bất kỳ) ngân sách',
     'search_modifier_has_no_bill'                         => 'Giao dịch phải không có hóa đơn',
-    'search_modifier_not_has_no_bill'                     => 'The transaction must have a (any) bill',
+    'search_modifier_not_has_no_bill'                     => 'Giao dịch phải có 1 (bất kì) hóa đơn',
     'search_modifier_has_any_bill'                        => 'Giao dịch phải có 1 (hoặc nhiều) hóa đơn',
-    'search_modifier_not_has_any_bill'                    => 'The transaction must have no bill',
+    'search_modifier_not_has_any_bill'                    => 'Giao dịch phải không có hóa đơn',
     'search_modifier_has_no_tag'                          => 'Giao dịch phải không có thẻ',
-    'search_modifier_not_has_any_tag'                     => 'The transaction must have no tags',
-    'search_modifier_not_has_no_tag'                      => 'The transaction must have a (any) tag',
+    'search_modifier_not_has_any_tag'                     => 'Giao dịch phải không có thẻ',
+    'search_modifier_not_has_no_tag'                      => 'Giao dịch phải có 1 (bất kì) thẻ',
     'search_modifier_has_any_tag'                         => 'Giao dịch phải có thẻ',
-    'search_modifier_notes_contains'                      => 'The transaction notes contain ":value"',
-    'search_modifier_not_notes_contains'                  => 'The transaction notes do not contain ":value"',
-    'search_modifier_notes_starts'                        => 'The transaction notes start with ":value"',
-    'search_modifier_not_notes_starts'                    => 'The transaction notes do not start with ":value"',
-    'search_modifier_notes_ends'                          => 'The transaction notes end with ":value"',
-    'search_modifier_not_notes_ends'                      => 'The transaction notes do not end with ":value"',
-    'search_modifier_notes_is'                            => 'The transaction notes are exactly ":value"',
-    'search_modifier_not_notes_is'                        => 'The transaction notes are exactly not ":value"',
+    'search_modifier_notes_contains'                      => 'Các ghi chú giao dịch chứa ":value"',
+    'search_modifier_not_notes_contains'                  => 'Các ghi chú giao dịch không chứa ":value"',
+    'search_modifier_notes_starts'                        => 'Các ghi chú giao dịch bắt đầu bằng ":value"',
+    'search_modifier_not_notes_starts'                    => 'Các ghi chú giao dịch không bắt đầu bằng ":value"',
+    'search_modifier_notes_ends'                          => 'Các ghi chú giao dịch kết thúc bằng ":value"',
+    'search_modifier_not_notes_ends'                      => 'Các ghi chú giao dịch không kết thúc bằng ":value"',
+    'search_modifier_notes_is'                            => 'Các ghi chú giao dịch chính xác là ":value"',
+    'search_modifier_not_notes_is'                        => 'Các ghi chú giao dịch không chính xác là ":value"',
     'search_modifier_no_notes'                            => 'Giao dịch không có ghi chú',
-    'search_modifier_not_no_notes'                        => 'The transaction must have notes',
+    'search_modifier_not_no_notes'                        => 'Giao dịch phải có ghi chú',
     'search_modifier_any_notes'                           => 'Giao dịch phải có ghi chú',
-    'search_modifier_not_any_notes'                       => 'The transaction has no notes',
-    'search_modifier_amount_is'                           => 'Amount is exactly :value',
-    'search_modifier_not_amount_is'                       => 'Amount is not :value',
+    'search_modifier_not_any_notes'                       => 'Giao dịch không có ghi chú',
+    'search_modifier_amount_is'                           => 'Số lượng chính xác là :value',
+    'search_modifier_not_amount_is'                       => 'Số tiền không phải :value',
     'search_modifier_amount_less'                         => 'Số tiền phải nhỏ hơn hoặc bằng :value',
-    'search_modifier_not_amount_more'                     => 'Amount is less than or equal to :value',
+    'search_modifier_not_amount_more'                     => 'Số tiền phải nhỏ hơn hoặc bằng :value',
     'search_modifier_amount_more'                         => 'Số tiền phải lớn hơn hoặc bằng :value',
-    'search_modifier_not_amount_less'                     => 'Amount is more than or equal to :value',
+    'search_modifier_not_amount_less'                     => 'Số tiền phải lớn hơn hoặc bằng :value',
     'search_modifier_source_account_is'                   => 'Tên tài khoản chính xác là ":value"',
-    'search_modifier_not_source_account_is'               => 'Source account name is not ":value"',
+    'search_modifier_not_source_account_is'               => 'Tên tài khoản gửi không phải ":value"',
     'search_modifier_source_account_contains'             => 'Tên tài khoản bao gồm ":value"',
     'search_modifier_not_source_account_contains'         => 'Source account name does not contain ":value"',
     'search_modifier_source_account_starts'               => 'Source account name starts with ":value"',
@@ -468,6 +467,10 @@ return [
     'search_modifier_transaction_type'                    => 'Transaction type is ":value"',
     'search_modifier_not_transaction_type'                => 'Transaction type is not ":value"',
     'search_modifier_tag_is'                              => 'Nhãn là ":value"',
+    'search_modifier_tag_contains'                        => 'Tag contains ":value"',
+    'search_modifier_not_tag_contains'                    => 'Tag does not contain ":value"',
+    'search_modifier_tag_ends'                            => 'Tag ends with ":value"',
+    'search_modifier_tag_starts'                          => 'Tag starts with ":value"',
     'search_modifier_not_tag_is'                          => 'No tag is ":value"',
     'search_modifier_date_on_year'                        => 'Transaction is in year ":value"',
     'search_modifier_not_date_on_year'                    => 'Transaction is not in year ":value"',
@@ -481,7 +484,6 @@ return [
     'search_modifier_date_after_year'                     => 'Transaction is in or after year ":value"',
     'search_modifier_date_after_month'                    => 'Transaction is in or after month ":value"',
     'search_modifier_date_after_day'                      => 'Transaction is after or on day of month ":value"',
-
 
     // new
     'search_modifier_tag_is_not'                          => 'No tag is ":value"',
@@ -710,7 +712,7 @@ return [
     'create_rule_from_query'                              => 'Tạo quy tắc mới từ truy vấn tìm kiếm',
     'rule_from_search_words'                              => 'The rule engine has a hard time handling ":string". The suggested rule that fits your search query may give different results. Please verify the rule triggers carefully.',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -720,7 +722,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // END
     'modifiers_applies_are'                               => 'Các sửa đổi sau đây cũng được áp dụng cho tìm kiếm:',
@@ -747,6 +748,8 @@ return [
     // rules
     'is_not_rule_trigger'                                 => 'Not',
     'cannot_fire_inactive_rules'                          => 'Bạn không thể thực thi các quy tắc không hoạt động.',
+    'show_triggers'                                       => 'Show triggers',
+    'show_actions'                                        => 'Show actions',
     'rules'                                               => 'Quy tắc',
     'rule_name'                                           => 'Tên của quy tắc',
     'rule_triggers'                                       => 'Quy tắc kích hoạt khi',
@@ -813,7 +816,6 @@ return [
     'rule_trigger_store_journal'                          => 'Khi một giao dịch được tạo',
     'rule_trigger_update_journal'                         => 'Khi một giao dịch được cập nhật',
     'rule_trigger_user_action'                            => 'Hành động của người dùng là ":trigger_value"',
-
 
     // OLD values (remove non-doubles later):
     'rule_trigger_source_account_starts_choice'           => 'Source account name starts with..',
@@ -1209,7 +1211,7 @@ return [
     'rule_trigger_not_destination_is_cash'                => 'Destination account is not a cash account',
     'rule_trigger_not_account_is_cash'                    => 'Neither account is a cash account',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -1219,7 +1221,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // actions
     // set, clear, add, remove, append/prepend
@@ -1277,6 +1278,8 @@ return [
     'rule_action_append_notes_to_descr'                   => 'Append notes to description',
     'rule_action_move_descr_to_notes'                     => 'Replace notes with description',
     'rule_action_move_notes_to_descr'                     => 'Replace description with notes',
+    'rule_action_set_destination_to_cash_choice'          => 'Set destination account to (cash)',
+    'rule_action_set_source_to_cash_choice'               => 'Set source account to (cash)',
     'rulegroup_for_bills_title'                           => 'Nhóm quy tắc cho hóa đơn',
     'rulegroup_for_bills_description'                     => 'A special rule group for all the rules that involve bills.',
     'rule_for_bill_title'                                 => 'Auto-generated rule for bill ":name"',
@@ -1306,7 +1309,6 @@ return [
     'deleted_x_tags'                            => 'Xóa nhãn :count.',
     'create_rule_from_transaction'              => 'Tạo quy tắc dựa trên giao dịch',
     'create_recurring_from_transaction'         => 'Create recurring transaction based on transaction',
-
 
     // preferences
     'dark_mode_option_browser'                  => 'Let your browser decide',
@@ -1491,7 +1493,7 @@ return [
     'login_provider_local_only'                 => 'Hành động này không khả dụng khi xác thực thông qua ": login_provider".',
     'external_user_mgt_disabled'                => 'Hành động này không khả dụng khi Firefly III không chịu trách nhiệm quản lý người dùng hoặc xử lý xác thực.',
     'external_auth_disabled'                    => 'This action is not available when Firefly III isn\'t responsible for authentication handling.',
-    'delete_local_info_only'                    => "Vì Firefly III không chịu trách nhiệm quản lý người dùng hoặc xử lý xác thực, nên chức năng này sẽ chỉ xóa thông tin Firefly III cục bộ.",
+    'delete_local_info_only'                    => 'Vì Firefly III không chịu trách nhiệm quản lý người dùng hoặc xử lý xác thực, nên chức năng này sẽ chỉ xóa thông tin Firefly III cục bộ.',
     'oauth'                                     => 'OAuth',
     'profile_oauth_clients'                     => 'OAuth Clients',
     'profile_oauth_no_clients'                  => 'Bạn đã không tạo ra bất kỳ OAuth clients nào.',
@@ -1531,7 +1533,7 @@ return [
     'multi_account_warning_deposit'             => 'Keep in mind that the destination account of subsequent splits will be overruled by whatever is defined in the first split of the deposit.',
     'multi_account_warning_transfer'            => 'Keep in mind that the source + destination account of subsequent splits will be overruled by whatever is defined in the first split of the transfer.',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -1541,7 +1543,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // export data:
     'export_data_title'                         => 'Xuất dữ liệu từ Firefly III',
@@ -1565,6 +1566,7 @@ return [
     'list_all_attachments'                      => 'Danh sách tất cả các tệp đính kèm',
 
     // transaction index
+    'is_reconciled_fields_dropped'              => 'Because this transaction is reconciled, you will not be able to update the accounts, nor the amount(s).',
     'title_expenses'                            => 'Chi phí',
     'title_withdrawal'                          => 'Chi phí',
     'title_revenue'                             => 'Thu nhập doanh thu',
@@ -1632,7 +1634,8 @@ return [
     'create_currency'                           => 'Tạo một loại tiền tệ mới',
     'store_currency'                            => 'Lưu trữ tiền tệ mới',
     'update_currency'                           => 'Cập nhật tiền tệ',
-    'new_default_currency'                      => ':bây giờ là tiền tệ mặc định.',
+    'new_default_currency'                      => '":name" is now the default currency.',
+    'default_currency_failed'                   => 'Could not make ":name" the default currency. Please check the logs.',
     'cannot_delete_currency'                    => 'Không thể xóa: vì nó vẫn đang được sử dụng.',
     'cannot_delete_fallback_currency'           => ':name là loại tiền dự phòng hệ thống và không thể xóa.',
     'cannot_disable_currency_journals'          => 'Không thể tắt: vì các giao dịch vẫn đang sử dụng nó.',
@@ -1658,7 +1661,9 @@ return [
     'disable_currency'                          => 'Tắt',
     'currencies_default_disabled'               => 'Hầu hết các loại tiền tệ này bị tắt theo mặc định. Để sử dụng chúng, bạn phải kích hoạt chúng trước.',
     'currency_is_now_enabled'                   => 'Tiền tệ ":name" đã được kích hoạt',
+    'could_not_enable_currency'                 => 'Could not enable currency ":name". Please review the logs.',
     'currency_is_now_disabled'                  => 'Tiền tệ ":name" đã được tắt',
+    'could_not_disable_currency'                => 'Could not disable currency ":name". Perhaps it is still in use?',
 
     // forms:
     'mandatoryFields'                           => 'Các trường bắt buộc',
@@ -1731,7 +1736,10 @@ return [
     'remove_budgeted_amount'                    => 'Xóa số tiền ngân sách trong :currency',
 
     // bills:
+    'subscription'                              => 'Subscription',
     'not_expected_period'                       => 'Không mong đợi ở giai đoạn này',
+    'subscriptions_in_group'                    => 'Subscriptions in group "%{title}"',
+    'subscr_expected_x_times'                   => 'Expect to pay %{amount} %{times} times this period',
     'not_or_not_yet'                            => 'Không (chưa)',
     'visit_bill'                                => 'Visit bill ":name" at Firefly III',
     'match_between_amounts'                     => 'Hóa đơn khớp với các giao dịch giữa: thấp và: cao.',
@@ -1768,6 +1776,7 @@ return [
     'bill_edit_rules'                           => 'Firefly III cũng sẽ cố gắng chỉnh sửa quy tắc liên quan đến dự luật này. Tuy nhiên, nếu bạn đã tự chỉnh sửa quy tắc này, Firefly III sẽ không thay đổi bất cứ điều gì. | Firefly III cũng sẽ cố gắng chỉnh sửa :count các quy tắc liên quan đến dự luật này. Tuy nhiên, nếu bạn đã tự chỉnh sửa các quy tắc này, Firefly III sẽ không thay đổi bất cứ điều gì.',
     'bill_expected_date'                        => 'Ngày đáo hạn :date',
     'bill_expected_date_js'                     => 'Expected {date}',
+    'expected_amount'                           => '(Expected) amount',
     'bill_paid_on'                              => 'Paid on {date}',
     'bill_repeats_weekly'                       => 'Lặp lại hàng tuần',
     'bill_repeats_monthly'                      => 'Lặp lại hàng tháng',
@@ -1927,7 +1936,7 @@ return [
     'stored_category'                           => 'Đã lưu trữ danh mục mới ":name"',
     'without_category_between'                  => 'Không có danh mục giữa :start và :end',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -1938,8 +1947,8 @@ return [
  *
  */
 
-
     // transactions:
+    'unreconcile'                               => 'Undo reconciliation',
     'update_withdrawal'                         => 'Cập nhật rút tiền',
     'update_deposit'                            => 'Cập nhật tiền gửi',
     'update_transaction'                        => 'Cập nhật giao dịch',
@@ -1958,6 +1967,7 @@ return [
     'deleted_transfer'                          => 'Xóa thành công chuyển khoản ":description"',
     'deleted_reconciliation'                    => 'Tạo thành công giao dịch mới ":description"',
     'stored_journal'                            => 'Tạo thành công giao dịch mới ":description"',
+    'stored_journal_js'                         => 'Successfully created new transaction "%{description}"',
     'stored_journal_no_descr'                   => 'Tạo thành công giao dịch mới của bạn',
     'updated_journal_no_descr'                  => 'Cập nhật thành công giao dịch của bạn',
     'select_transactions'                       => 'Chọn giao dịch',
@@ -2103,6 +2113,9 @@ return [
     'Expense account'                           => 'Tài khoản chi phí',
     'Revenue account'                           => 'Tài khoản thu nhập',
     'Initial balance account'                   => 'Tài khoản số dư ban đầu',
+    'account_type_Asset account'                => 'Asset account',
+    'account_type_Expense account'              => 'Expense account',
+    'account_type_Revenue account'              => 'Revenue account',
     'account_type_Debt'                         => 'Món nợ',
     'account_type_Loan'                         => 'Tiền vay',
     'account_type_Mortgage'                     => 'Thế chấp',
@@ -2163,7 +2176,7 @@ return [
     'classification'                            => 'Phân loại',
     'store_transaction'                         => 'Store transaction',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -2173,7 +2186,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // reports:
     'report_default'                            => 'Báo cáo tài chính mặc định giữa: start và: end',
@@ -2279,7 +2291,7 @@ return [
     'sum_in_default_currency'                   => 'Tổng tiền sẽ luôn bằng tiền tệ mặc định của bạn.',
     'net_filtered_prefs'                        => 'Biểu đồ này sẽ không bao giờ bao gồm các tài khoản có phần "Bao gồm giá trị ròng" không được chọn.',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -2289,7 +2301,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // charts:
     'chart'                                     => 'Đồ thị',
@@ -2381,7 +2392,7 @@ return [
     'total_amount'                             => 'Tổng cộng',
     'number_of_decimals'                       => 'Số thập phân',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -2391,7 +2402,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // administration
     'invite_is_already_redeemed'               => 'The invite to ":address" has already been redeemed.',
@@ -2453,14 +2463,12 @@ return [
     'save_notification_settings'               => 'Save settings',
     'notification_settings_saved'              => 'The notification settings have been saved',
 
-
     'split_transaction_title'               => 'Mô tả giao dịch tách',
     'split_transaction_title_help'          => 'Nếu bạn tạo một giao dịch phân tách, phải có một mô tả toàn cầu cho tất cả các phân chia của giao dịch.',
     'split_title_help'                      => 'Nếu bạn tạo một giao dịch phân tách, phải có một mô tả toàn cầu cho tất cả các phân chia của giao dịch.',
     'you_create_transfer'                   => 'Bạn đang tạo một <strong>chuyển khoản</strong>.',
     'you_create_withdrawal'                 => 'Bạn đang tạo một <strong>rút tiền</strong>.',
     'you_create_deposit'                    => 'Bạn đang tạo một <strong>tiền gửi</strong>.',
-
 
     // links
     'journal_link_configuration'            => 'Cấu hình liên kết giao dịch',
@@ -2667,7 +2675,7 @@ return [
     'except_weekends'                    => 'Trừ những ngày cuối tuần',
     'recurrence_deleted'                 => 'Đã xóa giao dịch định kỳ ":title"',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -2677,7 +2685,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // new lines for summary controller.
     'box_balance_in_currency'            => 'Số dư (: tiền tệ)',
@@ -2742,7 +2749,6 @@ return [
     // dashboard
     'enable_auto_convert'                => 'Enable currency conversion',
     'disable_auto_convert'               => 'Disable currency conversion',
-
 ];
 
 /*

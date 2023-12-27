@@ -27,7 +27,6 @@ use FireflyIII\Events\TriggeredAuditLog;
 use FireflyIII\Models\Note;
 use FireflyIII\Models\RuleAction;
 use FireflyIII\Models\TransactionJournal;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class SetNotes.
@@ -38,21 +37,17 @@ class SetNotes implements ActionInterface
 
     /**
      * TriggerInterface constructor.
-     *
-     * @param RuleAction $action
      */
     public function __construct(RuleAction $action)
     {
         $this->action = $action;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function actOnArray(array $journal): bool
     {
         $dbNote = Note::where('noteable_id', $journal['transaction_journal_id'])
-                      ->where('noteable_type', TransactionJournal::class)->first();
+            ->where('noteable_type', TransactionJournal::class)->first()
+        ;
         if (null === $dbNote) {
             $dbNote                = new Note();
             $dbNote->noteable_id   = $journal['transaction_journal_id'];
@@ -63,7 +58,7 @@ class SetNotes implements ActionInterface
         $dbNote->text = $this->action->action_value;
         $dbNote->save();
 
-        Log::debug(
+        app('log')->debug(
             sprintf(
                 'RuleAction SetNotes changed the notes of journal #%d from "%s" to "%s".',
                 $journal['transaction_journal_id'],

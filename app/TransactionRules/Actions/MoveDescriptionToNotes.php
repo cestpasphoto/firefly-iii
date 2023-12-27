@@ -29,7 +29,6 @@ use FireflyIII\Events\TriggeredAuditLog;
 use FireflyIII\Models\Note;
 use FireflyIII\Models\RuleAction;
 use FireflyIII\Models\TransactionJournal;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class MoveDescriptionToNotes
@@ -40,27 +39,24 @@ class MoveDescriptionToNotes implements ActionInterface
 
     /**
      * TriggerInterface constructor.
-     *
-     *
-     * @param RuleAction $action
      */
     public function __construct(RuleAction $action)
     {
         $this->action = $action;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function actOnArray(array $journal): bool
     {
-        /** @var TransactionJournal $object */
+        /** @var null|TransactionJournal $object */
         $object = TransactionJournal::where('user_id', $journal['user_id'])->find($journal['transaction_journal_id']);
         if (null === $object) {
-            Log::error(sprintf('No journal #%d belongs to user #%d.', $journal['transaction_journal_id'], $journal['user_id']));
+            app('log')->error(sprintf('No journal #%d belongs to user #%d.', $journal['transaction_journal_id'], $journal['user_id']));
             event(new RuleActionFailedOnArray($this->action, $journal, trans('rules.journal_other_user')));
+
             return false;
         }
+
+        /** @var null|Note $note */
         $note = $object->notes()->first();
         if (null === $note) {
             $note = new Note();
@@ -84,6 +80,7 @@ class MoveDescriptionToNotes implements ActionInterface
 
         $note->save();
         $object->save();
+
         return true;
     }
 }

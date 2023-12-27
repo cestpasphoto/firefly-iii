@@ -45,8 +45,6 @@ class ShowController extends Controller
 
     /**
      * ListController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -69,7 +67,6 @@ class ShowController extends Controller
      *
      * Display a listing of the resource.
      *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function index(): JsonResponse
@@ -77,7 +74,7 @@ class ShowController extends Controller
         $manager = $this->getManager();
 
         // types to get, page size:
-        $pageSize = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize = $this->parameters->get('limit');
 
         // get list of budgets. Count it and split it.
         $collection = $this->repository->getBudgets();
@@ -86,7 +83,7 @@ class ShowController extends Controller
 
         // make paginator:
         $paginator = new LengthAwarePaginator($budgets, $count, $pageSize, $this->parameters->get('page'));
-        $paginator->setPath(route('api.v1.budgets.index') . $this->buildParams());
+        $paginator->setPath(route('api.v1.budgets.index').$this->buildParams());
 
         /** @var BudgetTransformer $transformer */
         $transformer = app(BudgetTransformer::class);
@@ -100,10 +97,6 @@ class ShowController extends Controller
 
     /**
      * Show a budget.
-     *
-     * @param Budget $budget
-     *
-     * @return JsonResponse
      */
     public function show(Budget $budget): JsonResponse
     {

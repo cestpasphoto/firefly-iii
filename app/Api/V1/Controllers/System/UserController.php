@@ -33,7 +33,6 @@ use FireflyIII\Transformers\UserTransformer;
 use FireflyIII\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Log;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection as FractalCollection;
 use League\Fractal\Resource\Item;
@@ -47,8 +46,6 @@ class UserController extends Controller
 
     /**
      * UserController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -68,9 +65,6 @@ class UserController extends Controller
      *
      * Remove the specified resource from storage.
      *
-     * @param User $user
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function destroy(User $user): JsonResponse
@@ -86,6 +80,7 @@ class UserController extends Controller
 
             return response()->json([], 204);
         }
+
         throw new FireflyException('200025: No access to function.');
     }
 
@@ -95,13 +90,12 @@ class UserController extends Controller
      *
      * Display a listing of the resource.
      *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function index(): JsonResponse
     {
         // user preferences
-        $pageSize = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize = $this->parameters->get('limit');
         $manager  = $this->getManager();
 
         // build collection
@@ -111,7 +105,7 @@ class UserController extends Controller
 
         // make paginator:
         $paginator = new LengthAwarePaginator($users, $count, $pageSize, $this->parameters->get('page'));
-        $paginator->setPath(route('api.v1.users.index') . $this->buildParams());
+        $paginator->setPath(route('api.v1.users.index').$this->buildParams());
 
         // make resource
         /** @var UserTransformer $transformer */
@@ -129,15 +123,12 @@ class UserController extends Controller
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/users/getUser
      *
      * Show a single user.
-     *
-     * @param User $user
-     *
-     * @return JsonResponse
      */
     public function show(User $user): JsonResponse
     {
         // make manager
         $manager = $this->getManager();
+
         // make resource
         /** @var UserTransformer $transformer */
         $transformer = app(UserTransformer::class);
@@ -153,10 +144,6 @@ class UserController extends Controller
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/users/storeUser
      *
      * Store a new user.
-     *
-     * @param UserStoreRequest $request
-     *
-     * @return JsonResponse
      */
     public function store(UserStoreRequest $request): JsonResponse
     {
@@ -180,11 +167,6 @@ class UserController extends Controller
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/users/updateUser
      *
      * Update a user.
-     *
-     * @param UserUpdateRequest $request
-     * @param User              $user
-     *
-     * @return JsonResponse
      */
     public function update(UserUpdateRequest $request, User $user): JsonResponse
     {
@@ -192,12 +174,13 @@ class UserController extends Controller
 
         // can only update 'blocked' when user is admin.
         if (!$this->repository->hasRole(auth()->user(), 'owner')) {
-            Log::debug('Quietly drop fields "blocked" and "blocked_code" from request.');
+            app('log')->debug('Quietly drop fields "blocked" and "blocked_code" from request.');
             unset($data['blocked'], $data['blocked_code']);
         }
 
         $user    = $this->repository->update($user, $data);
         $manager = $this->getManager();
+
         // make resource
         /** @var UserTransformer $transformer */
         $transformer = app(UserTransformer::class);

@@ -33,7 +33,6 @@ declare(strict_types=1);
  *
  */
 
-
 return [
     // general stuff:
     'close'                                => 'Bezárás',
@@ -43,18 +42,19 @@ return [
     'split'                                => 'Felosztás',
     'single_split'                         => 'Felosztás',
     'clone'                                => 'Másolás',
-    'confirm_action'                       => 'Confirm action',
+    'clone_and_edit'                       => 'Másol és szerkeszt',
+    'confirm_action'                       => 'Művelet megerősítése',
     'last_seven_days'                      => 'Utolsó hét nap',
     'last_thirty_days'                     => 'Elmúlt harminc nap',
-    'last_180_days'                        => 'Last 180 days',
-    'month_to_date'                        => 'Month to date',
-    'year_to_date'                         => 'Year to date',
-    'YTD'                                  => 'YTD',
+    'last_180_days'                        => 'Az utóbbi 180 nap',
+    'month_to_date'                        => 'Hónap a mai napig',
+    'year_to_date'                         => 'Év elejétől',
+    'YTD'                                  => 'Folyó év',
     'welcome_back'                         => 'Mi a helyzet?',
     'everything'                           => 'Minden',
     'today'                                => 'ma',
     'customRange'                          => 'Egyéni tartomány',
-    'date_range'                           => 'Date range',
+    'date_range'                           => 'Dátum intervallum',
     'apply'                                => 'Alkalmaz',
     'select_date'                          => 'Dátum kiválasztása..',
     'cancel'                               => 'Mégse',
@@ -71,7 +71,7 @@ return [
     'Opening balance'                      => 'Nyitó egyenleg',
     'create_new_stuff'                     => 'Új dolog létrehozása',
     'new_withdrawal'                       => 'Új költség',
-    'create_new_transaction'               => 'Create a new transaction',
+    'create_new_transaction'               => 'Új tranzakció létrehozása',
     'sidebar_frontpage_create'             => 'Létrehozás',
     'new_transaction'                      => 'Új tranzakció',
     'no_rules_for_bill'                    => 'Ehhez a számlához nincsenek szabályok kapcsolva.',
@@ -98,12 +98,12 @@ return [
     'flash_info'                           => 'Üzenet',
     'flash_warning'                        => 'Figyelmeztetés!',
     'flash_error'                          => 'Hiba!',
-    'flash_danger'                         => 'Danger!',
+    'flash_danger'                         => 'Vigyázat!',
     'flash_info_multiple'                  => 'Egy üzenet érkezett | :count üzenet érkezett',
     'flash_error_multiple'                 => 'Egy hiba történt|:count hiba történt',
     'net_worth'                            => 'Nettó érték',
     'help_for_this_page'                   => 'Az oldal súgója',
-    'help_for_this_page_body'              => 'You can find more information about this page <a href="https://docs.firefly-iii.org/">in the documentation</a>.',
+    'help_for_this_page_body'              => 'További információkat találhat erről a lapról a <a href="https://docs.firefly-iii.org/">dokumentáció</a>ban.',
     'two_factor_welcome'                   => 'Helló!',
     'two_factor_enter_code'                => 'A folytatáshoz meg kell adni a kétlépcsős azonosítás kódját. Az alkalmazás létre tudja hozni ezt a kódot.',
     'two_factor_code_here'                 => 'Kód beírása',
@@ -113,11 +113,11 @@ return [
     'two_factor_forgot'                    => 'Elfelejtett kétlépcsős azonosítás.',
     'two_factor_lost_header'               => 'Elvesztett kétlépcsős hitelesítés?',
     'two_factor_lost_intro'                => 'Ha a biztonsági kódok is elvesztek, akkor bajban vagy. Ezt nem lehet a webes felületről megjavítani, így két lehetőséged van.',
-    'two_factor_lost_fix_self'             => 'Ha a Firefly III saját példányként fut javasolt elolvasni <a href="https://docs.firefly-iii.org/faq/other#i-lost-my-two-factor-authentication-codes-and-backup-codes">ezt a FAQ bejegyzést</a> további instrukciókért.',
+    'two_factor_lost_fix_self'             => 'If you run your own instance of Firefly III, read <a href="https://docs.firefly-iii.org/references/faq/firefly-iii/using/#i-lost-my-2fa-token-generator-or-2fa-has-stopped-working>this entry in the FAQ</a> for instructions.',
     'two_factor_lost_fix_owner'            => 'Ellenkező esetben emailt kell küldeni a webhely tulajdonosának a <a href="mailto::site_owner">:site_owner</a> címre, és meg kell kérni, hogy állítsa vissza a kétfaktoros hitelesítést.',
     'mfa_backup_code'                      => 'A biztonsági kód fel lett használva a Firefly III-hoz. Ezt többé nem használhatod fel, így a listáról ez kihúzható.',
     'pref_two_factor_new_backup_codes'     => 'Új biztonsági kódok igénylése',
-    'pref_two_factor_backup_code_count'    => 'You have :count valid backup code.|You have :count valid backup codes.',
+    'pref_two_factor_backup_code_count'    => 'Még :count érvényes visszaállítási kódod van.|Még :count érvényes visszaállítási kódod van.',
     '2fa_i_have_them'                      => 'Eltároltam!',
     'warning_much_data'                    => ':days napi adat betöltése eltarthat egy ideig.',
     'registered'                           => 'A regisztráció sikeres!',
@@ -181,7 +181,7 @@ return [
     'all_journals_for_account'             => ':name bankszámla összes tranzakciója',
     'chart_all_journals_for_account'       => 'Diagram :name bankszámla minden tranzakciójáról',
     'journals_in_period_for_account'       => '":name" bankszámla összes tranzakciója :start és :end között',
-    'journals_in_period_for_account_js'    => 'All transactions for account {title} between {start} and {end}',
+    'journals_in_period_for_account_js'    => 'Minden tranzakció a(z) {title} számlán {start} és {end} között',
     'transferred'                          => 'Átvezetett',
     'all_withdrawal'                       => 'Minden költség',
     'all_transactions'                     => 'Minden tranzakció',
@@ -203,7 +203,7 @@ return [
     'transfer_exchange_rate_instructions'  => 'A "@source_name" forrás vagyonszámla csak a @source_currency tranzakciókat fogadja el. A "@dest_name" cél vagyonszámla csak a @dest_currency tranzakciókat fogadja el. Mindkét pénznemben helyesen kell megadnia az átutalt összeget.',
     'transaction_data'                     => 'Tranzakciós adatok',
     'invalid_server_configuration'         => 'Érvénytelen kiszolgálóbeállítás',
-    'invalid_locale_settings'              => 'Firefly III is unable to format monetary amounts because your server is missing the required packages. There are <a href="https://docs.firefly-iii.org/firefly-iii/advanced-installation/locales/">instructions how to do this</a>.',
+    'invalid_locale_settings'              => 'Firefly III is unable to format monetary amounts because your server is missing the required packages. There are <a href="https://docs.firefly-iii.org/how-to/firefly-iii/advanced/locales/">instructions how to do this</a>.',
     'quickswitch'                          => 'Gyorsváltó',
     'sign_in_to_start'                     => 'A munkamenet megkezdéséhez be kell jelentkezni',
     'sign_in'                              => 'Bejelentkezés',
@@ -223,9 +223,9 @@ return [
     'button_register'                      => 'Regisztráció',
     'authorization'                        => 'Hitelesítés',
     'active_bills_only'                    => 'csak az aktív számlák',
-    'active_bills_only_total'              => 'all active bills',
+    'active_bills_only_total'              => 'összes aktív fizetendő számla',
     'active_exp_bills_only'                => 'csak az aktív és a várható számlák',
-    'active_exp_bills_only_total'          => 'all active expected bills only',
+    'active_exp_bills_only_total'          => 'az összes aktív, várható számla',
     'per_period_sum_1D'                    => 'Várható napi költségek',
     'per_period_sum_1W'                    => 'Várható heti költségek',
     'per_period_sum_1M'                    => 'Várható havi költségek',
@@ -236,57 +236,57 @@ return [
     'expected_total'                       => 'várható teljes összeg',
     'reconciliation_account_name'          => ':name egyeztetés (:currency)',
     'saved'                                => 'Mentve',
-    'advanced_options'                     => 'Advanced options',
-    'advanced_options_explain'             => 'Some pages in Firefly III have advanced options hidden behind this button. This page doesn\'t have anything fancy here, but do check out the others!',
+    'advanced_options'                     => 'Haladó beállítások',
+    'advanced_options_explain'             => 'A Firefly III egyes oldalakon spceiális beálításokat rejt emögött a gomb mögött. Ezen az oldalon nincs itt semmi érdekes, de érdemes megnézni a többit!',
     'here_be_dragons'                      => 'Hic sunt dracones',
 
     // Webhooks
-    'webhooks'                             => 'Webhooks',
-    'webhooks_breadcrumb'                  => 'Webhooks',
-    'no_webhook_messages'                  => 'There are no webhook messages',
-    'webhook_trigger_STORE_TRANSACTION'    => 'After transaction creation',
-    'webhook_trigger_UPDATE_TRANSACTION'   => 'After transaction update',
-    'webhook_trigger_DESTROY_TRANSACTION'  => 'After transaction delete',
-    'webhook_response_TRANSACTIONS'        => 'Transaction details',
-    'webhook_response_ACCOUNTS'            => 'Account details',
-    'webhook_response_none_NONE'           => 'No details',
+    'webhooks'                             => 'Webhook-ok',
+    'webhooks_breadcrumb'                  => 'Webhook-ok',
+    'no_webhook_messages'                  => 'Nincsenek webhook üzenetek',
+    'webhook_trigger_STORE_TRANSACTION'    => 'Tranzakció létrehozása után',
+    'webhook_trigger_UPDATE_TRANSACTION'   => 'Tranzakció frissítése után',
+    'webhook_trigger_DESTROY_TRANSACTION'  => 'Tranzakció törlése után',
+    'webhook_response_TRANSACTIONS'        => 'Tranzakció részletei',
+    'webhook_response_ACCOUNTS'            => 'Számlaadatok',
+    'webhook_response_none_NONE'           => 'Nincsenek részletek',
     'webhook_delivery_JSON'                => 'JSON',
-    'inspect'                              => 'Inspect',
-    'create_new_webhook'                   => 'Create new webhook',
-    'webhooks_create_breadcrumb'           => 'Create new webhook',
-    'webhook_trigger_form_help'            => 'Indicate on what event the webhook will trigger',
-    'webhook_response_form_help'           => 'Indicate what the webhook must submit to the URL.',
-    'webhook_delivery_form_help'           => 'Which format the webhook must deliver data in.',
-    'webhook_active_form_help'             => 'The webhook must be active or it won\'t be called.',
-    'stored_new_webhook'                   => 'Stored new webhook ":title"',
-    'delete_webhook'                       => 'Delete webhook',
-    'deleted_webhook'                      => 'Deleted webhook ":title"',
-    'edit_webhook'                         => 'Edit webhook ":title"',
-    'updated_webhook'                      => 'Updated webhook ":title"',
-    'edit_webhook_js'                      => 'Edit webhook "{title}"',
+    'inspect'                              => 'Vizsgálat',
+    'create_new_webhook'                   => 'Új webhook létrehozása',
+    'webhooks_create_breadcrumb'           => 'Új webhook létrehozása',
+    'webhook_trigger_form_help'            => 'Adja meg, hogy a webhook-ot milyen eseményre indítja el',
+    'webhook_response_form_help'           => 'Adja meg, hogy a webhook mit küldjön az URL-re.',
+    'webhook_delivery_form_help'           => 'Milyen formátumban kézbesítse a webhook az adatokat.',
+    'webhook_active_form_help'             => 'A webhook-nak aktívnak kell lennie, különben nem fogják meghívni.',
+    'stored_new_webhook'                   => 'Új webhook ":title" tárolva',
+    'delete_webhook'                       => 'Webhook törlése',
+    'deleted_webhook'                      => 'Webhook ":title" törölve',
+    'edit_webhook'                         => 'Webhook ":title" módosítása',
+    'updated_webhook'                      => 'Webhook ":title" frissítve',
+    'edit_webhook_js'                      => 'Webhook "{title}" módosítása',
     'show_webhook'                         => 'Webhook ":title"',
-    'webhook_was_triggered'                => 'The webhook was triggered on the indicated transaction. Please wait for results to appear.',
-    'webhook_messages'                     => 'Webhook message',
-    'view_message'                         => 'View message',
-    'view_attempts'                        => 'View failed attempts',
-    'message_content_title'                => 'Webhook message content',
-    'message_content_help'                 => 'This is the content of the message that was sent (or tried) using this webhook.',
-    'attempt_content_title'                => 'Webhook attempts',
-    'attempt_content_help'                 => 'These are all the unsuccessful attempts of this webhook message to submit to the configured URL. After some time, Firefly III will stop trying.',
-    'no_attempts'                          => 'There are no unsuccessful attempts. That\'s a good thing!',
-    'webhook_attempt_at'                   => 'Attempt at {moment}',
-    'logs'                                 => 'Logs',
-    'response'                             => 'Response',
-    'visit_webhook_url'                    => 'Visit webhook URL',
-    'reset_webhook_secret'                 => 'Reset webhook secret',
-    'webhook_stored_link'                  => '<a href="webhooks/show/{ID}">Webhook #{ID} ("{title}")</a> has been stored.',
-    'webhook_updated_link'                 => '<a href="webhooks/show/{ID}">Webhook #{ID}</a> ("{title}") has been updated.',
+    'webhook_was_triggered'                => 'A webhook a jelzett tranzakciónál aktiválódott. Kérem, várjon az eredmények megjelítésére.',
+    'webhook_messages'                     => 'Webhook üzenet',
+    'view_message'                         => 'Üzenet megtekintése',
+    'view_attempts'                        => 'Sikertelen kísérletek megjelenítése',
+    'message_content_title'                => 'Webhook üzenet tartalma',
+    'message_content_help'                 => 'Az üzenet tartalma amit a webhook küldött (vagy kísérelt meg küldeni).',
+    'attempt_content_title'                => 'Webhook kísérletek',
+    'attempt_content_help'                 => 'Az összes sikertelenül küldött webhook üzenet a beállított URL-re. Idővel a Firefly III felhagy a próbálkozással.',
+    'no_attempts'                          => 'Nincsenek sikertelen kísérletek. Nagyon jó!',
+    'webhook_attempt_at'                   => 'Kísérlet {moment}-kor',
+    'logs'                                 => 'Naplók',
+    'response'                             => 'Válasz',
+    'visit_webhook_url'                    => 'Webhook URL meglátogatása',
+    'reset_webhook_secret'                 => 'Webhook titok visszaállítása',
+    'webhook_stored_link'                  => '<a href="webhooks/show/{ID}">Webhook #{ID} ("{title}")</a> eltárolva.',
+    'webhook_updated_link'                 => '<a href="webhooks/show/{ID}">Webhook #{ID}</a> ("{title}") frissítve.',
 
     // API access
     'authorization_request'                => 'Firefly III v:version engedély kérelem',
-    'authorization_request_intro'          => 'Application "<strong>:client</strong>" is requesting permission to access your financial administration. Would you like to authorize <strong>:client</strong> to access these records?',
-    'authorization_request_site'           => 'You will be redirected to <code>:url</code> which will then be able to access your Firefly III data.',
-    'authorization_request_invalid'        => 'This access request is invalid. Please never follow this link again.',
+    'authorization_request_intro'          => 'A(z) "<strong>:client</strong>" alkalmazás hozzáférést kér a pénzügyi nyilvántartásához. Szeretné megadni a hozzáférést ezekhez az adatokhoz a(z) "<strong>:client</strong>" részére?',
+    'authorization_request_site'           => 'Átirányítjuk a <code>:url</code> címre, ami aztán képes lesz hozzáférni az Ön Firefly III adataihoz.',
+    'authorization_request_invalid'        => 'Ez a hozzáférési kérelem érvénytelen. Kérjük, soha többé ne kövesse ezt a linket.',
     'scopes_will_be_able'                  => 'Ez az alkalmazás képes lesz arra, hogy:',
     'button_authorize'                     => 'Engedélyezés',
     'none_in_select_list'                  => '(nincs)',
@@ -299,8 +299,8 @@ return [
     'all_destination_accounts'             => 'Célszámlák',
     'all_source_accounts'                  => 'Forrásszámlák',
     'back_to_index'                        => 'Vissza a kezdőoldalra',
-    'cant_logout_guard'                    => 'Firefly III can\'t log you out.',
-    'internal_reference'                   => 'Internal reference',
+    'cant_logout_guard'                    => 'Firefly III nem tudja kijelentkeztetni.',
+    'internal_reference'                   => 'Belső hivatkozás',
 
     // check for updates:
     'update_check_title'                   => 'Frissítések ellenőrzése',
@@ -334,11 +334,11 @@ return [
     'search_found_transactions'            => 'Firefly III :count tranzakciót talált :time másodperc alatt.|Firefly III :count tranzakciót talált :time másodperc alatt.',
     'search_found_more_transactions'       => 'A Firefly III :count tranzakciót talált :time másodperc alatt.',
     'search_for_query'                     => 'A Firefly III tranzakciókat keres amelyben ez a kifejezés található: <span class="text-info">:query</span>',
-    'invalid_operators_list'               => 'These search parameters are not valid and have been ignored.',
+    'invalid_operators_list'               => 'Ezek a keresési paraméterek érvénytelenek, és figyelmen kívül hagytuk őket.',
 
     // old
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -349,88 +349,87 @@ return [
  *
  */
 
-
-    'search_modifier_date_on'                             => 'Transaction date is ":value"',
-    'search_modifier_not_date_on'                         => 'Transaction date is not ":value"',
-    'search_modifier_reconciled'                          => 'Transaction is reconciled',
-    'search_modifier_not_reconciled'                      => 'Transaction is not reconciled',
-    'search_modifier_id'                                  => 'Transaction ID is ":value"',
-    'search_modifier_not_id'                              => 'Transaction ID is not ":value"',
+    'search_modifier_date_on'                             => 'Tranzakció dátuma ":value"',
+    'search_modifier_not_date_on'                         => 'Tranzakció dátuma nem ":value"',
+    'search_modifier_reconciled'                          => 'Tranzakció kiegyenlítve',
+    'search_modifier_not_reconciled'                      => 'Tranzakció nincs kiegyenlítve',
+    'search_modifier_id'                                  => 'Tranzakció azonosító ":value"',
+    'search_modifier_not_id'                              => 'Tranzakció azonosító nem ":value"',
     'search_modifier_date_before'                         => 'Tranzakció dátuma :value előtt van',
     'search_modifier_date_after'                          => 'Tranzakció dátuma :value után van',
-    'search_modifier_external_id_is'                      => 'External ID is ":value"',
-    'search_modifier_not_external_id_is'                  => 'External ID is not ":value"',
-    'search_modifier_no_external_url'                     => 'The transaction has no external URL',
-    'search_modifier_no_external_id'                      => 'The transaction has no external ID',
-    'search_modifier_not_any_external_url'                => 'The transaction has no external URL',
-    'search_modifier_not_any_external_id'                 => 'The transaction has no external ID',
-    'search_modifier_any_external_url'                    => 'The transaction must have a (any) external URL',
-    'search_modifier_any_external_id'                     => 'The transaction must have a (any) external ID',
-    'search_modifier_not_no_external_url'                 => 'The transaction must have a (any) external URL',
-    'search_modifier_not_no_external_id'                  => 'The transaction must have a (any) external ID',
-    'search_modifier_internal_reference_is'               => 'Internal reference is ":value"',
-    'search_modifier_not_internal_reference_is'           => 'Internal reference is not ":value"',
-    'search_modifier_description_starts'                  => 'Description starts with ":value"',
-    'search_modifier_not_description_starts'              => 'Description does not start with ":value"',
-    'search_modifier_description_ends'                    => 'Description ends on ":value"',
-    'search_modifier_not_description_ends'                => 'Description does not end on ":value"',
+    'search_modifier_external_id_is'                      => 'Külső azonosító ":value"',
+    'search_modifier_not_external_id_is'                  => 'Külső azonosító nem ":value"',
+    'search_modifier_no_external_url'                     => 'A tranzakciónak nincs külső URL-je',
+    'search_modifier_no_external_id'                      => 'A tranzakciónak nincs külső azonosítója',
+    'search_modifier_not_any_external_url'                => 'A tranzakciónak nincs külső URL-je',
+    'search_modifier_not_any_external_id'                 => 'A tranzakciónak nincs külső azonosítója',
+    'search_modifier_any_external_url'                    => 'A tranzakciónak rendelkeznie kell egy (bármilyen) külső URL-el',
+    'search_modifier_any_external_id'                     => 'A tranzakciónak rendelkeznie kell egy (bármilyen) külső azonosítóval',
+    'search_modifier_not_no_external_url'                 => 'A tranzakciónak rendelkeznie kell egy (bármilyen) külső URL-el',
+    'search_modifier_not_no_external_id'                  => 'A tranzakciónak rendelkeznie kell egy (bármilyen) külső azonosítóval',
+    'search_modifier_internal_reference_is'               => 'Belső hivatkozás: :value',
+    'search_modifier_not_internal_reference_is'           => 'Belső hivatkozás nem ":value"',
+    'search_modifier_description_starts'                  => 'Leírás eleje: ":value"',
+    'search_modifier_not_description_starts'              => 'Leírás eleje nem: ":value"',
+    'search_modifier_description_ends'                    => 'Leírás vége: ":value"',
+    'search_modifier_not_description_ends'                => 'Leírás vége nem: ":value"',
     'search_modifier_description_contains'                => 'Leírás tartalmazza: ":value"',
-    'search_modifier_not_description_contains'            => 'Description does not contain ":value"',
+    'search_modifier_not_description_contains'            => 'Leírás nem tartalmazza: ":value"',
     'search_modifier_description_is'                      => 'Leírás: ":value"',
-    'search_modifier_not_description_is'                  => 'Description is exactly not ":value"',
-    'search_modifier_currency_is'                         => 'Transaction (foreign) currency is ":value"',
-    'search_modifier_not_currency_is'                     => 'Transaction (foreign) currency is not ":value"',
-    'search_modifier_foreign_currency_is'                 => 'Transaction foreign currency is ":value"',
-    'search_modifier_not_foreign_currency_is'             => 'Transaction foreign currency is not ":value"',
+    'search_modifier_not_description_is'                  => 'Leírás pontosan nem ":value"',
+    'search_modifier_currency_is'                         => 'Tranzakció valutája ":value"',
+    'search_modifier_not_currency_is'                     => 'Tranzakció valutája nem ":value"',
+    'search_modifier_foreign_currency_is'                 => 'Tranzakció valutája ":value"',
+    'search_modifier_not_foreign_currency_is'             => 'Tranzakció valutája nem ":value"',
     'search_modifier_has_attachments'                     => 'Tranzakcióhoz kell legyen melléklet',
     'search_modifier_has_no_category'                     => 'A tranzakcióhoz nincs kategória',
-    'search_modifier_not_has_no_category'                 => 'The transaction must have a (any) category',
-    'search_modifier_not_has_any_category'                => 'The transaction must have no category',
+    'search_modifier_not_has_no_category'                 => 'A tranzakciónak rendelkeznie kell egy (bármilyen) kategóriával',
+    'search_modifier_not_has_any_category'                => 'A tranzakciónak nem lehet kategóriája',
     'search_modifier_has_any_category'                    => 'A tranzakciónak van kategóriája',
     'search_modifier_has_no_budget'                       => 'A tranzakcióhoz nincs költségkeret',
-    'search_modifier_not_has_any_budget'                  => 'The transaction must have no budget',
+    'search_modifier_not_has_any_budget'                  => 'A tranzakciónak nem lehet kültségkerete',
     'search_modifier_has_any_budget'                      => 'A tranzakciónak van költségkerete',
-    'search_modifier_not_has_no_budget'                   => 'The transaction must have a (any) budget',
-    'search_modifier_has_no_bill'                         => 'The transaction must have no bill',
-    'search_modifier_not_has_no_bill'                     => 'The transaction must have a (any) bill',
-    'search_modifier_has_any_bill'                        => 'The transaction must have a (any) bill',
-    'search_modifier_not_has_any_bill'                    => 'The transaction must have no bill',
+    'search_modifier_not_has_no_budget'                   => 'A tranzakciónak rendelkeznie kell egy (bármilyen) költségkerettel',
+    'search_modifier_has_no_bill'                         => 'A tranzakciónak nem lehet fizetendő számlája',
+    'search_modifier_not_has_no_bill'                     => 'A tranzakciónak rendelkeznie kell egy (bármilyen) fizetendő számlával',
+    'search_modifier_has_any_bill'                        => 'A tranzakciónak rendelkeznie kell egy (bármilyen) fizetendő számlával',
+    'search_modifier_not_has_any_bill'                    => 'A tranzakciónak nem lehet fizetendő számlája',
     'search_modifier_has_no_tag'                          => 'A tranzakcióhoz nincs címke',
-    'search_modifier_not_has_any_tag'                     => 'The transaction must have no tags',
-    'search_modifier_not_has_no_tag'                      => 'The transaction must have a (any) tag',
+    'search_modifier_not_has_any_tag'                     => 'A tranzakciónak nem lehet cimkéje',
+    'search_modifier_not_has_no_tag'                      => 'A tranzakciónak rendelkeznie kell egy (bármilyen) cimkével',
     'search_modifier_has_any_tag'                         => 'A tranzakciónak van címkéje',
-    'search_modifier_notes_contains'                      => 'The transaction notes contain ":value"',
-    'search_modifier_not_notes_contains'                  => 'The transaction notes do not contain ":value"',
-    'search_modifier_notes_starts'                        => 'The transaction notes start with ":value"',
-    'search_modifier_not_notes_starts'                    => 'The transaction notes do not start with ":value"',
-    'search_modifier_notes_ends'                          => 'The transaction notes end with ":value"',
-    'search_modifier_not_notes_ends'                      => 'The transaction notes do not end with ":value"',
-    'search_modifier_notes_is'                            => 'The transaction notes are exactly ":value"',
-    'search_modifier_not_notes_is'                        => 'The transaction notes are exactly not ":value"',
+    'search_modifier_notes_contains'                      => 'Tranzakció megjegyzése tartalmazza ":value"',
+    'search_modifier_not_notes_contains'                  => 'Tranzakció megjegyzése nem tartalmazza ":value"',
+    'search_modifier_notes_starts'                        => 'Tranzakció megjegyzésének kezdete ":value"',
+    'search_modifier_not_notes_starts'                    => 'Tranzakció megjegyzésének kezdete nem ":value"',
+    'search_modifier_notes_ends'                          => 'Tranzakció megjegyzésének vége ":value"',
+    'search_modifier_not_notes_ends'                      => 'Tranzakció megjegyzésének vége nem ":value"',
+    'search_modifier_notes_is'                            => 'Tranzakció megjegyzése pontosan ":value"',
+    'search_modifier_not_notes_is'                        => 'Tranzakció megjegyzése pontosan nem ":value"',
     'search_modifier_no_notes'                            => 'Tranzakciónak nincs megjegyzése',
-    'search_modifier_not_no_notes'                        => 'The transaction must have notes',
+    'search_modifier_not_no_notes'                        => 'Tranzakciónak rendelkeznie kell megjegyzéssel',
     'search_modifier_any_notes'                           => 'Tranzakciónak van megjegyzése',
-    'search_modifier_not_any_notes'                       => 'The transaction has no notes',
-    'search_modifier_amount_is'                           => 'Amount is exactly :value',
-    'search_modifier_not_amount_is'                       => 'Amount is not :value',
+    'search_modifier_not_any_notes'                       => 'Tranzakciónak nincs megjegyzése',
+    'search_modifier_amount_is'                           => 'Összeg pontosan :value',
+    'search_modifier_not_amount_is'                       => 'Összeg nem :value',
     'search_modifier_amount_less'                         => 'Összeg legfeljebb :value',
-    'search_modifier_not_amount_more'                     => 'Amount is less than or equal to :value',
+    'search_modifier_not_amount_more'                     => 'Összeg legfeljebb :value',
     'search_modifier_amount_more'                         => 'Összeg legalább :value',
-    'search_modifier_not_amount_less'                     => 'Amount is more than or equal to :value',
+    'search_modifier_not_amount_less'                     => 'Összeg legalább :value',
     'search_modifier_source_account_is'                   => 'Forrásszámla neve pontosan ":value"',
-    'search_modifier_not_source_account_is'               => 'Source account name is not ":value"',
+    'search_modifier_not_source_account_is'               => 'Forrásszámla vége nem ":value"',
     'search_modifier_source_account_contains'             => 'Forrásszámla neve tartalmazza ":value"',
-    'search_modifier_not_source_account_contains'         => 'Source account name does not contain ":value"',
+    'search_modifier_not_source_account_contains'         => 'Forrásszámla neve nem tartalmazza ":value"',
     'search_modifier_source_account_starts'               => 'Forrásszámla nevének eleje":value"',
-    'search_modifier_not_source_account_starts'           => 'Source account name does not start with ":value"',
+    'search_modifier_not_source_account_starts'           => 'Forrásszámla nevének eleje nem ":value"',
     'search_modifier_source_account_ends'                 => 'Forrásszámla vége ":value"',
-    'search_modifier_not_source_account_ends'             => 'Source account name does not end with ":value"',
+    'search_modifier_not_source_account_ends'             => 'Forrásszámla nevének vége nem ":value"',
     'search_modifier_source_account_id'                   => 'Forrásszámla ID pontosan :value',
-    'search_modifier_not_source_account_id'               => 'Source account ID is not :value',
+    'search_modifier_not_source_account_id'               => 'Forrásszámla ID nem :value',
     'search_modifier_source_account_nr_is'                => 'Forrásszámla számlaszáma (IBAN) pontosan ":value"',
-    'search_modifier_not_source_account_nr_is'            => 'Source account number (IBAN) is not ":value"',
+    'search_modifier_not_source_account_nr_is'            => 'Forrásszámla számlaszáma (IBAN) nem ":value"',
     'search_modifier_source_account_nr_contains'          => 'Forrásszámla számlaszáma (IBAN) tartalmazza ":value"',
-    'search_modifier_not_source_account_nr_contains'      => 'Source account number (IBAN) does not contain ":value"',
+    'search_modifier_not_source_account_nr_contains'      => 'Forrásszámla számlaszáma (IBAN) nem tartalmazza ":value"',
     'search_modifier_source_account_nr_starts'            => 'Forrásszámla számlaszáma (IBAN) kezdete ":value"',
     'search_modifier_not_source_account_nr_starts'        => 'Source account number (IBAN) does not start with ":value"',
     'search_modifier_source_account_nr_ends'              => 'Source account number (IBAN) ends on ":value"',
@@ -468,6 +467,10 @@ return [
     'search_modifier_transaction_type'                    => 'Tranzakció típusa: :value',
     'search_modifier_not_transaction_type'                => 'Transaction type is not ":value"',
     'search_modifier_tag_is'                              => 'A címke ":value"',
+    'search_modifier_tag_contains'                        => 'Tag contains ":value"',
+    'search_modifier_not_tag_contains'                    => 'Tag does not contain ":value"',
+    'search_modifier_tag_ends'                            => 'Tag ends with ":value"',
+    'search_modifier_tag_starts'                          => 'Tag starts with ":value"',
     'search_modifier_not_tag_is'                          => 'No tag is ":value"',
     'search_modifier_date_on_year'                        => 'Transaction is in year ":value"',
     'search_modifier_not_date_on_year'                    => 'Transaction is not in year ":value"',
@@ -481,7 +484,6 @@ return [
     'search_modifier_date_after_year'                     => 'Transaction is in or after year ":value"',
     'search_modifier_date_after_month'                    => 'Transaction is in or after month ":value"',
     'search_modifier_date_after_day'                      => 'Transaction is after or on day of month ":value"',
-
 
     // new
     'search_modifier_tag_is_not'                          => 'No tag is ":value"',
@@ -710,7 +712,7 @@ return [
     'create_rule_from_query'                              => 'Új szabály létrehozása a keresési feltételek alapján',
     'rule_from_search_words'                              => 'The rule engine has a hard time handling ":string". The suggested rule that fits your search query may give different results. Please verify the rule triggers carefully.',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -720,7 +722,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // END
     'modifiers_applies_are'                               => 'A következő módosítókat a keresésre is alkalmaztuk:',
@@ -747,6 +748,8 @@ return [
     // rules
     'is_not_rule_trigger'                                 => 'Not',
     'cannot_fire_inactive_rules'                          => 'Inaktív szabályokat nem lehet futtatni.',
+    'show_triggers'                                       => 'Show triggers',
+    'show_actions'                                        => 'Show actions',
     'rules'                                               => 'Szabályok',
     'rule_name'                                           => 'Szabály neve',
     'rule_triggers'                                       => 'A szabály életbe lép amikor',
@@ -813,7 +816,6 @@ return [
     'rule_trigger_store_journal'                          => 'Tranzakció létrehozásakor',
     'rule_trigger_update_journal'                         => 'Tranzakció frissítésekor',
     'rule_trigger_user_action'                            => 'A felhasználói művelet ":trigger_value"',
-
 
     // OLD values (remove non-doubles later):
     'rule_trigger_source_account_starts_choice'           => 'Forrásszámla nevének eleje..',
@@ -1209,7 +1211,7 @@ return [
     'rule_trigger_not_destination_is_cash'                => 'Destination account is not a cash account',
     'rule_trigger_not_account_is_cash'                    => 'Neither account is a cash account',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -1219,7 +1221,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // actions
     // set, clear, add, remove, append/prepend
@@ -1277,6 +1278,8 @@ return [
     'rule_action_append_notes_to_descr'                   => 'Append notes to description',
     'rule_action_move_descr_to_notes'                     => 'Replace notes with description',
     'rule_action_move_notes_to_descr'                     => 'Replace description with notes',
+    'rule_action_set_destination_to_cash_choice'          => 'Set destination account to (cash)',
+    'rule_action_set_source_to_cash_choice'               => 'Set source account to (cash)',
     'rulegroup_for_bills_title'                           => 'Szabálycsoport a számlákhoz',
     'rulegroup_for_bills_description'                     => 'A special rule group for all the rules that involve bills.',
     'rule_for_bill_title'                                 => 'Auto-generated rule for bill ":name"',
@@ -1306,7 +1309,6 @@ return [
     'deleted_x_tags'                            => 'Deleted :count tag.|Deleted :count tags.',
     'create_rule_from_transaction'              => 'Szabály létrehozása tranzakció alapján',
     'create_recurring_from_transaction'         => 'Ismétlődő tranzakció létrehozása a tranzakció alapján',
-
 
     // preferences
     'dark_mode_option_browser'                  => 'Let your browser decide',
@@ -1491,7 +1493,7 @@ return [
     'login_provider_local_only'                 => 'Ez a művelet nem érhető el ":login_provider" általi hitelesítésekor.',
     'external_user_mgt_disabled'                => 'Ez a művelet nem elérhető, amikor a felhasználó kezelést és bejelentkeztetést nem a Firely III végzi.',
     'external_auth_disabled'                    => 'Ez a művelet nem elérhető, amikor a bejelentkeztetést nem a Firefly III végzi.',
-    'delete_local_info_only'                    => "Mivel nem a Firefly III végzi a felhasználók kezelését és a bejelentkeztetést, ez a funkció csak a lokális Firefly III információkat törli.",
+    'delete_local_info_only'                    => 'Mivel nem a Firefly III végzi a felhasználók kezelését és a bejelentkeztetést, ez a funkció csak a lokális Firefly III információkat törli.',
     'oauth'                                     => 'OAuth',
     'profile_oauth_clients'                     => 'OAuth kliensek',
     'profile_oauth_no_clients'                  => 'Nincs létrehozva egyetlen OAuth kliens sem.',
@@ -1531,7 +1533,7 @@ return [
     'multi_account_warning_deposit'             => 'Keep in mind that the destination account of subsequent splits will be overruled by whatever is defined in the first split of the deposit.',
     'multi_account_warning_transfer'            => 'Keep in mind that the source + destination account of subsequent splits will be overruled by whatever is defined in the first split of the transfer.',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -1541,7 +1543,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // export data:
     'export_data_title'                         => 'Adatok exportálása a Firefly III-ból',
@@ -1565,6 +1566,7 @@ return [
     'list_all_attachments'                      => 'Mellékletek listája',
 
     // transaction index
+    'is_reconciled_fields_dropped'              => 'Because this transaction is reconciled, you will not be able to update the accounts, nor the amount(s).',
     'title_expenses'                            => 'Költségek',
     'title_withdrawal'                          => 'Költségek',
     'title_revenue'                             => 'Jövedelem / bevétel',
@@ -1632,7 +1634,8 @@ return [
     'create_currency'                           => 'Új pénznem létrehozása',
     'store_currency'                            => 'Új pénznem tárolása',
     'update_currency'                           => 'Pénznem frissítése',
-    'new_default_currency'                      => ':name lett az alapértelmezett pénznem.',
+    'new_default_currency'                      => '":name" is now the default currency.',
+    'default_currency_failed'                   => 'Could not make ":name" the default currency. Please check the logs.',
     'cannot_delete_currency'                    => ':name nem törölhető mert még használatban van.',
     'cannot_delete_fallback_currency'           => ':name a rendszer biztonsági pénzneme és nem törölhető.',
     'cannot_disable_currency_journals'          => ':name nem tiltható le mert még használják tranzakciók.',
@@ -1658,7 +1661,9 @@ return [
     'disable_currency'                          => 'Tiltás',
     'currencies_default_disabled'               => 'A pénznemek többsége alapértelmezés szerint tiltva van. A használathoz először engedélyezni kell azokat.',
     'currency_is_now_enabled'                   => 'Pénznem ":name" engedélyezve',
+    'could_not_enable_currency'                 => 'Could not enable currency ":name". Please review the logs.',
     'currency_is_now_disabled'                  => 'Pénznem ":name" letiltva',
+    'could_not_disable_currency'                => 'Could not disable currency ":name". Perhaps it is still in use?',
 
     // forms:
     'mandatoryFields'                           => 'Kötelező mezők',
@@ -1731,7 +1736,10 @@ return [
     'remove_budgeted_amount'                    => 'Remove budgeted amount in :currency',
 
     // bills:
+    'subscription'                              => 'Subscription',
     'not_expected_period'                       => 'Nem várható ebben az időszakban',
+    'subscriptions_in_group'                    => 'Subscriptions in group "%{title}"',
+    'subscr_expected_x_times'                   => 'Expect to pay %{amount} %{times} times this period',
     'not_or_not_yet'                            => 'Nincs (még)',
     'visit_bill'                                => 'Visit bill ":name" at Firefly III',
     'match_between_amounts'                     => 'Tranzakciókkal egyező számlák :low és :high között.',
@@ -1768,6 +1776,7 @@ return [
     'bill_edit_rules'                           => 'A Firefly III megpróbálja szerkeszteni a a számlához kapcsolódó szabályt is. Ha ön már szerkesztette a szabályt, a Firefly III nem fogja módosítani.|A Firefly III megpróbálja szerkeszteni a a számlához kapcsolódó :count szabályt is. Ha ön már szerkesztette a szabályt, a Firefly III nem fogja módosítani.',
     'bill_expected_date'                        => 'Várható dátum :date',
     'bill_expected_date_js'                     => 'Expected {date}',
+    'expected_amount'                           => '(Expected) amount',
     'bill_paid_on'                              => 'Paid on {date}',
     'bill_repeats_weekly'                       => 'Repeats weekly',
     'bill_repeats_monthly'                      => 'Repeats monthly',
@@ -1927,7 +1936,7 @@ return [
     'stored_category'                           => 'Új kategória létrehozva ":name"',
     'without_category_between'                  => 'Kategória nélkül :start és :end között',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -1938,8 +1947,8 @@ return [
  *
  */
 
-
     // transactions:
+    'unreconcile'                               => 'Undo reconciliation',
     'update_withdrawal'                         => 'Költség frissítése',
     'update_deposit'                            => 'Bevétel szerkesztése',
     'update_transaction'                        => 'Tranzakció frissítése',
@@ -1958,6 +1967,7 @@ return [
     'deleted_transfer'                          => '":description" átvezetés sikeresen törölve',
     'deleted_reconciliation'                    => '":description" egyeztető tranzakció sikeresen törölve',
     'stored_journal'                            => '":description" új tranzakció sikeresen létrehozva',
+    'stored_journal_js'                         => 'Successfully created new transaction "%{description}"',
     'stored_journal_no_descr'                   => 'Új tranzakció sikeresen létrehozva',
     'updated_journal_no_descr'                  => 'Tranzakció sikeresen frissítve',
     'select_transactions'                       => 'Tranzakciók kiválasztása',
@@ -2103,6 +2113,9 @@ return [
     'Expense account'                           => 'Költségszámla',
     'Revenue account'                           => 'Jövedelemszámla',
     'Initial balance account'                   => 'Számla kezdeti egyenlege',
+    'account_type_Asset account'                => 'Asset account',
+    'account_type_Expense account'              => 'Expense account',
+    'account_type_Revenue account'              => 'Revenue account',
     'account_type_Debt'                         => 'Adósság',
     'account_type_Loan'                         => 'Hitel',
     'account_type_Mortgage'                     => 'Jelzálog',
@@ -2163,7 +2176,7 @@ return [
     'classification'                            => 'Besorolás',
     'store_transaction'                         => 'Store transaction',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -2173,7 +2186,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // reports:
     'report_default'                            => 'Alapértelmezett pénzügyi jelentés :start és :end között',
@@ -2279,7 +2291,7 @@ return [
     'sum_in_default_currency'                   => 'Az összeg mindig az alapértelmezett pénznemben lesz.',
     'net_filtered_prefs'                        => 'Ezen a diagramon sose fognak szerepelni azok a számlák melyeknél a "Befoglalva a nettó értékbe" beállítás nincs bekapcsolva.',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -2289,7 +2301,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // charts:
     'chart'                                     => 'Diagram',
@@ -2381,7 +2392,7 @@ return [
     'total_amount'                             => 'Teljes összeg',
     'number_of_decimals'                       => 'Tizedesjegyek száma',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -2391,7 +2402,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // administration
     'invite_is_already_redeemed'               => 'The invite to ":address" has already been redeemed.',
@@ -2453,14 +2463,12 @@ return [
     'save_notification_settings'               => 'Save settings',
     'notification_settings_saved'              => 'The notification settings have been saved',
 
-
     'split_transaction_title'               => 'Felosztott tranzakció leírása',
     'split_transaction_title_help'          => 'Felosztott tranzakció létrehozásakor meg kell adni egy globális leírást a tranzakció összes felosztása részére.',
     'split_title_help'                      => 'Felosztott tranzakció létrehozásakor meg kell adni egy globális leírást a tranzakció összes felosztása részére.',
     'you_create_transfer'                   => 'Egy átutalás létrehozása.',
     'you_create_withdrawal'                 => 'Egy költség létrehozása.',
     'you_create_deposit'                    => 'Egy bevétel létrehozása.',
-
 
     // links
     'journal_link_configuration'            => 'Tranzakciós kapcsolatok beállítása',
@@ -2667,7 +2675,7 @@ return [
     'except_weekends'                    => 'Kivéve hétvégék',
     'recurrence_deleted'                 => '":title" ismétlődő tranzakció törölve',
 
-/*
+    /*
  * PLEASE DO NOT EDIT THIS FILE DIRECTLY.
  * YOUR CHANGES WILL BE OVERWRITTEN!
  * YOUR PR WITH CHANGES TO THIS FILE WILL BE REJECTED!
@@ -2677,7 +2685,6 @@ return [
  * https://crowdin.com/project/firefly-iii
  *
  */
-
 
     // new lines for summary controller.
     'box_balance_in_currency'            => 'Egyenleg (:currency)',
@@ -2742,7 +2749,6 @@ return [
     // dashboard
     'enable_auto_convert'                => 'Enable currency conversion',
     'disable_auto_convert'               => 'Disable currency conversion',
-
 ];
 
 /*

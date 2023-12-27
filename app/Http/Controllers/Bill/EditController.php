@@ -44,8 +44,6 @@ class EditController extends Controller
 
     /**
      * BillController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -66,19 +64,17 @@ class EditController extends Controller
     /**
      * Edit a bill.
      *
-     * @param Request $request
-     * @param Bill    $bill
-     *
      * @return Factory|View
      */
     public function edit(Request $request, Bill $bill)
     {
         $periods = [];
+
         /** @var array $billPeriods */
         $billPeriods = config('firefly.bill_periods');
 
         foreach ($billPeriods as $current) {
-            $periods[$current] = (string)trans('firefly.' . $current);
+            $periods[$current] = (string)trans('firefly.'.$current);
         }
 
         $subTitle = (string)trans('firefly.edit_bill', ['name' => $bill->name]);
@@ -103,7 +99,7 @@ class EditController extends Controller
             'notes'                   => $this->repository->getNoteText($bill),
             'transaction_currency_id' => $bill->transaction_currency_id,
             'active'                  => $hasOldInput ? (bool)$request->old('active') : $bill->active,
-            'object_group'            => $bill->objectGroups->first() ? $bill->objectGroups->first()->title : '',
+            'object_group'            => null !== $bill->objectGroups->first() ? $bill->objectGroups->first()->title : '',
         ];
 
         $request->session()->flash('preFilled', $preFilled);
@@ -114,11 +110,6 @@ class EditController extends Controller
 
     /**
      * Update a bill.
-     *
-     * @param BillUpdateRequest $request
-     * @param Bill              $bill
-     *
-     * @return RedirectResponse
      */
     public function update(BillUpdateRequest $request, Bill $bill): RedirectResponse
     {
@@ -128,7 +119,7 @@ class EditController extends Controller
         $request->session()->flash('success', (string)trans('firefly.updated_bill', ['name' => $bill->name]));
         app('preferences')->mark();
 
-        /** @var array $files */
+        /** @var null|array $files */
         $files = $request->hasFile('attachments') ? $request->file('attachments') : null;
         if (null !== $files && !auth()->user()->hasRole('demo')) {
             $this->attachments->saveAttachmentsForModel($bill, $files);

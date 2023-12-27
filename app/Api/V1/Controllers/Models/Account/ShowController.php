@@ -43,14 +43,12 @@ class ShowController extends Controller
 {
     use AccountFilter;
 
-    public const RESOURCE_KEY = 'accounts';
+    public const string RESOURCE_KEY = 'accounts';
 
     private AccountRepositoryInterface $repository;
 
     /**
      * AccountController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -71,9 +69,6 @@ class ShowController extends Controller
      *
      * Display a listing of the resource.
      *
-     * @param Request $request
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function index(Request $request): JsonResponse
@@ -84,7 +79,7 @@ class ShowController extends Controller
 
         // types to get, page size:
         $types    = $this->mapAccountTypes($this->parameters->get('type'));
-        $pageSize = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize = $this->parameters->get('limit');
 
         // get list of accounts. Count it and split it.
         $this->repository->resetAccountOrder();
@@ -93,12 +88,11 @@ class ShowController extends Controller
 
         // continue sort:
 
-
         $accounts = $collection->slice(($this->parameters->get('page') - 1) * $pageSize, $pageSize);
 
         // make paginator:
         $paginator = new LengthAwarePaginator($accounts, $count, $pageSize, $this->parameters->get('page'));
-        $paginator->setPath(route('api.v1.accounts.index') . $this->buildParams());
+        $paginator->setPath(route('api.v1.accounts.index').$this->buildParams());
 
         /** @var AccountTransformer $transformer */
         $transformer = app(AccountTransformer::class);
@@ -115,10 +109,6 @@ class ShowController extends Controller
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/accounts/getAccount
      *
      * Show single instance.
-     *
-     * @param Account $account
-     *
-     * @return JsonResponse
      */
     public function show(Account $account): JsonResponse
     {

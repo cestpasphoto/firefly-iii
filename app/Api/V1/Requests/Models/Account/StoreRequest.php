@@ -35,18 +35,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Class StoreRequest
- *
-
  */
 class StoreRequest extends FormRequest
 {
-    use ConvertsDataTypes;
     use AppendsLocationData;
     use ChecksLogin;
+    use ConvertsDataTypes;
 
-    /**
-     * @return array
-     */
     public function getAllAccountData(): array
     {
         $active          = true;
@@ -93,8 +88,6 @@ class StoreRequest extends FormRequest
 
     /**
      * The rules that the incoming request must be matched against.
-     *
-     * @return array
      */
     public function rules(): array
     {
@@ -104,7 +97,7 @@ class StoreRequest extends FormRequest
         $type           = $this->convertString('type');
         $rules          = [
             'name'                 => 'required|max:1024|min:1|uniqueAccountForUser',
-            'type'                 => 'required|max:1024|min:1|' . sprintf('in:%s', $types),
+            'type'                 => 'required|max:1024|min:1|'.sprintf('in:%s', $types),
             'iban'                 => ['iban', 'nullable', new UniqueIban(null, $type)],
             'bic'                  => 'bic|nullable',
             'account_number'       => ['between:1,255', 'nullable', new UniqueAccountNumber(null, $type)],
@@ -124,7 +117,7 @@ class StoreRequest extends FormRequest
             'liability_start_date' => 'required_with:liability_amount|date',
             'liability_direction'  => 'nullable|required_if:type,liability|required_if:type,liabilities|in:credit,debit',
             'interest'             => 'between:0,100|numeric',
-            'interest_period'      => sprintf('nullable|in:%s', join(',', config('firefly.interest_periods'))),
+            'interest_period'      => sprintf('nullable|in:%s', implode(',', config('firefly.interest_periods'))),
             'notes'                => 'min:0|max:65536',
         ];
 

@@ -27,7 +27,6 @@ use FireflyIII\Events\TriggeredAuditLog;
 use FireflyIII\Models\Note;
 use FireflyIII\Models\RuleAction;
 use FireflyIII\Models\TransactionJournal;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class AppendNotes.
@@ -38,29 +37,25 @@ class AppendNotes implements ActionInterface
 
     /**
      * TriggerInterface constructor.
-     *
-     * @param RuleAction $action
      */
     public function __construct(RuleAction $action)
     {
         $this->action = $action;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function actOnArray(array $journal): bool
     {
         $dbNote = Note::where('noteable_id', (int)$journal['transaction_journal_id'])
-                      ->where('noteable_type', TransactionJournal::class)
-                      ->first(['notes.*']);
+            ->where('noteable_type', TransactionJournal::class)
+            ->first(['notes.*'])
+        ;
         if (null === $dbNote) {
             $dbNote                = new Note();
             $dbNote->noteable_id   = (int)$journal['transaction_journal_id'];
             $dbNote->noteable_type = TransactionJournal::class;
             $dbNote->text          = '';
         }
-        Log::debug(sprintf('RuleAction AppendNotes appended "%s" to "%s".', $this->action->action_value, $dbNote->text));
+        app('log')->debug(sprintf('RuleAction AppendNotes appended "%s" to "%s".', $this->action->action_value, $dbNote->text));
         $before       = $dbNote->text;
         $text         = sprintf('%s%s', $dbNote->text, $this->action->action_value);
         $dbNote->text = $text;

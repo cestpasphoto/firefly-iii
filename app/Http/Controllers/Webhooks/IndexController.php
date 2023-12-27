@@ -26,7 +26,6 @@ namespace FireflyIII\Http\Controllers\Webhooks;
 
 use FireflyIII\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
@@ -34,16 +33,13 @@ use Illuminate\View\View;
  */
 class IndexController extends Controller
 {
-    /**
-     *
-     */
     public function __construct()
     {
         parent::__construct();
 
         // translations:
         $this->middleware(
-            function ($request, $next) {
+            static function ($request, $next) {
                 app('view')->share('mainTitleIcon', 'fa-bolt');
                 app('view')->share('title', (string)trans('firefly.webhooks'));
 
@@ -53,13 +49,9 @@ class IndexController extends Controller
     }
 
     /**
-     * Show debug info.
-     *
-     * @param Request $request
-     *
      * @return Factory|View
      */
-    public function index(Request $request)
+    public function index()
     {
         return view('webhooks.index');
     }

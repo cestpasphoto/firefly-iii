@@ -36,21 +36,15 @@ use FireflyIII\Repositories\Budget\BudgetRepositoryInterface;
 use FireflyIII\Repositories\Category\CategoryRepositoryInterface;
 use FireflyIII\Repositories\Tag\TagRepositoryInterface;
 use FireflyIII\Support\Search\OperatorQuerySearch;
-use Illuminate\Support\Facades\Log;
-use Throwable;
 
 /**
  * Trait RenderPartialViews
- *
  */
 trait RenderPartialViews
 {
     /**
      * View for transactions in a budget for an account.
      *
-     * @param array $attributes
-     *
-     * @return string
      * @throws FireflyException
      */
     protected function budgetEntry(array $attributes): string // generate view for report.
@@ -65,13 +59,18 @@ trait RenderPartialViews
         $accountRepos = app(AccountRepositoryInterface::class);
         $account      = $accountRepos->find((int)$attributes['accountId']);
 
+        if (null === $budget || null === $account) {
+            throw new FireflyException('Could not render popup.report.balance-amount because budget or account is null.');
+        }
+
         $journals = $popupHelper->balanceForBudget($budget, $account, $attributes);
 
         try {
             $view = view('popup.report.balance-amount', compact('journals', 'budget', 'account'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Could not render: %s', $e->getMessage()));
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Could not render: %s', $e->getMessage()));
             $view = 'Firefly III could not render the view. Please see the log files.';
+
             throw new FireflyException($view, 0, $e);
         }
 
@@ -81,7 +80,6 @@ trait RenderPartialViews
     /**
      * Get options for budget report.
      *
-     * @return string
      * @throws FireflyException
      */
     protected function budgetReportOptions(): string // render a view
@@ -92,9 +90,10 @@ trait RenderPartialViews
 
         try {
             $result = view('reports.options.budget', compact('budgets'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Cannot render reports.options.tag: %s', $e->getMessage()));
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Cannot render reports.options.tag: %s', $e->getMessage()));
             $result = 'Could not render view.';
+
             throw new FireflyException($result, 0, $e);
         }
 
@@ -104,9 +103,6 @@ trait RenderPartialViews
     /**
      * View for spent in a single budget.
      *
-     * @param array $attributes
-     *
-     * @return string
      * @throws FireflyException
      */
     protected function budgetSpentAmount(array $attributes): string // generate view for report.
@@ -125,9 +121,10 @@ trait RenderPartialViews
 
         try {
             $view = view('popup.report.budget-spent-amount', compact('journals', 'budget'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Could not render: %s', $e->getMessage()));
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Could not render: %s', $e->getMessage()));
             $view = 'Firefly III could not render the view. Please see the log files.';
+
             throw new FireflyException($view, 0, $e);
         }
 
@@ -137,9 +134,6 @@ trait RenderPartialViews
     /**
      * View for transactions in a category.
      *
-     * @param array $attributes
-     *
-     * @return string
      * @throws FireflyException
      */
     protected function categoryEntry(array $attributes): string // generate view for report.
@@ -154,9 +148,10 @@ trait RenderPartialViews
 
         try {
             $view = view('popup.report.category-entry', compact('journals', 'category'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Could not render: %s', $e->getMessage()));
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Could not render: %s', $e->getMessage()));
             $view = 'Firefly III could not render the view. Please see the log files.';
+
             throw new FireflyException($view, 0, $e);
         }
 
@@ -166,7 +161,6 @@ trait RenderPartialViews
     /**
      * Get options for category report.
      *
-     * @return string
      * @throws FireflyException
      */
     protected function categoryReportOptions(): string // render a view
@@ -177,9 +171,10 @@ trait RenderPartialViews
 
         try {
             $result = view('reports.options.category', compact('categories'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Cannot render reports.options.category: %s', $e->getMessage()));
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Cannot render reports.options.category: %s', $e->getMessage()));
             $result = 'Could not render view.';
+
             throw new FireflyException($result, 0, $e);
         }
 
@@ -189,7 +184,6 @@ trait RenderPartialViews
     /**
      * Get options for double report.
      *
-     * @return string
      * @throws FireflyException
      */
     protected function doubleReportOptions(): string // render a view
@@ -217,12 +211,12 @@ trait RenderPartialViews
             }
         }
 
-
         try {
             $result = view('reports.options.double', compact('set'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Cannot render reports.options.tag: %s', $e->getMessage()));
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Cannot render reports.options.tag: %s', $e->getMessage()));
             $result = 'Could not render view.';
+
             throw new FireflyException($result, 0, $e);
         }
 
@@ -232,9 +226,6 @@ trait RenderPartialViews
     /**
      * Returns all the expenses that went to the given expense account.
      *
-     * @param array $attributes
-     *
-     * @return string
      * @throws FireflyException
      */
     protected function expenseEntry(array $attributes): string // generate view for report.
@@ -255,9 +246,10 @@ trait RenderPartialViews
 
         try {
             $view = view('popup.report.expense-entry', compact('journals', 'account'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Could not render: %s', $e->getMessage()));
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Could not render: %s', $e->getMessage()));
             $view = 'Firefly III could not render the view. Please see the log files.';
+
             throw new FireflyException($view, 0, $e);
         }
 
@@ -267,9 +259,6 @@ trait RenderPartialViews
     /**
      * Get current (from system) rule actions.
      *
-     * @param Rule $rule
-     *
-     * @return array
      * @throws FireflyException
      */
     protected function getCurrentActions(Rule $rule): array // get info from object and present.
@@ -278,9 +267,11 @@ trait RenderPartialViews
         $actions = [];
         // must be repos
         $currentActions = $rule->ruleActions()->orderBy('order', 'ASC')->get();
+
         /** @var RuleAction $entry */
         foreach ($currentActions as $entry) {
             $count = ($index + 1);
+
             try {
                 $actions[] = view(
                     'rules.partials.action',
@@ -291,9 +282,10 @@ trait RenderPartialViews
                         'count'      => $count,
                     ]
                 )->render();
-            } catch (Throwable $e) {
-                Log::debug(sprintf('Throwable was thrown in getCurrentActions(): %s', $e->getMessage()));
-                Log::error($e->getTraceAsString());
+            } catch (\Throwable $e) {
+                app('log')->debug(sprintf('Throwable was thrown in getCurrentActions(): %s', $e->getMessage()));
+                app('log')->error($e->getTraceAsString());
+
                 throw new FireflyException(sprintf('Could not render: %s', $e->getMessage()), 0, $e);
             }
 
@@ -306,9 +298,6 @@ trait RenderPartialViews
     /**
      * Get current (from DB) rule triggers.
      *
-     * @param Rule $rule
-     *
-     * @return array
      * @throws FireflyException
      */
     protected function getCurrentTriggers(Rule $rule): array // get info from object and present.
@@ -326,12 +315,14 @@ trait RenderPartialViews
         $renderedEntries = [];
         // must be repos
         $currentTriggers = $rule->ruleTriggers()->orderBy('order', 'ASC')->get();
+
         /** @var RuleTrigger $entry */
         foreach ($currentTriggers as $entry) {
             if ('user_action' !== $entry->trigger_type) {
                 $count = ($index + 1);
+
                 try {
-                    $rootOperator = OperatorQuerySearch::getRootOperator($entry->trigger_type);
+                    $rootOperator = OperatorQuerySearch::getRootOperator((string)$entry->trigger_type);
                     if (str_starts_with($rootOperator, '-')) {
                         $rootOperator = substr($rootOperator, 1);
                     }
@@ -341,14 +332,15 @@ trait RenderPartialViews
                             'oldTrigger'    => $rootOperator,
                             'oldValue'      => $entry->trigger_value,
                             'oldChecked'    => $entry->stop_processing,
-                            'oldProhibited' => str_starts_with($entry->trigger_type, '-'),
+                            'oldProhibited' => str_starts_with((string)$entry->trigger_type, '-'),
                             'count'         => $count,
                             'triggers'      => $triggers,
                         ]
                     )->render();
-                } catch (Throwable $e) {
-                    Log::debug(sprintf('Throwable was thrown in getCurrentTriggers(): %s', $e->getMessage()));
-                    Log::error($e->getTraceAsString());
+                } catch (\Throwable $e) {
+                    app('log')->debug(sprintf('Throwable was thrown in getCurrentTriggers(): %s', $e->getMessage()));
+                    app('log')->error($e->getTraceAsString());
+
                     throw new FireflyException(sprintf('Could not render: %s', $e->getMessage()), 0, $e);
                 }
 
@@ -362,9 +354,6 @@ trait RenderPartialViews
     /**
      * Returns all the incomes that went to the given asset account.
      *
-     * @param array $attributes
-     *
-     * @return string
      * @throws FireflyException
      */
     protected function incomeEntry(array $attributes): string // generate view for report.
@@ -384,9 +373,10 @@ trait RenderPartialViews
 
         try {
             $view = view('popup.report.income-entry', compact('journals', 'account'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Could not render: %s', $e->getMessage()));
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Could not render: %s', $e->getMessage()));
             $view = 'Firefly III could not render the view. Please see the log files.';
+
             throw new FireflyException($view, 0, $e);
         }
 
@@ -396,16 +386,16 @@ trait RenderPartialViews
     /**
      * Get options for default report.
      *
-     * @return string
      * @throws FireflyException
      */
     protected function noReportOptions(): string // render a view
     {
         try {
             $result = view('reports.options.no-options')->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Cannot render reports.options.no-options: %s', $e->getMessage()));
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Cannot render reports.options.no-options: %s', $e->getMessage()));
             $result = 'Could not render view.';
+
             throw new FireflyException($result, 0, $e);
         }
 
@@ -415,7 +405,6 @@ trait RenderPartialViews
     /**
      * Get options for tag report.
      *
-     * @return string
      * @throws FireflyException
      */
     protected function tagReportOptions(): string // render a view
@@ -424,12 +413,12 @@ trait RenderPartialViews
         $repository = app(TagRepositoryInterface::class);
         $tags       = $repository->get();
 
-
         try {
             $result = view('reports.options.tag', compact('tags'))->render();
-        } catch (Throwable $e) {
-            Log::error(sprintf('Cannot render reports.options.tag: %s', $e->getMessage()));
+        } catch (\Throwable $e) {
+            app('log')->error(sprintf('Cannot render reports.options.tag: %s', $e->getMessage()));
             $result = 'Could not render view.';
+
             throw new FireflyException($result, 0, $e);
         }
 

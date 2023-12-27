@@ -58,21 +58,17 @@ class ObjectGroupController extends Controller
     /**
      * Documentation for this endpoint is at:
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/autocomplete/getObjectGroupsAC
-     *
-     * @param AutocompleteRequest $request
-     *
-     * @return JsonResponse
      */
     public function objectGroups(AutocompleteRequest $request): JsonResponse
     {
         $data   = $request->getData();
         $return = [];
-        $result = $this->repository->search($data['query'], $data['limit']);
+        $result = $this->repository->search($data['query'], $this->parameters->get('limit'));
 
         /** @var ObjectGroup $objectGroup */
         foreach ($result as $objectGroup) {
             $return[] = [
-                'id'    => (string)$objectGroup->id,
+                'id'    => (string) $objectGroup->id,
                 'name'  => $objectGroup->title,
                 'title' => $objectGroup->title,
             ];

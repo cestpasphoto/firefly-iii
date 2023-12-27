@@ -63,15 +63,11 @@ class TransactionController extends Controller
     /**
      * This endpoint is documented at:
      * * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/autocomplete/getTransactionsAC
-     *
-     * @param AutocompleteRequest $request
-     *
-     * @return JsonResponse
      */
     public function transactions(AutocompleteRequest $request): JsonResponse
     {
         $data   = $request->getData();
-        $result = $this->repository->searchJournalDescriptions($data['query'], $data['limit']);
+        $result = $this->repository->searchJournalDescriptions($data['query'], $this->parameters->get('limit'));
 
         // limit and unique
         $filtered = $result->unique('description');
@@ -80,8 +76,8 @@ class TransactionController extends Controller
         /** @var TransactionJournal $journal */
         foreach ($filtered as $journal) {
             $array[] = [
-                'id'                   => (string)$journal->id,
-                'transaction_group_id' => (string)$journal->transaction_group_id,
+                'id'                   => (string) $journal->id,
+                'transaction_group_id' => (string) $journal->transaction_group_id,
                 'name'                 => $journal->description,
                 'description'          => $journal->description,
             ];
@@ -93,10 +89,6 @@ class TransactionController extends Controller
     /**
      * This endpoint is documented at:
      * * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/autocomplete/getTransactionsIDAC
-     *
-     * @param AutocompleteRequest $request
-     *
-     * @return JsonResponse
      */
     public function transactionsWithID(AutocompleteRequest $request): JsonResponse
     {
@@ -104,7 +96,7 @@ class TransactionController extends Controller
         $result = new Collection();
         if (is_numeric($data['query'])) {
             // search for group, not journal.
-            $firstResult = $this->groupRepository->find((int)$data['query']);
+            $firstResult = $this->groupRepository->find((int) $data['query']);
             if (null !== $firstResult) {
                 // group may contain multiple journals, each a result:
                 foreach ($firstResult->transactionJournals as $journal) {
@@ -113,7 +105,7 @@ class TransactionController extends Controller
             }
         }
         if (!is_numeric($data['query'])) {
-            $result = $this->repository->searchJournalDescriptions($data['query'], $data['limit']);
+            $result = $this->repository->searchJournalDescriptions($data['query'], $this->parameters->get('limit'));
         }
 
         // limit and unique
@@ -122,8 +114,8 @@ class TransactionController extends Controller
         /** @var TransactionJournal $journal */
         foreach ($result as $journal) {
             $array[] = [
-                'id'                   => (string)$journal->id,
-                'transaction_group_id' => (string)$journal->transaction_group_id,
+                'id'                   => (string) $journal->id,
+                'transaction_group_id' => (string) $journal->transaction_group_id,
                 'name'                 => sprintf('#%d: %s', $journal->transaction_group_id, $journal->description),
                 'description'          => sprintf('#%d: %s', $journal->transaction_group_id, $journal->description),
             ];

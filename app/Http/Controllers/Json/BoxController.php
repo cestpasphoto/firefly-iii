@@ -30,15 +30,13 @@ use FireflyIII\Http\Controllers\Controller;
 use FireflyIII\Models\Account;
 use FireflyIII\Models\AccountType;
 use FireflyIII\Models\AvailableBudget;
-use FireflyIII\Models\TransactionCurrency;
 use FireflyIII\Models\TransactionType;
 use FireflyIII\Repositories\Account\AccountRepositoryInterface;
 use FireflyIII\Repositories\Budget\AvailableBudgetRepositoryInterface;
 use FireflyIII\Repositories\Budget\OperationsRepositoryInterface;
-use FireflyIII\Repositories\Currency\CurrencyRepositoryInterface;
+use FireflyIII\Repositories\UserGroups\Currency\CurrencyRepositoryInterface;
 use FireflyIII\Support\CacheProperties;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class BoxController.
@@ -51,18 +49,22 @@ class BoxController extends Controller
      * 1) If the user has available amount this period and has NOT overspent: left to spend box.
      * 2) if the user has no available amount set this period: spent per day
      *
-     * @return JsonResponse
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function available(): JsonResponse
     {
         app('log')->debug('Now in available()');
+
         /** @var OperationsRepositoryInterface $opsRepository */
         $opsRepository = app(OperationsRepositoryInterface::class);
+
         /** @var AvailableBudgetRepositoryInterface $abRepository */
         $abRepository = app(AvailableBudgetRepositoryInterface::class);
         $abRepository->cleanup();
+
         /** @var Carbon $start */
         $start = session('start', today(config('app.timezone'))->startOfMonth());
+
         /** @var Carbon $end */
         $end      = session('end', today(config('app.timezone'))->endOfMonth());
         $today    = today(config('app.timezone'));
@@ -75,7 +77,7 @@ class BoxController extends Controller
         $cache->addProperty($today);
         $cache->addProperty('box-available');
         if ($cache->has()) {
-            //return response()->json($cache->get());
+            return response()->json($cache->get());
         }
         $leftPerDayAmount  = '0';
         $leftToSpendAmount = '0';
@@ -85,7 +87,7 @@ class BoxController extends Controller
         $availableBudgets = $abRepository->getAvailableBudgetsByExactDate($start, $end);
         app('log')->debug(sprintf('Found %d available budget(s)', $availableBudgets->count()));
         $availableBudgets = $availableBudgets->filter(
-            static function (AvailableBudget $availableBudget) use ($currency) {
+            static function (AvailableBudget $availableBudget) use ($currency) { // @phpstan-ignore-line
                 if ($availableBudget->transaction_currency_id === $currency->id) {
                     app('log')->debug(sprintf(
                         'Will include AB #%d: from %s-%s amount %s',
@@ -94,6 +96,7 @@ class BoxController extends Controller
                         $availableBudget->end_date->format('Y-m-d'),
                         $availableBudget->amount
                     ));
+
                     return $availableBudget;
                 }
 
@@ -104,7 +107,7 @@ class BoxController extends Controller
         // spent in this period, in budgets, for default currency.
         // also calculate spent per day.
         $spent       = $opsRepository->sumExpenses($start, $end, null, null, $currency);
-        $spentAmount = $spent[(int)$currency->id]['sum'] ?? '0';
+        $spentAmount = $spent[$currency->id]['sum'] ?? '0';
         app('log')->debug(sprintf('Spent for default currency for all budgets in this period: %s', $spentAmount));
 
         $days = $today->between($start, $end) ? $today->diffInDays($start) + 1 : $end->diffInDays($start) + 1;
@@ -120,7 +123,7 @@ class BoxController extends Controller
             $leftToSpendAmount = bcadd($totalAvailableSum, $spentAmount);
             app('log')->debug(sprintf('So left to spend is %s', $leftToSpendAmount));
             if (1 === bccomp($leftToSpendAmount, '0')) {
-                app('log')->debug(sprintf('Left to spend is positive!'));
+                app('log')->debug('Left to spend is positive!');
                 $boxTitle         = (string)trans('firefly.left_to_spend');
                 $days             = $today->diffInDays($end) + 1;
                 $display          = 1; // not overspent
@@ -141,21 +144,19 @@ class BoxController extends Controller
 
         $cache->store($return);
         app('log')->debug('Now done with available()');
+
         return response()->json($return);
     }
 
     /**
      * Current total balance.
-     *
-     * @param CurrencyRepositoryInterface $repository
-     *
-     * @return JsonResponse
      */
     public function balance(CurrencyRepositoryInterface $repository): JsonResponse
     {
         // Cache result, return cache if present.
         /** @var Carbon $start */
         $start = session('start', today(config('app.timezone'))->startOfMonth());
+
         /** @var Carbon $end */
         $end   = session('end', today(config('app.timezone'))->endOfMonth());
         $cache = new CacheProperties();
@@ -175,15 +176,17 @@ class BoxController extends Controller
         /** @var GroupCollectorInterface $collector */
         $collector = app(GroupCollectorInterface::class);
         $collector->setRange($start, $end)
-                  ->setTypes([TransactionType::DEPOSIT]);
+            ->setTypes([TransactionType::DEPOSIT])
+        ;
         $set = $collector->getExtractedJournals();
+
         /** @var array $journal */
         foreach ($set as $journal) {
             $currencyId           = (int)$journal['currency_id'];
             $amount               = $journal['amount'] ?? '0';
-            $incomes[$currencyId] = $incomes[$currencyId] ?? '0';
+            $incomes[$currencyId] ??= '0';
             $incomes[$currencyId] = bcadd($incomes[$currencyId], app('steam')->positive($amount));
-            $sums[$currencyId]    = $sums[$currencyId] ?? '0';
+            $sums[$currencyId]    ??= '0';
             $sums[$currencyId]    = bcadd($sums[$currencyId], app('steam')->positive($amount));
         }
 
@@ -191,14 +194,16 @@ class BoxController extends Controller
         /** @var GroupCollectorInterface $collector */
         $collector = app(GroupCollectorInterface::class);
         $collector->setRange($start, $end)
-                  ->setTypes([TransactionType::WITHDRAWAL]);
+            ->setTypes([TransactionType::WITHDRAWAL])
+        ;
         $set = $collector->getExtractedJournals();
+
         /** @var array $journal */
         foreach ($set as $journal) {
             $currencyId            = (int)$journal['currency_id'];
-            $expenses[$currencyId] = $expenses[$currencyId] ?? '0';
+            $expenses[$currencyId] ??= '0';
             $expenses[$currencyId] = bcadd($expenses[$currencyId], $journal['amount'] ?? '0');
-            $sums[$currencyId]     = $sums[$currencyId] ?? '0';
+            $sums[$currencyId]     ??= '0';
             $sums[$currencyId]     = bcadd($sums[$currencyId], $journal['amount']);
         }
 
@@ -231,8 +236,6 @@ class BoxController extends Controller
 
     /**
      * Total user net worth.
-     *
-     * @return JsonResponse
      */
     public function netWorth(): JsonResponse
     {
@@ -253,27 +256,28 @@ class BoxController extends Controller
         $allAccounts       = $accountRepository->getActiveAccountsByType(
             [AccountType::DEFAULT, AccountType::ASSET, AccountType::LOAN, AccountType::DEBT, AccountType::MORTGAGE]
         );
-        Log::debug(sprintf('Found %d accounts.', $allAccounts->count()));
+        app('log')->debug(sprintf('Found %d accounts.', $allAccounts->count()));
 
         // filter list on preference of being included.
         $filtered = $allAccounts->filter(
-            function (Account $account) use ($accountRepository) {
+            static function (Account $account) use ($accountRepository) {
                 $includeNetWorth = $accountRepository->getMetaValue($account, 'include_net_worth');
                 $result          = null === $includeNetWorth ? true : '1' === $includeNetWorth;
                 if (false === $result) {
-                    Log::debug(sprintf('Will not include "%s" in net worth charts.', $account->name));
+                    app('log')->debug(sprintf('Will not include "%s" in net worth charts.', $account->name));
                 }
 
                 return $result;
             }
         );
 
-        $netWorthSet = $netWorthHelper->getNetWorthByCurrency($filtered, $date);
+        $netWorthSet = $netWorthHelper->byAccounts($filtered, $date);
         $return      = [];
-        foreach ($netWorthSet as $data) {
-            /** @var TransactionCurrency $currency */
-            $currency              = $data['currency'];
-            $return[$currency->id] = app('amount')->formatAnything($currency, $data['balance'], false);
+        foreach ($netWorthSet as $key => $data) {
+            if ('native' === $key) {
+                continue;
+            }
+            $return[$data['currency_id']] = app('amount')->formatFlat($data['currency_symbol'], $data['currency_decimal_places'], $data['balance'], false);
         }
         $return = [
             'net_worths' => array_values($return),

@@ -26,6 +26,7 @@ namespace FireflyIII\Transformers;
 use Carbon\Carbon;
 use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Factory\CategoryFactory;
+use FireflyIII\Models\Account;
 use FireflyIII\Models\Recurrence;
 use FireflyIII\Models\RecurrenceRepetition;
 use FireflyIII\Models\RecurrenceTransaction;
@@ -34,10 +35,8 @@ use FireflyIII\Repositories\Bill\BillRepositoryInterface;
 use FireflyIII\Repositories\Budget\BudgetRepositoryInterface;
 use FireflyIII\Repositories\PiggyBank\PiggyBankRepositoryInterface;
 use FireflyIII\Repositories\Recurring\RecurringRepositoryInterface;
-use Illuminate\Support\Facades\Log;
 
 /**
- *
  * Class RecurringTransactionTransformer
  */
 class RecurrenceTransformer extends AbstractTransformer
@@ -50,8 +49,6 @@ class RecurrenceTransformer extends AbstractTransformer
 
     /**
      * RecurrenceTransformer constructor.
-     *
-
      */
     public function __construct()
     {
@@ -65,24 +62,21 @@ class RecurrenceTransformer extends AbstractTransformer
     /**
      * Transform the recurring transaction.
      *
-     * @param Recurrence $recurrence
-     *
-     * @return array
      * @throws FireflyException
      */
     public function transform(Recurrence $recurrence): array
     {
-        Log::debug('Now in Recurrence::transform()');
+        app('log')->debug('Now in Recurrence::transform()');
         $this->repository->setUser($recurrence->user);
         $this->piggyRepos->setUser($recurrence->user);
         $this->factory->setUser($recurrence->user);
         $this->budgetRepos->setUser($recurrence->user);
-        Log::debug('Set user.');
+        app('log')->debug('Set user.');
 
         $shortType = (string)config(sprintf('firefly.transactionTypesToShort.%s', $recurrence->transactionType->type));
         $notes     = $this->repository->getNoteText($recurrence);
         $reps      = 0 === (int)$recurrence->repetitions ? null : (int)$recurrence->repetitions;
-        Log::debug('Get basic data.');
+        app('log')->debug('Get basic data.');
 
         // basic data.
         return [
@@ -104,21 +98,18 @@ class RecurrenceTransformer extends AbstractTransformer
             'links'             => [
                 [
                     'rel' => 'self',
-                    'uri' => '/recurring/' . $recurrence->id,
+                    'uri' => '/recurring/'.$recurrence->id,
                 ],
             ],
         ];
     }
 
     /**
-     * @param Recurrence $recurrence
-     *
-     * @return array
      * @throws FireflyException
      */
     private function getRepetitions(Recurrence $recurrence): array
     {
-        Log::debug('Now in getRepetitions().');
+        app('log')->debug('Now in getRepetitions().');
         $fromDate = $recurrence->latest_date ?? $recurrence->first_date;
         $return   = [];
 
@@ -130,14 +121,15 @@ class RecurrenceTransformer extends AbstractTransformer
                 'updated_at'  => $repetition->updated_at->toAtomString(),
                 'type'        => $repetition->repetition_type,
                 'moment'      => $repetition->repetition_moment,
-                'skip'        => (int)$repetition->repetition_skip,
-                'weekend'     => (int)$repetition->weekend,
+                'skip'        => $repetition->repetition_skip,
+                'weekend'     => $repetition->weekend,
                 'description' => $this->repository->repetitionDescription($repetition),
                 'occurrences' => [],
             ];
 
             // get the (future) occurrences for this specific type of repetition:
             $occurrences = $this->repository->getXOccurrencesSince($repetition, $fromDate, new Carbon(), 5);
+
             /** @var Carbon $carbon */
             foreach ($occurrences as $carbon) {
                 $repetitionArray['occurrences'][] = $carbon->toAtomString();
@@ -150,19 +142,20 @@ class RecurrenceTransformer extends AbstractTransformer
     }
 
     /**
-     * @param Recurrence $recurrence
-     *
-     * @return array
      * @throws FireflyException
      */
     private function getTransactions(Recurrence $recurrence): array
     {
-        Log::debug(sprintf('Now in %s', __METHOD__));
+        app('log')->debug(sprintf('Now in %s', __METHOD__));
         $return = [];
+
         // get all transactions:
         /** @var RecurrenceTransaction $transaction */
         foreach ($recurrence->recurrenceTransactions()->get() as $transaction) {
-            $sourceAccount         = $transaction->sourceAccount;
+            /** @var null|Account $sourceAccount */
+            $sourceAccount = $transaction->sourceAccount;
+
+            /** @var null|Account $destinationAccount */
             $destinationAccount    = $transaction->destinationAccount;
             $foreignCurrencyCode   = null;
             $foreignCurrencySymbol = null;
@@ -172,7 +165,7 @@ class RecurrenceTransformer extends AbstractTransformer
                 $foreignCurrencyId     = (int)$transaction->foreign_currency_id;
                 $foreignCurrencyCode   = $transaction->foreignCurrency->code;
                 $foreignCurrencySymbol = $transaction->foreignCurrency->symbol;
-                $foreignCurrencyDp     = (int)$transaction->foreignCurrency->decimal_places;
+                $foreignCurrencyDp     = $transaction->foreignCurrency->decimal_places;
             }
 
             // source info:
@@ -182,7 +175,7 @@ class RecurrenceTransformer extends AbstractTransformer
             $sourceIban = null;
             if (null !== $sourceAccount) {
                 $sourceName = $sourceAccount->name;
-                $sourceId   = (int)$sourceAccount->id;
+                $sourceId   = $sourceAccount->id;
                 $sourceType = $sourceAccount->accountType->type;
                 $sourceIban = $sourceAccount->iban;
             }
@@ -192,7 +185,7 @@ class RecurrenceTransformer extends AbstractTransformer
             $destinationIban = null;
             if (null !== $destinationAccount) {
                 $destinationName = $destinationAccount->name;
-                $destinationId   = (int)$destinationAccount->id;
+                $destinationId   = $destinationAccount->id;
                 $destinationType = $destinationAccount->accountType->type;
                 $destinationIban = $destinationAccount->iban;
             }
@@ -206,7 +199,7 @@ class RecurrenceTransformer extends AbstractTransformer
                 'currency_id'                     => (string)$transaction->transaction_currency_id,
                 'currency_code'                   => $transaction->transactionCurrency->code,
                 'currency_symbol'                 => $transaction->transactionCurrency->symbol,
-                'currency_decimal_places'         => (int)$transaction->transactionCurrency->decimal_places,
+                'currency_decimal_places'         => $transaction->transactionCurrency->decimal_places,
                 'foreign_currency_id'             => null === $foreignCurrencyId ? null : (string)$foreignCurrencyId,
                 'foreign_currency_code'           => $foreignCurrencyCode,
                 'foreign_currency_symbol'         => $foreignCurrencySymbol,
@@ -238,15 +231,11 @@ class RecurrenceTransformer extends AbstractTransformer
     }
 
     /**
-     * @param RecurrenceTransaction $transaction
-     * @param array                 $array
-     *
-     * @return array
      * @throws FireflyException
      */
     private function getTransactionMeta(RecurrenceTransaction $transaction, array $array): array
     {
-        Log::debug(sprintf('Now in %s', __METHOD__));
+        app('log')->debug(sprintf('Now in %s', __METHOD__));
         $array['tags']            = [];
         $array['category_id']     = null;
         $array['category_name']   = null;
@@ -262,43 +251,55 @@ class RecurrenceTransformer extends AbstractTransformer
             switch ($transactionMeta->name) {
                 default:
                     throw new FireflyException(sprintf('Recurrence transformer cant handle field "%s"', $transactionMeta->name));
+
                 case 'bill_id':
                     $bill = $this->billRepos->find((int)$transactionMeta->value);
                     if (null !== $bill) {
                         $array['bill_id']   = (string)$bill->id;
                         $array['bill_name'] = $bill->name;
                     }
+
                     break;
+
                 case 'tags':
                     $array['tags'] = json_decode($transactionMeta->value);
+
                     break;
+
                 case 'piggy_bank_id':
                     $piggy = $this->piggyRepos->find((int)$transactionMeta->value);
                     if (null !== $piggy) {
                         $array['piggy_bank_id']   = (string)$piggy->id;
                         $array['piggy_bank_name'] = $piggy->name;
                     }
+
                     break;
+
                 case 'category_id':
                     $category = $this->factory->findOrCreate((int)$transactionMeta->value, null);
                     if (null !== $category) {
                         $array['category_id']   = (string)$category->id;
                         $array['category_name'] = $category->name;
                     }
+
                     break;
+
                 case 'category_name':
                     $category = $this->factory->findOrCreate(null, $transactionMeta->value);
                     if (null !== $category) {
                         $array['category_id']   = (string)$category->id;
                         $array['category_name'] = $category->name;
                     }
+
                     break;
+
                 case 'budget_id':
                     $budget = $this->budgetRepos->find((int)$transactionMeta->value);
                     if (null !== $budget) {
                         $array['budget_id']   = (string)$budget->id;
                         $array['budget_name'] = $budget->name;
                     }
+
                     break;
             }
         }

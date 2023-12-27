@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /*
  * TransactionController.php
  * Copyright (c) 2023 james@firefly-iii.org
@@ -21,10 +19,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace FireflyIII\Api\V2\Controllers\Transaction\List;
 
 use FireflyIII\Api\V2\Controllers\Controller;
-use FireflyIII\Api\V2\Request\Transaction\ListRequest;
+use FireflyIII\Api\V2\Request\Model\Transaction\ListRequest;
 use FireflyIII\Helpers\Collector\GroupCollectorInterface;
 use FireflyIII\Transformers\V2\TransactionGroupTransformer;
 use Illuminate\Http\JsonResponse;
@@ -34,30 +34,21 @@ use Illuminate\Http\JsonResponse;
  */
 class TransactionController extends Controller
 {
-    /**
-     * @param ListRequest $request
-     *
-     * @return JsonResponse
-     */
     public function list(ListRequest $request): JsonResponse
     {
         // collect transactions:
-        $limit = $request->getLimit();
-        $page  = $request->getPage();
-        $page  = max($page, 1);
-
-        if ($limit > 0 && $limit <= $this->pageSize) {
-            $this->pageSize = $limit;
-        }
-
+        $pageSize = $this->parameters->get('limit');
+        $page     = $request->getPage();
+        $page     = max($page, 1);
 
         /** @var GroupCollectorInterface $collector */
         $collector = app(GroupCollectorInterface::class);
         $collector->setUserGroup(auth()->user()->userGroup)
-                  ->withAPIInformation()
-                  ->setLimit($this->pageSize)
-                  ->setPage($page)
-                  ->setTypes($request->getTransactionTypes());
+            ->withAPIInformation()
+            ->setLimit($pageSize)
+            ->setPage($page)
+            ->setTypes($request->getTransactionTypes())
+        ;
 
         $start = $this->parameters->get('start');
         $end   = $this->parameters->get('end');
@@ -72,18 +63,18 @@ class TransactionController extends Controller
         //        exit;
 
         $paginator = $collector->getPaginatedGroups();
+        $params    = $request->buildParams($pageSize);
         $paginator->setPath(
             sprintf(
                 '%s?%s',
                 route('api.v2.transactions.list'),
-                $request->buildParams()
+                $params
             )
         );
 
         return response()
             ->json($this->jsonApiList('transactions', $paginator, new TransactionGroupTransformer()))
-            ->header('Content-Type', self::CONTENT_TYPE);
+            ->header('Content-Type', self::CONTENT_TYPE)
+        ;
     }
-
-
 }

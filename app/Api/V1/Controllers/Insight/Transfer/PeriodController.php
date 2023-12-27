@@ -37,10 +37,6 @@ class PeriodController extends Controller
     /**
      * This endpoint is documented at:
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/insight/insightTransferTotal
-     *
-     * @param GenericRequest $request
-     *
-     * @return JsonResponse
      */
     public function total(GenericRequest $request): JsonResponse
     {
@@ -58,7 +54,7 @@ class PeriodController extends Controller
             $foreignCurrencyId = (int)$journal['foreign_currency_id'];
 
             if (0 !== $currencyId) {
-                $response[$currencyId]                     = $response[$currencyId] ?? [
+                $response[$currencyId]                     ??= [
                     'difference'       => '0',
                     'difference_float' => 0,
                     'currency_id'      => (string)$currencyId,
@@ -68,7 +64,7 @@ class PeriodController extends Controller
                 $response[$currencyId]['difference_float'] = (float)$response[$currencyId]['difference'];
             }
             if (0 !== $foreignCurrencyId) {
-                $response[$foreignCurrencyId]                     = $response[$foreignCurrencyId] ?? [
+                $response[$foreignCurrencyId]                     ??= [
                     'difference'       => '0',
                     'difference_float' => 0,
                     'currency_id'      => (string)$foreignCurrencyId,

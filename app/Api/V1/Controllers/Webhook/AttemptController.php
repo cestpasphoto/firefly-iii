@@ -41,11 +41,9 @@ use League\Fractal\Resource\Item;
  */
 class AttemptController extends Controller
 {
-    public const RESOURCE_KEY = 'webhook_attempts';
+    public const string RESOURCE_KEY = 'webhook_attempts';
     private WebhookRepositoryInterface $repository;
 
-    /**
-     */
     public function __construct()
     {
         parent::__construct();
@@ -63,10 +61,6 @@ class AttemptController extends Controller
      * This endpoint is documented at:
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/webhooks/getWebhookMessageAttempts
      *
-     * @param Webhook        $webhook
-     * @param WebhookMessage $message
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function index(Webhook $webhook, WebhookMessage $message): JsonResponse
@@ -76,14 +70,14 @@ class AttemptController extends Controller
         }
 
         $manager    = $this->getManager();
-        $pageSize   = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize   = $this->parameters->get('limit');
         $collection = $this->repository->getAttempts($message);
         $count      = $collection->count();
         $attempts   = $collection->slice(($this->parameters->get('page') - 1) * $pageSize, $pageSize);
 
         // make paginator:
         $paginator = new LengthAwarePaginator($attempts, $count, $pageSize, $this->parameters->get('page'));
-        $paginator->setPath(route('api.v1.webhooks.attempts.index', [$webhook->id, $message->id]) . $this->buildParams());
+        $paginator->setPath(route('api.v1.webhooks.attempts.index', [$webhook->id, $message->id]).$this->buildParams());
 
         /** @var WebhookAttemptTransformer $transformer */
         $transformer = app(WebhookAttemptTransformer::class);
@@ -101,11 +95,6 @@ class AttemptController extends Controller
      *
      * Show single instance.
      *
-     * @param Webhook        $webhook
-     * @param WebhookMessage $message
-     * @param WebhookAttempt $attempt
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function show(Webhook $webhook, WebhookMessage $message, WebhookAttempt $attempt): JsonResponse

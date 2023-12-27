@@ -46,6 +46,7 @@ use FireflyIII\Models\TransactionGroup;
 use FireflyIII\Models\TransactionJournal;
 use FireflyIII\Models\TransactionJournalLink;
 use FireflyIII\Models\TransactionType as TransactionTypeModel;
+use FireflyIII\Models\UserGroup;
 use FireflyIII\Models\Webhook;
 use FireflyIII\Models\WebhookAttempt;
 use FireflyIII\Models\WebhookMessage;
@@ -85,8 +86,10 @@ use FireflyIII\TransactionRules\Actions\SetBudget;
 use FireflyIII\TransactionRules\Actions\SetCategory;
 use FireflyIII\TransactionRules\Actions\SetDescription;
 use FireflyIII\TransactionRules\Actions\SetDestinationAccount;
+use FireflyIII\TransactionRules\Actions\SetDestinationToCashAccount;
 use FireflyIII\TransactionRules\Actions\SetNotes;
 use FireflyIII\TransactionRules\Actions\SetSourceAccount;
+use FireflyIII\TransactionRules\Actions\SetSourceToCashAccount;
 use FireflyIII\TransactionRules\Actions\SwitchAccounts;
 use FireflyIII\TransactionRules\Actions\UpdatePiggybank;
 use FireflyIII\User;
@@ -111,9 +114,9 @@ return [
         'handle_debts' => true,
         // see cer.php for exchange rates feature flag.
     ],
-    'version'                      => '6.0.24',
-    'api_version'                  => '2.0.8',
-    'db_version'                   => 20,
+    'version'                      => '6.1.1',
+    'api_version'                  => '2.0.12',
+    'db_version'                   => 22,
 
     // generic settings
     'maxUploadSize'                => 1073741824, // 1 GB
@@ -188,7 +191,7 @@ return [
         //        'si_LK' => ['name_locale' => 'සිංහල', 'name_english' => 'Sinhala (Sri Lanka)'],
         'sk_SK' => ['name_locale' => 'Slovenčina', 'name_english' => 'Slovak'],
         'sl_SI' => ['name_locale' => 'Slovenian', 'name_english' => 'Slovenian'],
-        ////        'sr_CS' => ['name_locale' => 'Serbian (Latin)', 'name_english' => 'Serbian (Latin)'],
+        // //        'sr_CS' => ['name_locale' => 'Serbian (Latin)', 'name_english' => 'Serbian (Latin)'],
         'sv_SE' => ['name_locale' => 'Svenska', 'name_english' => 'Swedish'],
         //        // 'tlh_AA' => ['name_locale' => 'tlhIngan Hol', 'name_english' => 'Klingon'],
         'tr_TR' => ['name_locale' => 'Türkçe', 'name_english' => 'Turkish'],
@@ -249,40 +252,41 @@ return [
     ],
     'available_dark_modes'         => ['light', 'dark', 'browser'],
     'bill_reminder_periods'        => [90, 30, 14, 7, 0],
-    'valid_view_ranges'            => ['1D', '1W', '3W', '1M', '3M', '6M', '1Y',],
+    'valid_view_ranges'            => ['1D', '1W', '3W', '1M', '3M', '6M', '1Y'],
+    'valid_url_protocols'          => envNonEmpty('VALID_URL_PROTOCOLS', 'http,https,ftp,ftps,mailto'),
     'allowedMimes'                 => [
-        /* plain files */
+        // plain files
         'text/plain',
 
-        /* images */
+        // images
         'image/jpeg',
         'image/svg+xml',
         'image/png',
         'image/heic',
         'image/heic-sequence',
 
-        /* PDF */
+        // PDF
         'application/pdf',
 
-        /* Generic upload */
+        // Generic upload
         'application/octet-stream',
 
-        /* MS word */
+        // MS word
         'application/msword',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
-        /* MS excel */
+        // MS excel
         'application/vnd.ms-excel',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
-        /* MS powerpoint */
+        // MS powerpoint
         'application/vnd.ms-powerpoint',
         'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         'application/vnd.openxmlformats-officedocument.presentationml.template',
         'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
-        /* iWork */
+        // iWork
         'application/x-iwork-pages-sffpages',
-        /* open office */
+        // open office
         'application/vnd.sun.xml.writer',
         'application/vnd.sun.xml.writer.template',
         'application/vnd.sun.xml.writer.global',
@@ -314,15 +318,15 @@ return [
         'application/vnd.oasis.opendocument.database',
         'application/vnd.oasis.opendocument.image',
 
-        /* EML */
+        // EML
         'message/rfc822',
 
-        /* JSON */
+        // JSON
         'application/json',
     ],
     'accountRoles'                 => ['defaultAsset', 'sharedAsset', 'savingAsset', 'ccAsset', 'cashWalletAsset'],
     'valid_liabilities'            => [AccountType::DEBT, AccountType::LOAN, AccountType::MORTGAGE],
-    'ccTypes'                      => ['monthlyFull' => 'Full payment every month',],
+    'ccTypes'                      => ['monthlyFull' => 'Full payment every month'],
     'credit_card_types'            => ['monthlyFull'],
 
     // "period must be in this list" values
@@ -483,8 +487,7 @@ return [
         // V2 API endpoints:
         'userGroupAccount' => UserGroupAccount::class,
         'userGroupBill'    => UserGroupBill::class,
-
-
+        'userGroup'        => UserGroup::class,
     ],
     'rule-actions'         => [
         'set_category'            => SetCategory::class,
@@ -514,6 +517,8 @@ return [
         'append_notes_to_descr'   => AppendNotesToDescription::class,
         'move_descr_to_notes'     => MoveDescriptionToNotes::class,
         'move_notes_to_descr'     => MoveNotesToDescription::class,
+        'set_source_to_cash'      => SetSourceToCashAccount::class,
+        'set_destination_to_cash' => SetDestinationToCashAccount::class,
     ],
     'context-rule-actions' => [
         'set_category',
@@ -538,7 +543,6 @@ return [
         'limit' => 10,
         'range' => 200,
     ],
-
 
     // expected source types for each transaction type, in order of preference.
     'expected_source_types'     => [
@@ -631,7 +635,6 @@ return [
             AccountType::RECONCILIATION   => [AccountType::ASSET],
             AccountType::REVENUE          => [AccountType::ASSET, AccountType::DEBT, AccountType::LOAN, AccountType::MORTGAGE],
             AccountType::LIABILITY_CREDIT => [AccountType::DEBT, AccountType::LOAN, AccountType::MORTGAGE],
-
         ],
         'destination' => [
             AccountType::ASSET            => [
@@ -673,7 +676,7 @@ return [
             ],
             AccountType::RECONCILIATION   => [AccountType::ASSET],
             AccountType::REVENUE          => [], // is not allowed as a destination
-            AccountType::LIABILITY_CREDIT => [],// is not allowed as a destination
+            AccountType::LIABILITY_CREDIT => [], // is not allowed as a destination
         ],
     ],
     // depending on the account type, return the allowed transaction types:
@@ -743,7 +746,6 @@ return [
             AccountType::RECONCILIATION   => [TransactionTypeModel::RECONCILIATION],
             AccountType::LIABILITY_CREDIT => [], // is not allowed as a destination
         ],
-
     ],
 
     // having the source + dest will tell you the transaction type.
@@ -906,4 +908,7 @@ return [
 
     // only used in v1
     'allowed_sort_parameters'   => ['order', 'name', 'iban'],
+
+    // preselected account lists possibilities:
+    'preselected_accounts' => ['all', 'assets', 'liabilities'],
 ];

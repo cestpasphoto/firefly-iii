@@ -47,8 +47,6 @@ class ListController extends Controller
 
     /**
      * RecurrenceController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -69,15 +67,11 @@ class ListController extends Controller
      *
      * Show transactions for this recurrence.
      *
-     * @param Request    $request
-     * @param Recurrence $recurrence
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function transactions(Request $request, Recurrence $recurrence): JsonResponse
     {
-        $pageSize = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
+        $pageSize = $this->parameters->get('limit');
         $type     = $request->get('type') ?? 'default';
         $this->parameters->set('type', $type);
 
@@ -103,13 +97,18 @@ class ListController extends Controller
             // set page to retrieve
             ->setPage($this->parameters->get('page'))
             // set types of transactions to return.
-            ->setTypes($types);
+            ->setTypes($types)
+        ;
 
-        if (null !== $this->parameters->get('start') && null !== $this->parameters->get('end')) {
-            $collector->setRange($this->parameters->get('start'), $this->parameters->get('end'));
+        if (null !== $this->parameters->get('start')) {
+            $collector->setStart($this->parameters->get('start'));
         }
+        if (null !== $this->parameters->get('end')) {
+            $collector->setEnd($this->parameters->get('end'));
+        }
+
         $paginator = $collector->getPaginatedGroups();
-        $paginator->setPath(route('api.v1.transactions.index') . $this->buildParams());
+        $paginator->setPath(route('api.v1.transactions.index').$this->buildParams());
         $transactions = $paginator->getCollection();
 
         /** @var TransactionGroupTransformer $transformer */

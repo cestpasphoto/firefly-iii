@@ -32,7 +32,6 @@ use FireflyIII\Repositories\TransactionGroup\TransactionGroupRepositoryInterface
 use FireflyIII\Transformers\TransactionGroupTransformer;
 use FireflyIII\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 use League\Fractal\Resource\Item;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -45,8 +44,6 @@ class UpdateController extends Controller
 
     /**
      * TransactionController constructor.
-     *
-
      */
     public function __construct()
     {
@@ -69,15 +66,10 @@ class UpdateController extends Controller
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/transactions/updateTransaction
      *
      * Update a transaction.
-     *
-     * @param UpdateRequest    $request
-     * @param TransactionGroup $transactionGroup
-     *
-     * @return JsonResponse
      */
     public function update(UpdateRequest $request, TransactionGroup $transactionGroup): JsonResponse
     {
-        Log::debug('Now in update routine for transaction group!');
+        app('log')->debug('Now in update routine for transaction group!');
         $data = $request->getAll();
 
         $transactionGroup = $this->groupRepository->update($transactionGroup, $data);
@@ -90,6 +82,7 @@ class UpdateController extends Controller
 
         /** @var User $admin */
         $admin = auth()->user();
+
         // use new group collector:
         /** @var GroupCollectorInterface $collector */
         $collector = app(GroupCollectorInterface::class);
@@ -98,12 +91,14 @@ class UpdateController extends Controller
             // filter on transaction group.
             ->setTransactionGroup($transactionGroup)
             // all info needed for the API:
-            ->withAPIInformation();
+            ->withAPIInformation()
+        ;
 
         $selectedGroup = $collector->getGroups()->first();
         if (null === $selectedGroup) {
             throw new NotFoundHttpException();
         }
+
         /** @var TransactionGroupTransformer $transformer */
         $transformer = app(TransactionGroupTransformer::class);
         $transformer->setParameters($this->parameters);

@@ -42,10 +42,6 @@ class TransactionController extends Controller
      * This endpoint is documented at:
      * https://api-docs.firefly-iii.org/?urls.primaryName=2.0.0%20(v1)#/search/searchTransactions
      *
-     * @param Request         $request
-     * @param SearchInterface $searcher
-     *
-     * @return JsonResponse
      * @throws FireflyException
      */
     public function search(Request $request, SearchInterface $searcher): JsonResponse
@@ -53,14 +49,13 @@ class TransactionController extends Controller
         $manager   = $this->getManager();
         $fullQuery = (string)$request->get('query');
         $page      = 0 === (int)$request->get('page') ? 1 : (int)$request->get('page');
-        $pageSize  = (int)app('preferences')->getForUser(auth()->user(), 'listPageSize', 50)->data;
-        $pageSize  = 0 === (int)$request->get('limit') ? $pageSize : (int)$request->get('limit');
+        $pageSize  = $this->parameters->get('limit');
         $searcher->parseQuery($fullQuery);
         $searcher->setPage($page);
         $searcher->setLimit($pageSize);
         $groups     = $searcher->searchTransactions();
         $parameters = ['search' => $fullQuery];
-        $url        = route('api.v1.search.transactions') . '?' . http_build_query($parameters);
+        $url        = route('api.v1.search.transactions').'?'.http_build_query($parameters);
         $groups->setPath($url);
         $transactions = $groups->getCollection();
 

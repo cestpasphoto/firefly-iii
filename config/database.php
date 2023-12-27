@@ -39,9 +39,7 @@ if (false !== $databaseUrl) {
     $database = substr($options['path'] ?? '/firefly', 1);
 }
 
-/*
- * Get SSL parameters from .env file.
- */
+// Get SSL parameters from .env file.
 $mysql_ssl_ca_dir  = envNonEmpty('MYSQL_SSL_CAPATH', null);
 $mysql_ssl_ca_file = envNonEmpty('MYSQL_SSL_CA', null);
 $mysql_ssl_cert    = envNonEmpty('MYSQL_SSL_CERT', null);
@@ -51,7 +49,7 @@ $mysql_ssl_verify  = envNonEmpty('MYSQL_SSL_VERIFY_SERVER_CERT', null);
 
 $mySqlSSLOptions = [];
 $useSSL          = envNonEmpty('MYSQL_USE_SSL', false);
-if (false !== $useSSL && null !== $useSSL) {
+if (false !== $useSSL && null !== $useSSL && '' !== $useSSL) {
     if (null !== $mysql_ssl_ca_dir) {
         $mySqlSSLOptions[PDO::MYSQL_ATTR_SSL_CAPATH] = $mysql_ssl_ca_dir;
     }
@@ -105,6 +103,7 @@ return [
             'charset'     => 'utf8',
             'prefix'      => '',
             'search_path' => envNonEmpty('PGSQL_SCHEMA', 'public'),
+            'schema'      => envNonEmpty('PGSQL_SCHEMA', 'public'),
             'sslmode'     => envNonEmpty('PGSQL_SSL_MODE', 'prefer'),
             'sslcert'     => envNonEmpty('PGSQL_SSL_CERT'),
             'sslkey'      => envNonEmpty('PGSQL_SSL_KEY'),
@@ -120,7 +119,6 @@ return [
             'charset'  => 'utf8',
             'prefix'   => '',
         ],
-
     ],
     'migrations'  => 'migrations',
     /*
@@ -137,7 +135,7 @@ return [
         'client'  => env('REDIS_CLIENT', 'predis'),
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'predis'),
-            'prefix'  => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
+            // 'prefix'  => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
         ],
         'default' => [
             'scheme'   => envNonEmpty('REDIS_SCHEME', 'tcp'),
@@ -160,5 +158,4 @@ return [
             'database' => env('REDIS_CACHE_DB', '1'),
         ],
     ],
-
 ];
