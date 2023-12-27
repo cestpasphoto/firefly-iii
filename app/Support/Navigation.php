@@ -737,6 +737,11 @@ class Navigation
             return $end;
         }
 
+        if ('3W' === $range) {
+            $end->addDays(21);
+            return $end;
+        }
+
         // make sure 1Y takes the fiscal year into account.
         if ('1Y' === $range) {
             /** @var FiscalHelperInterface $fiscalHelper */
