@@ -147,31 +147,6 @@
                                         :no_budget="$t('firefly.none_in_select_list')"
                                         :transactionType="transactionType"
                                     ></budget>
-                                    <category
-                                        v-model="transaction.category"
-                                        :error="transaction.errors.category"
-                                        :transactionType="transactionType"
-                                    ></category>
-                                    <piggy-bank
-                                        v-model="transaction.piggy_bank"
-                                        :error="transaction.errors.piggy_bank"
-                                        :no_piggy_bank="$t('firefly.no_piggy_bank')"
-                                        :transactionType="transactionType"
-                                    ></piggy-bank>
-                                    <tags
-                                        v-model="transaction.tags"
-                                        :error="transaction.errors.tags"
-                                    ></tags>
-                                    <bill
-                                        v-model="transaction.bill"
-                                        :error="transaction.errors.bill_id"
-                                        :no_bill="$t('firefly.none_in_select_list')"
-                                        :transactionType="transactionType"
-                                    ></bill>
-                                    <custom-transaction-fields
-                                        v-model="transaction.custom_fields"
-                                        :error="transaction.errors.custom_errors"
-                                    ></custom-transaction-fields>
                                 </div>
                             </div>
                         </div>

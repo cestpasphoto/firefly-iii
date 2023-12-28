@@ -6,5 +6,5 @@ namespace FireflyIII\Support\Calendar\Periodicity;
 
 final class ThreeWeekly extends Weekly
 {
-    public const INTERVAL = 3;
+    public const int INTERVAL = 3;
 }
