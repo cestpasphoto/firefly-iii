@@ -1,6 +1,6 @@
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
 --- ../official/public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:20:55.829339578 +0200
-+++ ./public/v1/js/ff/accounts/reconcile.js	2023-09-17 19:17:12.976296640 +0200
++++ ./public/v1/js/ff/accounts/reconcile.js	2023-12-28 18:53:59.996124192 +0100
 @@ -21,6 +21,7 @@
  var balanceDifference = 0;
  var difference = 0;
@@ -560,7 +560,7 @@ diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./a
          }
 diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
 --- ../official/app/Support/Navigation.php	2023-12-27 17:56:43.170457799 +0100
-+++ ./app/Support/Navigation.php	2023-12-27 19:06:28.342624468 +0100
++++ ./app/Support/Navigation.php	2023-12-29 10:37:41.231284429 +0100
 @@ -52,6 +52,7 @@
              '1W'        => Periodicity::Weekly,
              'weekly'    => Periodicity::Weekly,
@@ -569,14 +569,14 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              '1M'        => Periodicity::Monthly,
              'month'     => Periodicity::Monthly,
              'monthly'   => Periodicity::Monthly,
-@@ -168,6 +169,7 @@
-             '1W'        => 'startOfWeek',
-             'week'      => 'startOfWeek',
-             'weekly'    => 'startOfWeek',
-+            '3W'        => 'startOfMonth',
-             'month'     => 'startOfMonth',
-             '1M'        => 'startOfMonth',
-             'monthly'   => 'startOfMonth',
+@@ -162,6 +163,7 @@
+     {
+         $date = clone $theDate;
+ 
++        // No need to change anything for 3W
+         $functionMap = [
+             '1D'        => 'startOfDay',
+             'daily'     => 'startOfDay',
 @@ -223,6 +225,7 @@
              '1W'        => 'addWeek',
              'week'      => 'addWeek',
@@ -602,14 +602,14 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
  
          // if the range is custom, the end of the period
          // is another X days (x is the difference between start)
-@@ -365,6 +369,7 @@
-             '1W'        => 'endOfWeek',
-             'week'      => 'endOfWeek',
-             'weekly'    => 'endOfWeek',
-+            '3W'        => 'endOfMonth',
-             'month'     => 'endOfMonth',
-             '1M'        => 'endOfMonth',
-             'monthly'   => 'endOfMonth',
+@@ -359,6 +363,7 @@
+ 
+     public function endOfX(Carbon $theCurrentEnd, string $repeatFreq, ?Carbon $maxDate): Carbon
+     {
++        // No need to change anything for 3W
+         $functionMap = [
+             '1D'        => 'endOfDay',
+             'daily'     => 'endOfDay',
 @@ -487,6 +492,7 @@
              '1W'      => (string)trans('config.week_in_year_js'),
              'week'    => (string)trans('config.week_in_year_js'),
@@ -626,18 +626,23 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              '1M'       => 'Y-m',
              '3M', '6M' => '\QQ,Y',
              '1Y'       => 'Y',
-@@ -640,6 +647,10 @@
- 
-             return $date;
-         }
-+        if ('3W' === $repeatFreq) {
-+            $date->subDays(21);
-+            return $date;
-+        }
-         // a custom range requires the session start
-         // and session end to calculate the difference in days.
-         // this is then subtracted from $theDate (* $subtract).
-@@ -730,6 +741,11 @@
+@@ -614,6 +621,7 @@
+             'week'    => 'subWeeks',
+             '1W'      => 'subWeeks',
+             'weekly'  => 'subWeeks',
++            '3W'      => 'subDays',
+             'month'   => 'subMonths',
+             '1M'      => 'subMonths',
+             'monthly' => 'subMonths',
+@@ -622,6 +630,7 @@
+             'yearly'  => 'subYears',
+         ];
+         $modifierMap = [
++            '3W'        => 21,
+             'quarter'   => 3,
+             '3M'        => 3,
+             'quarterly' => 3,
+@@ -730,6 +739,11 @@
              return $end;
          }
  
@@ -649,15 +654,60 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          // make sure 1Y takes the fiscal year into account.
          if ('1Y' === $range) {
              /** @var FiscalHelperInterface $fiscalHelper */
-@@ -804,6 +820,11 @@
+@@ -776,6 +790,12 @@
  
-                 return $start;
- 
-+            case '3W':
-+                $start->subDays(14);
+             return $start;
+         }
 +
-+                return $start;
++        if ('3W' === $range) {
++            $start->subDays(14);
++            return $start;
++        }
 +
-             case 'last30':
-                 $start->subDays(30);
+         if ('6M' === $range) {
+             if ($start->month >= 7) {
+                 $start->startOfYear()->addMonths(6);
+--- ../official/webpack.mix.js	2023-01-14 16:08:05.097757575 +0100
++++ ./webpack.mix.js	2023-12-29 09:48:14.098513385 +0100
+@@ -41,7 +41,7 @@
+ mix.js('resources/assets/js/profile.js', 'public/v1/js').vue({version: 2});
  
+ // webhooks
+-mix.js('resources/assets/js/webhooks/index.js', 'public/v1/js/webhooks').vue({version: 2});
+-mix.js('resources/assets/js/webhooks/create.js', 'public/v1/js/webhooks').vue({version: 2});
+-mix.js('resources/assets/js/webhooks/edit.js', 'public/v1/js/webhooks').vue({version: 2});
+-mix.js('resources/assets/js/webhooks/show.js', 'public/v1/js/webhooks').vue({version: 2});
++//mix.js('resources/assets/js/webhooks/index.js', 'public/v1/js/webhooks').vue({version: 2});
++//mix.js('resources/assets/js/webhooks/create.js', 'public/v1/js/webhooks').vue({version: 2});
++//mix.js('resources/assets/js/webhooks/edit.js', 'public/v1/js/webhooks').vue({version: 2});
++//mix.js('resources/assets/js/webhooks/show.js', 'public/v1/js/webhooks').vue({version: 2});
+--- ../official/package.old.json	1970-01-01 01:00:00.000000000 +0100
++++ ./package.old.json	2023-12-29 09:48:52.959013253 +0100
+@@ -0,0 +1,27 @@
++{
++    "private": true,
++    "scripts": {
++        "development": "mix",
++        "watch": "mix watch",
++        "watch-poll": "mix watch -- --watch-options-poll=1000",
++        "hot": "mix watch --hot",
++        "production": "mix --production",
++        "prod": "mix --production"
++    },
++    "devDependencies": {
++        "@johmun/vue-tags-input": "^2",
++        "@vue/compiler-sfc": "^3.2.29",
++        "axios": "^0.26",
++        "bootstrap-sass": "^3",
++        "cross-env": "^7.0",
++        "font-awesome": "^4.7.0",
++        "jquery": "^3",
++        "laravel-mix": "^6.0",
++        "postcss": "^8.4",
++        "uiv": "^1.4",
++        "vue": "^2.6",
++        "vue-i18n": "^8",
++        "vue-loader": "^15",
++        "vue-template-compiler": "^2.6"
++    }
++}

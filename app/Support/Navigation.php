@@ -163,13 +163,13 @@ class Navigation
     {
         $date = clone $theDate;
 
+        // No need to change anything for 3W
         $functionMap = [
             '1D'        => 'startOfDay',
             'daily'     => 'startOfDay',
             '1W'        => 'startOfWeek',
             'week'      => 'startOfWeek',
             'weekly'    => 'startOfWeek',
-            '3W'        => 'startOfMonth',
             'month'     => 'startOfMonth',
             '1M'        => 'startOfMonth',
             'monthly'   => 'startOfMonth',
@@ -363,13 +363,13 @@ class Navigation
 
     public function endOfX(Carbon $theCurrentEnd, string $repeatFreq, ?Carbon $maxDate): Carbon
     {
+        // No need to change anything for 3W
         $functionMap = [
             '1D'        => 'endOfDay',
             'daily'     => 'endOfDay',
             '1W'        => 'endOfWeek',
             'week'      => 'endOfWeek',
             'weekly'    => 'endOfWeek',
-            '3W'        => 'endOfMonth',
             'month'     => 'endOfMonth',
             '1M'        => 'endOfMonth',
             'monthly'   => 'endOfMonth',
@@ -621,6 +621,7 @@ class Navigation
             'week'    => 'subWeeks',
             '1W'      => 'subWeeks',
             'weekly'  => 'subWeeks',
+            '3W'      => 'subDays',
             'month'   => 'subMonths',
             '1M'      => 'subMonths',
             'monthly' => 'subMonths',
@@ -629,6 +630,7 @@ class Navigation
             'yearly'  => 'subYears',
         ];
         $modifierMap = [
+            '3W'        => 21,
             'quarter'   => 3,
             '3M'        => 3,
             'quarterly' => 3,
@@ -645,10 +647,6 @@ class Navigation
             $subtract *= $modifierMap[$repeatFreq];
             $date->subMonths($subtract);
 
-            return $date;
-        }
-        if ('3W' === $repeatFreq) {
-            $date->subDays(21);
             return $date;
         }
         // a custom range requires the session start
@@ -792,6 +790,12 @@ class Navigation
 
             return $start;
         }
+
+        if ('3W' === $range) {
+            $start->subDays(14);
+            return $start;
+        }
+
         if ('6M' === $range) {
             if ($start->month >= 7) {
                 $start->startOfYear()->addMonths(6);
@@ -817,11 +821,6 @@ class Navigation
 
             case 'last7':
                 $start->subDays(7);
-
-                return $start;
-
-            case '3W':
-                $start->subDays(14);
 
                 return $start;
 
