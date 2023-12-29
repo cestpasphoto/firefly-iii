@@ -53,9 +53,17 @@ install_env () {
 # Compile and generate patches
 build () {
   sudo docker exec -it ${DOCKER_CONTAINER} /bin/bash -c '
+    # Build v1 layout first
+    mv package.json     package.new.json
+    mv package.old.json package.json
+    npm install laravel-mix
+    npx mix
+
     # Fix some permissions and compile
-    chmod -R o+rwx public/v1/js/*.js public/mix-manifest.json
-    npm run prod
+    mv package.json     package.old.json
+    mv package.new.json package.json
+    npm install
+    npm run build
 
     # Create patches
     find ./ -iname "*.rej" -delete ; find ./ -iname "*.orig" -delete
@@ -94,7 +102,8 @@ elif [[ "$1" == "patch" ]]; then
 
 elif [[ "$1" == "custom" ]]; then
   clean_docker
-  # apply_patch "src"
+  install_env
+  apply_patch "src"
 
 else
   echo "\
