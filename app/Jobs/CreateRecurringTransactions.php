@@ -87,6 +87,8 @@ class CreateRecurringTransactions implements ShouldQueue
         $this->created           = 0;
         $this->recurrences       = new Collection();
         $this->groups            = new Collection();
+        $this->days_max_early    = 8;
+        $this->days_max_late     = 8;
 
         app('log')->debug(sprintf('Created new CreateRecurringTransactions("%s")', $this->date->format('Y-m-d')));
     }
