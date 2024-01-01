@@ -207,7 +207,7 @@ class Navigation
             return $result;
         }
 
-        if ('custom' === $repeatFreq) {
+        if ('3W' === $repeatFreq || 'custom' === $repeatFreq) {
             return $date; // the date is already at the start.
         }
         Log::error(sprintf('Cannot do startOfPeriod for $repeat_freq "%s"', $repeatFreq));
