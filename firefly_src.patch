@@ -1,6 +1,6 @@
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
 --- ../official/public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:20:55.829339578 +0200
-+++ ./public/v1/js/ff/accounts/reconcile.js	2023-12-28 18:53:59.996124192 +0100
++++ ./public/v1/js/ff/accounts/reconcile.js	2023-12-29 10:41:54.360183539 +0100
 @@ -21,6 +21,7 @@
  var balanceDifference = 0;
  var difference = 0;
@@ -472,8 +472,17 @@ diff -Naur ../official/app/Http/Controllers/Bill/IndexController.php ./app/Http/
              'QTD'     => '4',
 diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/CreateRecurringTransactions.php
 --- ../official/app/Jobs/CreateRecurringTransactions.php	2023-12-27 17:56:43.154457588 +0100
-+++ ./app/Jobs/CreateRecurringTransactions.php	2023-12-27 18:23:56.945621468 +0100
-@@ -310,10 +310,10 @@
++++ ./app/Jobs/CreateRecurringTransactions.php	2024-01-01 07:28:07.481611117 +0100
+@@ -87,6 +87,8 @@
+         $this->created           = 0;
+         $this->recurrences       = new Collection();
+         $this->groups            = new Collection();
++        $this->days_max_early    = 8;
++        $this->days_max_late     = 8;
+ 
+         app('log')->debug(sprintf('Created new CreateRecurringTransactions("%s")', $this->date->format('Y-m-d')));
+     }
+@@ -310,10 +312,10 @@
              );
  
              // start looping from $startDate to today perhaps we have a hit?
@@ -488,7 +497,7 @@ diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/Creat
  
              unset($includeWeekend);
  
-@@ -352,10 +352,18 @@
+@@ -352,10 +354,18 @@
      private function handleOccurrence(Recurrence $recurrence, RecurrenceRepetition $repetition, Carbon $date): ?TransactionGroup
      {
          $date->startOfDay();
