@@ -1,6 +1,6 @@
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
 --- ../official/public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:20:55.829339578 +0200
-+++ ./public/v1/js/ff/accounts/reconcile.js	2023-12-29 10:41:54.360183539 +0100
++++ ./public/v1/js/ff/accounts/reconcile.js	2024-01-01 07:34:17.984957109 +0100
 @@ -21,6 +21,7 @@
  var balanceDifference = 0;
  var difference = 0;
@@ -569,7 +569,7 @@ diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./a
          }
 diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
 --- ../official/app/Support/Navigation.php	2023-12-27 17:56:43.170457799 +0100
-+++ ./app/Support/Navigation.php	2023-12-29 10:37:41.231284429 +0100
++++ ./app/Support/Navigation.php	2024-01-01 19:42:35.997426198 +0100
 @@ -52,6 +52,7 @@
              '1W'        => Periodicity::Weekly,
              'weekly'    => Periodicity::Weekly,
@@ -586,6 +586,15 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          $functionMap = [
              '1D'        => 'startOfDay',
              'daily'     => 'startOfDay',
+@@ -205,7 +207,7 @@
+             return $result;
+         }
+ 
+-        if ('custom' === $repeatFreq) {
++        if ('3W' === $repeatFreq || 'custom' === $repeatFreq) {
+             return $date; // the date is already at the start.
+         }
+         Log::error(sprintf('Cannot do startOfPeriod for $repeat_freq "%s"', $repeatFreq));
 @@ -223,6 +225,7 @@
              '1W'        => 'addWeek',
              'week'      => 'addWeek',
