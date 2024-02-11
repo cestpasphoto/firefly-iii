@@ -293,7 +293,7 @@ class General extends AbstractExtension
             'activeRoutePartialObjectType',
             static function ($context): string {
                 [, $route, $objectType] = func_get_args();
-                $activeObjectType = $context['objectType'] ?? false;
+                $activeObjectType       = $context['objectType'] ?? false;
 
                 if ($objectType === $activeObjectType
                     && false !== stripos(
@@ -346,8 +346,7 @@ class General extends AbstractExtension
     }
 
     /**
-     * @return twigFunction
-     *                      TODO remove me when layout v1 is deprecated
+     * TODO Remove me when v2 hits.
      */
     protected function getMetaField(): TwigFunction
     {

@@ -6,7 +6,7 @@
         "flash_success": "Slutf\u00f6rd!",
         "close": "St\u00e4ng",
         "split_transaction_title": "Beskrivning av delad transaktion",
-        "errors_submission": "N\u00e5got fel uppstod med inskickningen. V\u00e4nligen kontrollera felen nedan.",
+        "errors_submission": "There was something wrong with your submission. Please check out the errors below.",
         "split": "Dela",
         "single_split": "Dela",
         "transaction_stored_link": "<a href=\"transactions\/show\/{ID}\">Transaktion #{ID} (\"{title}\")<\/a> sparades.",
@@ -142,16 +142,16 @@
         "invoice_date": "Fakturadatum",
         "internal_reference": "Intern referens",
         "webhook_response": "Response",
-        "webhook_trigger": "Trigger",
+        "webhook_trigger": "Utl\u00f6sare",
         "webhook_delivery": "Delivery"
     },
     "list": {
         "active": "\u00c4r aktiv?",
-        "trigger": "Trigger",
-        "response": "Response",
-        "delivery": "Delivery",
+        "trigger": "Utl\u00f6sare",
+        "response": "Svar",
+        "delivery": "Leverans",
         "url": "URL",
-        "secret": "Secret"
+        "secret": "Hemlighet"
     },
     "config": {
         "html_language": "sv",

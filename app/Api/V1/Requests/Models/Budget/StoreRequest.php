@@ -24,10 +24,12 @@ declare(strict_types=1);
 namespace FireflyIII\Api\V1\Requests\Models\Budget;
 
 use FireflyIII\Rules\IsBoolean;
+use FireflyIII\Rules\IsValidPositiveAmount;
 use FireflyIII\Support\Request\ChecksLogin;
 use FireflyIII\Support\Request\ConvertsDataTypes;
 use FireflyIII\Validation\AutoBudget\ValidatesAutoBudgetRequest;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Validator;
 
 /**
@@ -67,14 +69,14 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'               => 'required|between:1,100|uniqueObjectForUser:budgets,name',
+            'name'               => 'required|min:1|max:255|uniqueObjectForUser:budgets,name',
             'active'             => [new IsBoolean()],
             'currency_id'        => 'exists:transaction_currencies,id',
             'currency_code'      => 'exists:transaction_currencies,code',
-            'notes'              => 'nullable|between:1,65536',
+            'notes'              => 'nullable|min:1|max:32768',
             // auto budget info
             'auto_budget_type'   => 'in:reset,rollover,adjusted,none',
-            'auto_budget_amount' => 'numeric|min:0|max:1000000000|required_if:auto_budget_type,reset|required_if:auto_budget_type,rollover|required_if:auto_budget_type,adjusted',
+            'auto_budget_amount' => ['required_if:auto_budget_type,reset', 'required_if:auto_budget_type,rollover', 'required_if:auto_budget_type,adjusted', new IsValidPositiveAmount()],
             'auto_budget_period' => 'in:daily,weekly,monthly,quarterly,half_year,yearly|required_if:auto_budget_type,reset|required_if:auto_budget_type,rollover|required_if:auto_budget_type,adjusted',
         ];
     }
@@ -90,5 +92,8 @@ class StoreRequest extends FormRequest
                 $this->validateAutoBudgetAmount($validator);
             }
         );
+        if($validator->fails()) {
+            Log::channel('audit')->error(sprintf('Validation errors in %s', __CLASS__), $validator->errors()->toArray());
+        }
     }
 }

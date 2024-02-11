@@ -395,7 +395,7 @@ export default {
         getGroup() {
             // console.log('EditTransaction: getGroup()');
             const page = window.location.href.split('/');
-            const groupId = page[page.length - 1];
+            const groupId = parseInt(page[page.length - 1]);
 
 
             const uri = './api/v1/transactions/' + groupId;
@@ -451,7 +451,7 @@ export default {
             if (typeof window.expectedSourceTypes === 'undefined') {
                 console.error('window.expectedSourceTypes is unexpectedly empty.')
             }
-            this.transactions.push({
+            let result = {
                 transaction_journal_id: transaction.transaction_journal_id,
                 description: transaction.description,
                 date: transaction.date.substring(0, 16),
@@ -521,7 +521,11 @@ export default {
                     currency_decimal_places: transaction.currency_decimal_places,
                     allowed_types: window.expectedSourceTypes.destination[this.ucFirst(transaction.type)]
                 }
-            });
+            };
+            if(null === transaction.foreign_amount) {
+                result.foreign_amount.amount = '';
+            }
+            this.transactions.push(result);
         },
         limitSourceType: function (type) {
             // let i;
@@ -648,7 +652,7 @@ export default {
                 }
             }
             // set foreign currency info:
-            if (row.foreign_amount.amount !== '' && parseFloat(row.foreign_amount.amount) !== .00) {
+            if (row.foreign_amount.amount.toString() !== '' && parseFloat(row.foreign_amount.amount) !== .00) {
                 foreignAmount = row.foreign_amount.amount;
                 foreignCurrency = row.foreign_amount.currency_id;
             }
@@ -742,7 +746,7 @@ export default {
             button.prop("disabled", true);
 
             const page = window.location.href.split('/');
-            const groupId = page[page.length - 1];
+            const groupId = parseInt(page[page.length - 1]);
             let uri = './api/v1/transactions/' + groupId + '?_token=' + document.head.querySelector('meta[name="csrf-token"]').content;
             let method = 'PUT';
             if (this.storeAsNew) {
@@ -759,7 +763,8 @@ export default {
                 data: data,
             }).then(response => {
                 if (0 === this.collectAttachmentData(response)) {
-                    this.redirectUser(response.data.data.id);
+                    const title = response.data.data.attributes.group_title ?? response.data.data.attributes.transactions[0].description;
+                    this.redirectUser(response.data.data.id, title);
                 }
             }).catch(error => {
                 // give user errors things back.
@@ -773,15 +778,15 @@ export default {
             button.removeAttr('disabled');
         },
 
-        redirectUser(groupId) {
+        redirectUser(groupId, title) {
             if (this.returnAfter) {
                 this.setDefaultErrors();
                 // do message if update or new:
                 if (this.storeAsNew) {
-                    this.success_message = this.$t('firefly.transaction_new_stored_link', {ID: groupId});
+                    this.success_message = this.$t('firefly.transaction_new_stored_link', {ID: groupId, title: this.escapeHtml(title)});
                     this.error_message = '';
                 } else {
-                    this.success_message = this.$t('firefly.transaction_updated_link', {ID: groupId});
+                    this.success_message = this.$t('firefly.transaction_updated_link', {ID: groupId, title: this.escapeHtml(title)});
                     this.error_message = '';
                 }
             } else {
@@ -912,6 +917,24 @@ export default {
 
         },
 
+        escapeHtml: function (string) {
+
+            let entityMap = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;',
+                '/': '&#x2F;',
+                '`': '&#x60;',
+                '=': '&#x3D;'
+            };
+
+            return String(string).replace(/[&<>"'`=\/]/g, function fromEntityMap(s) {
+                return entityMap[s];
+            });
+
+        },
 
         addTransaction: function (e) {
 

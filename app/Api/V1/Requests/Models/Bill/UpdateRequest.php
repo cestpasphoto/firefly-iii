@@ -26,9 +26,11 @@ namespace FireflyIII\Api\V1\Requests\Models\Bill;
 
 use FireflyIII\Models\Bill;
 use FireflyIII\Rules\IsBoolean;
+use FireflyIII\Rules\IsValidPositiveAmount;
 use FireflyIII\Support\Request\ChecksLogin;
 use FireflyIII\Support\Request\ConvertsDataTypes;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Validator;
 
 /**
@@ -74,18 +76,18 @@ class UpdateRequest extends FormRequest
         $bill = $this->route()->parameter('bill');
 
         return [
-            'name'           => sprintf('between:1,255|uniqueObjectForUser:bills,name,%d', $bill->id),
-            'amount_min'     => 'numeric|gt:0',
-            'amount_max'     => 'numeric|gt:0',
+            'name'           => sprintf('min:1|max:255|uniqueObjectForUser:bills,name,%d', $bill->id),
+            'amount_min'     => ['nullable', new IsValidPositiveAmount()],
+            'amount_max'     => ['nullable', new IsValidPositiveAmount()],
             'currency_id'    => 'numeric|exists:transaction_currencies,id',
             'currency_code'  => 'min:3|max:51|exists:transaction_currencies,code',
             'date'           => 'date',
             'end_date'       => 'date|after:date',
             'extension_date' => 'date|after:date',
             'repeat_freq'    => 'in:weekly,monthly,quarterly,half-year,yearly',
-            'skip'           => 'between:0,31',
+            'skip'           => 'min:0|max:31|numeric',
             'active'         => [new IsBoolean()],
-            'notes'          => 'between:1,65536',
+            'notes'          => 'min:1|max:32768',
         ];
     }
 
@@ -107,5 +109,8 @@ class UpdateRequest extends FormRequest
                 }
             }
         );
+        if($validator->fails()) {
+            Log::channel('audit')->error(sprintf('Validation errors in %s', __CLASS__), $validator->errors()->toArray());
+        }
     }
 }

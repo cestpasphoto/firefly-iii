@@ -26,7 +26,7 @@ namespace Tests\unit\Support;
 use Carbon\Carbon;
 use FireflyIII\Support\Navigation;
 use Illuminate\Support\Facades\Log;
-use PHPUnit\Framework\TestCase;
+use Tests\integration\TestCase;
 
 /**
  * @group unit-test
@@ -78,7 +78,7 @@ final class NavigationEndOfPeriodTest extends TestCase
     }
 
     /**
-     * @dataProvider provideDates
+     * @dataProvider        provideDates
      */
     public function testGivenADateAndFrequencyWhenCalculateTheDateThenReturnsTheExpectedDateSuccessful(string $frequency, Carbon $from, Carbon $expected): void
     {
@@ -102,7 +102,7 @@ final class NavigationEndOfPeriodTest extends TestCase
     {
         Log::spy();
 
-        $period = $this->navigation->endOfPeriod($from, $frequency);
+        $period          = $this->navigation->endOfPeriod($from, $frequency);
         self::assertSame($expected->toDateString(), $period->toDateString());
         $expectedMessage = sprintf('Cannot do endOfPeriod for $repeat_freq "%s"', $frequency);
 

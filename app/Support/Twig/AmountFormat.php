@@ -81,8 +81,7 @@ class AmountFormat extends AbstractExtension
     /**
      * Will format the amount by the currency related to the given account.
      *
-     * @return twigFunction
-     *                      TODO remove me when layout v1 is deprecated
+     * TODO Remove me when v2 hits.
      */
     protected function formatAmountByAccount(): TwigFunction
     {
@@ -109,8 +108,8 @@ class AmountFormat extends AbstractExtension
         return new TwigFunction(
             'formatAmountBySymbol',
             static function (string $amount, string $symbol, int $decimalPlaces = null, bool $coloured = null): string {
-                $decimalPlaces            ??= 2;
-                $coloured                 ??= true;
+                $decimalPlaces ??= 2;
+                $coloured      ??= true;
                 $currency                 = new TransactionCurrency();
                 $currency->symbol         = $symbol;
                 $currency->decimal_places = $decimalPlaces;

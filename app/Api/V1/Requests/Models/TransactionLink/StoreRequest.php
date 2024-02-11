@@ -29,6 +29,7 @@ use FireflyIII\Support\Request\ChecksLogin;
 use FireflyIII\Support\Request\ConvertsDataTypes;
 use FireflyIII\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Validator;
 
 /**
@@ -63,7 +64,7 @@ class StoreRequest extends FormRequest
             'link_type_name' => 'exists:link_types,name|required_without:link_type_id',
             'inward_id'      => 'required|belongsToUser:transaction_journals,id|different:outward_id',
             'outward_id'     => 'required|belongsToUser:transaction_journals,id|different:inward_id',
-            'notes'          => 'between:0,65000',
+            'notes'          => 'min:1|max:32768|nullable',
         ];
     }
 
@@ -77,26 +78,29 @@ class StoreRequest extends FormRequest
                 $this->validateExistingLink($validator);
             }
         );
+        if($validator->fails()) {
+            Log::channel('audit')->error(sprintf('Validation errors in %s', __CLASS__), $validator->errors()->toArray());
+        }
     }
 
     private function validateExistingLink(Validator $validator): void
     {
         /** @var User $user */
-        $user = auth()->user();
+        $user         = auth()->user();
 
         /** @var LinkTypeRepositoryInterface $repository */
-        $repository = app(LinkTypeRepositoryInterface::class);
+        $repository   = app(LinkTypeRepositoryInterface::class);
         $repository->setUser($user);
 
         /** @var JournalRepositoryInterface $journalRepos */
         $journalRepos = app(JournalRepositoryInterface::class);
         $journalRepos->setUser($user);
 
-        $data      = $validator->getData();
-        $inwardId  = (int)($data['inward_id'] ?? 0);
-        $outwardId = (int)($data['outward_id'] ?? 0);
-        $inward    = $journalRepos->find($inwardId);
-        $outward   = $journalRepos->find($outwardId);
+        $data         = $validator->getData();
+        $inwardId     = (int)($data['inward_id'] ?? 0);
+        $outwardId    = (int)($data['outward_id'] ?? 0);
+        $inward       = $journalRepos->find($inwardId);
+        $outward      = $journalRepos->find($outwardId);
 
         if (null === $inward) {
             $validator->errors()->add('inward_id', 'Invalid inward ID.');

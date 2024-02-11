@@ -28,6 +28,8 @@ use FireflyIII\Support\Request\ChecksLogin;
 use FireflyIII\Support\Request\ConvertsDataTypes;
 use FireflyIII\Support\Request\GetRuleConfiguration;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Validator;
 
 /**
  * Class RuleFormRequest.
@@ -86,19 +88,19 @@ class RuleFormRequest extends FormRequest
      */
     public function rules(): array
     {
-        $validTriggers = $this->getTriggers();
-        $validActions  = array_keys(config('firefly.rule-actions'));
+        $validTriggers   = $this->getTriggers();
+        $validActions    = array_keys(config('firefly.rule-actions'));
 
         // some actions require text (aka context):
-        $contextActions = implode(',', config('firefly.context-rule-actions'));
+        $contextActions  = implode(',', config('firefly.context-rule-actions'));
 
         // some triggers require text (aka context):
         $contextTriggers = implode(',', $this->getTriggersWithContext());
 
         // initial set of rules:
-        $rules = [
-            'title'            => 'required|between:1,100|uniqueObjectForUser:rules,title',
-            'description'      => 'between:1,5000|nullable',
+        $rules           = [
+            'title'            => 'required|min:1|max:255|uniqueObjectForUser:rules,title',
+            'description'      => 'min:1|max:32768|nullable',
             'stop_processing'  => 'boolean',
             'rule_group_id'    => 'required|belongsToUser:rule_groups',
             'trigger'          => 'required|in:store-journal,update-journal',
@@ -110,13 +112,20 @@ class RuleFormRequest extends FormRequest
         ];
 
         /** @var null|Rule $rule */
-        $rule = $this->route()->parameter('rule');
+        $rule            = $this->route()->parameter('rule');
 
         if (null !== $rule) {
-            $rules['title'] = 'required|between:1,100|uniqueObjectForUser:rules,title,'.$rule->id;
+            $rules['title'] = 'required|min:1|max:255|uniqueObjectForUser:rules,title,'.$rule->id;
         }
 
         return $rules;
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        if($validator->fails()) {
+            Log::channel('audit')->error(sprintf('Validation errors in %s', __CLASS__), $validator->errors()->toArray());
+        }
     }
 
     private function getRuleTriggerData(): array
@@ -130,8 +139,8 @@ class RuleFormRequest extends FormRequest
                 $set            = [
                     'type'            => $trigger['type'] ?? 'invalid',
                     'value'           => $trigger['value'] ?? '',
-                    'stop_processing' => 1 === (int)$stopProcessing,
-                    'prohibited'      => 1 === (int)$prohibited,
+                    'stop_processing' => 1 === (int) $stopProcessing,
+                    'prohibited'      => 1 === (int) $prohibited,
                 ];
                 $set            = self::replaceAmountTrigger($set);
                 $return[]       = $set;
@@ -151,7 +160,7 @@ class RuleFormRequest extends FormRequest
                 $return[]       = [
                     'type'            => $action['type'] ?? 'invalid',
                     'value'           => $action['value'] ?? '',
-                    'stop_processing' => 1 === (int)$stopProcessing,
+                    'stop_processing' => 1 === (int) $stopProcessing,
                 ];
             }
         }

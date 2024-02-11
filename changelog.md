@@ -3,6 +3,122 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.1.9 - 2024-02-06
+
+### Fixed
+
+- [Issue 8499](https://github.com/firefly-iii/firefly-iii/issues/8499) (Wrong version number after update to v6.1.8) reported by @memo-567
+- [Issue 8501](https://github.com/firefly-iii/firefly-iii/issues/8501) (Bulk delete page links to wrong tx) reported by @likuilin
+
+## 6.1.8 - 2024-02-04
+
+### Added
+
+- Added a trigger for v2 layouts that helps with debugging.
+- [Issue 8431](https://github.com/firefly-iii/firefly-iii/issues/8431) (The Opening/ Virtual Balance must less than or equal 100001709) reported by @binhtran1604
+- [Issue 8457](https://github.com/firefly-iii/firefly-iii/issues/8457) (Budgets - missing summary from the bottom) reported by @g7xtr
+
+### Removed
+
+- Reference to the "huntr" bug bounty platform, which is now some shitty AI scam.
+
+### Fixed
+
+- [PR 8432](https://github.com/firefly-iii/firefly-iii/pull/8432) (Update favicons.twig) reported by @stevietv
+- [Issue 8433](https://github.com/firefly-iii/firefly-iii/issues/8433) (may be a wrong calculation) reported by @PterX
+- [Issue 8442](https://github.com/firefly-iii/firefly-iii/issues/8442) (v6.1.7 - Not expected this period) reported by @poudenes
+- [Discussion 8445](https://github.com/orgs/firefly-iii/discussions/8445) (Offering to Contribute to Firefly Documentation) reported by @poupouproject
+- [Issue 8446](https://github.com/firefly-iii/firefly-iii/issues/8446) (There is an extra X ending symbol here) reported by @PterX
+- [Issue 8467](https://github.com/firefly-iii/firefly-iii/issues/8467) (API Endpoint /data/export/rules produces errorneous CSV output) reported by @not1q84-1
+- [Issue 8472](https://github.com/firefly-iii/firefly-iii/issues/8472) (When left to spend is 0, the info box is red) reported by @nicosomb
+- [Issue 8471](https://github.com/firefly-iii/firefly-iii/issues/8471) (Left to spend is not the same on dashboard and on budget page) reported by @nicosomb
+- [PR 8477](https://github.com/firefly-iii/firefly-iii/pull/8477) (Bump actions/checkout from 3 to 4) reported by @dependabot[bot]
+- [Issue 8497](https://github.com/firefly-iii/firefly-iii/issues/8497) (has_any_category:false not possible as a rule) reported by @shrippen
+
+### Security
+
+- [GHSA-29w6-c52g-m8jc](https://github.com/firefly-iii/firefly-iii/security/advisories/GHSA-29w6-c52g-m8jc) Demo users could trick each other into downloading poisoned CSV files, reported by @red5us
+
+## 6.1.7 - 2024-01-21
+
+### Added
+
+- Layout `v2` has some new features
+- [Issue 8369](https://github.com/firefly-iii/firefly-iii/issues/8369) (Additional reconcile link) reported by @chevdor
+
+### Fixed
+
+- [Issue 8352](https://github.com/firefly-iii/firefly-iii/issues/8352) (Modifying the direction of a transfer between liabilities yields no effect) reported by @Ezwen
+- [PR 8370](https://github.com/firefly-iii/firefly-iii/pull/8370) (Fix various typos) reported by @luzpaz
+- [Issue 8377](https://github.com/firefly-iii/firefly-iii/issues/8377) (Query on multiple tags returns duplicates) reported by @chevdor
+- [Issue 8374](https://github.com/firefly-iii/firefly-iii/issues/8374) (Error Graph Income vs. expenses Reports page) reported by @nicolopozzato
+- [Issue 8390](https://github.com/firefly-iii/firefly-iii/issues/8390) (Rule with destination_account_is 'not' is never returning a result.) reported by @EricVanCaenenberghe
+- [Issue 8349](https://github.com/firefly-iii/firefly-iii/issues/8349) (Currencies not saving correctly) reported by @r1bas4
+- [Issue 8418](https://github.com/firefly-iii/firefly-iii/issues/8418) (Unable to create rule with trigger having type has_no_budget via the API ) reported by @tailg8nj
+- [Issue 8425](https://github.com/firefly-iii/firefly-iii/issues/8425) (Error from the net-worth endpoint with  `Trailing data`.) reported by @chevdor
+- [Issue 8427](https://github.com/firefly-iii/firefly-iii/issues/8427) (Broken batch application of non-strict rules with triggers with stop processing) reported by @alexschlueter
+- Various Carbon `createFromFormat` issues fixed.
+
+## 6.1.6 - 2024-01-07
+
+### Fixed
+
+- Type validation error
+
+## 6.1.5 - 2024-01-07
+
+### Added
+
+- More audit logs
+- Sanity check in date ranges
+- More uniform length and size validations
+
+### Changed
+
+- Slightly changed text, thanks @maureenferreira!
+
+### Fixed
+
+- [Issue 8328](https://github.com/firefly-iii/firefly-iii/issues/8328) Some extra fixes for non-zero foreign amounts
+- Updated links in `.env.example`, thanks @lemuelroberto!
+
+## 6.1.4 - 2024-01-03
+
+### Fixed
+
+- [Issue 8328](https://github.com/firefly-iii/firefly-iii/issues/8328) Asking for non-zero foreign amount despite not being used
+
+## 6.1.3 - 2024-01-03
+
+### Fixed
+
+- [Issue 8326](https://github.com/firefly-iii/firefly-iii/issues/8326) Asking for non-zero foreign amount despite not being used
+
+## 6.1.2 - 2024-01-03
+
+### Changed
+
+- [Issue 8304](https://github.com/firefly-iii/firefly-iii/issues/8304) Several issues with searching for and displaying of tag-related transactions
+
+### Removed
+
+- Double reference to webhooks in the menu
+
+### Fixed
+
+- [Issue 8297](https://github.com/firefly-iii/firefly-iii/issues/8297) Division by zero
+- [Issue 8320](https://github.com/firefly-iii/firefly-iii/issues/8320) nullpointer in new layout
+- [Issue 8321](https://github.com/firefly-iii/firefly-iii/issues/8321) Networth checkbox for expense and revenue accounts removed
+- Long date ranges will throw an error
+-
+- Max sizes and reasonable limits for most numbers and strings
+- Links in readme to documentation.
+
+### Security
+
+- Webhooks now properly disabled in the UI.
+- [Issue 8322](https://github.com/firefly-iii/firefly-iii/issues/8322) Duplicate detection did not distinguish between users
+
 ## 6.1.1 - 2023-12-27
 
 ### Changed
@@ -85,7 +201,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - [Issue 8076](https://github.com/firefly-iii/firefly-iii/issues/8076) Added a "Clone and edit"-button
-- [Issue 7204](https://github.com/firefly-iii/firefly-iii/issues/7204) Added the ability to customize the URL protocol types Firefly III accepts 
+- [Issue 7204](https://github.com/firefly-iii/firefly-iii/issues/7204) Added the ability to customize the URL protocol types Firefly III accepts
 - [Issue 8098](https://github.com/firefly-iii/firefly-iii/issues/8098) More tests in the navigation class, thanks @tonicospinelli!
 
 ### Changed

@@ -24,9 +24,11 @@ declare(strict_types=1);
 namespace FireflyIII\Api\V1\Requests\Models\BudgetLimit;
 
 use Carbon\Carbon;
+use FireflyIII\Rules\IsValidPositiveAmount;
 use FireflyIII\Support\Request\ChecksLogin;
 use FireflyIII\Support\Request\ConvertsDataTypes;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Validator;
 
 /**
@@ -61,7 +63,7 @@ class UpdateRequest extends FormRequest
         return [
             'start'         => 'date',
             'end'           => 'date',
-            'amount'        => 'gt:0',
+            'amount'        => ['nullable', new IsValidPositiveAmount()],
             'currency_id'   => 'numeric|exists:transaction_currencies,id',
             'currency_code' => 'min:3|max:51|exists:transaction_currencies,code',
         ];
@@ -69,9 +71,7 @@ class UpdateRequest extends FormRequest
 
     /**
      * Configure the validator instance with special rules for after the basic validation rules.
-     *
-     * @param Validator $validator
-     *                             TODO duplicate code
+     * TODO duplicate code.
      */
     public function withValidator(Validator $validator): void
     {
@@ -83,10 +83,13 @@ class UpdateRequest extends FormRequest
                     $start = new Carbon($data['start']);
                     $end   = new Carbon($data['end']);
                     if ($end->isBefore($start)) {
-                        $validator->errors()->add('end', (string)trans('validation.date_after'));
+                        $validator->errors()->add('end', (string) trans('validation.date_after'));
                     }
                 }
             }
         );
+        if($validator->fails()) {
+            Log::channel('audit')->error(sprintf('Validation errors in %s', __CLASS__), $validator->errors()->toArray());
+        }
     }
 }

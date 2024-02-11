@@ -36,6 +36,7 @@ use FireflyIII\Services\Internal\Update\CategoryUpdateService;
 use FireflyIII\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class CategoryRepository.
@@ -88,6 +89,7 @@ class CategoryRepository implements CategoryRepositoryInterface
             RuleAction::where('action_type', 'set_category')->where('action_value', $category->name)->delete();
             $category->delete();
         }
+        Log::channel('audit')->info('Delete all categories through destroyAll');
     }
 
     /**
@@ -144,7 +146,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     public function store(array $data): Category
     {
         /** @var CategoryFactory $factory */
-        $factory = app(CategoryFactory::class);
+        $factory  = app(CategoryFactory::class);
         $factory->setUser($this->user);
 
         $category = $factory->findOrCreate(null, $data['name']);
@@ -177,7 +179,7 @@ class CategoryRepository implements CategoryRepositoryInterface
 
     public function updateNotes(Category $category, string $notes): void
     {
-        $dbNote = $category->notes()->first();
+        $dbNote       = $category->notes()->first();
         if (null === $dbNote) {
             $dbNote = new Note();
             $dbNote->noteable()->associate($category);
@@ -210,7 +212,7 @@ class CategoryRepository implements CategoryRepositoryInterface
 
     public function getAttachments(Category $category): Collection
     {
-        $set = $category->attachments()->get();
+        $set  = $category->attachments()->get();
 
         /** @var \Storage $disk */
         $disk = \Storage::disk('upload');
@@ -306,7 +308,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     private function getFirstTransactionDate(Category $category): ?Carbon
     {
         // check transactions:
-        $query = $category->transactions()
+        $query           = $category->transactions()
             ->leftJoin('transaction_journals', 'transaction_journals.id', '=', 'transactions.transaction_journal_id')
             ->orderBy('transaction_journals.date', 'ASC')
         ;
@@ -321,7 +323,7 @@ class CategoryRepository implements CategoryRepositoryInterface
 
     private function getLastJournalDate(Category $category, Collection $accounts): ?Carbon
     {
-        $query = $category->transactionJournals()->orderBy('date', 'DESC');
+        $query  = $category->transactionJournals()->orderBy('date', 'DESC');
 
         if ($accounts->count() > 0) {
             $query->leftJoin('transactions as t', 't.transaction_journal_id', '=', 'transaction_journals.id');
@@ -343,7 +345,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     private function getLastTransactionDate(Category $category, Collection $accounts): ?Carbon
     {
         // check transactions:
-        $query = $category->transactions()
+        $query           = $category->transactions()
             ->leftJoin('transaction_journals', 'transaction_journals.id', '=', 'transactions.transaction_journal_id')
             ->orderBy('transaction_journals.date', 'DESC')
         ;

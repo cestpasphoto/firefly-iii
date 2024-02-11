@@ -65,7 +65,7 @@ trait TimeCollection
         if ($end < $start) {
             [$start, $end] = [$end, $start];
         }
-        $end = clone $end; // this is so weird, but it works if $end and $start secretly point to the same object.
+        $end                 = clone $end; // this is so weird, but it works if $end and $start secretly point to the same object.
         $end->endOfDay();
         $start->startOfDay();
         $this->withMetaDate($field);
@@ -462,7 +462,7 @@ trait TimeCollection
      */
     public function setBefore(Carbon $date): GroupCollectorInterface
     {
-        $beforeStr = $date->format('Y-m-d 00:00:00');
+        $beforeStr = $date->format('Y-m-d 23:59:59');
         $this->query->where('transaction_journals.date', '<=', $beforeStr);
 
         return $this;
@@ -536,7 +536,7 @@ trait TimeCollection
         if ($end < $start) {
             [$start, $end] = [$end, $start];
         }
-        $end = clone $end; // this is so weird, but it works if $end and $start secretly point to the same object.
+        $end                 = clone $end; // this is so weird, but it works if $end and $start secretly point to the same object.
         $end->endOfDay();
         $start->startOfDay();
         $this->withMetaDate($field);

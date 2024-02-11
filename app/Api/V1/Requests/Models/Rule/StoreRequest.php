@@ -28,6 +28,7 @@ use FireflyIII\Support\Request\ChecksLogin;
 use FireflyIII\Support\Request\ConvertsDataTypes;
 use FireflyIII\Support\Request\GetRuleConfiguration;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Validator;
 
 /**
@@ -44,7 +45,7 @@ class StoreRequest extends FormRequest
      */
     public function getAll(): array
     {
-        $fields = [
+        $fields           = [
             'title'            => ['title', 'convertString'],
             'description'      => ['description', 'convertString'],
             'rule_group_id'    => ['rule_group_id', 'convertInteger'],
@@ -55,7 +56,7 @@ class StoreRequest extends FormRequest
             'stop_processing'  => ['stop_processing', 'boolean'],
             'active'           => ['active', 'boolean'],
         ];
-        $data   = $this->getAllData($fields);
+        $data             = $this->getAllData($fields);
 
         $data['triggers'] = $this->getRuleTriggers();
         $data['actions']  = $this->getRuleActions();
@@ -68,18 +69,18 @@ class StoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        $validTriggers = $this->getTriggers();
-        $validActions  = array_keys(config('firefly.rule-actions'));
+        $validTriggers   = $this->getTriggers();
+        $validActions    = array_keys(config('firefly.rule-actions'));
 
         // some triggers and actions require text:
         $contextTriggers = implode(',', $this->getTriggersWithContext());
         $contextActions  = implode(',', config('firefly.context-rule-actions'));
 
         return [
-            'title'                      => 'required|between:1,100|uniqueObjectForUser:rules,title',
-            'description'                => 'between:1,5000|nullable',
+            'title'                      => 'required|min:1|max:100|uniqueObjectForUser:rules,title',
+            'description'                => 'min:1|max:32768|nullable',
             'rule_group_id'              => 'belongsToUser:rule_groups|required_without:rule_group_title',
-            'rule_group_title'           => 'nullable|between:1,255|required_without:rule_group_id|belongsToUser:rule_groups,title',
+            'rule_group_title'           => 'nullable|min:1|max:255|required_without:rule_group_id|belongsToUser:rule_groups,title',
             'trigger'                    => 'required|in:store-journal,update-journal',
             'triggers.*.type'            => 'required|in:'.implode(',', $validTriggers),
             'triggers.*.value'           => 'required_if:actions.*.type,'.$contextTriggers.'|min:1|ruleTriggerValue|max:1024',
@@ -108,6 +109,9 @@ class StoreRequest extends FormRequest
                 $this->atLeastOneActiveAction($validator);
             }
         );
+        if($validator->fails()) {
+            Log::channel('audit')->error(sprintf('Validation errors in %s', __CLASS__), $validator->errors()->toArray());
+        }
     }
 
     /**
@@ -141,10 +145,10 @@ class StoreRequest extends FormRequest
      */
     protected function atLeastOneActiveTrigger(Validator $validator): void
     {
-        $data = $validator->getData();
+        $data          = $validator->getData();
 
         /** @var null|array|int|string $triggers */
-        $triggers = $data['triggers'] ?? [];
+        $triggers      = $data['triggers'] ?? [];
         // need at least one trigger
         if (!is_countable($triggers) || 0 === count($triggers)) {
             return;
@@ -170,10 +174,10 @@ class StoreRequest extends FormRequest
      */
     protected function atLeastOneActiveAction(Validator $validator): void
     {
-        $data = $validator->getData();
+        $data          = $validator->getData();
 
         /** @var null|array|int|string $actions */
-        $actions = $data['actions'] ?? [];
+        $actions       = $data['actions'] ?? [];
         // need at least one trigger
         if (!is_countable($actions) || 0 === count($actions)) {
             return;

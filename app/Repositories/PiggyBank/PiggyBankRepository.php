@@ -36,6 +36,7 @@ use FireflyIII\Repositories\Journal\JournalRepositoryInterface;
 use FireflyIII\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class PiggyBankRepository.
@@ -48,6 +49,7 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
 
     public function destroyAll(): void
     {
+        Log::channel('audit')->info('Delete all piggy banks through destroyAll');
         $this->user->piggyBanks()->delete();
     }
 
@@ -92,7 +94,7 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
 
     public function getAttachments(PiggyBank $piggyBank): Collection
     {
-        $set = $piggyBank->attachments()->get();
+        $set  = $piggyBank->attachments()->get();
 
         /** @var \Storage $disk */
         $disk = \Storage::disk('upload');
@@ -140,15 +142,15 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
     {
         app('log')->debug(sprintf('Now in getExactAmount(%d, %d, %d)', $piggyBank->id, $repetition->id, $journal->id));
 
-        $operator = null;
-        $currency = null;
+        $operator          = null;
+        $currency          = null;
 
         /** @var JournalRepositoryInterface $journalRepost */
-        $journalRepost = app(JournalRepositoryInterface::class);
+        $journalRepost     = app(JournalRepositoryInterface::class);
         $journalRepost->setUser($this->user);
 
         /** @var AccountRepositoryInterface $accountRepos */
-        $accountRepos = app(AccountRepositoryInterface::class);
+        $accountRepos      = app(AccountRepositoryInterface::class);
         $accountRepos->setUser($this->user);
 
         $defaultCurrency   = app('amount')->getDefaultCurrencyByUserGroup($this->user->userGroup);
@@ -157,10 +159,10 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
         app('log')->debug(sprintf('Piggy bank #%d currency is %s', $piggyBank->id, $piggyBankCurrency->code));
 
         /** @var Transaction $source */
-        $source = $journal->transactions()->with(['account'])->where('amount', '<', 0)->first();
+        $source            = $journal->transactions()->with(['account'])->where('amount', '<', 0)->first();
 
         /** @var Transaction $destination */
-        $destination = $journal->transactions()->with(['account'])->where('amount', '>', 0)->first();
+        $destination       = $journal->transactions()->with(['account'])->where('amount', '>', 0)->first();
 
         // matches source, which means amount will be removed from piggy:
         if ($source->account_id === $piggyBank->account_id) {
@@ -182,7 +184,7 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
         }
         // currency of the account + the piggy bank currency are almost the same.
         // which amount from the transaction matches?
-        $amount = null;
+        $amount            = null;
         if ((int)$source->transaction_currency_id === $currency->id) {
             app('log')->debug('Use normal amount');
             $amount = app('steam')->{$operator}($source->amount); // @phpstan-ignore-line
@@ -198,8 +200,8 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
         }
 
         app('log')->debug(sprintf('The currency is %s and the amount is %s', $currency->code, $amount));
-        $room    = bcsub($piggyBank->targetamount, $repetition->currentamount);
-        $compare = bcmul($repetition->currentamount, '-1');
+        $room              = bcsub($piggyBank->targetamount, $repetition->currentamount);
+        $compare           = bcmul($repetition->currentamount, '-1');
 
         if (0 === bccomp($piggyBank->targetamount, '0')) {
             // amount is zero? then the "room" is positive amount of we wish to add or remove.
@@ -261,7 +263,7 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
     {
         $currency = app('amount')->getDefaultCurrency();
 
-        $set = $this->getPiggyBanks();
+        $set      = $this->getPiggyBanks();
 
         /** @var PiggyBank $piggy */
         foreach ($set as $piggy) {

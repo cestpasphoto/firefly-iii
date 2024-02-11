@@ -29,6 +29,8 @@ use FireflyIII\Support\Request\AppendsLocationData;
 use FireflyIII\Support\Request\ChecksLogin;
 use FireflyIII\Support\Request\ConvertsDataTypes;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Validator;
 
 /**
  * Class TagFormRequest.
@@ -58,7 +60,7 @@ class TagFormRequest extends FormRequest
      */
     public function rules(): array
     {
-        $idRule = '';
+        $idRule  = '';
 
         /** @var null|Tag $tag */
         $tag     = $this->route()->parameter('tag');
@@ -68,13 +70,20 @@ class TagFormRequest extends FormRequest
             $tagRule = 'required|max:1024|min:1|uniqueObjectForUser:tags,tag,'.$tag->id;
         }
 
-        $rules = [
+        $rules   = [
             'tag'         => $tagRule,
             'id'          => $idRule,
-            'description' => 'max:65536|min:1|nullable',
+            'description' => 'max:32768|min:1|nullable',
             'date'        => 'date|nullable',
         ];
 
         return Location::requestRules($rules);
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        if($validator->fails()) {
+            Log::channel('audit')->error(sprintf('Validation errors in %s', __CLASS__), $validator->errors()->toArray());
+        }
     }
 }

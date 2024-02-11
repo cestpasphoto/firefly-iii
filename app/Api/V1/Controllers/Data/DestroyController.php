@@ -45,6 +45,7 @@ use FireflyIII\Repositories\Tag\TagRepositoryInterface;
 use FireflyIII\Services\Internal\Destroy\AccountDestroyService;
 use FireflyIII\Services\Internal\Destroy\JournalDestroyService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DestroyController
@@ -61,8 +62,8 @@ class DestroyController extends Controller
      */
     public function destroy(DestroyRequest $request): JsonResponse
     {
-        $objects      = $request->getObjects();
-        $this->unused = $request->boolean('unused', false);
+        $objects         = $request->getObjects();
+        $this->unused    = $request->boolean('unused', false);
 
         $allExceptAssets = [AccountType::BENEFICIARY, AccountType::CASH, AccountType::CREDITCARD, AccountType::DEFAULT, AccountType::EXPENSE, AccountType::IMPORT, AccountType::INITIAL_BALANCE, AccountType::LIABILITY_CREDIT, AccountType::RECONCILIATION, AccountType::REVENUE];
         $all             = [AccountType::ASSET, AccountType::BENEFICIARY, AccountType::CASH, AccountType::CREDITCARD, AccountType::DEBT, AccountType::DEFAULT, AccountType::EXPENSE, AccountType::IMPORT, AccountType::INITIAL_BALANCE, AccountType::LIABILITY_CREDIT, AccountType::LOAN, AccountType::MORTGAGE, AccountType::RECONCILIATION];
@@ -99,11 +100,11 @@ class DestroyController extends Controller
     private function destroyBudgets(): void
     {
         /** @var AvailableBudgetRepositoryInterface $abRepository */
-        $abRepository = app(AvailableBudgetRepositoryInterface::class);
+        $abRepository     = app(AvailableBudgetRepositoryInterface::class);
         $abRepository->destroyAll();
 
         /** @var BudgetLimitRepositoryInterface $blRepository */
-        $blRepository = app(BudgetLimitRepositoryInterface::class);
+        $blRepository     = app(BudgetLimitRepositoryInterface::class);
         $blRepository->destroyAll();
 
         /** @var BudgetRepositoryInterface $budgetRepository */
@@ -175,12 +176,14 @@ class DestroyController extends Controller
             $count = $account->transactions()->count();
             if (true === $this->unused && 0 === $count) {
                 app('log')->info(sprintf('Deleted unused account #%d "%s"', $account->id, $account->name));
+                Log::channel('audit')->info(sprintf('Deleted unused account #%d "%s"', $account->id, $account->name));
                 $service->destroy($account, null);
 
                 continue;
             }
             if (false === $this->unused) {
                 app('log')->info(sprintf('Deleting account #%d "%s"', $account->id, $account->name));
+                Log::channel('audit')->warning(sprintf('Deleted account #%d "%s"', $account->id, $account->name));
                 $service->destroy($account, null);
             }
         }

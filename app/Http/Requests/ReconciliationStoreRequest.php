@@ -23,10 +23,13 @@ declare(strict_types=1);
 
 namespace FireflyIII\Http\Requests;
 
+use FireflyIII\Rules\IsValidAmount;
 use FireflyIII\Rules\ValidJournals;
 use FireflyIII\Support\Request\ChecksLogin;
 use FireflyIII\Support\Request\ConvertsDataTypes;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Validator;
 
 /**
  * Class ReconciliationStoreRequest
@@ -45,7 +48,7 @@ class ReconciliationStoreRequest extends FormRequest
         if (!is_array($transactions)) {
             $transactions = [];
         }
-        $data = [
+        $data         = [
             'start'         => $this->getCarbonDate('start'),
             'end'           => $this->getCarbonDate('end'),
             'start_balance' => $this->convertString('startBalance'),
@@ -67,11 +70,18 @@ class ReconciliationStoreRequest extends FormRequest
         return [
             'start'        => 'required|date',
             'end'          => 'required|date',
-            'startBalance' => 'numeric|max:1000000000',
-            'endBalance'   => 'numeric|max:1000000000',
-            'difference'   => 'required|numeric|max:1000000000',
+            'startBalance' => ['nullable', new IsValidAmount()],
+            'endBalance'   => ['nullable', new IsValidAmount()],
+            'difference'   => ['required', new IsValidAmount()],
             'journals'     => [new ValidJournals()],
             'reconcile'    => 'required|in:create,nothing',
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        if($validator->fails()) {
+            Log::channel('audit')->error(sprintf('Validation errors in %s', __CLASS__), $validator->errors()->toArray());
+        }
     }
 }

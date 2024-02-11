@@ -27,6 +27,8 @@ use FireflyIII\Models\TransactionCurrency;
 use FireflyIII\Support\Request\ChecksLogin;
 use FireflyIII\Support\Request\ConvertsDataTypes;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Validator;
 
 /**
  * Class CurrencyFormRequest.
@@ -56,7 +58,7 @@ class CurrencyFormRequest extends FormRequest
     public function rules(): array
     {
         // fixed
-        $rules = [
+        $rules    = [
             'name'           => 'required|max:48|min:1|uniqueCurrencyName',
             'code'           => 'required|min:3|max:51|uniqueCurrencyCode',
             'symbol'         => 'required|min:1|max:51|uniqueCurrencySymbol',
@@ -78,5 +80,12 @@ class CurrencyFormRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        if($validator->fails()) {
+            Log::channel('audit')->error(sprintf('Validation errors in %s', __CLASS__), $validator->errors()->toArray());
+        }
     }
 }

@@ -141,11 +141,16 @@ class RuleRepository implements RuleRepositoryInterface
             if ('user_action' === $trigger->trigger_type) {
                 continue;
             }
-            $needsContext = config(sprintf('search.operators.%s.needs_context', $trigger->trigger_type)) ?? true;
+            $triggerType  = $trigger->trigger_type;
+            if(str_starts_with($trigger->trigger_type, '-')) {
+                $triggerType = substr($trigger->trigger_type, 1);
+            }
+            $needsContext = config(sprintf('search.operators.%s.needs_context', $triggerType)) ?? true;
             if (false === $needsContext) {
                 $params[] = sprintf('%s:true', OperatorQuerySearch::getRootOperator($trigger->trigger_type));
             }
             if (true === $needsContext) {
+                var_dump('x');
                 $params[] = sprintf('%s:"%s"', OperatorQuerySearch::getRootOperator($trigger->trigger_type), $trigger->trigger_value);
             }
         }
@@ -223,7 +228,7 @@ class RuleRepository implements RuleRepositoryInterface
      */
     public function store(array $data): Rule
     {
-        $ruleGroup = null;
+        $ruleGroup             = null;
         if (array_key_exists('rule_group_id', $data)) {
             $ruleGroup = $this->user->ruleGroups()->find($data['rule_group_id']);
         }
@@ -235,7 +240,7 @@ class RuleRepository implements RuleRepositoryInterface
         }
 
         // start by creating a new rule:
-        $rule = new Rule();
+        $rule                  = new Rule();
         $rule->user()->associate($this->user);
         $rule->userGroup()->associate($this->user->userGroup);
 
@@ -293,10 +298,10 @@ class RuleRepository implements RuleRepositoryInterface
 
     public function setOrder(Rule $rule, int $newOrder): void
     {
-        $oldOrder = $rule->order;
-        $groupId  = $rule->rule_group_id;
-        $maxOrder = $this->maxOrder($rule->ruleGroup);
-        $newOrder = $newOrder > $maxOrder ? $maxOrder + 1 : $newOrder;
+        $oldOrder    = $rule->order;
+        $groupId     = $rule->rule_group_id;
+        $maxOrder    = $this->maxOrder($rule->ruleGroup);
+        $newOrder    = $newOrder > $maxOrder ? $maxOrder + 1 : $newOrder;
         app('log')->debug(sprintf('New order will be %d', $newOrder));
 
         if ($newOrder > $oldOrder) {
@@ -333,7 +338,7 @@ class RuleRepository implements RuleRepositoryInterface
 
     public function storeTrigger(Rule $rule, array $values): RuleTrigger
     {
-        $ruleTrigger = new RuleTrigger();
+        $ruleTrigger                  = new RuleTrigger();
         $ruleTrigger->rule()->associate($rule);
         $ruleTrigger->order           = $values['order'];
         $ruleTrigger->active          = $values['active'];
@@ -347,7 +352,7 @@ class RuleRepository implements RuleRepositoryInterface
 
     public function storeAction(Rule $rule, array $values): RuleAction
     {
-        $ruleAction = new RuleAction();
+        $ruleAction                  = new RuleAction();
         $ruleAction->rule()->associate($rule);
         $ruleAction->order           = $values['order'];
         $ruleAction->active          = $values['active'];
@@ -377,7 +382,7 @@ class RuleRepository implements RuleRepositoryInterface
         }
         $rule->save();
         $rule->refresh();
-        $group = $rule->ruleGroup;
+        $group  = $rule->ruleGroup;
         // update the order:
         $this->resetRuleOrder($group);
         if (array_key_exists('order', $data)) {
@@ -425,7 +430,7 @@ class RuleRepository implements RuleRepositoryInterface
     private function setRuleTrigger(string $moment, Rule $rule): void
     {
         /** @var null|RuleTrigger $trigger */
-        $trigger = $rule->ruleTriggers()->where('trigger_type', 'user_action')->first();
+        $trigger                  = $rule->ruleTriggers()->where('trigger_type', 'user_action')->first();
         if (null !== $trigger) {
             $trigger->trigger_value = $moment;
             $trigger->save();
@@ -454,7 +459,36 @@ class RuleRepository implements RuleRepositoryInterface
                 $type = sprintf('-%s', $type);
             }
 
-            $triggerValues = [
+            // empty the value in case the rule needs no context
+            // TODO create a helper to automatically return these.
+            $needTrue       = [
+                'reconciled',
+                'has_attachments',
+                'has_any_category',
+                'has_any_budget',
+                'has_any_bill',
+                'has_any_tag',
+                'any_notes',
+                'any_external_url',
+                'has_no_attachments',
+                'has_no_category',
+                'has_no_budget',
+                'has_no_bill',
+                'has_no_tag',
+                'no_notes',
+                'no_external_url',
+                'source_is_cash',
+                'destination_is_cash',
+                'account_is_cash',
+                'exists',
+                'no_external_id',
+                'any_external_id',
+            ];
+            if(in_array($type, $needTrue, true)) {
+                $value = '';
+            }
+
+            $triggerValues  = [
                 'action'          => $type,
                 'value'           => $value,
                 'stop_processing' => $stopProcessing,

@@ -45,7 +45,7 @@ return [
     'month_and_day_js'         => 'MMMM Do, YYYY',
 
     // 'month_and_date_day'      => '%A %B %e, %Y',
-    'month_and_date_day_js'    => 'dddd MMMM Do, YYYY',
+    'month_and_date_day_js'    => '',
 
     // 'month_and_day_no_year'   => '%B %e',
     'month_and_day_no_year_js' => 'MMMM Do',
@@ -78,15 +78,15 @@ return [
     // 'half_year'               => '%B %Y',
     'half_year_js'             => '\QQ YYYY',
 
-    'quarter_fns'   => "'Q'Q, yyyy",
-    'half_year_fns' => "'H{half}', yyyy",
-    'dow_1'         => 'Pazartesi',
-    'dow_2'         => 'Salı',
-    'dow_3'         => 'Çarşamba',
-    'dow_4'         => 'Perşembe',
-    'dow_5'         => 'Cuma',
-    'dow_6'         => 'Cumartesi',
-    'dow_7'         => 'Pazar',
+    'quarter_fns'              => "'Q'Q, yyyy",
+    'half_year_fns'            => "'H{half}', yyyy",
+    'dow_1'                    => 'Pazartesi',
+    'dow_2'                    => 'Salı',
+    'dow_3'                    => 'Çarşamba',
+    'dow_4'                    => 'Perşembe',
+    'dow_5'                    => 'Cuma',
+    'dow_6'                    => 'Cumartesi',
+    'dow_7'                    => 'Pazar',
 ];
 
 /*

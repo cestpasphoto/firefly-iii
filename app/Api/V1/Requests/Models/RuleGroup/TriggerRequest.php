@@ -56,7 +56,7 @@ class TriggerRequest extends FormRequest
 
     private function getDate(string $field): ?Carbon
     {
-        $value = $this->query($field);
+        $value  = $this->query($field);
         if (is_array($value)) {
             return null;
         }
@@ -71,6 +71,10 @@ class TriggerRequest extends FormRequest
 
     private function getAccounts(): array
     {
+        if(null === $this->get('accounts')) {
+            return [];
+        }
+
         return $this->get('accounts');
     }
 }

@@ -30,6 +30,7 @@ use FireflyIII\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class AvailableBudgetRepository
@@ -45,9 +46,9 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
 
         /** @var AvailableBudget $availableBudget */
         foreach ($availableBudgets as $availableBudget) {
-            $start = $availableBudget->start_date->format('Y-m-d');
-            $end   = $availableBudget->end_date->format('Y-m-d');
-            $key   = sprintf('%s-%s-%s', $availableBudget->transaction_currency_id, $start, $end);
+            $start        = $availableBudget->start_date->format('Y-m-d');
+            $end          = $availableBudget->end_date->format('Y-m-d');
+            $key          = sprintf('%s-%s-%s', $availableBudget->transaction_currency_id, $start, $end);
             if (array_key_exists($key, $exists)) {
                 app('log')->debug(sprintf('Found duplicate AB: %s %s, %s-%s. Has been deleted', $availableBudget->transaction_currency_id, $availableBudget->amount, $start, $end));
                 $availableBudget->delete();
@@ -79,6 +80,7 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
      */
     public function destroyAll(): void
     {
+        Log::channel('audit')->info('Delete all available budgets through destroyAll');
         $this->user->availableBudgets()->delete();
     }
 
@@ -107,7 +109,7 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
 
     public function getAvailableBudget(TransactionCurrency $currency, Carbon $start, Carbon $end): string
     {
-        $amount = '0';
+        $amount          = '0';
 
         /** @var null|AvailableBudget $availableBudget */
         $availableBudget = $this->user->availableBudgets()
@@ -190,13 +192,13 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
      */
     public function setAvailableBudget(TransactionCurrency $currency, Carbon $start, Carbon $end, string $amount): AvailableBudget
     {
-        $availableBudget = $this->user->availableBudgets()
+        $availableBudget         = $this->user->availableBudgets()
             ->where('transaction_currency_id', $currency->id)
             ->where('start_date', $start->format('Y-m-d'))
             ->where('end_date', $end->format('Y-m-d'))->first()
         ;
         if (null === $availableBudget) {
-            $availableBudget = new AvailableBudget();
+            $availableBudget             = new AvailableBudget();
             $availableBudget->user()->associate($this->user);
             $availableBudget->transactionCurrency()->associate($currency);
             $availableBudget->start_date = $start->startOfDay();
@@ -221,7 +223,7 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
         if ($start instanceof Carbon) {
             $start = $data['start']->startOfDay();
         }
-        $end = $data['end'];
+        $end   = $data['end'];
         if ($end instanceof Carbon) {
             $end = $data['end']->endOfDay();
         }

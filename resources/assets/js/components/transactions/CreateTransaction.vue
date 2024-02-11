@@ -476,7 +476,7 @@ export default {
             button.prop("disabled", true);
 
             axios.post(uri, data).then(response => {
-                // console.log('Did a succesfull POST');
+                // console.log('Did a successful POST');
                 // this method will ultimately send the user on (or not).
                 if (0 === this.collectAttachmentData(response)) {
                     // console.log('Will now go to redirectUser()');
@@ -839,7 +839,7 @@ export default {
                 // set first date.
                 let today = new Date();
                 this.transactions[0].date = today.getFullYear() + '-' + ("0" + (today.getMonth() + 1)).slice(-2) + '-' + ("0" + today.getDate()).slice(-2)
-                + 'T00:00';
+                + 'T'+ ("0" + today.getHours()).slice(-2) +':' + ("0" + today.getMinutes()).slice(-2);
                 //console.log(this.transactions[0].date);
 
                 // call for extra clear thing:

@@ -63,6 +63,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static Builder|Location whereUpdatedAt($value)
  * @method static Builder|Location whereZoomLevel($value)
  *
+ * @property Collection<int, \FireflyIII\Models\TransactionJournal> $transactionJournals
+ * @property null|int                                               $transaction_journals_count
+ *
  * @mixin Eloquent
  */
 class Location extends Model
@@ -70,14 +73,14 @@ class Location extends Model
     use ReturnsIntegerIdTrait;
 
     protected $casts
-        = [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-            'deleted_at' => 'datetime',
-            'zoomLevel'  => 'int',
-            'latitude'   => 'float',
-            'longitude'  => 'float',
-        ];
+                        = [
+                            'created_at' => 'datetime',
+                            'updated_at' => 'datetime',
+                            'deleted_at' => 'datetime',
+                            'zoomLevel'  => 'int',
+                            'latitude'   => 'float',
+                            'longitude'  => 'float',
+                        ];
 
     protected $fillable = ['locatable_id', 'locatable_type', 'latitude', 'longitude', 'zoom_level'];
 
@@ -93,12 +96,14 @@ class Location extends Model
         return $rules;
     }
 
-    /**
-     * Get all the accounts.
-     */
     public function accounts(): MorphMany
     {
-        return $this->morphMany(Account::class, 'noteable');
+        return $this->morphMany(Account::class, 'locatable');
+    }
+
+    public function transactionJournals(): MorphMany
+    {
+        return $this->morphMany(TransactionJournal::class, 'locatable');
     }
 
     /**

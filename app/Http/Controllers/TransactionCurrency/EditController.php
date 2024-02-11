@@ -69,10 +69,10 @@ class EditController extends Controller
     public function edit(Request $request, TransactionCurrency $currency)
     {
         /** @var User $user */
-        $user = auth()->user();
+        $user             = auth()->user();
         if (!$this->userRepository->hasRole($user, 'owner')) {
             $request->session()->flash('error', (string)trans('firefly.ask_site_owner', ['owner' => e(config('firefly.site_owner'))]));
-            Log::channel('audit')->info(sprintf('Tried to edit currency %s but is not owner.', $currency->code));
+            Log::channel('audit')->warning(sprintf('Tried to edit currency %s but is not owner.', $currency->code));
 
             return redirect(route('currencies.index'));
         }
@@ -82,12 +82,12 @@ class EditController extends Controller
         $currency->symbol = htmlentities($currency->symbol);
 
         // is currently enabled (for this user?)
-        $userCurrencies = $this->repository->get()->pluck('id')->toArray();
-        $enabled        = in_array($currency->id, $userCurrencies, true);
+        $userCurrencies   = $this->repository->get()->pluck('id')->toArray();
+        $enabled          = in_array($currency->id, $userCurrencies, true);
 
         // code to handle active-checkboxes
-        $hasOldInput = null !== $request->old('_token');
-        $preFilled   = [
+        $hasOldInput      = null !== $request->old('_token');
+        $preFilled        = [
             'enabled' => $hasOldInput ? (bool)$request->old('enabled') : $enabled,
         ];
 
@@ -111,8 +111,8 @@ class EditController extends Controller
     public function update(CurrencyFormRequest $request, TransactionCurrency $currency)
     {
         /** @var User $user */
-        $user = auth()->user();
-        $data = $request->getCurrencyData();
+        $user     = auth()->user();
+        $data     = $request->getCurrencyData();
 
         if (false === $data['enabled'] && $this->repository->currencyInUse($currency)) {
             $data['enabled'] = true;
@@ -120,7 +120,7 @@ class EditController extends Controller
 
         if (!$this->userRepository->hasRole($user, 'owner')) {
             $request->session()->flash('error', (string)trans('firefly.ask_site_owner', ['owner' => e(config('firefly.site_owner'))]));
-            Log::channel('audit')->info('Tried to update (POST) currency without admin rights.', $data);
+            Log::channel('audit')->warning('Tried to update (POST) currency without admin rights.', $data);
 
             return redirect(route('currencies.index'));
         }

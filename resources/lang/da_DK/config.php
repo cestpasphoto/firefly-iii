@@ -63,13 +63,13 @@ return [
 
     // 'date_time'               => '%B %e, %Y, @ %T',
     'date_time_js'             => 'Do MMMM, YYYY @ HH:mm:ss',
-    'date_time_fns'            => 'MMMM do, yyyy @ HH:mm:ss',
+    'date_time_fns'            => 'MMMM gør, yyyy @ HH:mm:ss',
 
     // 'specific_day'            => '%e %B %Y',
     'specific_day_js'          => 'D MMMM YYYY',
 
     // 'week_in_year'            => 'Week %V, %G',
-    'week_in_year_js'          => '[Week] W, GGGG',
+    'week_in_year_js'          => '[Week] U, GGGG',
     'week_in_year_fns'         => "'Uge' w, yyyy",
 
     // 'year'                    => '%Y',
@@ -78,15 +78,15 @@ return [
     // 'half_year'               => '%B %Y',
     'half_year_js'             => '\QQ YYYY',
 
-    'quarter_fns'   => "'kvt.' Q, yyyy",
-    'half_year_fns' => "'H{half}', yyyyy",
-    'dow_1'         => 'Mandag',
-    'dow_2'         => 'Tirsdag',
-    'dow_3'         => 'Onsdag',
-    'dow_4'         => 'Torsdag',
-    'dow_5'         => 'Fredag',
-    'dow_6'         => 'Lørdag',
-    'dow_7'         => 'Søndag',
+    'quarter_fns'              => "'kvt.' Q, yyyy",
+    'half_year_fns'            => "'H{half}', yyyyy",
+    'dow_1'                    => 'Mandag',
+    'dow_2'                    => 'Tirsdag',
+    'dow_3'                    => 'Onsdag',
+    'dow_4'                    => 'Torsdag',
+    'dow_5'                    => 'Fredag',
+    'dow_6'                    => 'Lørdag',
+    'dow_7'                    => 'Søndag',
 ];
 
 /*
