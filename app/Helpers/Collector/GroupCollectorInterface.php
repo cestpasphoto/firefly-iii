@@ -402,6 +402,11 @@ interface GroupCollectorInterface
     public function setAfter(Carbon $date): self;
 
     /**
+     * Limit results to a SPECIFIC set of tags.
+     */
+    public function setAllTags(Collection $tags): self;
+
+    /**
      * Collect transactions before a specific date.
      */
     public function setBefore(Carbon $date): self;
@@ -460,6 +465,11 @@ interface GroupCollectorInterface
      * Set the end time of the results to return.
      */
     public function setEnd(Carbon $end): self;
+
+    /**
+     * Set the page to get.
+     */
+    public function setEndRow(int $endRow): self;
 
     public function setExpandGroupSearch(bool $expandGroupSearch): self;
 
@@ -543,6 +553,8 @@ interface GroupCollectorInterface
 
     public function setSepaCT(string $sepaCT): self;
 
+    public function setSorting(array $instructions): self;
+
     /**
      * Set source accounts.
      */
@@ -554,6 +566,11 @@ interface GroupCollectorInterface
     public function setStart(Carbon $start): self;
 
     /**
+     * Set the page to get.
+     */
+    public function setStartRow(int $startRow): self;
+
+    /**
      * Limit results to a specific tag.
      */
     public function setTag(Tag $tag): self;
@@ -562,11 +579,6 @@ interface GroupCollectorInterface
      * Limit results to any of the specified tags.
      */
     public function setTags(Collection $tags): self;
-
-    /**
-     * Limit results to a SPECIFIC set of tags.
-     */
-    public function setAllTags(Collection $tags): self;
 
     /**
      * Limit the search to one specific transaction group.
@@ -602,6 +614,11 @@ interface GroupCollectorInterface
      * Either account can be set, but NOT both. This effectively excludes internal transfers.
      */
     public function setXorAccounts(Collection $accounts): self;
+
+    /**
+     * Sort the collection on a column.
+     */
+    public function sortCollection(Collection $collection): Collection;
 
     /**
      * Automatically include all stuff required to make API calls work.

@@ -80,7 +80,18 @@ class LoginController extends Controller
         Log::channel('audit')->info(sprintf('User is trying to login using "%s"', $request->get($this->username())));
         app('log')->debug('User is trying to login.');
 
-        $this->validateLogin($request);
+        try {
+            $this->validateLogin($request);
+        } catch (ValidationException $e) {
+            return redirect(route('login'))
+                ->withErrors(
+                    [
+                        $this->username => trans('auth.failed'),
+                    ]
+                )
+                ->onlyInput($this->username)
+            ;
+        }
         app('log')->debug('Login data is present.');
 
         // Copied directly from AuthenticatesUsers, but with logging added:
@@ -91,7 +102,6 @@ class LoginController extends Controller
             Log::channel('audit')->warning(sprintf('Login for user "%s" was locked out.', $request->get($this->username())));
             app('log')->error(sprintf('Login for user "%s" was locked out.', $request->get($this->username())));
             $this->fireLockoutEvent($request);
-
             $this->sendLockoutResponse($request);
         }
         // Copied directly from AuthenticatesUsers, but with logging added:
@@ -130,6 +140,25 @@ class LoginController extends Controller
     public function username()
     {
         return $this->username;
+    }
+
+    /**
+     * Get the failed login response instance.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     *
+     * @throws ValidationException
+     */
+    protected function sendFailedLoginResponse(Request $request): void
+    {
+        $exception             = ValidationException::withMessages(
+            [
+                $this->username() => [trans('auth.failed')],
+            ]
+        );
+        $exception->redirectTo = route('login');
+
+        throw $exception;
     }
 
     /**
@@ -209,24 +238,5 @@ class LoginController extends Controller
         $usernameField     = $this->username();
 
         return view('auth.login', compact('allowRegistration', 'email', 'remember', 'allowReset', 'title', 'usernameField'));
-    }
-
-    /**
-     * Get the failed login response instance.
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     *
-     * @throws ValidationException
-     */
-    protected function sendFailedLoginResponse(Request $request): void
-    {
-        $exception             = ValidationException::withMessages(
-            [
-                $this->username() => [trans('auth.failed')],
-            ]
-        );
-        $exception->redirectTo = route('login');
-
-        throw $exception;
     }
 }

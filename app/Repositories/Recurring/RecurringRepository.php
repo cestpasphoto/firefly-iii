@@ -202,7 +202,7 @@ class RecurringRepository implements RecurringRepositoryInterface
     /**
      * Returns the journals created for this recurrence, possibly limited by time.
      */
-    public function getJournalCount(Recurrence $recurrence, Carbon $start = null, Carbon $end = null): int
+    public function getJournalCount(Recurrence $recurrence, ?Carbon $start = null, ?Carbon $end = null): int
     {
         $query = TransactionJournal::leftJoin('journal_meta', 'journal_meta.transaction_journal_id', '=', 'transaction_journals.id')
             ->where('transaction_journals.user_id', $recurrence->user_id)
@@ -375,6 +375,12 @@ class RecurringRepository implements RecurringRepositoryInterface
         app('log')->debug('Now in getXOccurrencesSince()');
         $skipMod     = $repetition->repetition_skip + 1;
         $occurrences = [];
+
+        // to fix #8616, take a few days from both dates, then filter the list to make sure no entries
+        // from today or before are saved.
+        $date->subDays(4);
+        $afterDate->subDays(4);
+
         if ('daily' === $repetition->repetition_type) {
             $occurrences = $this->getXDailyOccurrencesSince($date, $afterDate, $count, $skipMod);
         }
@@ -398,6 +404,21 @@ class RecurringRepository implements RecurringRepositoryInterface
         $repeatUntil = $repetition->recurrence->repeat_until;
 
         return $this->filterMaxDate($repeatUntil, $occurrences);
+    }
+
+    private function filterMaxDate(?Carbon $max, array $occurrences): array
+    {
+        if (null === $max) {
+            return $occurrences;
+        }
+        $filtered = [];
+        foreach ($occurrences as $date) {
+            if ($date->lte($max) && $date->gt(today())) {
+                $filtered[] = $date;
+            }
+        }
+
+        return $filtered;
     }
 
     /**
@@ -455,7 +476,7 @@ class RecurringRepository implements RecurringRepositoryInterface
             if (false === $repDate) {
                 $repDate = clone $today;
             }
-            $diffInYears = $today->diffInYears($repDate);
+            $diffInYears = (int) $today->diffInYears($repDate, true);
             $repDate->addYears($diffInYears); // technically not necessary.
             $string      = $repDate->isoFormat((string)trans('config.month_and_day_no_year_js'));
 
@@ -554,20 +575,5 @@ class RecurringRepository implements RecurringRepositoryInterface
         $service = app(RecurrenceUpdateService::class);
 
         return $service->update($recurrence, $data);
-    }
-
-    private function filterMaxDate(?Carbon $max, array $occurrences): array
-    {
-        if (null === $max) {
-            return $occurrences;
-        }
-        $filtered = [];
-        foreach ($occurrences as $date) {
-            if ($date->lte($max)) {
-                $filtered[] = $date;
-            }
-        }
-
-        return $filtered;
     }
 }

@@ -92,18 +92,6 @@ class WarnAboutBills implements ShouldQueue
         app('preferences')->mark();
     }
 
-    public function setDate(Carbon $date): void
-    {
-        $newDate    = clone $date;
-        $newDate->startOfDay();
-        $this->date = $newDate;
-    }
-
-    public function setForce(bool $force): void
-    {
-        $this->force = $force;
-    }
-
     private function hasDateFields(Bill $bill): bool
     {
         if (false === $bill->active) {
@@ -140,7 +128,7 @@ class WarnAboutBills implements ShouldQueue
         $today  = clone $this->date;
         $carbon = clone $bill->{$field};
 
-        return $today->diffInDays($carbon, false);
+        return (int) $today->diffInDays($carbon);
     }
 
     private function sendWarning(Bill $bill, string $field): void
@@ -148,5 +136,17 @@ class WarnAboutBills implements ShouldQueue
         $diff = $this->getDiff($bill, $field);
         app('log')->debug('Will now send warning!');
         event(new WarnUserAboutBill($bill, $field, $diff));
+    }
+
+    public function setDate(Carbon $date): void
+    {
+        $newDate    = clone $date;
+        $newDate->startOfDay();
+        $this->date = $newDate;
+    }
+
+    public function setForce(bool $force): void
+    {
+        $this->force = $force;
     }
 }

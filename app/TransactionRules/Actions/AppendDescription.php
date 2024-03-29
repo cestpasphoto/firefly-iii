@@ -26,12 +26,16 @@ namespace FireflyIII\TransactionRules\Actions;
 use FireflyIII\Events\TriggeredAuditLog;
 use FireflyIII\Models\RuleAction;
 use FireflyIII\Models\TransactionJournal;
+use FireflyIII\TransactionRules\Traits\RefreshNotesTrait;
 
 /**
  * Class AppendDescription.
+ * TODO Can be replaced (and migrated) to action "set description" with a prefilled expression
  */
 class AppendDescription implements ActionInterface
 {
+    use RefreshNotesTrait;
+
     private RuleAction $action;
 
     /**
@@ -44,7 +48,9 @@ class AppendDescription implements ActionInterface
 
     public function actOnArray(array $journal): bool
     {
-        $description = sprintf('%s %s', $journal['description'], $this->action->action_value);
+        $this->refreshNotes($journal);
+        $append      = $this->action->getValue($journal);
+        $description = sprintf('%s %s', $journal['description'], $append);
         \DB::table('transaction_journals')->where('id', $journal['transaction_journal_id'])->limit(1)->update(['description' => $description]);
 
         // event for audit log entry

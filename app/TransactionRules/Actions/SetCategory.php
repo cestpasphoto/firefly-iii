@@ -49,7 +49,7 @@ class SetCategory implements ActionInterface
     {
         /** @var null|User $user */
         $user            = User::find($journal['user_id']);
-        $search          = $this->action->action_value;
+        $search          = $this->action->getValue($journal);
         if (null === $user) {
             app('log')->error(sprintf('Journal has no valid user ID so action SetCategory("%s") cannot be applied', $search), $journal);
             event(new RuleActionFailedOnArray($this->action, $journal, trans('rules.no_such_journal')));
@@ -89,7 +89,7 @@ class SetCategory implements ActionInterface
         $oldCategory     = $object->categories()->first();
         $oldCategoryName = $oldCategory?->name;
         if ((int)$oldCategory?->id === $category->id) {
-            event(new RuleActionFailedOnArray($this->action, $journal, trans('rules.already_linked_to_category', ['name' => $category->name])));
+            // event(new RuleActionFailedOnArray($this->action, $journal, trans('rules.already_linked_to_category', ['name' => $category->name])));
 
             return false;
         }

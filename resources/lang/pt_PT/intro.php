@@ -57,7 +57,6 @@ return [
 
     // budgets index
     'budgets_index_intro'                                     => 'Os orçamentos são usados para gerir as suas finanças e fazem parte de uma das funções principais do Firefly III.',
-    'budgets_index_set_budget'                                => 'Defina o seu orçamento total para cada período, de modo que o Firefly III possa dizer se tem orçamentado todo o seu dinheiro disponível.',
     'budgets_index_see_expenses_bar'                          => 'Ao gastar dinheiro esta barra vai sendo preenchida.',
     'budgets_index_navigate_periods'                          => 'Navega através de intervalos para definir os orçamentos antecipadamente.',
     'budgets_index_new_budget'                                => 'Crie novos orçamentos como achar melhor.',
@@ -79,7 +78,7 @@ return [
     'reports_index_intro'                                     => 'Use estes relatórios para obter sínteses detalhadas sobre as suas finanças.',
     'reports_index_inputReportType'                           => 'Escolha um tipo de relatório. Confira as páginas de ajuda para ter a certeza do que cada relatório mostra.',
     'reports_index_inputAccountsSelect'                       => 'Pode incluir ou excluir contas de ativos conforme as suas necessidades.',
-    'reports_index_inputDateRange'                            => 'The selected date range is entirely up to you: from one day to 10 years or more.',
+    'reports_index_inputDateRange'                            => 'O intervalo das datas depende do que quiser: 1 dia, 10 anos, ou até mais.',
     'reports_index_extra-options-box'                         => 'Dependendo do relatório que selecionou, pode selecionar filtros e opções extra aqui. Repare nesta caixa quando mudar os tipos de relatório.',
 
     // reports (reports)

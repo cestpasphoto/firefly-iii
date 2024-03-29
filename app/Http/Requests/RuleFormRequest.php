@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace FireflyIII\Http\Requests;
 
 use FireflyIII\Models\Rule;
+use FireflyIII\Rules\IsValidActionExpression;
 use FireflyIII\Support\Request\ChecksLogin;
 use FireflyIII\Support\Request\ConvertsDataTypes;
 use FireflyIII\Support\Request\GetRuleConfiguration;
@@ -58,6 +59,28 @@ class RuleFormRequest extends FormRequest
         ];
     }
 
+    private function getRuleTriggerData(): array
+    {
+        $return      = [];
+        $triggerData = $this->get('triggers');
+        if (is_array($triggerData)) {
+            foreach ($triggerData as $trigger) {
+                $stopProcessing = $trigger['stop_processing'] ?? '0';
+                $prohibited     = $trigger['prohibited'] ?? '0';
+                $set            = [
+                    'type'            => $trigger['type'] ?? 'invalid',
+                    'value'           => $trigger['value'] ?? '',
+                    'stop_processing' => 1 === (int)$stopProcessing,
+                    'prohibited'      => 1 === (int)$prohibited,
+                ];
+                $set            = self::replaceAmountTrigger($set);
+                $return[]       = $set;
+            }
+        }
+
+        return $return;
+    }
+
     public static function replaceAmountTrigger(array $array): array
     {
         // do some sneaky search and replace.
@@ -81,6 +104,24 @@ class RuleFormRequest extends FormRequest
         }
 
         return $array;
+    }
+
+    private function getRuleActionData(): array
+    {
+        $return     = [];
+        $actionData = $this->get('actions');
+        if (is_array($actionData)) {
+            foreach ($actionData as $action) {
+                $stopProcessing = $action['stop_processing'] ?? '0';
+                $return[]       = [
+                    'type'            => $action['type'] ?? 'invalid',
+                    'value'           => $action['value'] ?? '',
+                    'stop_processing' => 1 === (int)$stopProcessing,
+                ];
+            }
+        }
+
+        return $return;
     }
 
     /**
@@ -107,7 +148,7 @@ class RuleFormRequest extends FormRequest
             'triggers.*.type'  => 'required|in:'.implode(',', $validTriggers),
             'triggers.*.value' => sprintf('required_if:triggers.*.type,%s|max:1024|min:1|ruleTriggerValue', $contextTriggers),
             'actions.*.type'   => 'required|in:'.implode(',', $validActions),
-            'actions.*.value'  => sprintf('required_if:actions.*.type,%s|min:0|max:1024|ruleActionValue', $contextActions),
+            'actions.*.value'  => [sprintf('required_if:actions.*.type,%s|min:0|max:1024', $contextActions), new IsValidActionExpression(), 'ruleActionValue'],
             'strict'           => 'in:0,1',
         ];
 
@@ -123,48 +164,8 @@ class RuleFormRequest extends FormRequest
 
     public function withValidator(Validator $validator): void
     {
-        if($validator->fails()) {
+        if ($validator->fails()) {
             Log::channel('audit')->error(sprintf('Validation errors in %s', __CLASS__), $validator->errors()->toArray());
         }
-    }
-
-    private function getRuleTriggerData(): array
-    {
-        $return      = [];
-        $triggerData = $this->get('triggers');
-        if (is_array($triggerData)) {
-            foreach ($triggerData as $trigger) {
-                $stopProcessing = $trigger['stop_processing'] ?? '0';
-                $prohibited     = $trigger['prohibited'] ?? '0';
-                $set            = [
-                    'type'            => $trigger['type'] ?? 'invalid',
-                    'value'           => $trigger['value'] ?? '',
-                    'stop_processing' => 1 === (int) $stopProcessing,
-                    'prohibited'      => 1 === (int) $prohibited,
-                ];
-                $set            = self::replaceAmountTrigger($set);
-                $return[]       = $set;
-            }
-        }
-
-        return $return;
-    }
-
-    private function getRuleActionData(): array
-    {
-        $return     = [];
-        $actionData = $this->get('actions');
-        if (is_array($actionData)) {
-            foreach ($actionData as $action) {
-                $stopProcessing = $action['stop_processing'] ?? '0';
-                $return[]       = [
-                    'type'            => $action['type'] ?? 'invalid',
-                    'value'           => $action['value'] ?? '',
-                    'stop_processing' => 1 === (int) $stopProcessing,
-                ];
-            }
-        }
-
-        return $return;
     }
 }

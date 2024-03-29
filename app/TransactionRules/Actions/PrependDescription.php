@@ -29,6 +29,7 @@ use FireflyIII\Models\TransactionJournal;
 
 /**
  * Class PrependDescription.
+ * TODO Can be replaced (and migrated) to action "set description" with a prefilled expression
  */
 class PrependDescription implements ActionInterface
 {
@@ -45,7 +46,7 @@ class PrependDescription implements ActionInterface
     public function actOnArray(array $journal): bool
     {
         $before = $journal['description'];
-        $after  = sprintf('%s%s', $this->action->action_value, $journal['description']);
+        $after  = sprintf('%s%s', $this->action->getValue($journal), $journal['description']);
         \DB::table('transaction_journals')->where('id', $journal['transaction_journal_id'])->limit(1)->update(['description' => $after]);
 
         // journal

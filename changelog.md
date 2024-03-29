@@ -3,6 +3,79 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.1.12 - 2024-03-21
+
+### Fixed
+
+- Exclude debug files from release zip file
+- Drop a duplicate index
+- Replace broken Laravel Passport commands
+- [Issue 8692](https://github.com/firefly-iii/firefly-iii/issues/8692) (passport:install step issue when upgrading to 6.1.11) reported by @captainark
+- [Discussion 8694](https://github.com/orgs/firefly-iii/discussions/8694) (Getting error on accessing admin panel of Firefly 6.1.11) started by @jameswill
+
+## 6.1.11 - 2024-03-20
+
+### Added
+
+- New expression engine by @michaelhthomas, still disabled though.
+- Missing database indexes to speed up performance.
+- A button to the experimental `v2`-layout to go back to `v1`.
+
+### Changed
+
+- New login/register screens
+- New CSP headers
+
+### Deprecated
+
+- Dropped all old v3 code.
+- Dropped all generated JS and CSS, thanks @paulius-valiunas!
+
+### Fixed
+
+- [Discussion 8569](https://github.com/orgs/firefly-iii/discussions/8569) (What is classed as an "automatic transaction" when it comes to notifications?) started by @digitlength
+- [Issue 8608](https://github.com/firefly-iii/firefly-iii/issues/8608) (404 error when deleting a category) reported by @Jademalo
+- [Issue 8616](https://github.com/firefly-iii/firefly-iii/issues/8616) (Create right now option for recurring transaction missing during weekend) reported by @Transportman
+- [PR 8634](https://github.com/firefly-iii/firefly-iii/pull/8634) ([trivial] fix broken link in readme) reported by @WardenJakx
+- [Issue 8632](https://github.com/firefly-iii/firefly-iii/issues/8632) (No search results returned when using `tag_contains` and `tag_starts`) reported by @Call-Me-G-Now
+- [Issue 8663](https://github.com/firefly-iii/firefly-iii/issues/8663) (Graph error on Reports) reported by @nicolopozzato
+- [Issue 8671](https://github.com/firefly-iii/firefly-iii/issues/8671) (Rule with -has_any_category:true trigger not triggering) reported by @pvieira84
+- [Issue 8672](https://github.com/firefly-iii/firefly-iii/issues/8672) (Can't remove foreign amount using the trash icon) reported by @danielnetop
+- [Issue 8668](https://github.com/firefly-iii/firefly-iii/issues/8668) (Not possible to upload CSV file as an attachment) reported by @dbtdsilva
+
+### Removed
+
+- Support for Mandrill because the necessary packages aren't maintained anymore.
+
+## 6.1.10 - 2024-03-03
+
+### Added
+
+- Add missing translations for rule page.
+
+### Changed
+
+- The update checker can also deal with development releases
+- Rule actions no longer complain when the category is already set
+
+### Removed
+
+- Unused translation on budget page
+
+### Fixed
+
+- [Issue 8521](https://github.com/firefly-iii/firefly-iii/issues/8521) (Total buget bar is missing when using SQLite) reported by @matlink
+- [Issue 8544](https://github.com/firefly-iii/firefly-iii/issues/8544) (Recurring transaction calendar preview is not working properly) reported by @Maxco10 
+- [Issue 8555](https://github.com/firefly-iii/firefly-iii/issues/8555) (Has no budget becomes has no category) reported by @Weiming-Hu 
+- [Discussion 8557](https://github.com/orgs/firefly-iii/discussions/8557) ("Delete ALL your transactions" also removes all asset opening balance information) started by @digitlength
+- [Issue 8575](https://github.com/firefly-iii/firefly-iii/issues/8575) (Creating rule from bill no longer pre-fills triggers and actions) reported by @jpelgrom
+- [Issue 8578](https://github.com/firefly-iii/firefly-iii/issues/8578) (Display Bug: foreign currency is red & negative in deposits) reported by @dreautall
+- Errors in incoming webhook URLs are properly caught
+
+### Security
+
+- Improved Host header validation to prevent a potential attack, reported by Raqib Iskenderli 
+
 ## 6.1.9 - 2024-02-06
 
 ### Fixed

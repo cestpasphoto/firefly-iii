@@ -55,9 +55,11 @@ return [
     'reconciled_forbidden_field'      => 'Esta transação já está reconciliada, você não pode mudar o campo ":field"',
     'deleted_user'                    => 'Devido a restrições de segurança, você não pode se registrar usando este endereço de e-mail.',
     'rule_trigger_value'              => 'Este valor é inválido para o disparo selecionado.',
+    'rule_action_expression'          => 'Invalid expression. :error',
     'rule_action_value'               => 'Este valor é inválido para a ação selecionada.',
     'file_already_attached'           => 'Arquivo ":name" carregado já está anexado para este objeto.',
     'file_attached'                   => 'Arquivo carregado com sucesso ":name".',
+    'file_zero'                       => 'The file is zero bytes in size.',
     'must_exist'                      => 'O ID no campo :attribute não existe no banco de dados.',
     'all_accounts_equal'              => 'Todas as contas neste campo devem ser iguais.',
     'group_title_mandatory'           => 'Um título de grupo é obrigatório quando existe mais de uma transação.',
@@ -195,7 +197,7 @@ return [
  *
  */
 
-    'secure_password'                 => 'Esta não é uma senha segura. Por favor, tente novamente. Para mais informações, visite https://bit.ly/FF3-password-security',
+    'secure_password'                 => 'This is not a secure password. Please try again. For more information, visit https://bit.ly/FF3-password',
     'valid_recurrence_rep_type'       => 'Tipo de repetição inválido para transações recorrentes.',
     'valid_recurrence_rep_moment'     => 'Momento de repetição inválido para esse tipo de repetição.',
     'invalid_account_info'            => 'Informação de conta inválida.',

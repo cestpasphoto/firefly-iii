@@ -28,6 +28,7 @@ use FireflyIII\Models\Account;
 use FireflyIII\Models\AccountMeta;
 use FireflyIII\Models\AccountType;
 use FireflyIII\Models\TransactionCurrency;
+use FireflyIII\Services\Internal\Update\AccountUpdateService;
 use FireflyIII\Support\Repositories\UserGroup\UserGroupTrait;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Collection;
@@ -38,6 +39,17 @@ use Illuminate\Support\Collection;
 class AccountRepository implements AccountRepositoryInterface
 {
     use UserGroupTrait;
+
+    #[\Override]
+    public function countAccounts(array $types): int
+    {
+        $query = $this->userGroup->accounts();
+        if (0 !== count($types)) {
+            $query->accountTypeIn($types);
+        }
+
+        return $query->count();
+    }
 
     public function findByAccountNumber(string $number, array $types): ?Account
     {
@@ -161,25 +173,25 @@ class AccountRepository implements AccountRepositoryInterface
         return $query->get(['accounts.*']);
     }
 
-    public function getAccountsByType(array $types, ?array $sort = []): Collection
+    #[\Override]
+    public function getAccountsInOrder(array $types, array $sort, int $startRow, int $endRow): Collection
     {
-        $res   = array_intersect([AccountType::ASSET, AccountType::MORTGAGE, AccountType::LOAN, AccountType::DEBT], $types);
         $query = $this->userGroup->accounts();
         if (0 !== count($types)) {
             $query->accountTypeIn($types);
         }
+        $query->skip($startRow);
+        $query->take($endRow - $startRow);
 
         // add sort parameters. At this point they're filtered to allowed fields to sort by:
         if (0 !== count($sort)) {
-            foreach ($sort as $param) {
-                $query->orderBy($param[0], $param[1]);
+            foreach ($sort as $label => $direction) {
+                $query->orderBy(sprintf('accounts.%s', $label), $direction);
             }
         }
 
         if (0 === count($sort)) {
-            if (0 !== count($res)) {
-                $query->orderBy('accounts.order', 'ASC');
-            }
+            $query->orderBy('accounts.order', 'ASC');
             $query->orderBy('accounts.active', 'DESC');
             $query->orderBy('accounts.name', 'ASC');
         }
@@ -197,6 +209,60 @@ class AccountRepository implements AccountRepositoryInterface
         $query->orderBy('accounts.account_type_id', 'ASC');
         $query->orderBy('accounts.order', 'ASC');
         $query->orderBy('accounts.name', 'ASC');
+
+        return $query->get(['accounts.*']);
+    }
+
+    public function resetAccountOrder(): void
+    {
+        $sets = [
+            [AccountType::DEFAULT, AccountType::ASSET],
+            [AccountType::LOAN, AccountType::DEBT, AccountType::CREDITCARD, AccountType::MORTGAGE],
+        ];
+        foreach ($sets as $set) {
+            $list  = $this->getAccountsByType($set);
+            $index = 1;
+            foreach ($list as $account) {
+                if (false === $account->active) {
+                    $account->order = 0;
+
+                    continue;
+                }
+                if ($index !== (int)$account->order) {
+                    app('log')->debug(sprintf('Account #%d ("%s"): order should %d be but is %d.', $account->id, $account->name, $index, $account->order));
+                    $account->order = $index;
+                    $account->save();
+                }
+                ++$index;
+            }
+        }
+    }
+
+    public function getAccountsByType(array $types, ?array $sort = []): Collection
+    {
+        $sortable = ['name', 'active']; // TODO yes this is a duplicate array.
+        $res      = array_intersect([AccountType::ASSET, AccountType::MORTGAGE, AccountType::LOAN, AccountType::DEBT], $types);
+        $query    = $this->userGroup->accounts();
+        if (0 !== count($types)) {
+            $query->accountTypeIn($types);
+        }
+
+        // add sort parameters. At this point they're filtered to allowed fields to sort by:
+        if (count($sort) > 0) {
+            foreach ($sort as $column => $direction) {
+                if (in_array($column, $sortable, true)) {
+                    $query->orderBy(sprintf('accounts.%s', $column), $direction);
+                }
+            }
+        }
+
+        if (0 === count($sort)) {
+            if (0 !== count($res)) {
+                $query->orderBy('accounts.order', 'ASC');
+            }
+            $query->orderBy('accounts.active', 'DESC');
+            $query->orderBy('accounts.name', 'ASC');
+        }
 
         return $query->get(['accounts.*']);
     }
@@ -225,5 +291,14 @@ class AccountRepository implements AccountRepositoryInterface
         }
 
         return $dbQuery->take($limit)->get(['accounts.*']);
+    }
+
+    #[\Override]
+    public function update(Account $account, array $data): Account
+    {
+        /** @var AccountUpdateService $service */
+        $service = app(AccountUpdateService::class);
+
+        return $service->update($account, $data);
     }
 }

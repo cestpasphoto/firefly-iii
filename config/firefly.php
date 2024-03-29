@@ -83,6 +83,7 @@ use FireflyIII\TransactionRules\Actions\PrependDescription;
 use FireflyIII\TransactionRules\Actions\PrependNotes;
 use FireflyIII\TransactionRules\Actions\RemoveAllTags;
 use FireflyIII\TransactionRules\Actions\RemoveTag;
+use FireflyIII\TransactionRules\Actions\SetAmount;
 use FireflyIII\TransactionRules\Actions\SetBudget;
 use FireflyIII\TransactionRules\Actions\SetCategory;
 use FireflyIII\TransactionRules\Actions\SetDescription;
@@ -109,15 +110,16 @@ return [
     ],
     // some feature flags:
     'feature_flags'                => [
-        'export'       => true,
-        'telemetry'    => false,
-        'webhooks'     => true,
-        'handle_debts' => true,
+        'export'            => true,
+        'telemetry'         => false,
+        'webhooks'          => true,
+        'handle_debts'      => true,
+        'expression_engine' => false,
         // see cer.php for exchange rates feature flag.
     ],
-    'version'                      => '6.1.9',
+    'version'                      => '6.1.12',
     'api_version'                  => '2.0.12',
-    'db_version'                   => 22,
+    'db_version'                   => 23,
 
     // generic settings
     'maxUploadSize'                => 1073741824, // 1 GB
@@ -521,6 +523,9 @@ return [
         'move_notes_to_descr'     => MoveNotesToDescription::class,
         'set_source_to_cash'      => SetSourceToCashAccount::class,
         'set_destination_to_cash' => SetDestinationToCashAccount::class,
+        'set_amount'              => SetAmount::class,
+        // 'set_foreign_amount' => SetForeignAmount::class,
+        // 'set_foreign_currency' => SetForeignCurrency::class,
     ],
     'context-rule-actions'         => [
         'set_category',
@@ -913,4 +918,12 @@ return [
 
     // preselected account lists possibilities:
     'preselected_accounts'         => ['all', 'assets', 'liabilities'],
+
+    // allowed sort columns for API's
+    'sorting'                      => [
+        'allowed' => [
+            'transactions' => ['description', 'amount'],
+            'accounts'     => ['name', 'active', 'iban', 'balance'],
+        ],
+    ],
 ];

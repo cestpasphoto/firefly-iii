@@ -55,9 +55,11 @@ return [
     'reconciled_forbidden_field'      => 'Αυτή η συναλλαγή έχει ήδη τακτοποιηθεί, δεν μπορείτε να αλλάξετε το ":field"',
     'deleted_user'                    => 'Για λόγους ασφαλείας, δεν μπορείτε να εγγραφείτε χρησιμοποιώντας αυτή τη διεύθυνση email.',
     'rule_trigger_value'              => 'Αυτή η τιμή δεν είναι έγκυρη για το επιλεγμένο κριτήριο ενεργοποίησης.',
+    'rule_action_expression'          => 'Invalid expression. :error',
     'rule_action_value'               => 'Αυτή η τιμή δεν είναι έγκυρη για την επιλεγμένη ενέργεια.',
     'file_already_attached'           => 'Το μεταφορτωμένο αρχείο ":name" είναι ήδη συνημμένο σε αυτό το αντικείμενο.',
     'file_attached'                   => 'Επιτυχής μεταφόρτωση του αρχείου ":name".',
+    'file_zero'                       => 'The file is zero bytes in size.',
     'must_exist'                      => 'Το αναγνωριστικό στο πεδίο :attribute δεν υπάρχει στη βάση δεδομένων.',
     'all_accounts_equal'              => 'Όλοι οι λογαριασμοί σε αυτό το πεδίο πρέπει να είναι ίσοι.',
     'group_title_mandatory'           => 'Ένας τίτλος ομάδας είναι υποχρεωτικός όταν υπάρχουν περισσότερες από μία συναλλαγές.',
@@ -195,7 +197,7 @@ return [
  *
  */
 
-    'secure_password'                 => 'Αυτό δεν είναι ασφαλές συνθηματικό. Παρακαλώ δοκιμάστε ξανά. Για περισσότερες πληροφορίες επισκεφτείτε https://bit.ly/FF3-password-security',
+    'secure_password'                 => 'This is not a secure password. Please try again. For more information, visit https://bit.ly/FF3-password',
     'valid_recurrence_rep_type'       => 'Μη έγκυρος τύπος επανάληψης για επαναλαμβανόμενες συναλλαγές.',
     'valid_recurrence_rep_moment'     => 'Μη έγκυρη στιγμή επανάληψης για αυτό τον τύπο επανάληψης.',
     'invalid_account_info'            => 'Μη έγκυρες πληροφορίες λογαριασμού.',

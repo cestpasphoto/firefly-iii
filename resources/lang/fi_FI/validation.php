@@ -55,9 +55,11 @@ return [
     'reconciled_forbidden_field'      => 'This transaction is already reconciled, you cannot change the ":field"',
     'deleted_user'                    => 'Turvallisuussyistä et pysty käyttämään tätä sähköpostiosoitetta rekisteröitymiseen.',
     'rule_trigger_value'              => 'Arvo ei kelpaa valitulle ehdolle.',
+    'rule_action_expression'          => 'Invalid expression. :error',
     'rule_action_value'               => 'Arvo ei kelpaa valitulle toiminnolle.',
     'file_already_attached'           => 'Kohteella on jo liite nimeltä ":name".',
     'file_attached'                   => 'Liitteen ":name" lataus onnistui.',
+    'file_zero'                       => 'The file is zero bytes in size.',
     'must_exist'                      => 'Tunnistetta kentässä :attribute ei löydy tietokannasta.',
     'all_accounts_equal'              => 'Kaikkien tässä kentässä olevien tilien täytyy olla samoja.',
     'group_title_mandatory'           => 'Kun tapahtumia on enemmän kuin yksi, kokonaisuudelle tarvitaan oma otsikko.',
@@ -195,7 +197,7 @@ return [
  *
  */
 
-    'secure_password'                 => 'Tämä ei ole turvallinen salasana. Yritäpä uudestaan. Lisätietoja löydät osoitteesta https://bit.ly/FF3-password-security',
+    'secure_password'                 => 'This is not a secure password. Please try again. For more information, visit https://bit.ly/FF3-password',
     'valid_recurrence_rep_type'       => 'Virheellinen toiston tyyppi toistuville tapahtumille.',
     'valid_recurrence_rep_moment'     => 'Virheellinen arvo tämän tyyppiselle toistolle.',
     'invalid_account_info'            => 'Virheellinen tilitieto.',

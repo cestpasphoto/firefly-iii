@@ -41,7 +41,7 @@ class RemoteUserProvider implements UserProvider
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function retrieveByCredentials(array $credentials): null|Authenticatable
+    public function retrieveByCredentials(array $credentials): ?Authenticatable
     {
         app('log')->debug(sprintf('Now at %s', __METHOD__));
 
@@ -88,7 +88,7 @@ class RemoteUserProvider implements UserProvider
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function retrieveByToken($identifier, $token): null|Authenticatable
+    public function retrieveByToken($identifier, $token): ?Authenticatable
     {
         app('log')->debug(sprintf('Now at %s', __METHOD__));
 
@@ -119,5 +119,13 @@ class RemoteUserProvider implements UserProvider
         app('log')->debug(sprintf('Now at %s', __METHOD__));
 
         throw new FireflyException(sprintf('C) Did not implement %s', __METHOD__));
+    }
+
+    #[\Override]
+    public function rehashPasswordIfRequired(Authenticatable $user, array $credentials, bool $force = false): void
+    {
+        app('log')->debug(sprintf('Now at %s', __METHOD__));
+
+        throw new FireflyException(sprintf('Did not implement %s', __METHOD__));
     }
 }

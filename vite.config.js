@@ -28,7 +28,7 @@ function manualChunks(id) {
     if (id.includes('node_modules')) {
         return 'vendor';
     }
-};
+}
 
 export default defineConfig({
     build: {
@@ -41,25 +41,32 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
+                // css
                 'resources/assets/v2/sass/app.scss',
+
+                // dashboard
                 'resources/assets/v2/pages/dashboard/dashboard.js',
+
+                // accounts
+                'resources/assets/v2/pages/accounts/index.js',
 
                 // transactions
                 'resources/assets/v2/pages/transactions/create.js',
                 'resources/assets/v2/pages/transactions/edit.js',
                 'resources/assets/v2/pages/transactions/show.js',
                 'resources/assets/v2/pages/transactions/index.js',
+
             ],
             refresh: true,
         }),
-        manifestSRI(),
+        //manifestSRI(),
 
     ],
 
 
     server: {
         usePolling: true,
-        allowedHosts: '*.sd.local',
+        allowedHosts: '*.sd.internal',
         host: '0.0.0.0',
         hmr: {host},
         cors: true

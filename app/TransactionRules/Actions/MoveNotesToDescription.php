@@ -36,6 +36,7 @@ use FireflyIII\Support\Request\ConvertsDataTypes;
 
 /**
  * Class MoveNotesToDescription
+ * TODO Can be replaced (and migrated) to action "set notes" with a prefilled expression
  */
 class MoveNotesToDescription implements ActionInterface
 {
@@ -77,7 +78,7 @@ class MoveNotesToDescription implements ActionInterface
         }
         $before              = $object->description;
         $beforeNote          = $note->text;
-        $object->description = (string) $this->clearString($note->text);
+        $object->description = (string)$this->clearString($note->text);
         $object->save();
         $note->delete();
 

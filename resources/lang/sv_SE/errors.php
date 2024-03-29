@@ -42,7 +42,7 @@ return [
     'fatal_error'             => 'Ett allvarligt fel har uppstått. Vänligen kontrollera loggfilerna i "lagring/loggar" eller använd "docker logs -f [container]" för att se vad som händer.',
     'maintenance_mode'        => 'Firefly III är i underhållsläge.',
     'be_right_back'           => 'Strax tillbaka!',
-    'check_back'              => 'Firefly III är nere för nödvändigt underhåll. Vänligen kom tillbaka om en liten stund.',
+    'check_back'              => 'Firefly III is down for some necessary maintenance. Please check back in a second. If you happen to see this message on the demo site, just wait a few minutes. The database is reset every few hours.',
     'error_occurred'          => 'Hoppsan! Ett fel uppstod.',
     'db_error_occurred'       => 'Hoppsan! Ett databasfel inträffade.',
     'error_not_recoverable'   => 'Oturligt nog har ett återkalligt fel skett :(. Firefly III har gått sönder. Felet är:',
@@ -63,7 +63,7 @@ return [
  */
 
     'collect_info'            => 'Vänligen samla in mer information i katalogen <code>lagring/loggar</code> där du hittar loggfiler. Om du kör Docker, använd <code>dockerloggar -f [container]</code>.',
-    'collect_info_more'       => 'You can read more about collecting error information in <a href="https://docs.firefly-iii.org/how-to/general/debug/">the FAQ</a>.',
+    'collect_info_more'       => 'Du kan läsa mer om att samla in felinformation i <a href="https://docs.firefly-iii.org/how-to/general/debug/">FAQ:n</a>.',
     'github_help'             => 'Få hjälp på GitHub',
     'github_instructions'     => 'Du är mer än välkommen att öppna ett ärende <strong><a href="https://github.com/firefly-iii/firefly-iii/issues">på GitHub</a></strong>.',
     'use_search'              => 'Använd sökningen!',

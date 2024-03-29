@@ -55,9 +55,11 @@ return [
     'reconciled_forbidden_field'      => 'This transaction is already reconciled, you cannot change the ":field"',
     'deleted_user'                    => 'Kerena kendala keamanan, anda tidak bisa mendaftar menggunkan alamat email ini.',
     'rule_trigger_value'              => 'Nilai ini tidak validi untuk trigger yang dipilih.',
+    'rule_action_expression'          => 'Invalid expression. :error',
     'rule_action_value'               => 'Nilai ini tidak valid untuk tindakan yang dipilih.',
     'file_already_attached'           => 'Upload file ";name" sudah terpasang pada objek ini.',
     'file_attached'                   => 'Berhasil mengunggah file ": name".',
+    'file_zero'                       => 'The file is zero bytes in size.',
     'must_exist'                      => 'ID di bidang :attribute tidak ada di database.',
     'all_accounts_equal'              => 'Semua akun di bidang ini harus sama.',
     'group_title_mandatory'           => 'Sebuah judul grup wajib diisi bila terdapat lebih dari satu transaksi.',
@@ -195,7 +197,7 @@ return [
  *
  */
 
-    'secure_password'                 => 'Ini bukan sebuah kata sandi yang aman. Silahkan coba lagi. Untuk informasi lebih lanjut, kunjungi https://bit.ly/FF3-password-security',
+    'secure_password'                 => 'This is not a secure password. Please try again. For more information, visit https://bit.ly/FF3-password',
     'valid_recurrence_rep_type'       => 'Tipe pengulangan yang tidak valid untuk transaksi berkala.',
     'valid_recurrence_rep_moment'     => 'Waktu pengulangan tidaklah valid untuk tipe pengulangan ini.',
     'invalid_account_info'            => 'Informasi akun tidak valid.',

@@ -35,6 +35,8 @@ use Illuminate\Support\Collection;
  */
 interface AccountRepositoryInterface
 {
+    public function countAccounts(array $types): int;
+
     public function find(int $accountId): ?Account;
 
     public function findByAccountNumber(string $number, array $types): ?Account;
@@ -49,6 +51,11 @@ interface AccountRepositoryInterface
 
     public function getAccountsByType(array $types, ?array $sort = []): Collection;
 
+    /**
+     * Used in the infinite accounts list.
+     */
+    public function getAccountsInOrder(array $types, array $sort, int $startRow, int $endRow): Collection;
+
     public function getActiveAccountsByType(array $types): Collection;
 
     /**
@@ -56,9 +63,16 @@ interface AccountRepositoryInterface
      */
     public function getMetaValue(Account $account, string $field): ?string;
 
+    /**
+     * Reset order types of the mentioned accounts.
+     */
+    public function resetAccountOrder(): void;
+
     public function searchAccount(string $query, array $types, int $limit): Collection;
 
     public function setUser(User $user): void;
 
     public function setUserGroup(UserGroup $userGroup): void;
+
+    public function update(Account $account, array $data): Account;
 }

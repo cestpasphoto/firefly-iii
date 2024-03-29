@@ -57,7 +57,6 @@ return [
 
     // budgets index
     'budgets_index_intro'                                     => 'Bugetele sunt folosite pentru a vă gestiona finanțele; ele sunt una dintre funcțiile de bază ale Firefly III.',
-    'budgets_index_set_budget'                                => 'Stabiliți bugetul total pentru fiecare perioadă, astfel încât Firefly III vă poate spune dacă ați bugetat toți banii disponibili.',
     'budgets_index_see_expenses_bar'                          => 'Banii cheltuiți vor umple încet această linie.',
     'budgets_index_navigate_periods'                          => 'Navigați prin perioade de timp pentru a stabili cu ușurință bugetele viitoare.',
     'budgets_index_new_budget'                                => 'Creați bugete noi după cum doriți.',
@@ -79,7 +78,7 @@ return [
     'reports_index_intro'                                     => 'Utilizați aceste rapoarte pentru a obține informații detaliate despre finanțele dumneavoastră.',
     'reports_index_inputReportType'                           => 'Alegeți un tip de raport. Consultați paginile de ajutor pentru a vedea ce arată fiecare raport.',
     'reports_index_inputAccountsSelect'                       => 'Puteți exclude sau include conturi de active după cum doriți.',
-    'reports_index_inputDateRange'                            => 'The selected date range is entirely up to you: from one day to 10 years or more.',
+    'reports_index_inputDateRange'                            => 'Intervalul de date selectat depinde în întregime de dvs.: de la o zi la 10 ani sau mai mult.',
     'reports_index_extra-options-box'                         => 'În funcție de raportul pe care l-ați selectat, puteți selecta filtre și opțiuni suplimentare aici. Urmăriți această casetă când modificați tipurile de rapoarte.',
 
     // reports (reports)

@@ -55,9 +55,11 @@ return [
     'reconciled_forbidden_field'      => 'この取引は照合済みです。「:field」は変更できません。',
     'deleted_user'                    => 'セキュリティ上の制約から、このメールアドレスでは登録できません。',
     'rule_trigger_value'              => 'この値は選択されたトリガーには無効です。',
+    'rule_action_expression'          => 'Invalid expression. :error',
     'rule_action_value'               => 'この値は選択された操作には無効です。',
     'file_already_attached'           => 'アップロードされたファイル ":name"は既に対象に割り当てられています。',
     'file_attached'                   => 'ファイル ":name" のアップロードに成功しました。',
+    'file_zero'                       => 'The file is zero bytes in size.',
     'must_exist'                      => ':attribute のIDはデータベースに存在しません。',
     'all_accounts_equal'              => 'この欄のすべての口座は一致している必要があります。',
     'group_title_mandatory'           => '一つ以上の取引がある場合、グループ名は必須です。',
@@ -195,7 +197,7 @@ return [
  *
  */
 
-    'secure_password'                 => 'これは安全なパスワードではありません。もう一度やり直してください。詳細については、https://bit.ly/FF3-password-security を参照してください。',
+    'secure_password'                 => 'This is not a secure password. Please try again. For more information, visit https://bit.ly/FF3-password',
     'valid_recurrence_rep_type'       => '繰り返し取引のタイプが無効です。',
     'valid_recurrence_rep_moment'     => '無効な繰り返し設定があります。',
     'invalid_account_info'            => 'アカウント情報が正しくありません。',

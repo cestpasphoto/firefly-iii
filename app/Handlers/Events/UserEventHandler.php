@@ -220,7 +220,7 @@ class UserEventHandler
 
     public function sendAdminRegistrationNotification(RegisteredUser $event): void
     {
-        $sendMail = (bool) app('fireflyconfig')->get('notification_admin_new_reg', true)->data;
+        $sendMail = (bool)app('fireflyconfig')->get('notification_admin_new_reg', true)->data;
         if ($sendMail) {
             /** @var UserRepositoryInterface $repository */
             $repository = app(UserRepositoryInterface::class);
@@ -285,7 +285,7 @@ class UserEventHandler
         $oldEmail = $event->oldEmail;
         $user     = $event->user;
         $token    = app('preferences')->getForUser($user, 'email_change_undo_token', 'invalid');
-        $hashed   = hash('sha256', sprintf('%s%s', (string) config('app.key'), $oldEmail));
+        $hashed   = hash('sha256', sprintf('%s%s', (string)config('app.key'), $oldEmail));
         $url      = route('profile.undo-email-change', [$token->data, $hashed]);
 
         try {
@@ -347,7 +347,7 @@ class UserEventHandler
      */
     public function sendRegistrationMail(RegisteredUser $event): void
     {
-        $sendMail = (bool) app('fireflyconfig')->get('notification_user_new_reg', true)->data;
+        $sendMail = (bool)app('fireflyconfig')->get('notification_user_new_reg', true)->data;
         if ($sendMail) {
             try {
                 Notification::send($event->user, new UserRegistrationNotification());
@@ -405,7 +405,7 @@ class UserEventHandler
             }
             // clean up old entries (6 months)
             $carbon = Carbon::createFromFormat('Y-m-d H:i:s', $preference[$index]['time']);
-            if (false !== $carbon && $carbon->diffInMonths(today()) > 6) {
+            if (false !== $carbon && $carbon->diffInMonths(today(), true) > 6) {
                 app('log')->debug(sprintf('Entry for %s is very old, remove it.', $row['ip']));
                 unset($preference[$index]);
             }

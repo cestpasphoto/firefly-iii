@@ -69,7 +69,7 @@ class PiggyBankTransformer extends AbstractTransformer
         //        $this->piggyRepos    = app(PiggyBankRepositoryInterface::class);
     }
 
-    public function collectMetaData(Collection $objects): void
+    public function collectMetaData(Collection $objects): Collection
     {
         // TODO move to repository (does not exist yet)
         $piggyBanks          = $objects->pluck('id')->toArray();
@@ -106,7 +106,7 @@ class PiggyBankTransformer extends AbstractTransformer
             $id                         = (int)$entry->object_group_id;
             $order                      = $entry->order;
             $this->groups[$piggyBankId] = [
-                'object_group_id'    => (string) $id,
+                'object_group_id'    => (string)$id,
                 'object_group_title' => $entry->title,
                 'object_group_order' => $order,
             ];
@@ -135,6 +135,8 @@ class PiggyBankTransformer extends AbstractTransformer
         Log::debug(sprintf('Created new ExchangeRateConverter in %s', __METHOD__));
         $this->default       = app('amount')->getDefaultCurrencyByUserGroup(auth()->user()->userGroup);
         $this->converter     = new ExchangeRateConverter();
+
+        return $objects;
     }
 
     /**
@@ -246,7 +248,7 @@ class PiggyBankTransformer extends AbstractTransformer
         if (bccomp($currentAmount, $targetAmount) < 1) {
             $now             = today(config('app.timezone'));
             $startDate       = null !== $startDate && $startDate->gte($now) ? $startDate : $now;
-            $diffInMonths    = $startDate->diffInMonths($targetDate, false);
+            $diffInMonths    = (int) $startDate->diffInMonths($targetDate);
             $remainingAmount = bcsub($targetAmount, $currentAmount);
 
             // more than 1 month to go and still need money to save:

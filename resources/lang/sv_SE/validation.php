@@ -55,9 +55,11 @@ return [
     'reconciled_forbidden_field'      => 'This transaction is already reconciled, you cannot change the ":field"',
     'deleted_user'                    => 'På grund av säkerhetsbegränsningar går det inte att registrera sig med denna e-postadress.',
     'rule_trigger_value'              => 'Detta värde är ogiltigt för vald trigger.',
+    'rule_action_expression'          => 'Invalid expression. :error',
     'rule_action_value'               => 'Detta värde är ogiltigt för den valda åtgärden.',
     'file_already_attached'           => 'Den uppladdade filen ”:name” är redan kopplad till detta objekt.',
     'file_attached'                   => 'Filen ”:name” har laddats upp.',
+    'file_zero'                       => 'The file is zero bytes in size.',
     'must_exist'                      => 'ID i fältet :attribute finns inte i databasen.',
     'all_accounts_equal'              => 'Alla konton i detta fält måste vara lika.',
     'group_title_mandatory'           => 'En grupptitel är obligatorisk vid mer än en transaktion.',
@@ -195,7 +197,7 @@ return [
  *
  */
 
-    'secure_password'                 => 'Detta lösenord är inte säkert. Vänligen försök igen. För mer info se https://bit.ly/FF3-password-security',
+    'secure_password'                 => 'This is not a secure password. Please try again. For more information, visit https://bit.ly/FF3-password',
     'valid_recurrence_rep_type'       => 'Ogiltig repetitionstyp får återkommande transaktioner.',
     'valid_recurrence_rep_moment'     => 'Ogiltig repetitionsmoment för denna typ av repetition.',
     'invalid_account_info'            => 'Ogiltig kontoinformation.',

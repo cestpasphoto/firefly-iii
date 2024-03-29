@@ -42,7 +42,7 @@ return [
     'fatal_error'             => 'Aconteceu um erro fatal. Por favor, verifique os ficheiros de log em "storage/logs" ou use "docker logs -f [container]" para verificar o que se passa.',
     'maintenance_mode'        => 'O Firefly III está em modo de manutenção.',
     'be_right_back'           => 'Volto já!',
-    'check_back'              => 'Firefly III está desligado para manutenção. Por favor, passe por cá depois.',
+    'check_back'              => 'Firefly III is down for some necessary maintenance. Please check back in a second. If you happen to see this message on the demo site, just wait a few minutes. The database is reset every few hours.',
     'error_occurred'          => 'Oops! Ocorreu um erro.',
     'db_error_occurred'       => 'Oops! Ocorreu um erro na base de dados.',
     'error_not_recoverable'   => 'Infelizmente, este erro não era recuperável :(. Firefly III avariou. O erro é:',
@@ -63,7 +63,7 @@ return [
  */
 
     'collect_info'            => 'Por favor, recolha mais informação na pasta <code>storage/logs</code> que é onde encontra os ficheiros de log. Se estiver a utilizar Docker, utilize <code>docker logs -f [container]</code>.',
-    'collect_info_more'       => 'You can read more about collecting error information in <a href="https://docs.firefly-iii.org/how-to/general/debug/">the FAQ</a>.',
+    'collect_info_more'       => 'Pode ler mais sobre a coleta de informação de erros no <a href="https://docs.firefly-iii.org/how-to/general/debug/"> o FAQ</a>.',
     'github_help'             => 'Obter ajuda no GitHub',
     'github_instructions'     => 'Esteja completamente à vontade em abrir uma nova questão <strong><a href="https://github.com/firefly-iii/firefly-iii/issues">no GitHub</a></strong>.',
     'use_search'              => 'Use a pesquisa!',

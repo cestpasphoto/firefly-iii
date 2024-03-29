@@ -25,6 +25,7 @@ namespace FireflyIII\Support;
 
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;
+use Exception;
 use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Models\Account;
 use FireflyIII\Models\Transaction;
@@ -850,7 +851,7 @@ class Steam
         return number_format((float)$value, 0, '.', '');
     }
 
-    public function opposite(string $amount = null): ?string
+    public function opposite(?string $amount = null): ?string
     {
         if (null === $amount) {
             return null;

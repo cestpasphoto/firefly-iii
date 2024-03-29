@@ -30,13 +30,16 @@ use FireflyIII\Models\Note;
 use FireflyIII\Models\RuleAction;
 use FireflyIII\Models\TransactionJournal;
 use FireflyIII\Support\Request\ConvertsDataTypes;
+use FireflyIII\TransactionRules\Traits\RefreshNotesTrait;
 
 /**
  * Class AppendNotesToDescription
+ * TODO Can be replaced (and migrated) to action "set description" with a prefilled expression
  */
 class AppendNotesToDescription implements ActionInterface
 {
     use ConvertsDataTypes;
+    use RefreshNotesTrait;
 
     private RuleAction $action;
 
@@ -51,6 +54,7 @@ class AppendNotesToDescription implements ActionInterface
     public function actOnArray(array $journal): bool
     {
         app('log')->debug('Now in AppendNotesToDescription');
+        $this->refreshNotes($journal);
 
         /** @var null|TransactionJournal $object */
         $object = TransactionJournal::where('user_id', $journal['user_id'])->find($journal['transaction_journal_id']);
@@ -70,7 +74,7 @@ class AppendNotesToDescription implements ActionInterface
         // only append if there is something to append
         if ('' !== $note->text) {
             $before              = $object->description;
-            $object->description = trim(sprintf('%s %s', $object->description, (string) $this->clearString($note->text)));
+            $object->description = trim(sprintf('%s %s', $object->description, (string)$this->clearString($note->text)));
             $object->save();
             app('log')->debug(sprintf('Journal description is updated to "%s".', $object->description));
 

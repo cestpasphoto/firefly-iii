@@ -104,7 +104,9 @@ Route::group(
         'as'        => 'api.v2.accounts.',
     ],
     static function (): void {
+        Route::get('', ['uses' => 'IndexController@index', 'as' => 'index']);
         Route::get('{account}', ['uses' => 'ShowController@show', 'as' => 'show']);
+        Route::put('{account}', ['uses' => 'UpdateController@update', 'as' => 'update']);
     }
 );
 
@@ -160,9 +162,19 @@ Route::group(
         Route::put('{userGroupTransaction}', ['uses' => 'UpdateController@update', 'as' => 'update']);
     }
 );
+// infinite (transactions) list:
+Route::group(
+    [
+        'namespace' => 'FireflyIII\Api\V2\Controllers\Transaction\List',
+        'prefix'    => 'v2/infinite/transactions',
+        'as'        => 'api.v2.infinite.transactions.',
+    ],
+    static function (): void {
+        Route::get('', ['uses' => 'TransactionController@infiniteList', 'as' => 'list']);
+    }
+);
 
 // V2 API route for budgets and budget limits:
-// TODO Validate from here down.
 Route::group(
     [
         'namespace' => 'FireflyIII\Api\V2\Controllers\Model',
@@ -591,6 +603,7 @@ Route::group(
     static function (): void {
         Route::get('', ['uses' => 'ShowController@index', 'as' => 'index']);
         Route::post('', ['uses' => 'StoreController@store', 'as' => 'store']);
+        Route::get('validate-expression', ['uses' => 'ExpressionController@validateExpression', 'as' => 'validate']);
         Route::get('{rule}', ['uses' => 'ShowController@show', 'as' => 'show']);
         Route::put('{rule}', ['uses' => 'UpdateController@update', 'as' => 'update']);
         Route::delete('{rule}', ['uses' => 'DestroyController@destroy', 'as' => 'delete']);

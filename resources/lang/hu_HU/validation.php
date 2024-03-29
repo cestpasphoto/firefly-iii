@@ -55,9 +55,11 @@ return [
     'reconciled_forbidden_field'      => 'This transaction is already reconciled, you cannot change the ":field"',
     'deleted_user'                    => 'Biztonsági megkötések miatt ezzel az email címmel nem lehet regisztrálni.',
     'rule_trigger_value'              => 'Ez az érték érvénytelen a kiválasztott eseményindítóhoz.',
+    'rule_action_expression'          => 'Invalid expression. :error',
     'rule_action_value'               => 'Ez az érték érvénytelen a kiválasztott művelethez.',
     'file_already_attached'           => 'A feltöltött ":name" fájl már csatolva van ehhez az objektumhoz.',
     'file_attached'                   => '":name" fájl sikeresen feltöltve.',
+    'file_zero'                       => 'The file is zero bytes in size.',
     'must_exist'                      => 'Az ID mező :attribute nem létezik az adatbázisban.',
     'all_accounts_equal'              => 'Ebben a mezőben minden számlának meg kell egyeznie.',
     'group_title_mandatory'           => 'A csoportcím kötelező ha egynél több tranzakció van.',
@@ -195,7 +197,7 @@ return [
  *
  */
 
-    'secure_password'                 => 'Ez nem biztonságos jelszó. Kérlek próbáld meg újra. További információért lásd: https://bit.ly/FF3-password-security',
+    'secure_password'                 => 'This is not a secure password. Please try again. For more information, visit https://bit.ly/FF3-password',
     'valid_recurrence_rep_type'       => 'Érvénytelen ismétléstípus az ismétlődő tranzakciókhoz.',
     'valid_recurrence_rep_moment'     => 'Érvénytelen ismétlési időpont ehhez az ismétléstípushoz.',
     'invalid_account_info'            => 'Érvénytelen számlainformáció.',

@@ -115,23 +115,6 @@ class BasicController extends Controller
     }
 
     /**
-     * Check if date is outside session range.
-     */
-    protected function notInDateRange(Carbon $date, Carbon $start, Carbon $end): bool // Validate a preference
-    {
-        $result = false;
-        if ($start->greaterThanOrEqualTo($date) && $end->greaterThanOrEqualTo($date)) {
-            $result = true;
-        }
-        // start and end in the past? use $end
-        if ($start->lessThanOrEqualTo($date) && $end->lessThanOrEqualTo($date)) {
-            $result = true;
-        }
-
-        return $result;
-    }
-
-    /**
      * @throws FireflyException
      */
     private function getBalanceInformation(Carbon $start, Carbon $end): array
@@ -315,7 +298,7 @@ class BasicController extends Controller
             app('log')->debug(sprintf('Amount left is %s', $left));
 
             // how much left per day?
-            $days                    = $today->diffInDays($end) + 1;
+            $days                    = (int) $today->diffInDays($end, true) + 1;
             $perDay                  = '0';
             $perDayNative            = '0';
             if (0 !== $days && bccomp($left, '0') > -1) {
@@ -410,5 +393,22 @@ class BasicController extends Controller
         }
 
         return $return;
+    }
+
+    /**
+     * Check if date is outside session range.
+     */
+    protected function notInDateRange(Carbon $date, Carbon $start, Carbon $end): bool // Validate a preference
+    {
+        $result = false;
+        if ($start->greaterThanOrEqualTo($date) && $end->greaterThanOrEqualTo($date)) {
+            $result = true;
+        }
+        // start and end in the past? use $end
+        if ($start->lessThanOrEqualTo($date) && $end->lessThanOrEqualTo($date)) {
+            $result = true;
+        }
+
+        return $result;
     }
 }

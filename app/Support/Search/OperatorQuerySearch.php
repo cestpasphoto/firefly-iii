@@ -72,16 +72,18 @@ class OperatorQuerySearch implements SearchInterface
     private GroupCollectorInterface     $collector;
     private CurrencyRepositoryInterface $currencyRepository;
     private array                       $excludeTags;
-    private array                       $includeTags;
-    private array                       $invalidOperators;
-    private int                         $limit;
-    private Collection                  $operators;
-    private int                         $page;
-    private array                       $prohibitedWords;
-    private float                       $startTime;
-    private TagRepositoryInterface      $tagRepository;
-    private array                       $validOperators;
-    private array                       $words;
+    private array                       $includeAnyTags;
+    // added to fix #8632
+    private array                  $includeTags;
+    private array                  $invalidOperators;
+    private int                    $limit;
+    private Collection             $operators;
+    private int                    $page;
+    private array                  $prohibitedWords;
+    private float                  $startTime;
+    private TagRepositoryInterface $tagRepository;
+    private array                  $validOperators;
+    private array                  $words;
 
     /**
      * OperatorQuerySearch constructor.
@@ -93,6 +95,7 @@ class OperatorQuerySearch implements SearchInterface
         $this->page               = 1;
         $this->words              = [];
         $this->excludeTags        = [];
+        $this->includeAnyTags     = [];
         $this->includeTags        = [];
         $this->prohibitedWords    = [];
         $this->invalidOperators   = [];
@@ -158,87 +161,6 @@ class OperatorQuerySearch implements SearchInterface
         }
         $this->collector->setSearchWords($this->words);
         $this->collector->excludeSearchWords($this->prohibitedWords);
-    }
-
-    /**
-     * @throws FireflyException
-     */
-    public static function getRootOperator(string $operator): string
-    {
-        $original = $operator;
-        // if the string starts with "-" (not), we can remove it and recycle
-        // the configuration from the original operator.
-        if (str_starts_with($operator, '-')) {
-            $operator = substr($operator, 1);
-        }
-
-        $config   = config(sprintf('search.operators.%s', $operator));
-        if (null === $config) {
-            throw new FireflyException(sprintf('No configuration for search operator "%s"', $operator));
-        }
-        if (true === $config['alias']) {
-            $return = $config['alias_for'];
-            if (str_starts_with($original, '-')) {
-                $return = sprintf('-%s', $config['alias_for']);
-            }
-            app('log')->debug(sprintf('"%s" is an alias for "%s", so return that instead.', $original, $return));
-
-            return $return;
-        }
-        app('log')->debug(sprintf('"%s" is not an alias.', $operator));
-
-        return $original;
-    }
-
-    public function searchTime(): float
-    {
-        return microtime(true) - $this->startTime;
-    }
-
-    public function searchTransactions(): LengthAwarePaginator
-    {
-        $this->parseTagInstructions();
-        if (0 === count($this->getWords()) && 0 === count($this->getOperators())) {
-            return new LengthAwarePaginator([], 0, 5, 1);
-        }
-
-        return $this->collector->getPaginatedGroups();
-    }
-
-    public function getWords(): array
-    {
-        return $this->words;
-    }
-
-    public function setDate(Carbon $date): void
-    {
-        $this->date = $date;
-    }
-
-    public function setPage(int $page): void
-    {
-        $this->page = $page;
-        $this->collector->setPage($this->page);
-    }
-
-    public function setUser(User $user): void
-    {
-        $this->accountRepository->setUser($user);
-        $this->billRepository->setUser($user);
-        $this->categoryRepository->setUser($user);
-        $this->budgetRepository->setUser($user);
-        $this->tagRepository->setUser($user);
-        $this->collector = app(GroupCollectorInterface::class);
-        $this->collector->setUser($user);
-        $this->collector->withAccountInformation()->withCategoryInformation()->withBudgetInformation();
-
-        $this->setLimit((int)app('preferences')->getForUser($user, 'listPageSize', 50)->data);
-    }
-
-    public function setLimit(int $limit): void
-    {
-        $this->limit = $limit;
-        $this->collector->setLimit($this->limit);
     }
 
     /**
@@ -1193,8 +1115,9 @@ class OperatorQuerySearch implements SearchInterface
                     $this->collector->findNothing();
                 }
                 if ($tags->count() > 0) {
-                    $ids               = array_values($tags->pluck('id')->toArray());
-                    $this->includeTags = array_unique(array_merge($this->includeTags, $ids));
+                    // changed from includeTags to includeAnyTags for #8632
+                    $ids                  = array_values($tags->pluck('id')->toArray());
+                    $this->includeAnyTags = array_unique(array_merge($this->includeAnyTags, $ids));
                 }
 
                 break;
@@ -1206,8 +1129,9 @@ class OperatorQuerySearch implements SearchInterface
                     $this->collector->findNothing();
                 }
                 if ($tags->count() > 0) {
-                    $ids               = array_values($tags->pluck('id')->toArray());
-                    $this->includeTags = array_unique(array_merge($this->includeTags, $ids));
+                    // changed from includeTags to includeAnyTags for #8632
+                    $ids                  = array_values($tags->pluck('id')->toArray());
+                    $this->includeAnyTags = array_unique(array_merge($this->includeAnyTags, $ids));
                 }
 
                 break;
@@ -1897,6 +1821,36 @@ class OperatorQuerySearch implements SearchInterface
         }
 
         return true;
+    }
+
+    /**
+     * @throws FireflyException
+     */
+    public static function getRootOperator(string $operator): string
+    {
+        $original = $operator;
+        // if the string starts with "-" (not), we can remove it and recycle
+        // the configuration from the original operator.
+        if (str_starts_with($operator, '-')) {
+            $operator = substr($operator, 1);
+        }
+
+        $config   = config(sprintf('search.operators.%s', $operator));
+        if (null === $config) {
+            throw new FireflyException(sprintf('No configuration for search operator "%s"', $operator));
+        }
+        if (true === $config['alias']) {
+            $return = $config['alias_for'];
+            if (str_starts_with($original, '-')) {
+                $return = sprintf('-%s', $config['alias_for']);
+            }
+            app('log')->debug(sprintf('"%s" is an alias for "%s", so return that instead.', $original, $return));
+
+            return $return;
+        }
+        app('log')->debug(sprintf('"%s" is not an alias.', $operator));
+
+        return $original;
     }
 
     /**
@@ -2731,6 +2685,21 @@ class OperatorQuerySearch implements SearchInterface
         }
     }
 
+    public function searchTime(): float
+    {
+        return microtime(true) - $this->startTime;
+    }
+
+    public function searchTransactions(): LengthAwarePaginator
+    {
+        $this->parseTagInstructions();
+        if (0 === count($this->getWords()) && 0 === count($this->getOperators())) {
+            return new LengthAwarePaginator([], 0, 5, 1);
+        }
+
+        return $this->collector->getPaginatedGroups();
+    }
+
     private function parseTagInstructions(): void
     {
         app('log')->debug('Now in parseTagInstructions()');
@@ -2761,5 +2730,54 @@ class OperatorQuerySearch implements SearchInterface
             }
             $this->collector->setAllTags($collection);
         }
+        // if include ANY tags, include them: (see #8632)
+        if (count($this->includeAnyTags) > 0) {
+            app('log')->debug(sprintf('%d include ANY tag(s)', count($this->includeAnyTags)));
+            $collection = new Collection();
+            foreach ($this->includeAnyTags as $tagId) {
+                $tag = $this->tagRepository->find($tagId);
+                if (null !== $tag) {
+                    app('log')->debug(sprintf('Include ANY tag "%s"', $tag->tag));
+                    $collection->push($tag);
+                }
+            }
+            $this->collector->setTags($collection);
+        }
+    }
+
+    public function getWords(): array
+    {
+        return $this->words;
+    }
+
+    public function setDate(Carbon $date): void
+    {
+        $this->date = $date;
+    }
+
+    public function setPage(int $page): void
+    {
+        $this->page = $page;
+        $this->collector->setPage($this->page);
+    }
+
+    public function setUser(User $user): void
+    {
+        $this->accountRepository->setUser($user);
+        $this->billRepository->setUser($user);
+        $this->categoryRepository->setUser($user);
+        $this->budgetRepository->setUser($user);
+        $this->tagRepository->setUser($user);
+        $this->collector = app(GroupCollectorInterface::class);
+        $this->collector->setUser($user);
+        $this->collector->withAccountInformation()->withCategoryInformation()->withBudgetInformation();
+
+        $this->setLimit((int)app('preferences')->getForUser($user, 'listPageSize', 50)->data);
+    }
+
+    public function setLimit(int $limit): void
+    {
+        $this->limit = $limit;
+        $this->collector->setLimit($this->limit);
     }
 }

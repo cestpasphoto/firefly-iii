@@ -43,15 +43,6 @@ class AmountFormat extends AbstractExtension
         ];
     }
 
-    public function getFunctions(): array
-    {
-        return [
-            $this->formatAmountByAccount(),
-            $this->formatAmountBySymbol(),
-            $this->formatAmountByCurrency(),
-        ];
-    }
-
     protected function formatAmount(): TwigFilter
     {
         return new TwigFilter(
@@ -78,6 +69,15 @@ class AmountFormat extends AbstractExtension
         );
     }
 
+    public function getFunctions(): array
+    {
+        return [
+            $this->formatAmountByAccount(),
+            $this->formatAmountBySymbol(),
+            $this->formatAmountByCurrency(),
+        ];
+    }
+
     /**
      * Will format the amount by the currency related to the given account.
      *
@@ -87,7 +87,7 @@ class AmountFormat extends AbstractExtension
     {
         return new TwigFunction(
             'formatAmountByAccount',
-            static function (AccountModel $account, string $amount, bool $coloured = null): string {
+            static function (AccountModel $account, string $amount, ?bool $coloured = null): string {
                 $coloured ??= true;
 
                 /** @var AccountRepositoryInterface $accountRepos */
@@ -107,7 +107,7 @@ class AmountFormat extends AbstractExtension
     {
         return new TwigFunction(
             'formatAmountBySymbol',
-            static function (string $amount, string $symbol, int $decimalPlaces = null, bool $coloured = null): string {
+            static function (string $amount, string $symbol, ?int $decimalPlaces = null, ?bool $coloured = null): string {
                 $decimalPlaces ??= 2;
                 $coloured      ??= true;
                 $currency                 = new TransactionCurrency();
@@ -127,7 +127,7 @@ class AmountFormat extends AbstractExtension
     {
         return new TwigFunction(
             'formatAmountByCurrency',
-            static function (TransactionCurrency $currency, string $amount, bool $coloured = null): string {
+            static function (TransactionCurrency $currency, string $amount, ?bool $coloured = null): string {
                 $coloured ??= true;
 
                 return app('amount')->formatAnything($currency, $amount, $coloured);

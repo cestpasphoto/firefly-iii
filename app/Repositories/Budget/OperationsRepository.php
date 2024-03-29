@@ -51,7 +51,7 @@ class OperationsRepository implements OperationsRepositoryInterface
         $total = '0';
         $count = 0;
         foreach ($budget->budgetlimits as $limit) {
-            $diff   = $limit->start_date->diffInDays($limit->end_date);
+            $diff   = (int) $limit->start_date->diffInDays($limit->end_date, true);
             $diff   = 0 === $diff ? 1 : $diff;
             $amount = $limit->amount;
             $perDay = bcdiv($amount, (string)$diff);
@@ -189,6 +189,14 @@ class OperationsRepository implements OperationsRepositoryInterface
         }
     }
 
+    private function getBudgets(): Collection
+    {
+        /** @var BudgetRepositoryInterface $repos */
+        $repos = app(BudgetRepositoryInterface::class);
+
+        return $repos->getActiveBudgets();
+    }
+
     /**
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -287,13 +295,5 @@ class OperationsRepository implements OperationsRepositoryInterface
         }
 
         return $array;
-    }
-
-    private function getBudgets(): Collection
-    {
-        /** @var BudgetRepositoryInterface $repos */
-        $repos = app(BudgetRepositoryInterface::class);
-
-        return $repos->getActiveBudgets();
     }
 }
