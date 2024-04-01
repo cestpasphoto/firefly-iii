@@ -1,6 +1,6 @@
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
 --- ../official/public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:20:55.829339578 +0200
-+++ ./public/v1/js/ff/accounts/reconcile.js	2024-02-11 22:34:28.249201942 +0100
++++ ./public/v1/js/ff/accounts/reconcile.js	2024-03-29 20:47:55.227194018 +0100
 @@ -21,6 +21,7 @@
  var balanceDifference = 0;
  var difference = 0;
@@ -246,8 +246,8 @@ diff -Naur ../official/resources/assets/js/components/transactions/CreateTransac
                              </div>
                          </div>
 diff -Naur ../official/resources/lang/en_US/firefly.php ./resources/lang/en_US/firefly.php
---- ../official/resources/lang/en_US/firefly.php	2024-03-29 20:30:45.815713906 +0100
-+++ ./resources/lang/en_US/firefly.php	2024-03-29 20:34:27.796159461 +0100
+--- ../official/resources/lang/en_US/firefly.php	2024-04-01 17:42:01.699805802 +0200
++++ ./resources/lang/en_US/firefly.php	2024-04-01 17:42:03.607827255 +0200
 @@ -1299,6 +1299,7 @@
      'pref_view_range_help'                                => 'Some charts are automatically grouped in periods. Your budgets will also be grouped in periods. What period would you prefer?',
      'pref_1D'                                             => 'One day',
@@ -257,8 +257,8 @@ diff -Naur ../official/resources/lang/en_US/firefly.php ./resources/lang/en_US/f
      'pref_3M'                                             => 'Three months (quarter)',
      'pref_6M'                                             => 'Six months',
 diff -Naur ../official/resources/lang/fr_FR/firefly.php ./resources/lang/fr_FR/firefly.php
---- ../official/resources/lang/fr_FR/firefly.php	2024-03-29 20:30:45.819713979 +0100
-+++ ./resources/lang/fr_FR/firefly.php	2024-03-29 20:35:35.320551013 +0100
+--- ../official/resources/lang/fr_FR/firefly.php	2024-04-01 17:42:01.703805847 +0200
++++ ./resources/lang/fr_FR/firefly.php	2024-04-01 17:42:03.611827300 +0200
 @@ -1335,6 +1335,7 @@
      'pref_view_range_help'                                => "Certains graphiques sont automatiquement regroupés par périodes. Vos budgets seront aussi organisés par périodes. Quelle période préférez-vous\u{a0}?",
      'pref_1D'                                             => 'Un jour',
@@ -544,9 +544,9 @@ diff -Naur ../official/app/Support/Calendar/Periodicity.php ./app/Support/Calend
      case Monthly;
      case Bimonthly;
 diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./app/Support/Http/Controllers/GetConfigurationData.php
---- ../official/app/Support/Http/Controllers/GetConfigurationData.php	2024-02-11 22:18:42.892134334 +0100
-+++ ./app/Support/Http/Controllers/GetConfigurationData.php	2024-02-11 22:21:34.418504480 +0100
-@@ -121,11 +121,15 @@
+--- ../official/app/Support/Http/Controllers/GetConfigurationData.php	2024-04-01 17:42:01.683805623 +0200
++++ ./app/Support/Http/Controllers/GetConfigurationData.php	2024-04-01 17:42:03.591827076 +0200
+@@ -125,11 +125,15 @@
          }
  
          // today:
@@ -568,8 +568,8 @@ diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./a
              $ranges[ucfirst((string)trans('firefly.today'))] = [$todayStart, $todayEnd];
          }
 diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
---- ../official/app/Support/Navigation.php	2024-03-29 20:30:45.787713397 +0100
-+++ ./app/Support/Navigation.php	2024-03-29 20:41:42.643834996 +0100
+--- ../official/app/Support/Navigation.php	2024-04-01 17:42:01.683805623 +0200
++++ ./app/Support/Navigation.php	2024-04-01 17:43:28.328779608 +0200
 @@ -52,6 +52,7 @@
              '1W'        => Periodicity::Weekly,
              'weekly'    => Periodicity::Weekly,
@@ -586,18 +586,16 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          $functionMap  = [
              '1D'        => 'startOfDay',
              'daily'     => 'startOfDay',
-@@ -224,9 +226,7 @@
+@@ -224,7 +226,7 @@
              return $result;
          }
  
 -        if ('custom' === $repeatFreq) {
--            Log::debug(sprintf('Custom, result is "%s"', $date->toIso8601String()));
--
 +        if ('3W' === $repeatFreq || 'custom' === $repeatFreq) {
+             Log::debug(sprintf('Custom, result is "%s"', $date->toIso8601String()));
+ 
              return $date; // the date is already at the start.
-         }
-         Log::error(sprintf('Cannot do startOfPeriod for $repeat_freq "%s"', $repeatFreq));
-@@ -245,6 +245,7 @@
+@@ -245,6 +247,7 @@
              '1W'        => 'addWeek',
              'week'      => 'addWeek',
              'weekly'    => 'addWeek',
@@ -605,16 +603,16 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              '1M'        => 'addMonth',
              'month'     => 'addMonth',
              'monthly'   => 'addMonth',
-@@ -258,7 +259,7 @@
+@@ -258,7 +261,7 @@
              'yearly'    => 'addYear',
              '1Y'        => 'addYear',
          ];
--        $modifierMap = ['quarter' => 3, '3M' => 3, 'quarterly' => 3, 'half-year' => 6, 'half_year' => 6, '6M' => 6];
-+        $modifierMap = ['3W' => 3, 'quarter' => 3, '3M' => 3, 'quarterly' => 3, 'half-year' => 6, 'half_year' => 6, '6M' => 6];
+-        $modifierMap = ['half-year' => 6, 'half_year' => 6, '6M' => 6];
++        $modifierMap = ['3W' => 3, 'half-year' => 6, 'half_year' => 6, '6M' => 6];
          $subDay      = ['week', 'weekly', '1W', 'month', 'monthly', '1M', '3M', 'quarter', 'quarterly', '6M', 'half-year', 'half_year', '1Y', 'year', 'yearly'];
  
          if ('custom' === $repeatFreq) {
-@@ -387,6 +388,7 @@
+@@ -387,6 +390,7 @@
  
      public function endOfX(Carbon $theCurrentEnd, string $repeatFreq, ?Carbon $maxDate): Carbon
      {
@@ -622,7 +620,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          $functionMap = [
              '1D'        => 'endOfDay',
              'daily'     => 'endOfDay',
-@@ -515,6 +517,7 @@
+@@ -515,6 +519,7 @@
              '1W'      => (string)trans('config.week_in_year_js'),
              'week'    => (string)trans('config.week_in_year_js'),
              'weekly'  => (string)trans('config.week_in_year_js'),
@@ -630,7 +628,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              '1M'      => (string)trans('config.month_js'),
              'month'   => (string)trans('config.month_js'),
              'monthly' => (string)trans('config.month_js'),
-@@ -548,6 +551,7 @@
+@@ -548,6 +553,7 @@
              default    => 'Y-m-d',
              // '1D'    => 'Y-m-d',
              '1W'       => '\WW,Y',
@@ -638,7 +636,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              '1M'       => 'Y-m',
              '3M', '6M' => '\QQ,Y',
              '1Y'       => 'Y',
-@@ -642,6 +646,7 @@
+@@ -642,6 +648,7 @@
              'week'    => 'subWeeks',
              '1W'      => 'subWeeks',
              'weekly'  => 'subWeeks',
@@ -646,7 +644,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              'month'   => 'subMonths',
              '1M'      => 'subMonths',
              'monthly' => 'subMonths',
-@@ -650,6 +655,7 @@
+@@ -650,6 +657,7 @@
              'yearly'  => 'subYears',
          ];
          $modifierMap = [
@@ -654,7 +652,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              'quarter'   => 3,
              '3M'        => 3,
              'quarterly' => 3,
-@@ -758,6 +764,11 @@
+@@ -758,6 +766,11 @@
              return $end;
          }
  
@@ -666,7 +664,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          // make sure 1Y takes the fiscal year into account.
          if ('1Y' === $range) {
              /** @var FiscalHelperInterface $fiscalHelper */
-@@ -804,6 +815,12 @@
+@@ -804,6 +817,12 @@
  
              return $start;
          }
