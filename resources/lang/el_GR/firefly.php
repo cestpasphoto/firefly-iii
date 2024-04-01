@@ -1419,6 +1419,28 @@ return [
     // Financial administrations
     'administration_index'                                => 'Οικονομική διαχείριση',
     'administrations_index_menu'                          => 'Financial administration(s)',
+    'administrations_breadcrumb'                          => 'Financial administrations',
+    'administrations_page_title'                          => 'Financial administrations',
+    'administrations_page_sub_title'                      => 'Overview',
+    'create_administration'                               => 'Create new administration',
+    'administration_owner'                                => 'Administration owner: {{email}}',
+    'administration_you'                                  => 'Your role: {{role}}',
+    'other_users_in_admin'                                => 'Other users in this administration',
+
+    // roles
+    'administration_role_owner'                           => 'Owner',
+    'administration_role_ro'                              => 'Read-only',
+    'administration_role_mng_trx'                         => 'Manage transactions',
+    'administration_role_mng_meta'                        => 'Manage classification and meta-data',
+    'administration_role_mng_budgets'                     => 'Manage budgets',
+    'administration_role_mng_piggies'                     => 'Manage piggy banks',
+    'administration_role_mng_subscriptions'               => 'Manage subscriptions',
+    'administration_role_mng_rules'                       => 'Manage rules',
+    'administration_role_mng_recurring'                   => 'Manage recurring transactions ',
+    'administration_role_mng_webhooks'                    => 'Manage webhooks',
+    'administration_role_mng_currencies'                  => 'Manage currencies',
+    'administration_role_view_reports'                    => 'View reports',
+    'administration_role_full'                            => 'Full access',
 
     // profile:
     'purge_data_title'                                    => 'Εκκαθάριση δεδομένων από το Firefly III',
@@ -1989,7 +2011,7 @@ return [
     'deleted_transfer'                                    => 'Επιτυχής διαγραφή της μεταφοράς ":description"',
     'deleted_reconciliation'                              => 'Επιτυχής διαγραφή της τακτοποιημένης συναλλαγής ":description"',
     'stored_journal'                                      => 'Δημιουργήθηκε επιτυχώς η νέα συναλλαγή ":description"',
-    'stored_journal_js'                                   => 'Δημιουργήθηκε επιτυχώς η νέα συναλλαγή "%{description}"',
+    'stored_journal_js'                                   => 'Successfully created new transaction "{{description}}"',
     'stored_journal_no_descr'                             => 'Δημιουργήθηκε επιτυχώς η νέα συναλλαγή',
     'updated_journal_no_descr'                            => 'Ενημερώθηκε επιτυχώς η συναλλαγή σας',
     'select_transactions'                                 => 'Επιλέξτε συναλλαγές',
@@ -2297,6 +2319,7 @@ return [
     'description'                                         => 'Περιγραφή',
     'sum_of_period'                                       => 'Σύνολο περιόδου',
     'average_in_period'                                   => 'Μέσος όρος περιόδου',
+    'no_account_role'                                     => '(no role)',
     'account_role_defaultAsset'                           => 'Βασικός λογαριασμός κεφαλαίου',
     'account_role_sharedAsset'                            => 'Κοινός λογαριασμός κεφαλαίου',
     'account_role_savingAsset'                            => 'Λογαριασμός αποταμίευσης',
@@ -2569,8 +2592,9 @@ return [
     'store_as_new'                                        => 'Αποθήκευση ως νέα συναλλαγή αντί για ενημέρωση.',
     'reset_after'                                         => 'Επαναφορά φόρμας μετά την υποβολή',
     'errors_submission'                                   => 'There was something wrong with your submission. Please check out the errors below.',
-    'errors_submission_v2'                                => 'There was something wrong with your submission. Please check out the errors below: %{errorMessage}',
+    'errors_submission_v2'                                => 'There was something wrong with your submission. Please check out the errors below: {{errorMessage}}',
     'transaction_expand_split'                            => 'Ανάπτυξη διαχωρισμού',
+    'transaction_remove_split'                            => 'Remove split',
     'transaction_collapse_split'                          => 'Σύμπτυξη διαχωρισμού',
 
     // object groups

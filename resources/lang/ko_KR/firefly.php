@@ -1419,6 +1419,28 @@ return [
     // Financial administrations
     'administration_index'                                => '재정 관리',
     'administrations_index_menu'                          => '재정 관리자(들)',
+    'administrations_breadcrumb'                          => 'Financial administrations',
+    'administrations_page_title'                          => 'Financial administrations',
+    'administrations_page_sub_title'                      => 'Overview',
+    'create_administration'                               => 'Create new administration',
+    'administration_owner'                                => 'Administration owner: {{email}}',
+    'administration_you'                                  => 'Your role: {{role}}',
+    'other_users_in_admin'                                => 'Other users in this administration',
+
+    // roles
+    'administration_role_owner'                           => 'Owner',
+    'administration_role_ro'                              => 'Read-only',
+    'administration_role_mng_trx'                         => 'Manage transactions',
+    'administration_role_mng_meta'                        => 'Manage classification and meta-data',
+    'administration_role_mng_budgets'                     => 'Manage budgets',
+    'administration_role_mng_piggies'                     => 'Manage piggy banks',
+    'administration_role_mng_subscriptions'               => 'Manage subscriptions',
+    'administration_role_mng_rules'                       => 'Manage rules',
+    'administration_role_mng_recurring'                   => 'Manage recurring transactions ',
+    'administration_role_mng_webhooks'                    => 'Manage webhooks',
+    'administration_role_mng_currencies'                  => 'Manage currencies',
+    'administration_role_view_reports'                    => 'View reports',
+    'administration_role_full'                            => 'Full access',
 
     // profile:
     'purge_data_title'                                    => 'Firefly III에서 데이터 제거',
@@ -1989,7 +2011,7 @@ return [
     'deleted_transfer'                                    => '":description" 이체 삭제 성공',
     'deleted_reconciliation'                              => '":description" 조정 거래 삭제 성공',
     'stored_journal'                                      => '새로운 ":description" 거래 생성 성공',
-    'stored_journal_js'                                   => 'Successfully created new transaction "%{description}"',
+    'stored_journal_js'                                   => 'Successfully created new transaction "{{description}}"',
     'stored_journal_no_descr'                             => '새로운 거래 생성 성공',
     'updated_journal_no_descr'                            => '거래 업데이트 성공',
     'select_transactions'                                 => '거래 선택',
@@ -2297,6 +2319,7 @@ return [
     'description'                                         => '설명',
     'sum_of_period'                                       => '기간의 합계',
     'average_in_period'                                   => '기간의 평균',
+    'no_account_role'                                     => '(no role)',
     'account_role_defaultAsset'                           => '기본 자산 계정',
     'account_role_sharedAsset'                            => '공유 자산 계정',
     'account_role_savingAsset'                            => '예금 계좌',
@@ -2569,8 +2592,9 @@ return [
     'store_as_new'                                        => '업데이트하는 대신 새 거래로 저장합니다.',
     'reset_after'                                         => '제출 후 양식 재설정',
     'errors_submission'                                   => 'There was something wrong with your submission. Please check out the errors below.',
-    'errors_submission_v2'                                => 'There was something wrong with your submission. Please check out the errors below: %{errorMessage}',
+    'errors_submission_v2'                                => 'There was something wrong with your submission. Please check out the errors below: {{errorMessage}}',
     'transaction_expand_split'                            => '분할 확장',
+    'transaction_remove_split'                            => 'Remove split',
     'transaction_collapse_split'                          => '분할 축소',
 
     // object groups

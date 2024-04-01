@@ -1419,6 +1419,28 @@ return [
     // Financial administrations
     'administration_index'                                => 'Financial administration',
     'administrations_index_menu'                          => 'Financial administration(s)',
+    'administrations_breadcrumb'                          => 'Financial administrations',
+    'administrations_page_title'                          => 'Financial administrations',
+    'administrations_page_sub_title'                      => 'Overview',
+    'create_administration'                               => 'Create new administration',
+    'administration_owner'                                => 'Administration owner: {{email}}',
+    'administration_you'                                  => 'Your role: {{role}}',
+    'other_users_in_admin'                                => 'Other users in this administration',
+
+    // roles
+    'administration_role_owner'                           => 'Owner',
+    'administration_role_ro'                              => 'Read-only',
+    'administration_role_mng_trx'                         => 'Manage transactions',
+    'administration_role_mng_meta'                        => 'Manage classification and meta-data',
+    'administration_role_mng_budgets'                     => 'Manage budgets',
+    'administration_role_mng_piggies'                     => 'Manage piggy banks',
+    'administration_role_mng_subscriptions'               => 'Manage subscriptions',
+    'administration_role_mng_rules'                       => 'Manage rules',
+    'administration_role_mng_recurring'                   => 'Manage recurring transactions ',
+    'administration_role_mng_webhooks'                    => 'Manage webhooks',
+    'administration_role_mng_currencies'                  => 'Manage currencies',
+    'administration_role_view_reports'                    => 'View reports',
+    'administration_role_full'                            => 'Full access',
 
     // profile:
     'purge_data_title'                                    => 'Purge data from Firefly III',
@@ -1989,7 +2011,7 @@ return [
     'deleted_transfer'                                    => 'Prevod „:description“ bol odstránený',
     'deleted_reconciliation'                              => 'Zúčtovacia transakcia ":description" bola odstránená',
     'stored_journal'                                      => 'Nová transakcia „:description“ bola vytvorená',
-    'stored_journal_js'                                   => 'Successfully created new transaction "%{description}"',
+    'stored_journal_js'                                   => 'Successfully created new transaction "{{description}}"',
     'stored_journal_no_descr'                             => 'Vaša nová transakcia bola vytvorená',
     'updated_journal_no_descr'                            => 'Vaša transakcia bola upravená',
     'select_transactions'                                 => 'Vybrať transakcie',
@@ -2297,6 +2319,7 @@ return [
     'description'                                         => 'Popis',
     'sum_of_period'                                       => 'Spolu v období',
     'average_in_period'                                   => 'Priemer obdobia',
+    'no_account_role'                                     => '(no role)',
     'account_role_defaultAsset'                           => 'Predvolený účet aktív',
     'account_role_sharedAsset'                            => 'Zdieľaný účet aktív',
     'account_role_savingAsset'                            => 'Šetriaci účet',
@@ -2569,8 +2592,9 @@ return [
     'store_as_new'                                        => 'Namiesto aktualizácie uložiť ako novú transakciu.',
     'reset_after'                                         => 'Po odoslaní vynulovať formulár',
     'errors_submission'                                   => 'There was something wrong with your submission. Please check out the errors below.',
-    'errors_submission_v2'                                => 'There was something wrong with your submission. Please check out the errors below: %{errorMessage}',
+    'errors_submission_v2'                                => 'There was something wrong with your submission. Please check out the errors below: {{errorMessage}}',
     'transaction_expand_split'                            => 'Expand split',
+    'transaction_remove_split'                            => 'Remove split',
     'transaction_collapse_split'                          => 'Collapse split',
 
     // object groups

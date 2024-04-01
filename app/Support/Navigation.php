@@ -227,6 +227,8 @@ class Navigation
         }
 
         if ('3W' === $repeatFreq || 'custom' === $repeatFreq) {
+            Log::debug(sprintf('Custom, result is "%s"', $date->toIso8601String()));
+
             return $date; // the date is already at the start.
         }
         Log::error(sprintf('Cannot do startOfPeriod for $repeat_freq "%s"', $repeatFreq));
@@ -249,9 +251,9 @@ class Navigation
             '1M'        => 'addMonth',
             'month'     => 'addMonth',
             'monthly'   => 'addMonth',
-            '3M'        => 'addMonths',
-            'quarter'   => 'addMonths',
-            'quarterly' => 'addMonths',
+            '3M'        => 'addQuarter',
+            'quarter'   => 'addQuarter',
+            'quarterly' => 'addQuarter',
             '6M'        => 'addMonths',
             'half-year' => 'addMonths',
             'half_year' => 'addMonths',
@@ -259,7 +261,7 @@ class Navigation
             'yearly'    => 'addYear',
             '1Y'        => 'addYear',
         ];
-        $modifierMap = ['3W' => 3, 'quarter' => 3, '3M' => 3, 'quarterly' => 3, 'half-year' => 6, 'half_year' => 6, '6M' => 6];
+        $modifierMap = ['3W' => 3, 'half-year' => 6, 'half_year' => 6, '6M' => 6];
         $subDay      = ['week', 'weekly', '1W', 'month', 'monthly', '1M', '3M', 'quarter', 'quarterly', '6M', 'half-year', 'half_year', '1Y', 'year', 'yearly'];
 
         if ('custom' === $repeatFreq) {

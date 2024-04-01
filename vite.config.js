@@ -31,6 +31,7 @@ function manualChunks(id) {
 }
 
 export default defineConfig({
+    base: './',
     build: {
         rollupOptions: {
             output: {
@@ -49,6 +50,9 @@ export default defineConfig({
 
                 // accounts
                 'resources/assets/v2/pages/accounts/index.js',
+
+                // administrations
+                'resources/assets/v2/pages/administrations/index.js',
 
                 // transactions
                 'resources/assets/v2/pages/transactions/create.js',

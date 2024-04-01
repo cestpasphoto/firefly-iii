@@ -1419,6 +1419,28 @@ return [
     // Financial administrations
     'administration_index'                                => 'Økonomisk administrasjon',
     'administrations_index_menu'                          => 'Økonomisk administrasjon',
+    'administrations_breadcrumb'                          => 'Financial administrations',
+    'administrations_page_title'                          => 'Financial administrations',
+    'administrations_page_sub_title'                      => 'Overview',
+    'create_administration'                               => 'Create new administration',
+    'administration_owner'                                => 'Administration owner: {{email}}',
+    'administration_you'                                  => 'Your role: {{role}}',
+    'other_users_in_admin'                                => 'Other users in this administration',
+
+    // roles
+    'administration_role_owner'                           => 'Owner',
+    'administration_role_ro'                              => 'Read-only',
+    'administration_role_mng_trx'                         => 'Manage transactions',
+    'administration_role_mng_meta'                        => 'Manage classification and meta-data',
+    'administration_role_mng_budgets'                     => 'Manage budgets',
+    'administration_role_mng_piggies'                     => 'Manage piggy banks',
+    'administration_role_mng_subscriptions'               => 'Manage subscriptions',
+    'administration_role_mng_rules'                       => 'Manage rules',
+    'administration_role_mng_recurring'                   => 'Manage recurring transactions ',
+    'administration_role_mng_webhooks'                    => 'Manage webhooks',
+    'administration_role_mng_currencies'                  => 'Manage currencies',
+    'administration_role_view_reports'                    => 'View reports',
+    'administration_role_full'                            => 'Full access',
 
     // profile:
     'purge_data_title'                                    => 'Fjern data fra Firefly III',
@@ -1989,7 +2011,7 @@ return [
     'deleted_transfer'                                    => 'Slettet overføring ":description"',
     'deleted_reconciliation'                              => 'Slettet avstemmingstransaksjon ":description"',
     'stored_journal'                                      => 'Opprettet ny transaksjon ":description"',
-    'stored_journal_js'                                   => 'Successfully created new transaction "%{description}"',
+    'stored_journal_js'                                   => 'Successfully created new transaction "{{description}}"',
     'stored_journal_no_descr'                             => 'Vellykket! Ny transaksjon er opprettet',
     'updated_journal_no_descr'                            => 'Transaksjonen din ble oppdatert',
     'select_transactions'                                 => 'Velg transaksjoner',
@@ -2297,6 +2319,7 @@ return [
     'description'                                         => 'Beskrivelse',
     'sum_of_period'                                       => 'Sum for perioden',
     'average_in_period'                                   => 'Gjennomsnitt for periode',
+    'no_account_role'                                     => '(no role)',
     'account_role_defaultAsset'                           => 'Standard aktivakonto',
     'account_role_sharedAsset'                            => 'Delt aktivakonto',
     'account_role_savingAsset'                            => 'Sparekonto',
@@ -2569,8 +2592,9 @@ return [
     'store_as_new'                                        => 'Lagre som en ny transaksjon istedenfor å oppdatere.',
     'reset_after'                                         => 'Nullstill skjema etter innsending',
     'errors_submission'                                   => 'There was something wrong with your submission. Please check out the errors below.',
-    'errors_submission_v2'                                => 'There was something wrong with your submission. Please check out the errors below: %{errorMessage}',
+    'errors_submission_v2'                                => 'There was something wrong with your submission. Please check out the errors below: {{errorMessage}}',
     'transaction_expand_split'                            => 'Utvid splitt',
+    'transaction_remove_split'                            => 'Remove split',
     'transaction_collapse_split'                          => 'Kollaps deling',
 
     // object groups

@@ -1419,6 +1419,28 @@ return [
     // Financial administrations
     'administration_index'                                => 'Finanzverwaltung',
     'administrations_index_menu'                          => 'Finanzverwaltung(en)',
+    'administrations_breadcrumb'                          => 'Finanzverwaltungen',
+    'administrations_page_title'                          => 'Finanzverwaltungen',
+    'administrations_page_sub_title'                      => 'Übersicht',
+    'create_administration'                               => 'Create new administration',
+    'administration_owner'                                => 'Administration owner: {{email}}',
+    'administration_you'                                  => 'Your role: {{role}}',
+    'other_users_in_admin'                                => 'Other users in this administration',
+
+    // roles
+    'administration_role_owner'                           => 'Owner',
+    'administration_role_ro'                              => 'Read-only',
+    'administration_role_mng_trx'                         => 'Manage transactions',
+    'administration_role_mng_meta'                        => 'Manage classification and meta-data',
+    'administration_role_mng_budgets'                     => 'Manage budgets',
+    'administration_role_mng_piggies'                     => 'Manage piggy banks',
+    'administration_role_mng_subscriptions'               => 'Manage subscriptions',
+    'administration_role_mng_rules'                       => 'Manage rules',
+    'administration_role_mng_recurring'                   => 'Manage recurring transactions ',
+    'administration_role_mng_webhooks'                    => 'Manage webhooks',
+    'administration_role_mng_currencies'                  => 'Manage currencies',
+    'administration_role_view_reports'                    => 'View reports',
+    'administration_role_full'                            => 'Full access',
 
     // profile:
     'purge_data_title'                                    => 'Daten aus Firefly III vernichten',
@@ -1989,7 +2011,7 @@ return [
     'deleted_transfer'                                    => 'Umbuchung ":description" erfolgreich gelöscht',
     'deleted_reconciliation'                              => 'Ausgleichsbuchung „:description” erfolgreich gelöscht',
     'stored_journal'                                      => 'Neue Überweisung ":description" erfolgreich erstellt',
-    'stored_journal_js'                                   => 'Neue Buchung „%{description}” erfolgreich erstellt',
+    'stored_journal_js'                                   => 'Neue Buchung „{{description}}” erfolgreich erstellt',
     'stored_journal_no_descr'                             => 'Ihre neue Buchung wurde erfolgreich erstellt',
     'updated_journal_no_descr'                            => 'Ihre Buchung wurde erfolgreich aktualisiert',
     'select_transactions'                                 => 'Buchungen auswählen',
@@ -2297,6 +2319,7 @@ return [
     'description'                                         => 'Beschreibung',
     'sum_of_period'                                       => 'Summe des Zeitraums',
     'average_in_period'                                   => 'Durchschnitt im Zeitraum',
+    'no_account_role'                                     => '(keine Rolle)',
     'account_role_defaultAsset'                           => 'Standard-Bestandskonto',
     'account_role_sharedAsset'                            => 'Gemeinsames Bestandskonto',
     'account_role_savingAsset'                            => 'Sparkonto',
@@ -2569,8 +2592,9 @@ return [
     'store_as_new'                                        => 'Als neue Buchung speichern statt zu aktualisieren.',
     'reset_after'                                         => 'Formular nach der Übermittlung zurücksetzen',
     'errors_submission'                                   => 'Bei Ihren Eingaben stimmt etwas nicht. Bitte überprüfen Sie die unten stehenden Fehler.',
-    'errors_submission_v2'                                => 'Bei Ihren Eingaben stimmt etwas nicht. Bitte überprüfen Sie die nachfolgenden Fehler: %{errorMessage}',
+    'errors_submission_v2'                                => 'Bei Ihrer Übermittlung ist ein Fehler aufgetreten. Bitte überprüfen Sie die unten stehenden Fehler: {{errorMessage}}',
     'transaction_expand_split'                            => 'Aufteilung erweitern',
+    'transaction_remove_split'                            => 'Teilung entfernen',
     'transaction_collapse_split'                          => 'Aufteilung reduzieren',
 
     // object groups

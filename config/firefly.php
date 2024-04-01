@@ -117,8 +117,8 @@ return [
         'expression_engine' => false,
         // see cer.php for exchange rates feature flag.
     ],
-    'version'                      => '6.1.12',
-    'api_version'                  => '2.0.12',
+    'version'                      => '6.1.13',
+    'api_version'                  => '2.0.13',
     'db_version'                   => 23,
 
     // generic settings
@@ -923,7 +923,7 @@ return [
     'sorting'                      => [
         'allowed' => [
             'transactions' => ['description', 'amount'],
-            'accounts'     => ['name', 'active', 'iban', 'balance'],
+            'accounts'     => ['name', 'active', 'iban', 'balance', 'last_activity'],
         ],
     ],
 ];

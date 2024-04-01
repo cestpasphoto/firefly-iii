@@ -1419,6 +1419,28 @@ return [
     // Financial administrations
     'administration_index'                                => '財務管理',
     'administrations_index_menu'                          => '財務管理',
+    'administrations_breadcrumb'                          => 'Financial administrations',
+    'administrations_page_title'                          => 'Financial administrations',
+    'administrations_page_sub_title'                      => 'Overview',
+    'create_administration'                               => 'Create new administration',
+    'administration_owner'                                => 'Administration owner: {{email}}',
+    'administration_you'                                  => 'Your role: {{role}}',
+    'other_users_in_admin'                                => 'Other users in this administration',
+
+    // roles
+    'administration_role_owner'                           => 'Owner',
+    'administration_role_ro'                              => 'Read-only',
+    'administration_role_mng_trx'                         => 'Manage transactions',
+    'administration_role_mng_meta'                        => 'Manage classification and meta-data',
+    'administration_role_mng_budgets'                     => 'Manage budgets',
+    'administration_role_mng_piggies'                     => 'Manage piggy banks',
+    'administration_role_mng_subscriptions'               => 'Manage subscriptions',
+    'administration_role_mng_rules'                       => 'Manage rules',
+    'administration_role_mng_recurring'                   => 'Manage recurring transactions ',
+    'administration_role_mng_webhooks'                    => 'Manage webhooks',
+    'administration_role_mng_currencies'                  => 'Manage currencies',
+    'administration_role_view_reports'                    => 'View reports',
+    'administration_role_full'                            => 'Full access',
 
     // profile:
     'purge_data_title'                                    => 'Firefly III からデータを消去',
@@ -1989,7 +2011,7 @@ return [
     'deleted_transfer'                                    => '送金「:description」を削除しました',
     'deleted_reconciliation'                              => '取引照合":description"を削除しました',
     'stored_journal'                                      => '取引「:description」を作成しました',
-    'stored_journal_js'                                   => 'Successfully created new transaction "%{description}"',
+    'stored_journal_js'                                   => 'Successfully created new transaction "{{description}}"',
     'stored_journal_no_descr'                             => '新しい取引を作成しました',
     'updated_journal_no_descr'                            => '取引を更新しました',
     'select_transactions'                                 => '取引を選択',
@@ -2297,6 +2319,7 @@ return [
     'description'                                         => '概要',
     'sum_of_period'                                       => '期間の合計',
     'average_in_period'                                   => '期間の平均',
+    'no_account_role'                                     => '(no role)',
     'account_role_defaultAsset'                           => 'デフォルトの資産口座',
     'account_role_sharedAsset'                            => '共有資産口座',
     'account_role_savingAsset'                            => '貯蓄口座',
@@ -2569,8 +2592,9 @@ return [
     'store_as_new'                                        => '更新せず新しい取引として保存する。',
     'reset_after'                                         => '送信後にフォームをリセット',
     'errors_submission'                                   => 'There was something wrong with your submission. Please check out the errors below.',
-    'errors_submission_v2'                                => 'There was something wrong with your submission. Please check out the errors below: %{errorMessage}',
+    'errors_submission_v2'                                => 'There was something wrong with your submission. Please check out the errors below: {{errorMessage}}',
     'transaction_expand_split'                            => '分割を展開',
+    'transaction_remove_split'                            => 'Remove split',
     'transaction_collapse_split'                          => '分割をたたむ',
 
     // object groups

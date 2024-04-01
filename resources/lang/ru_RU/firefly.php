@@ -1419,6 +1419,28 @@ return [
     // Financial administrations
     'administration_index'                                => 'Управление финансами',
     'administrations_index_menu'                          => 'Управление финансами',
+    'administrations_breadcrumb'                          => 'Financial administrations',
+    'administrations_page_title'                          => 'Financial administrations',
+    'administrations_page_sub_title'                      => 'Overview',
+    'create_administration'                               => 'Create new administration',
+    'administration_owner'                                => 'Administration owner: {{email}}',
+    'administration_you'                                  => 'Your role: {{role}}',
+    'other_users_in_admin'                                => 'Other users in this administration',
+
+    // roles
+    'administration_role_owner'                           => 'Owner',
+    'administration_role_ro'                              => 'Read-only',
+    'administration_role_mng_trx'                         => 'Manage transactions',
+    'administration_role_mng_meta'                        => 'Manage classification and meta-data',
+    'administration_role_mng_budgets'                     => 'Manage budgets',
+    'administration_role_mng_piggies'                     => 'Manage piggy banks',
+    'administration_role_mng_subscriptions'               => 'Manage subscriptions',
+    'administration_role_mng_rules'                       => 'Manage rules',
+    'administration_role_mng_recurring'                   => 'Manage recurring transactions ',
+    'administration_role_mng_webhooks'                    => 'Manage webhooks',
+    'administration_role_mng_currencies'                  => 'Manage currencies',
+    'administration_role_view_reports'                    => 'View reports',
+    'administration_role_full'                            => 'Full access',
 
     // profile:
     'purge_data_title'                                    => 'Уничтожить данные из Firefly III',
@@ -1989,7 +2011,7 @@ return [
     'deleted_transfer'                                    => 'Перевод ":description" успешно удалён',
     'deleted_reconciliation'                              => 'Сверенная транзакция ":description" успешно удалена',
     'stored_journal'                                      => 'Новая транзакция ":description" успешно создана',
-    'stored_journal_js'                                   => 'Новая транзакция "%{description}" успешно создана',
+    'stored_journal_js'                                   => 'Успешно создана новая транзакция "{{description}}"',
     'stored_journal_no_descr'                             => 'Ваша новая транзакция успешно создана',
     'updated_journal_no_descr'                            => 'Ваша транзакция успешно обновлена',
     'select_transactions'                                 => 'Выбрать транзакции',
@@ -2297,6 +2319,7 @@ return [
     'description'                                         => 'Описание',
     'sum_of_period'                                       => 'Сумма за период',
     'average_in_period'                                   => 'В среднем за период',
+    'no_account_role'                                     => '(нет роли)',
     'account_role_defaultAsset'                           => 'Счёт по умолчанию',
     'account_role_sharedAsset'                            => 'Общий основной счёт',
     'account_role_savingAsset'                            => 'Сберегательный счет',
@@ -2569,8 +2592,9 @@ return [
     'store_as_new'                                        => 'Сохранить как новую транзакцию вместо обновления.',
     'reset_after'                                         => 'Сбросить форму после отправки',
     'errors_submission'                                   => 'С вашей публикацией произошла ошибка. Пожалуйста, проверьте ошибки ниже.',
-    'errors_submission_v2'                                => 'С вашей публикацией произошла ошибка. Пожалуйста, проверьте следующие ошибки: %{errorMessage}',
+    'errors_submission_v2'                                => 'С вашей публикацией произошла ошибка. Пожалуйста, проверьте следующие ошибки: {{errorMessage}}',
     'transaction_expand_split'                            => 'Развернуть разделение',
+    'transaction_remove_split'                            => 'Удалить разделение',
     'transaction_collapse_split'                          => 'Свернуть разделение',
 
     // object groups

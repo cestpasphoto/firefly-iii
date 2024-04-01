@@ -1419,6 +1419,28 @@ return [
     // Financial administrations
     'administration_index'                                => 'Administração financeira',
     'administrations_index_menu'                          => 'Administração(ões) financeira(s)',
+    'administrations_breadcrumb'                          => 'Financial administrations',
+    'administrations_page_title'                          => 'Financial administrations',
+    'administrations_page_sub_title'                      => 'Overview',
+    'create_administration'                               => 'Create new administration',
+    'administration_owner'                                => 'Administration owner: {{email}}',
+    'administration_you'                                  => 'Your role: {{role}}',
+    'other_users_in_admin'                                => 'Other users in this administration',
+
+    // roles
+    'administration_role_owner'                           => 'Owner',
+    'administration_role_ro'                              => 'Read-only',
+    'administration_role_mng_trx'                         => 'Manage transactions',
+    'administration_role_mng_meta'                        => 'Manage classification and meta-data',
+    'administration_role_mng_budgets'                     => 'Manage budgets',
+    'administration_role_mng_piggies'                     => 'Manage piggy banks',
+    'administration_role_mng_subscriptions'               => 'Manage subscriptions',
+    'administration_role_mng_rules'                       => 'Manage rules',
+    'administration_role_mng_recurring'                   => 'Manage recurring transactions ',
+    'administration_role_mng_webhooks'                    => 'Manage webhooks',
+    'administration_role_mng_currencies'                  => 'Manage currencies',
+    'administration_role_view_reports'                    => 'View reports',
+    'administration_role_full'                            => 'Full access',
 
     // profile:
     'purge_data_title'                                    => 'Expurgar dados do Firefly III',
@@ -1989,7 +2011,7 @@ return [
     'deleted_transfer'                                    => 'Transferência ":description" excluída com sucesso',
     'deleted_reconciliation'                              => 'Transação de reconciliação ":description" excluída com sucesso',
     'stored_journal'                                      => 'Transação ":description" incluída com sucesso',
-    'stored_journal_js'                                   => 'Transação "%{description}" criada com sucesso',
+    'stored_journal_js'                                   => 'Successfully created new transaction "{{description}}"',
     'stored_journal_no_descr'                             => 'Transação criada com sucesso',
     'updated_journal_no_descr'                            => 'Transação atualizada com sucesso',
     'select_transactions'                                 => 'Selecione as transações',
@@ -2297,6 +2319,7 @@ return [
     'description'                                         => 'Descrição',
     'sum_of_period'                                       => 'Soma de período',
     'average_in_period'                                   => 'Média do período',
+    'no_account_role'                                     => '(no role)',
     'account_role_defaultAsset'                           => 'Conta padrão',
     'account_role_sharedAsset'                            => 'Contas de ativos compartilhadas',
     'account_role_savingAsset'                            => 'Conta poupança',
@@ -2569,8 +2592,9 @@ return [
     'store_as_new'                                        => 'Armazene como uma nova transação em vez de atualizar.',
     'reset_after'                                         => 'Limpar o formulário após o envio',
     'errors_submission'                                   => 'Algo deu errado com seu envio. Por favor, verifique os erros abaixo.',
-    'errors_submission_v2'                                => 'Algo deu errado com seu envio. Por favor, verifique os erros abaixo: %{errorMessage}',
+    'errors_submission_v2'                                => 'There was something wrong with your submission. Please check out the errors below: {{errorMessage}}',
     'transaction_expand_split'                            => 'Exibir divisão',
+    'transaction_remove_split'                            => 'Remove split',
     'transaction_collapse_split'                          => 'Esconder divisão',
 
     // object groups

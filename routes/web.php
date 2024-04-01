@@ -1203,12 +1203,12 @@ Route::group(
     static function (): void {
         // show groups:
         // TODO improve these routes
-        Route::get('{what}/all', ['uses' => 'Transaction\IndexController@indexAll', 'as' => 'index.all'])->where(
-            ['what' => 'withdrawal|deposit|transfers|transfer|all']
+        Route::get('{objectType}/all', ['uses' => 'Transaction\IndexController@indexAll', 'as' => 'index.all'])->where(
+            ['objectType' => 'withdrawal|deposit|transfers|transfer|all']
         );
 
-        Route::get('{what}/{start_date?}/{end_date?}', ['uses' => 'Transaction\IndexController@index', 'as' => 'index'])->where(
-            ['what' => 'withdrawal|deposit|transfers|transfer|all']
+        Route::get('{objectType}/{start_date?}/{end_date?}', ['uses' => 'Transaction\IndexController@index', 'as' => 'index'])->where(
+            ['objectType' => 'withdrawal|deposit|transfers|transfer|all']
         )->where(['start_date' => DATEFORMAT])
             ->where(['end_date' => DATEFORMAT])
         ;
@@ -1345,5 +1345,24 @@ Route::group(
         // FF configuration:
         Route::get('configuration', ['uses' => 'ConfigurationController@index', 'as' => 'configuration.index']);
         Route::post('configuration', ['uses' => 'ConfigurationController@postIndex', 'as' => 'configuration.index.post']);
+    }
+);
+
+// User Group / Administrations Controller.
+Route::group(
+    ['middleware' => 'user-full-auth', 'namespace' => 'FireflyIII\Http\Controllers', 'prefix' => 'administrations', 'as' => 'administrations.'],
+    static function (): void {
+        Route::get('', ['uses' => 'UserGroup\IndexController@index', 'as' => 'index']);
+        Route::get('create', ['uses' => 'UserGroup\CreateController@create', 'as' => 'create']);
+        //        Route::post('rescan/{bill}', ['uses' => 'Bill\ShowController@rescan', 'as' => 'rescan']);
+        //        Route::get('edit/{bill}', ['uses' => 'Bill\EditController@edit', 'as' => 'edit']);
+        //        Route::get('delete/{bill}', ['uses' => 'Bill\DeleteController@delete', 'as' => 'delete']);
+        //        Route::get('show/{bill}', ['uses' => 'Bill\ShowController@show', 'as' => 'show']);
+        //
+        //        Route::post('store', ['uses' => 'Bill\CreateController@store', 'as' => 'store']);
+        //        Route::post('update/{bill}', ['uses' => 'Bill\EditController@update', 'as' => 'update']);
+        //        Route::post('destroy/{bill}', ['uses' => 'Bill\DeleteController@destroy', 'as' => 'destroy']);
+        //
+        //        Route::post('set-order/{bill}', ['uses' => 'Bill\IndexController@setOrder', 'as' => 'set-order']);
     }
 );
