@@ -1,6 +1,6 @@
 diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/accounts/reconcile.js
 --- ../official/public/v1/js/ff/accounts/reconcile.js	2022-05-06 16:20:55.829339578 +0200
-+++ ./public/v1/js/ff/accounts/reconcile.js	2024-03-29 20:47:55.227194018 +0100
++++ ./public/v1/js/ff/accounts/reconcile.js	2024-04-01 17:50:06.097596790 +0200
 @@ -21,6 +21,7 @@
  var balanceDifference = 0;
  var difference = 0;
@@ -210,9 +210,9 @@ diff -Naur ../official/public/v1/js/ff/accounts/reconcile.js ./public/v1/js/ff/a
          addClass = 'text-danger';
      }
      $('#difference').addClass(addClass).text(accounting.formatMoney(difference));
-diff -Naur ../official/resources/assets/js/components/transactions/CreateTransaction.vue ./resources/assets/js/components/transactions/CreateTransaction.vue
---- ../official/resources/assets/js/components/transactions/CreateTransaction.vue	2024-03-29 20:30:45.799713615 +0100
-+++ ./resources/assets/js/components/transactions/CreateTransaction.vue	2024-03-29 20:30:49.459771787 +0100
+diff -Naur ../official/resources/assets/v1/src/components/transactions/CreateTransaction.vue ./resources/assets/v1/src/components/transactions/CreateTransaction.vue
+--- ../official/resources/assets/v1/src/components/transactions/CreateTransaction.vue	2024-09-30 18:10:03.237771486 +0200
++++ ./resources/assets/v1/src/components/transactions/CreateTransaction.vue	2024-09-30 18:10:06.149784871 +0200
 @@ -147,31 +147,6 @@
                                          :no_budget="$t('firefly.none_in_select_list')"
                                          :transactionType="transactionType"
@@ -245,10 +245,38 @@ diff -Naur ../official/resources/assets/js/components/transactions/CreateTransac
                                  </div>
                              </div>
                          </div>
+diff -Naur ../official/resources/assets/v1/webpack.mix.js ./resources/assets/v1/webpack.mix.js
+--- ../official/resources/assets/v1/webpack.mix.js	2024-06-15 16:46:04.215688753 +0200
++++ ./resources/assets/v1/webpack.mix.js	2024-09-30 18:10:06.161784929 +0200
+@@ -35,6 +35,19 @@
+     }
+ });
+ 
++<<<<<<< HEAD:webpack.mix.js
++mix.js('resources/assets/js/app.js', 'public/v1/js');
++mix.js('resources/assets/js/app_vue.js', 'public/v1/js').vue({version: 2});
++mix.js('resources/assets/js/create_transaction.js', 'public/v1/js').vue({version: 2});
++mix.js('resources/assets/js/edit_transaction.js', 'public/v1/js').vue({version: 2});
++mix.js('resources/assets/js/profile.js', 'public/v1/js').vue({version: 2});
++
++// webhooks
++//mix.js('resources/assets/js/webhooks/index.js', 'public/v1/js/webhooks').vue({version: 2});
++//mix.js('resources/assets/js/webhooks/create.js', 'public/v1/js/webhooks').vue({version: 2});
++//mix.js('resources/assets/js/webhooks/edit.js', 'public/v1/js/webhooks').vue({version: 2});
++//mix.js('resources/assets/js/webhooks/show.js', 'public/v1/js/webhooks').vue({version: 2});
++=======
+ mix.js('src/app.js', 'build');
+ mix.js('src/app_vue.js', 'build').vue({version: 2});
+ mix.js('src/create_transaction.js', 'build').vue({version: 2});
+@@ -46,3 +59,4 @@
+ mix.js('src/webhooks/create.js', 'build/webhooks').vue({version: 2});
+ mix.js('src/webhooks/edit.js', 'build/webhooks').vue({version: 2});
+ mix.js('src/webhooks/show.js', 'build/webhooks').vue({version: 2}).copy('build','../../../public/v1/js')
++>>>>>>> abcddb09bf735604e8f2fbe17be69f440b5b6496:resources/assets/v1/webpack.mix.js
 diff -Naur ../official/resources/lang/en_US/firefly.php ./resources/lang/en_US/firefly.php
---- ../official/resources/lang/en_US/firefly.php	2024-04-01 17:42:01.699805802 +0200
-+++ ./resources/lang/en_US/firefly.php	2024-04-01 17:42:03.607827255 +0200
-@@ -1299,6 +1299,7 @@
+--- ../official/resources/lang/en_US/firefly.php	2024-06-15 16:46:04.231689347 +0200
++++ ./resources/lang/en_US/firefly.php	2024-09-30 18:10:06.185785043 +0200
+@@ -1300,6 +1300,7 @@
      'pref_view_range_help'                                => 'Some charts are automatically grouped in periods. Your budgets will also be grouped in periods. What period would you prefer?',
      'pref_1D'                                             => 'One day',
      'pref_1W'                                             => 'One week',
@@ -256,17 +284,6 @@ diff -Naur ../official/resources/lang/en_US/firefly.php ./resources/lang/en_US/f
      'pref_1M'                                             => 'One month',
      'pref_3M'                                             => 'Three months (quarter)',
      'pref_6M'                                             => 'Six months',
-diff -Naur ../official/resources/lang/fr_FR/firefly.php ./resources/lang/fr_FR/firefly.php
---- ../official/resources/lang/fr_FR/firefly.php	2024-04-01 17:42:01.703805847 +0200
-+++ ./resources/lang/fr_FR/firefly.php	2024-04-01 17:42:03.611827300 +0200
-@@ -1335,6 +1335,7 @@
-     'pref_view_range_help'                                => "Certains graphiques sont automatiquement regroupés par périodes. Vos budgets seront aussi organisés par périodes. Quelle période préférez-vous\u{a0}?",
-     'pref_1D'                                             => 'Un jour',
-     'pref_1W'                                             => 'Une semaine',
-+    'pref_3W'                                             => 'Trois semaines centrees',
-     'pref_1M'                                             => 'Un mois',
-     'pref_3M'                                             => 'Trois mois (trimestre)',
-     'pref_6M'                                             => 'Six mois',
 diff -Naur ../official/resources/views/accounts/reconcile/index.twig ./resources/views/accounts/reconcile/index.twig
 --- ../official/resources/views/accounts/reconcile/index.twig	2022-12-29 16:01:27.132300233 +0100
 +++ ./resources/views/accounts/reconcile/index.twig	2022-12-29 16:01:29.804338669 +0100
@@ -279,8 +296,8 @@ diff -Naur ../official/resources/views/accounts/reconcile/index.twig ./resources
 +    </script>
  {% endblock %}
 diff -Naur ../official/resources/views/index.twig ./resources/views/index.twig
---- ../official/resources/views/index.twig	2023-12-27 17:56:43.294459427 +0100
-+++ ./resources/views/index.twig	2023-12-28 18:46:09.245234711 +0100
+--- ../official/resources/views/index.twig	2024-09-30 18:10:03.237771486 +0200
++++ ./resources/views/index.twig	2024-09-30 18:30:48.510575636 +0200
 @@ -4,7 +4,6 @@
      {{ Breadcrumbs.render }}
  {% endblock %}
@@ -289,14 +306,7 @@ diff -Naur ../official/resources/views/index.twig ./resources/views/index.twig
      <div class="row">
          <div class="col-lg-8 col-md-12 col-sm-12">
              {# ACCOUNTS #}
-@@ -32,29 +31,12 @@
-                     <canvas id="budgets-chart" style="width:100%;height:400px;" height="400" width="100%"></canvas>
-                 </div>
-                 <div class="box-footer">
--                    <a href="{{ route('budgets.index') }}" class="btn btn-default button-sm">
-+                    <a href="{{ route('budgets.index', null,false) }}" class="btn btn-default button-sm">
-                         <span class="fa fa-pie-chart"></span>
-                         <span>{{ 'go_to_budgets'|_ }}</span>
+@@ -38,23 +37,6 @@
                      </a>
                  </div>
              </div>
@@ -389,9 +399,9 @@ diff -Naur ../official/resources/views/index.twig ./resources/views/index.twig
      </div>
  {% endblock %}
 diff -Naur ../official/resources/views/layout/default.twig ./resources/views/layout/default.twig
---- ../official/resources/views/layout/default.twig	2024-02-11 22:18:43.012135992 +0100
-+++ ./resources/views/layout/default.twig	2024-02-11 22:18:48.084206068 +0100
-@@ -123,11 +123,22 @@
+--- ../official/resources/views/layout/default.twig	2024-06-15 16:46:04.243689793 +0200
++++ ./resources/views/layout/default.twig	2024-09-30 18:10:06.209785158 +0200
+@@ -126,11 +126,22 @@
                          </span>
                      </li>
  
@@ -419,8 +429,8 @@ diff -Naur ../official/resources/views/layout/default.twig ./resources/views/lay
                          <a href="#" data-toggle="control-sidebar"><span class="fa fa-plus-circle"></span></a>
                      </li>
 diff -Naur ../official/resources/views/preferences/index.twig ./resources/views/preferences/index.twig
---- ../official/resources/views/preferences/index.twig	2023-12-27 17:56:43.294459427 +0100
-+++ ./resources/views/preferences/index.twig	2023-12-27 18:23:57.073623332 +0100
+--- ../official/resources/views/preferences/index.twig	2024-06-15 16:46:04.243689793 +0200
++++ ./resources/views/preferences/index.twig	2024-09-30 18:10:06.209785158 +0200
 @@ -196,30 +196,24 @@
                                          <div class="radio">
                                              <label>
@@ -471,8 +481,8 @@ diff -Naur ../official/app/Http/Controllers/Bill/IndexController.php ./app/Http/
              'YTD'     => '1',
              'QTD'     => '4',
 diff -Naur ../official/app/Jobs/CreateRecurringTransactions.php ./app/Jobs/CreateRecurringTransactions.php
---- ../official/app/Jobs/CreateRecurringTransactions.php	2024-03-29 20:30:45.779713251 +0100
-+++ ./app/Jobs/CreateRecurringTransactions.php	2024-03-29 20:30:49.443771562 +0100
+--- ../official/app/Jobs/CreateRecurringTransactions.php	2024-09-30 18:10:03.229771449 +0200
++++ ./app/Jobs/CreateRecurringTransactions.php	2024-09-30 18:10:06.129784773 +0200
 @@ -87,6 +87,8 @@
          $this->created           = 0;
          $this->recurrences       = new Collection();
@@ -544,9 +554,9 @@ diff -Naur ../official/app/Support/Calendar/Periodicity.php ./app/Support/Calend
      case Monthly;
      case Bimonthly;
 diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./app/Support/Http/Controllers/GetConfigurationData.php
---- ../official/app/Support/Http/Controllers/GetConfigurationData.php	2024-04-01 17:42:01.683805623 +0200
-+++ ./app/Support/Http/Controllers/GetConfigurationData.php	2024-04-01 17:42:03.591827076 +0200
-@@ -125,11 +125,15 @@
+--- ../official/app/Support/Http/Controllers/GetConfigurationData.php	2024-09-30 18:10:03.233771466 +0200
++++ ./app/Support/Http/Controllers/GetConfigurationData.php	2024-09-30 18:11:42.770591159 +0200
+@@ -125,12 +125,15 @@
          }
  
          // today:
@@ -555,6 +565,7 @@ diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./a
 -
 -        /** @var Carbon $todayEnd */
 -        $todayEnd       = app('navigation')->endOfPeriod($todayStart, $viewRange);
+-
 +        if ('3W' === $viewRange) {
 +            $todayStart = Carbon::now()->subDays(14);
 +            $todayEnd = Carbon::now()->addDays(7);
@@ -568,8 +579,8 @@ diff -Naur ../official/app/Support/Http/Controllers/GetConfigurationData.php ./a
              $ranges[ucfirst((string)trans('firefly.today'))] = [$todayStart, $todayEnd];
          }
 diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
---- ../official/app/Support/Navigation.php	2024-04-01 17:42:01.683805623 +0200
-+++ ./app/Support/Navigation.php	2024-04-01 17:43:28.328779608 +0200
+--- ../official/app/Support/Navigation.php	2024-09-30 18:10:03.233771466 +0200
++++ ./app/Support/Navigation.php	2024-09-30 18:13:59.197971540 +0200
 @@ -52,6 +52,7 @@
              '1W'        => Periodicity::Weekly,
              'weekly'    => Periodicity::Weekly,
@@ -586,7 +597,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          $functionMap  = [
              '1D'        => 'startOfDay',
              'daily'     => 'startOfDay',
-@@ -224,7 +226,7 @@
+@@ -225,7 +227,7 @@
              return $result;
          }
  
@@ -595,7 +606,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              Log::debug(sprintf('Custom, result is "%s"', $date->toIso8601String()));
  
              return $date; // the date is already at the start.
-@@ -245,6 +247,7 @@
+@@ -246,6 +248,7 @@
              '1W'        => 'addWeek',
              'week'      => 'addWeek',
              'weekly'    => 'addWeek',
@@ -603,7 +614,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              '1M'        => 'addMonth',
              'month'     => 'addMonth',
              'monthly'   => 'addMonth',
-@@ -258,7 +261,7 @@
+@@ -259,7 +262,7 @@
              'yearly'    => 'addYear',
              '1Y'        => 'addYear',
          ];
@@ -612,7 +623,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          $subDay      = ['week', 'weekly', '1W', 'month', 'monthly', '1M', '3M', 'quarter', 'quarterly', '6M', 'half-year', 'half_year', '1Y', 'year', 'yearly'];
  
          if ('custom' === $repeatFreq) {
-@@ -387,6 +390,7 @@
+@@ -396,6 +399,7 @@
  
      public function endOfX(Carbon $theCurrentEnd, string $repeatFreq, ?Carbon $maxDate): Carbon
      {
@@ -620,15 +631,15 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          $functionMap = [
              '1D'        => 'endOfDay',
              'daily'     => 'endOfDay',
-@@ -515,6 +519,7 @@
-             '1W'      => (string)trans('config.week_in_year_js'),
-             'week'    => (string)trans('config.week_in_year_js'),
-             'weekly'  => (string)trans('config.week_in_year_js'),
-+            '3W'      => (string)trans('config.month_js'),
-             '1M'      => (string)trans('config.month_js'),
-             'month'   => (string)trans('config.month_js'),
-             'monthly' => (string)trans('config.month_js'),
-@@ -548,6 +553,7 @@
+@@ -529,6 +533,7 @@
+             '1W'      => (string) trans('config.week_in_year_js'),
+             'week'    => (string) trans('config.week_in_year_js'),
+             'weekly'  => (string) trans('config.week_in_year_js'),
++            '3W'      => (string) trans('config.month_js'),
+             '1M'      => (string) trans('config.month_js'),
+             'month'   => (string) trans('config.month_js'),
+             'monthly' => (string) trans('config.month_js'),
+@@ -562,6 +567,7 @@
              default    => 'Y-m-d',
              // '1D'    => 'Y-m-d',
              '1W'       => '\WW,Y',
@@ -636,7 +647,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              '1M'       => 'Y-m',
              '3M', '6M' => '\QQ,Y',
              '1Y'       => 'Y',
-@@ -642,6 +648,7 @@
+@@ -656,6 +662,7 @@
              'week'    => 'subWeeks',
              '1W'      => 'subWeeks',
              'weekly'  => 'subWeeks',
@@ -644,7 +655,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              'month'   => 'subMonths',
              '1M'      => 'subMonths',
              'monthly' => 'subMonths',
-@@ -650,6 +657,7 @@
+@@ -664,6 +671,7 @@
              'yearly'  => 'subYears',
          ];
          $modifierMap = [
@@ -652,7 +663,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
              'quarter'   => 3,
              '3M'        => 3,
              'quarterly' => 3,
-@@ -758,6 +766,11 @@
+@@ -774,6 +782,11 @@
              return $end;
          }
  
@@ -664,7 +675,7 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          // make sure 1Y takes the fiscal year into account.
          if ('1Y' === $range) {
              /** @var FiscalHelperInterface $fiscalHelper */
-@@ -804,6 +817,12 @@
+@@ -821,6 +834,12 @@
  
              return $start;
          }
@@ -677,47 +688,3 @@ diff -Naur ../official/app/Support/Navigation.php ./app/Support/Navigation.php
          if ('6M' === $range) {
              if ($start->month >= 7) {
                  $start->startOfYear()->addMonths(6);
---- ../official/webpack.mix.js	2023-01-14 16:08:05.097757575 +0100
-+++ ./webpack.mix.js	2023-12-29 09:48:14.098513385 +0100
-@@ -41,7 +41,7 @@
- mix.js('resources/assets/js/profile.js', 'public/v1/js').vue({version: 2});
- 
- // webhooks
--mix.js('resources/assets/js/webhooks/index.js', 'public/v1/js/webhooks').vue({version: 2});
--mix.js('resources/assets/js/webhooks/create.js', 'public/v1/js/webhooks').vue({version: 2});
--mix.js('resources/assets/js/webhooks/edit.js', 'public/v1/js/webhooks').vue({version: 2});
--mix.js('resources/assets/js/webhooks/show.js', 'public/v1/js/webhooks').vue({version: 2});
-+//mix.js('resources/assets/js/webhooks/index.js', 'public/v1/js/webhooks').vue({version: 2});
-+//mix.js('resources/assets/js/webhooks/create.js', 'public/v1/js/webhooks').vue({version: 2});
-+//mix.js('resources/assets/js/webhooks/edit.js', 'public/v1/js/webhooks').vue({version: 2});
-+//mix.js('resources/assets/js/webhooks/show.js', 'public/v1/js/webhooks').vue({version: 2});
---- ../official/package.old.json	1970-01-01 01:00:00.000000000 +0100
-+++ ./package.old.json	2023-12-29 09:48:52.959013253 +0100
-@@ -0,0 +1,27 @@
-+{
-+    "private": true,
-+    "scripts": {
-+        "development": "mix",
-+        "watch": "mix watch",
-+        "watch-poll": "mix watch -- --watch-options-poll=1000",
-+        "hot": "mix watch --hot",
-+        "production": "mix --production",
-+        "prod": "mix --production"
-+    },
-+    "devDependencies": {
-+        "@johmun/vue-tags-input": "^2",
-+        "@vue/compiler-sfc": "^3.2.29",
-+        "axios": "^0.26",
-+        "bootstrap-sass": "^3",
-+        "cross-env": "^7.0",
-+        "font-awesome": "^4.7.0",
-+        "jquery": "^3",
-+        "laravel-mix": "^6.0",
-+        "postcss": "^8.4",
-+        "uiv": "^1.4",
-+        "vue": "^2.6",
-+        "vue-i18n": "^8",
-+        "vue-loader": "^15",
-+        "vue-template-compiler": "^2.6"
-+    }
-+}
