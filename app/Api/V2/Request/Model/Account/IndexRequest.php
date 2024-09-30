@@ -27,6 +27,7 @@ use Carbon\Carbon;
 use FireflyIII\Support\Http\Api\AccountFilter;
 use FireflyIII\Support\Request\ChecksLogin;
 use FireflyIII\Support\Request\ConvertsDataTypes;
+use FireflyIII\Support\Request\GetFilterInstructions;
 use FireflyIII\Support\Request\GetSortInstructions;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -40,18 +41,16 @@ class IndexRequest extends FormRequest
     use AccountFilter;
     use ChecksLogin;
     use ConvertsDataTypes;
+    use GetFilterInstructions;
     use GetSortInstructions;
 
     public function getAccountTypes(): array
     {
-        $type = (string)$this->get('type', 'default');
+        $type = (string) $this->get('type', 'default');
 
         return $this->mapAccountTypes($type);
     }
 
-    /**
-     * Get all data from the request.
-     */
     public function getDate(): Carbon
     {
         return $this->getCarbonDate('date');
@@ -63,7 +62,9 @@ class IndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'date' => 'date|after:1900-01-01|before:2099-12-31',
+            'date'  => 'date|after:1900-01-01|before:2099-12-31',
+            'start' => 'date|after:1900-01-01|before:2099-12-31|before:end|required_with:end',
+            'end'   => 'date|after:1900-01-01|before:2099-12-31|after:start|required_with:start',
         ];
     }
 }

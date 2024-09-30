@@ -106,8 +106,8 @@ class UserGroupRepository implements UserGroupRepositoryInterface
             /** @var null|UserGroup $group */
             $group = $membership->userGroup()->first();
             if (null !== $group) {
-                $groupId       = (int)$group->id;
-                if (in_array($groupId, $set, true)) {
+                $groupId       = $group->id;
+                if (in_array($groupId, array_keys($set), true)) {
                     continue;
                 }
                 $set[$groupId] = $group;
@@ -287,5 +287,24 @@ class UserGroupRepository implements UserGroupRepositoryInterface
         }
 
         return $roles;
+    }
+
+    #[\Override]
+    public function useUserGroup(UserGroup $userGroup): void
+    {
+        $this->user->user_group_id = $userGroup->id;
+        $this->user->save();
+    }
+
+    #[\Override]
+    public function getMembershipsFromGroupId(int $groupId): Collection
+    {
+        return $this->user->groupMemberships()->where('user_group_id', $groupId)->get();
+    }
+
+    #[\Override]
+    public function getById(int $id): ?UserGroup
+    {
+        return UserGroup::find($id);
     }
 }

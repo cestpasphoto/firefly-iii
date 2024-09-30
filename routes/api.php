@@ -22,6 +22,52 @@
 
 declare(strict_types=1);
 
+use FireflyIII\Api\V2\Controllers\JsonApi\AccountController;
+use LaravelJsonApi\Laravel\Facades\JsonApiRoute;
+use LaravelJsonApi\Laravel\Http\Controllers\JsonApiController;
+use LaravelJsonApi\Laravel\Routing\Relationships;
+use LaravelJsonApi\Laravel\Routing\ResourceRegistrar;
+
+/*
+ *
+ * ____    ____  ___      .______        ______    __    __  .___________. _______     _______.
+ * \   \  /   / |__ \     |   _  \      /  __  \  |  |  |  | |           ||   ____|   /       |
+ *  \   \/   /     ) |    |  |_)  |    |  |  |  | |  |  |  | `---|  |----`|  |__     |   (----`
+ *   \      /     / /     |      /     |  |  |  | |  |  |  |     |  |     |   __|     \   \
+ *    \    /     / /_     |  |\  \----.|  `--'  | |  `--'  |     |  |     |  |____.----)   |
+ *     \__/     |____|    | _| `._____| \______/   \______/      |__|     |_______|_______/
+ */
+
+// AUTOCOMPLETE ROUTES
+Route::group(
+    [
+        'namespace' => 'FireflyIII\Api\V2\Controllers\Autocomplete',
+        'prefix'    => 'v2/autocomplete',
+        'as'        => 'api.v2.autocomplete.',
+    ],
+    static function (): void {
+        Route::get('accounts', ['uses' => 'AccountController@accounts', 'as' => 'accounts']);
+        Route::get('categories', ['uses' => 'CategoryController@categories', 'as' => 'categories']);
+        Route::get('tags', ['uses' => 'TagController@tags', 'as' => 'tags']);
+        Route::get('transaction-descriptions', ['uses' => 'TransactionController@transactionDescriptions', 'as' => 'transaction-descriptions']);
+    }
+);
+
+// CHART ROUTES
+Route::group(
+    [
+        'namespace' => 'FireflyIII\Api\V2\Controllers\Chart',
+        'prefix'    => 'v2/chart',
+        'as'        => 'api.v1.chart.',
+    ],
+    static function (): void {
+        Route::get('account/dashboard', ['uses' => 'AccountController@dashboard', 'as' => 'account.dashboard']);
+        Route::get('budget/dashboard', ['uses' => 'BudgetController@dashboard', 'as' => 'budget.dashboard']);
+        Route::get('category/dashboard', ['uses' => 'CategoryController@dashboard', 'as' => 'category.dashboard']);
+        Route::get('balance/balance', ['uses' => 'BalanceController@balance', 'as' => 'balance.balance']);
+    }
+);
+
 // V2 API route for Summary boxes
 // BASIC
 Route::group(
@@ -54,20 +100,6 @@ Route::group(
 );
 
 // V2 API routes for auto complete
-Route::group(
-    [
-        'namespace' => 'FireflyIII\Api\V2\Controllers\Autocomplete',
-        'prefix'    => 'v2/autocomplete',
-        'as'        => 'api.v2.autocomplete.',
-    ],
-    static function (): void {
-        // Auto complete routes
-        Route::get('accounts', ['uses' => 'AccountController@accounts', 'as' => 'accounts']);
-        Route::get('transaction-descriptions', ['uses' => 'TransactionController@transactionDescriptions', 'as' => 'transaction-descriptions']);
-        Route::get('categories', ['uses' => 'CategoryController@categories', 'as' => 'categories']);
-        Route::get('tags', ['uses' => 'TagController@tags', 'as' => 'tags']);
-    }
-);
 
 // V2 API route for net worth endpoint(s);
 Route::group(
@@ -81,34 +113,19 @@ Route::group(
     }
 );
 
-// V2 API routes for charts
-Route::group(
-    [
-        'namespace' => 'FireflyIII\Api\V2\Controllers\Chart',
-        'prefix'    => 'v2/chart',
-        'as'        => 'api.v1.chart.',
-    ],
-    static function (): void {
-        Route::get('account/dashboard', ['uses' => 'AccountController@dashboard', 'as' => 'account.dashboard']);
-        Route::get('budget/dashboard', ['uses' => 'BudgetController@dashboard', 'as' => 'budget.dashboard']);
-        Route::get('category/dashboard', ['uses' => 'CategoryController@dashboard', 'as' => 'category.dashboard']);
-        Route::get('balance/balance', ['uses' => 'BalanceController@balance', 'as' => 'balance.balance']);
-    }
-);
-
-// V2 API route for accounts.
-Route::group(
-    [
-        'namespace' => 'FireflyIII\Api\V2\Controllers\Model\Account',
-        'prefix'    => 'v2/accounts',
-        'as'        => 'api.v2.accounts.',
-    ],
-    static function (): void {
-        Route::get('', ['uses' => 'IndexController@index', 'as' => 'index']);
-        Route::get('{account}', ['uses' => 'ShowController@show', 'as' => 'show']);
-        Route::put('{account}', ['uses' => 'UpdateController@update', 'as' => 'update']);
-    }
-);
+// // V2 API route for accounts.
+// Route::group(
+//    [
+//        'namespace' => 'FireflyIII\Api\V2\Controllers\Model\Account',
+//        'prefix'    => 'v2/accounts',
+//        'as'        => 'api.v2.accounts.',
+//    ],
+//    static function (): void {
+//        Route::get('', ['uses' => 'IndexController@index', 'as' => 'index']);
+//        Route::get('{account}', ['uses' => 'ShowController@show', 'as' => 'show']);
+//        Route::put('{account}', ['uses' => 'UpdateController@update', 'as' => 'update']);
+//    }
+// );
 
 // V2 API route for subscriptions.
 Route::group(
@@ -216,12 +233,37 @@ Route::group(
         Route::post('', ['uses' => 'StoreController@store', 'as' => 'store']);
         Route::get('{userGroup}', ['uses' => 'ShowController@show', 'as' => 'show']);
         Route::put('{userGroup}', ['uses' => 'UpdateController@update', 'as' => 'update']);
+        Route::post('{userGroup}/use', ['uses' => 'UpdateController@useUserGroup', 'as' => 'use']);
         Route::put('{userGroup}/update-membership', ['uses' => 'UpdateController@updateMembership', 'as' => 'updateMembership']);
         Route::delete('{userGroup}', ['uses' => 'DestroyController@destroy', 'as' => 'destroy']);
     }
 );
 
-// down here is v1
+// V2 JSON API ROUTES
+JsonApiRoute::server('v2')->prefix('v2')
+    ->resources(function (ResourceRegistrar $server): void {
+        // ACCOUNTS
+        $server->resource('accounts', AccountController::class)
+            ->relationships(function (Relationships $relations): void {
+                $relations->hasOne('user')->readOnly();
+            })
+        ;
+
+        // USERS
+        $server->resource('users', JsonApiController::class)->readOnly()->relationships(function (Relationships $relations): void {
+            $relations->hasMany('accounts')->readOnly();
+        });
+    })
+;
+
+/*
+ * ____    ____  __     .______        ______    __    __  .___________. _______     _______.
+ * \   \  /   / /_ |    |   _  \      /  __  \  |  |  |  | |           ||   ____|   /       |
+ *  \   \/   /   | |    |  |_)  |    |  |  |  | |  |  |  | `---|  |----`|  |__     |   (----`
+ *   \      /    | |    |      /     |  |  |  | |  |  |  |     |  |     |   __|     \   \
+ *    \    /     | |    |  |\  \----.|  `--'  | |  `--'  |     |  |     |  |____.----)   |
+ *     \__/      |_|    | _| `._____| \______/   \______/      |__|     |_______|_______/
+ */
 
 // Autocomplete controllers
 Route::group(
@@ -252,7 +294,7 @@ Route::group(
 );
 
 // CHART ROUTES.
-// Accounts
+// Chart accounts
 Route::group(
     [
         'namespace' => 'FireflyIII\Api\V1\Controllers\Chart',
@@ -589,7 +631,9 @@ Route::group(
         Route::delete('{recurrence}', ['uses' => 'DestroyController@destroy', 'as' => 'delete']);
 
         Route::get('{recurrence}/transactions', ['uses' => 'ListController@transactions', 'as' => 'transactions']);
-        Route::post('trigger', ['uses' => 'RecurrenceController@trigger', 'as' => 'trigger']);
+
+        // controller does not exist:
+        // Route::post('trigger', ['uses' => 'RecurrenceController@trigger', 'as' => 'trigger']);
     }
 );
 
@@ -817,6 +861,7 @@ Route::group(
     static function (): void {
         Route::get('', ['uses' => 'PreferencesController@index', 'as' => 'index']);
         Route::post('', ['uses' => 'PreferencesController@store', 'as' => 'store']);
+        // Route::get('{preferenceList}', ['uses' => 'PreferencesController@showList', 'as' => 'show-list'])->where('preferenceList', ',+');
         Route::get('{preference}', ['uses' => 'PreferencesController@show', 'as' => 'show']);
         Route::put('{preference}', ['uses' => 'PreferencesController@update', 'as' => 'update']);
     }

@@ -1,6 +1,6 @@
 @extends('layout.v2')
 @section('scripts')
-    @vite(['resources/assets/v2/pages/administrations/index.js'])
+    @vite(['src/pages/administrations/index.js'])
 @endsection
 @section('content')
     <div class="app-content">
@@ -16,10 +16,14 @@
             </div>
             <div class="row mb-3">
                 <template x-for="(group, index) in userGroups" :key="index">
-                    <div class="col-xl-4 col-lg-4 col-sm-6 col-xs-12">
-                        <div class="card">
+                    <div class="col-xl-4 col-lg-4 col-sm-6 col-xs-12 mb-3">
+                        <div :class="{'card': true, 'card-primary': group.in_use}">
                             <div class="card-header">
-                                <h3 class="card-title">Administration "<span x-text="group.title"></span>"</h3>
+                                <h3 class="card-title">
+                                    <template x-if="group.in_use">
+                                        <em class="fa-regular fa-square-check"></em>
+                                    </template>
+                                    Administration "<span x-text="group.title"></span>"</h3>
                             </div>
                             <div class="card-body">
                                 <ul>
@@ -53,13 +57,13 @@
                             <div class="card-footer">
                                 <div class="btn-group">
                                     <template x-if="false === group.in_use">
-                                    <a href="#" class="btn btn-primary">
+                                    <button @click="useAdministration(group.id)" class="btn btn-primary">
                                         <em class="fa-solid fa-coins"></em> Use
-                                    </a>
+                                    </button>
                                     </template>
                                     <template x-if="true === group.isOwner">
-                                    <a href="#" class="btn btn-primary">
-                                        <em class="fa-solid fa-pencil"></em> Edit
+                                    <a :href="'{{route('administrations.edit', [''])}}/' + group.id" class="btn btn-primary">
+                                        <em class="fa-solid fa-pencil"></em> {{ __('firefly.edit') }}
                                     </a>
                                     </template>
                                     <template x-if="true === group.isOwner">

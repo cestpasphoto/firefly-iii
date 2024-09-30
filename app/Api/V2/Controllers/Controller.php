@@ -27,6 +27,7 @@ namespace FireflyIII\Api\V2\Controllers;
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidDateException;
 use Carbon\Exceptions\InvalidFormatException;
+use FireflyIII\Enums\UserRoleEnum;
 use FireflyIII\Support\Http\Api\ValidatesUserGroupTrait;
 use FireflyIII\Transformers\V2\AbstractTransformer;
 use Illuminate\Database\Eloquent\Model;
@@ -55,6 +56,7 @@ class Controller extends BaseController
 
     protected const string CONTENT_TYPE = 'application/vnd.api+json';
     protected ParameterBag $parameters;
+    protected array $acceptedRoles      = [UserRoleEnum::READ_ONLY];
 
     public function __construct()
     {
@@ -120,6 +122,9 @@ class Controller extends BaseController
                     $obj = null;
                 }
             }
+            if (null !== $date && 'end' === $field) {
+                $obj->endOfDay();
+            }
             $bag->set($field, $obj);
         }
 
@@ -152,6 +157,9 @@ class Controller extends BaseController
     {
         $manager  = new Manager();
         $baseUrl  = request()->getSchemeAndHttpHost().'/api/v2';
+
+        // TODO add stuff to path?
+
         $manager->setSerializer(new JsonApiSerializer($baseUrl));
 
         $objects  = $paginator->getCollection();

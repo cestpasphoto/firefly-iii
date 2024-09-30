@@ -26,6 +26,17 @@
                         <em class="fa-solid fa-magnifying-glass"></em>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        Size:
+                        <span class="d-inline d-sm-none">xs</span>
+                        <span class="d-none d-sm-inline d-md-none">sm</span>
+                        <span class="d-none d-md-inline d-lg-none">md</span>
+                        <span class="d-none d-lg-inline d-xl-none">lg</span>
+                        <span class="d-none d-xl-inline d-xxl-none">xl</span>
+                        <span class="d-none d-xxl-inline">xxl</span>
+                    </a>
+                </li>
                 <!--end::Navbar Search-->
             </ul>
             <!--end::Start Navbar Links-->
@@ -35,7 +46,10 @@
 
                 <!-- begin date range drop down -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link daterange-holder" data-bs-toggle="dropdown" href="#"></a>
+                    <a class="nav-link daterange-holder d-none d-sm-block" data-bs-toggle="dropdown" href="#"></a>
+                    <a class="nav-link daterange-icon d-block d-sm-none" data-bs-toggle="dropdown" href="#">
+                        <em class="fa-regular fa-calendar-days"></em>
+                    </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                         <a href="#" class="dropdown-item daterange-current" @click="changeDateRange">
 

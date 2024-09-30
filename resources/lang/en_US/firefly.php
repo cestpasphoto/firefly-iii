@@ -42,6 +42,7 @@ return [
     'year_to_date'                                        => 'Year to date',
     'YTD'                                                 => 'YTD',
     'welcome_back'                                        => 'What\'s playing?',
+    'main_dashboard_page_title'                           => 'Home',
     'everything'                                          => 'Everything',
     'today'                                               => 'today',
     'customRange'                                         => 'Custom range',
@@ -1391,6 +1392,12 @@ return [
     'administration_owner'                                => 'Administration owner: {{email}}',
     'administration_you'                                  => 'Your role: {{role}}',
     'other_users_in_admin'                                => 'Other users in this administration',
+    'administrations_create_breadcrumb'                   => 'Create new financial administration',
+    'administrations_page_create_sub_title'               => 'Create new financial administration',
+    'basic_administration_information'                    => 'Basic administration information',
+    'new_administration_created'                          => 'New financial administration "{{title}}" has been created',
+    'edit_administration_breadcrumb'                      => 'Edit financial administration ":title"',
+    'administrations_page_edit_sub_title'                 => 'Edit financial administration ":title"',
 
     // roles
     'administration_role_owner'                           => 'Owner',
@@ -1911,6 +1918,19 @@ return [
     'interest_calc_quarterly'                             => 'Per quarter',
     'initial_balance_account'                             => 'Initial balance account of :account',
     'list_options'                                        => 'List options',
+    'account_column_opt_drag_and_drop'                    => 'Drag and drop',
+    'account_column_opt_active'                           => 'Active',
+    'account_column_opt_name'                             => 'Name',
+    'account_column_opt_type'                             => 'Type',
+    'account_column_opt_liability_type'                   => 'Liability type',
+    'account_column_opt_liability_direction'              => 'Liability direction',
+    'account_column_opt_liability_interest'               => 'Liability interest',
+    'account_column_opt_number'                           => 'Account number',
+    'account_column_opt_current_balance'                  => 'Current balance',
+    'account_column_opt_amount_due'                       => 'Amount due',
+    'account_column_opt_last_activity'                    => 'Last activity',
+    'account_column_opt_balance_difference'               => 'Balance difference',
+    'account_column_opt_menu'                             => 'Menu',
 
     // categories:
     'new_category'                                        => 'New category',
@@ -2085,6 +2105,7 @@ return [
     'logout'                                              => 'Logout',
     'logout_other_sessions'                               => 'Logout all other sessions',
     'toggleNavigation'                                    => 'Toggle navigation',
+    'toggle_dropdown'                                     => 'Toggle dropdown',
     'searchPlaceholder'                                   => 'Search...',
     'version'                                             => 'Version',
     'dashboard'                                           => 'Dashboard',
@@ -2307,6 +2328,16 @@ return [
     'balanceFor'                                          => 'Balance for :name',
     'no_tags'                                             => '(no tags)',
     'nothing_found'                                       => '(nothing found)',
+
+    // page settings and wizard dialogs
+
+    'page_settings_header'                                => 'Page settings',
+    'visible_columns'                                     => 'Visible columns',
+    'accounts_to_show'                                    => 'Accounts to show',
+    'active_accounts_only'                                => 'Active accounts only',
+    'in_active_accounts_only'                             => 'Inactive accounts only',
+    'show_all_accounts'                                   => 'Show all accounts',
+    'group_accounts'                                      => 'Group accounts',
 
     // piggy banks:
     'event_history'                                       => 'Event history',

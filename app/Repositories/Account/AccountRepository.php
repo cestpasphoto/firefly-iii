@@ -37,6 +37,7 @@ use FireflyIII\Models\TransactionJournal;
 use FireflyIII\Models\TransactionType;
 use FireflyIII\Services\Internal\Destroy\AccountDestroyService;
 use FireflyIII\Services\Internal\Update\AccountUpdateService;
+use FireflyIII\Support\Facades\Steam;
 use FireflyIII\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -123,6 +124,7 @@ class AccountRepository implements AccountRepositoryInterface
 
     public function findByIbanNull(string $iban, array $types): ?Account
     {
+        $iban  = Steam::filterSpaces($iban);
         $query = $this->user->accounts()->where('iban', '!=', '')->whereNotNull('iban');
 
         if (0 !== count($types)) {
@@ -552,6 +554,12 @@ class AccountRepository implements AccountRepositoryInterface
                 ++$index;
             }
         }
+        // reset the rest to zero.
+        $all  = [AccountType::DEFAULT, AccountType::ASSET, AccountType::LOAN, AccountType::DEBT, AccountType::CREDITCARD, AccountType::MORTGAGE];
+        $this->user->accounts()->leftJoin('account_types', 'account_types.id', '=', 'accounts.account_type_id')
+            ->whereNotIn('account_types.type', $all)
+            ->update(['order' => 0])
+        ;
     }
 
     public function searchAccount(string $query, array $types, int $limit): Collection

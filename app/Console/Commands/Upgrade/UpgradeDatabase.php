@@ -65,10 +65,12 @@ class UpgradeDatabase extends Command
             'firefly-iii:budget-limit-periods',
             'firefly-iii:migrate-rule-actions',
             'firefly-iii:restore-oauth-keys',
+            'firefly-iii:correct-account-balance',
             // also just in case, some integrity commands:
             'firefly-iii:create-group-memberships',
             'firefly-iii:upgrade-group-information',
             'firefly-iii:upgrade-currency-preferences',
+            'firefly-iii:correct-database',
         ];
         $args     = [];
         if ($this->option('force')) {

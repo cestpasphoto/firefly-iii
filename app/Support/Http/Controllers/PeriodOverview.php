@@ -370,6 +370,7 @@ trait PeriodOverview
         $first       = $this->journalRepos->firstNull();
         $start       = null === $first ? new Carbon() : $first->date;
         $end         = clone $theDate;
+        $end         = app('navigation')->endOfPeriod($end, $range);
 
         app('log')->debug(sprintf('Start for getNoCategoryPeriodOverview() is %s', $start->format('Y-m-d')));
         app('log')->debug(sprintf('End for getNoCategoryPeriodOverview() is %s', $end->format('Y-m-d')));
@@ -440,7 +441,7 @@ trait PeriodOverview
         $cache->addProperty('tag-period-entries');
         $cache->addProperty($tag->id);
         if ($cache->has()) {
-            // return $cache->get();
+            return $cache->get();
         }
 
         /** @var array $dates */

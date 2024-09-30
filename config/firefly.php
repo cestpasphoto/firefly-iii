@@ -65,10 +65,6 @@ use FireflyIII\Support\Binder\UserGroupAccount;
 use FireflyIII\Support\Binder\UserGroupBill;
 use FireflyIII\Support\Binder\UserGroupTransaction;
 use FireflyIII\TransactionRules\Actions\AddTag;
-use FireflyIII\TransactionRules\Actions\AppendDescription;
-use FireflyIII\TransactionRules\Actions\AppendDescriptionToNotes;
-use FireflyIII\TransactionRules\Actions\AppendNotes;
-use FireflyIII\TransactionRules\Actions\AppendNotesToDescription;
 use FireflyIII\TransactionRules\Actions\ClearBudget;
 use FireflyIII\TransactionRules\Actions\ClearCategory;
 use FireflyIII\TransactionRules\Actions\ClearNotes;
@@ -77,10 +73,6 @@ use FireflyIII\TransactionRules\Actions\ConvertToTransfer;
 use FireflyIII\TransactionRules\Actions\ConvertToWithdrawal;
 use FireflyIII\TransactionRules\Actions\DeleteTransaction;
 use FireflyIII\TransactionRules\Actions\LinkToBill;
-use FireflyIII\TransactionRules\Actions\MoveDescriptionToNotes;
-use FireflyIII\TransactionRules\Actions\MoveNotesToDescription;
-use FireflyIII\TransactionRules\Actions\PrependDescription;
-use FireflyIII\TransactionRules\Actions\PrependNotes;
 use FireflyIII\TransactionRules\Actions\RemoveAllTags;
 use FireflyIII\TransactionRules\Actions\RemoveTag;
 use FireflyIII\TransactionRules\Actions\SetAmount;
@@ -110,16 +102,17 @@ return [
     ],
     // some feature flags:
     'feature_flags'                => [
-        'export'            => true,
-        'telemetry'         => false,
-        'webhooks'          => true,
-        'handle_debts'      => true,
-        'expression_engine' => false,
+        'export'                 => true,
+        'telemetry'              => false,
+        'webhooks'               => true,
+        'handle_debts'           => true,
+        'expression_engine'      => true,
+        'running_balance_column' => env('USE_RUNNING_BALANCE', false),
         // see cer.php for exchange rates feature flag.
     ],
-    'version'                      => '6.1.13',
-    'api_version'                  => '2.0.13',
-    'db_version'                   => 23,
+    'version'                      => '6.1.21',
+    'api_version'                  => '2.1.0',
+    'db_version'                   => 24,
 
     // generic settings
     'maxUploadSize'                => 1073741824, // 1 GB
@@ -206,7 +199,6 @@ return [
 
     // web configuration:
     'trusted_proxies'              => env('TRUSTED_PROXIES', ''),
-    'layout'                       => envNonEmpty('FIREFLY_III_LAYOUT', 'v1'),
 
     // map configuration
     'default_location'             => [
@@ -215,11 +207,14 @@ return [
         'zoom_level' => env('MAP_DEFAULT_ZOOM', '6'),
     ],
 
+    // administration specific preferences
+    'admin_specific_prefs'         => ['frontpageAccounts', 'lastActivity'],
+
     // default user-related values
     'darkMode'                     => 'browser',
     'list_length'                  => 10, // to be removed if v1 is cancelled.
     'default_preferences'          => [
-        'frontPageAccounts'  => [],
+        'frontpageAccounts'  => [],
         'listPageSize'       => 50,
         'currencyPreference' => 'EUR',
         'language'           => 'en_US',
@@ -502,13 +497,13 @@ return [
         'remove_tag'              => RemoveTag::class,
         'remove_all_tags'         => RemoveAllTags::class,
         'set_description'         => SetDescription::class,
-        'append_description'      => AppendDescription::class,
-        'prepend_description'     => PrependDescription::class,
+        // 'append_description'      => AppendDescription::class,
+        // 'prepend_description'     => PrependDescription::class,
         'set_source_account'      => SetSourceAccount::class,
         'set_destination_account' => SetDestinationAccount::class,
         'set_notes'               => SetNotes::class,
-        'append_notes'            => AppendNotes::class,
-        'prepend_notes'           => PrependNotes::class,
+        //        'append_notes'            => AppendNotes::class,
+        //        'prepend_notes'           => PrependNotes::class,
         'clear_notes'             => ClearNotes::class,
         'link_to_bill'            => LinkToBill::class,
         'convert_withdrawal'      => ConvertToWithdrawal::class,
@@ -517,10 +512,10 @@ return [
         'switch_accounts'         => SwitchAccounts::class,
         'update_piggy'            => UpdatePiggybank::class,
         'delete_transaction'      => DeleteTransaction::class,
-        'append_descr_to_notes'   => AppendDescriptionToNotes::class,
-        'append_notes_to_descr'   => AppendNotesToDescription::class,
-        'move_descr_to_notes'     => MoveDescriptionToNotes::class,
-        'move_notes_to_descr'     => MoveNotesToDescription::class,
+        //        'append_descr_to_notes'   => AppendDescriptionToNotes::class,
+        //        'append_notes_to_descr'   => AppendNotesToDescription::class,
+        //        'move_descr_to_notes'     => MoveDescriptionToNotes::class,
+        //        'move_notes_to_descr'     => MoveNotesToDescription::class,
         'set_source_to_cash'      => SetSourceToCashAccount::class,
         'set_destination_to_cash' => SetDestinationToCashAccount::class,
         'set_amount'              => SetAmount::class,
@@ -918,12 +913,4 @@ return [
 
     // preselected account lists possibilities:
     'preselected_accounts'         => ['all', 'assets', 'liabilities'],
-
-    // allowed sort columns for API's
-    'sorting'                      => [
-        'allowed' => [
-            'transactions' => ['description', 'amount'],
-            'accounts'     => ['name', 'active', 'iban', 'balance', 'last_activity'],
-        ],
-    ],
 ];

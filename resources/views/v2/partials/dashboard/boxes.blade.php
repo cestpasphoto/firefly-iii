@@ -3,6 +3,9 @@
         <div class="small-box text-bg-primary">
             <div class="inner balance-box">
                 <h3 class="hover-expand">
+                    <template x-if="0 === balanceBox.amounts.length">
+                        <span>&nbsp;</span>
+                    </template>
                     <template x-for="(amount, index) in balanceBox.amounts" :key="index">
                         <span>
                             <span x-text="amount"></span><span
@@ -11,13 +14,18 @@
                     </template>
                 </h3>
                 <template x-if="loading">
-                    <p>
+                    <p class="d-none d-xs-block">
                         <em class="fa-solid fa-spinner fa-spin"></em>
                     </p>
                 </template>
-                <template x-if="!loading">
-                    <p>
+                <template x-if="!loading && 0 !== balanceBox.amounts.length">
+                    <p class="d-none d-sm-block">
                         <a href="{{ route('reports.report.default', ['allAssetAccounts',$start->format('Ymd'),$end->format('Ymd')]) }}">{{ __('firefly.in_out_period') }}</a>
+                    </p>
+                </template>
+                <template x-if="!loading && 0 === balanceBox.amounts.length">
+                    <p class="d-none d-sm-block">
+                        TODO (no money in or out)
                     </p>
                 </template>
             </div>
@@ -25,7 +33,10 @@
                 <i class="fa-solid fa-scale-balanced"></i>
             </span>
 
-            <div class="small-box-footer hover-footer">
+            <div class="small-box-footer hover-footer d-none d-xl-block">
+                <template x-if="0 === balanceBox.subtitles.length">
+                    <span>&nbsp;</span>
+                </template>
                 <template x-for="(subtitle, index) in balanceBox.subtitles" :key="index">
                         <span>
                             <span x-text="subtitle"></span><span
@@ -55,21 +66,21 @@
                 </h3>
                 </template>
                 <template x-if="loading">
-                    <p>
+                    <p class="d-none d-sm-block">
                         <em class="fa-solid fa-spinner fa-spin"></em>
                     </p>
                 </template>
                 <template x-if="!loading && billBox.unpaid.length > 0">
-                    <p><a href="{{ route('bills.index') }}">{{ __('firefly.bills_to_pay') }}</a></p>
+                    <p class="d-none d-sm-block"><a href="{{ route('bills.index') }}">{{ __('firefly.bills_to_pay') }}</a></p>
                 </template>
                 <template x-if="0 === billBox.unpaid.length && !loading">
-                    <p>No subscriptions are waiting to be paid</p>
+                    <p class="d-none d-sm-block">TODO No subscriptions are waiting to be paid</p>
                 </template>
             </div>
             <span class="small-box-icon">
                 <em class="fa-regular fa-calendar"></em>
             </span>
-            <span class="small-box-footer">
+            <span class="small-box-footer d-none d-xl-block">
                 <template x-if="0 === billBox.paid.length">
                     <span>&nbsp;</span>
                 </template>
@@ -94,6 +105,9 @@
         <div class="small-box text-bg-warning">
             <div class="inner">
                 <h3 class="hover-expand">
+                    <template x-if="0 === leftBox.left.length">
+                        <span>&nbsp;</span>
+                    </template>
                     <template x-for="(amount, index) in leftBox.left" :key="index">
                         <span>
                             <span x-text="amount"></span><span
@@ -103,19 +117,27 @@
                 </h3>
 
                 <template x-if="loading">
-                    <p>
+                    <p class="d-none d-sm-block">
                         <em class="fa-solid fa-spinner fa-spin"></em>
                     </p>
                 </template>
-                <template x-if="!loading">
-                    <p><a href="{{ route('budgets.index') }}">{{ __('firefly.left_to_spend') }}</a></p>
+                <template x-if="!loading && 0 !== leftBox.left.length">
+                    <p class="d-none d-sm-block"><a href="{{ route('budgets.index') }}">{{ __('firefly.left_to_spend') }}</a></p>
+                </template>
+                <template x-if="!loading && 0 === leftBox.left.length">
+                    <p class="d-none d-sm-block">TODO no money is budgeted in this period</p>
                 </template>
             </div>
             <span class="small-box-icon">
                 <em class="fa-solid fa-money-check-dollar"></em>
             </span>
-            <span class="small-box-footer">
-                {{ __('firefly.per_day') }}:
+            <span class="small-box-footer d-none d-xl-block">
+                <template x-if="0 !== leftBox.perDay.length">
+                    <span>{{ __('firefly.per_day') }}:</span>
+                </template>
+                <template x-if="0 === leftBox.perDay.length">
+                    <span>&nbsp;</span>
+                </template>
                  <template x-for="(amount, index) in leftBox.perDay" :key="index">
                         <span>
                             <span x-text="amount"></span><span
@@ -141,12 +163,12 @@
                 </h3>
 
                 <template x-if="loading">
-                    <p>
+                    <p class="d-none d-sm-block">
                         <em class="fa-solid fa-spinner fa-spin"></em>
                     </p>
                 </template>
                 <template x-if="!loading">
-                    <p>
+                    <p class="d-none d-sm-block">
                         <a href="{{ route('reports.report.default', ['allAssetAccounts','currentYearStart','currentYearEnd']) }}">{{ __('firefly.net_worth') }}</a>
                     </p>
                 </template>
@@ -154,7 +176,7 @@
             <span class="small-box-icon">
                 <i class="fa-solid fa-chart-line"></i>
             </span>
-            <span class="small-box-footer">
+            <span class="small-box-footer d-none d-xl-block">
                 &nbsp;
             </span>
         </div>

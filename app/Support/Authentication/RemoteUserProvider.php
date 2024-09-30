@@ -36,6 +36,14 @@ use Illuminate\Contracts\Auth\UserProvider;
  */
 class RemoteUserProvider implements UserProvider
 {
+    #[\Override]
+    public function rehashPasswordIfRequired(Authenticatable $user, array $credentials, bool $force = false): void
+    {
+        app('log')->debug(sprintf('Now at %s', __METHOD__));
+
+        throw new FireflyException(sprintf('Did not implement %s', __METHOD__));
+    }
+
     /**
      * @throws FireflyException
      *
@@ -72,9 +80,10 @@ class RemoteUserProvider implements UserProvider
                 $roleObject = Role::where('name', 'owner')->first();
                 $user->roles()->attach($roleObject);
             }
-            // make sure the user gets an administration as well.
-            CreateGroupMemberships::createGroupMembership($user);
         }
+        // make sure the user gets an administration as well.
+        CreateGroupMemberships::createGroupMembership($user);
+
         app('log')->debug(sprintf('Going to return user #%d (%s)', $user->id, $user->email));
 
         return $user;
@@ -119,13 +128,5 @@ class RemoteUserProvider implements UserProvider
         app('log')->debug(sprintf('Now at %s', __METHOD__));
 
         throw new FireflyException(sprintf('C) Did not implement %s', __METHOD__));
-    }
-
-    #[\Override]
-    public function rehashPasswordIfRequired(Authenticatable $user, array $credentials, bool $force = false): void
-    {
-        app('log')->debug(sprintf('Now at %s', __METHOD__));
-
-        throw new FireflyException(sprintf('Did not implement %s', __METHOD__));
     }
 }

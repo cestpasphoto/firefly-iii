@@ -89,10 +89,10 @@ class PreferencesController extends Controller
         /** @var array<int, int> $accountIds */
         $accountIds            = $accounts->pluck('id')->toArray();
         $viewRange             = app('navigation')->getViewRange(false);
-        $frontPageAccountsPref = app('preferences')->get('frontPageAccounts', $accountIds);
-        $frontPageAccounts     = $frontPageAccountsPref->data;
-        if (!is_array($frontPageAccounts)) {
-            $frontPageAccounts = $accountIds;
+        $frontpageAccountsPref = app('preferences')->get('frontpageAccounts', $accountIds);
+        $frontpageAccounts     = $frontpageAccountsPref->data;
+        if (!is_array($frontpageAccounts)) {
+            $frontpageAccounts = $accountIds;
         }
         $language              = app('steam')->getLanguage();
         $languages             = config('firefly.languages');
@@ -120,7 +120,7 @@ class PreferencesController extends Controller
         // list of locales also has "equal" which makes it equal to whatever the language is.
 
         try {
-            $locales = json_decode((string)file_get_contents(resource_path(sprintf('lang/%s/locales.json', $language))), true, 512, JSON_THROW_ON_ERROR);
+            $locales = json_decode((string)file_get_contents(resource_path(sprintf('locales/%s/locales.json', $language))), true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
             app('log')->error($e->getMessage());
             $locales = [];
@@ -128,8 +128,8 @@ class PreferencesController extends Controller
         $locales               = ['equal' => (string)trans('firefly.equal_to_language')] + $locales;
         // an important fallback is that the frontPageAccount array gets refilled automatically
         // when it turns up empty.
-        if (0 === count($frontPageAccounts)) {
-            $frontPageAccounts = $accountIds;
+        if (0 === count($frontpageAccounts)) {
+            $frontpageAccounts = $accountIds;
         }
 
         // for the demo user, the slackUrl is automatically emptied.
@@ -139,7 +139,7 @@ class PreferencesController extends Controller
             $slackUrl = '';
         }
 
-        return view('preferences.index', compact('language', 'groupedAccounts', 'isDocker', 'frontPageAccounts', 'languages', 'darkMode', 'availableDarkModes', 'notifications', 'slackUrl', 'locales', 'locale', 'tjOptionalFields', 'viewRange', 'customFiscalYear', 'listPageSize', 'fiscalYearStart'));
+        return view('preferences.index', compact('language', 'groupedAccounts', 'isDocker', 'frontpageAccounts', 'languages', 'darkMode', 'availableDarkModes', 'notifications', 'slackUrl', 'locales', 'locale', 'tjOptionalFields', 'viewRange', 'customFiscalYear', 'listPageSize', 'fiscalYearStart'));
     }
 
     /**
@@ -155,12 +155,12 @@ class PreferencesController extends Controller
     public function postIndex(Request $request)
     {
         // front page accounts
-        $frontPageAccounts = [];
-        if (is_array($request->get('frontPageAccounts')) && count($request->get('frontPageAccounts')) > 0) {
-            foreach ($request->get('frontPageAccounts') as $id) {
-                $frontPageAccounts[] = (int)$id;
+        $frontpageAccounts = [];
+        if (is_array($request->get('frontpageAccounts')) && count($request->get('frontpageAccounts')) > 0) {
+            foreach ($request->get('frontpageAccounts') as $id) {
+                $frontpageAccounts[] = (int)$id;
             }
-            app('preferences')->set('frontPageAccounts', $frontPageAccounts);
+            app('preferences')->set('frontpageAccounts', $frontpageAccounts);
         }
 
         // extract notifications:
@@ -223,8 +223,8 @@ class PreferencesController extends Controller
 
         // same for locale:
         if (!auth()->user()->hasRole('demo')) {
-            /** @var Preference $locale */
-            $locale = $request->get('locale');
+            $locale = (string) $request->get('locale');
+            $locale = '' === $locale ? null : $locale;
             app('preferences')->set('locale', $locale);
         }
 

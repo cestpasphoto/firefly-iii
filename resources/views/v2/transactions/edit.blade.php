@@ -1,6 +1,6 @@
 @extends('layout.v2')
 @section('scripts')
-    @vite(['resources/assets/v2/pages/transactions/edit.js'])
+    @vite(['src/pages/transactions/edit.js'])
 @endsection
 @section('content')
     <div class="app-content">
@@ -17,11 +17,6 @@
                         :optionalFields="$optionalFields"
                         :optionalDateFields="$optionalDateFields"></x-transaction-split>
                 </template>
-            </div>
-            <div class="row">
-                <div class="col text-end">
-                    <button class="btn btn-success" :disabled="formStates.isSubmitting" @click="submitTransaction()">Update</button>
-                </div>
             </div>
         </div>
     </div>

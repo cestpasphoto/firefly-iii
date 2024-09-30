@@ -30,6 +30,7 @@ use FireflyIII\Http\Middleware\IsDemoUser;
 use FireflyIII\Models\AccountType;
 use FireflyIII\Models\TransactionType;
 use FireflyIII\Support\Http\Controllers\GetConfigurationData;
+use FireflyIII\Support\Models\AccountBalanceCalculator;
 use FireflyIII\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
@@ -86,14 +87,15 @@ class DebugController extends Controller
     {
         app('preferences')->mark();
         $request->session()->forget(['start', 'end', '_previous', 'viewRange', 'range', 'is_custom_range', 'temp-mfa-secret', 'temp-mfa-codes']);
-        app('log')->debug('Call cache:clear...');
 
         Artisan::call('cache:clear');
-        app('log')->debug('Call config:clear...');
         Artisan::call('config:clear');
-        app('log')->debug('Call route:clear...');
         Artisan::call('route:clear');
-        app('log')->debug('Call twig:clean...');
+        Artisan::call('view:clear');
+
+        // also do some recalculations.
+        Artisan::call('firefly-iii:trigger-credit-recalculation');
+        AccountBalanceCalculator::forceRecalculateAll();
 
         try {
             Artisan::call('twig:clean');
@@ -101,7 +103,6 @@ class DebugController extends Controller
             throw new FireflyException($e->getMessage(), 0, $e);
         }
 
-        app('log')->debug('Call view:clear...');
         Artisan::call('view:clear');
 
         return redirect(route('index'));

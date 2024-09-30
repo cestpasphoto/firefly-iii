@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Passport\Passport;
 
 /**
  * Class AppServiceProvider
@@ -69,7 +70,10 @@ class AppServiceProvider extends ServiceProvider
             if ('' === $firstParam && str_contains($name, $route)) {
                 return true;
             }
-            $params     = Route::getCurrentRoute()->parameters() ?? [];
+
+            /** @var null|array $params */
+            $params     = Route::getCurrentRoute()->parameters();
+            $params ??= [];
             $objectType = $params['objectType'] ?? '';
             if ($objectType === $firstParam && str_contains($name, $route)) {
                 return true;
@@ -84,6 +88,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        Passport::ignoreRoutes();
         //        Passport::ignoreMigrations();
         //        Sanctum::ignoreMigrations();
     }

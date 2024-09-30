@@ -25,17 +25,19 @@ namespace FireflyIII\Api\V2\Controllers\Model\Account;
 
 use FireflyIII\Api\V2\Controllers\Controller;
 use FireflyIII\Api\V2\Request\Model\Account\IndexRequest;
-use FireflyIII\Api\V2\Request\Model\Transaction\InfiniteListRequest;
+use FireflyIII\Enums\UserRoleEnum;
 use FireflyIII\Repositories\UserGroups\Account\AccountRepositoryInterface;
 use FireflyIII\Transformers\V2\AccountTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 
 class IndexController extends Controller
 {
-    public const string RESOURCE_KEY = 'accounts';
+    public const string RESOURCE_KEY                  = 'accounts';
 
     private AccountRepositoryInterface $repository;
+    protected array                    $acceptedRoles = [UserRoleEnum::READ_ONLY, UserRoleEnum::MANAGE_TRANSACTIONS];
 
     /**
      * AccountController constructor.
@@ -48,9 +50,7 @@ class IndexController extends Controller
                 $this->repository = app(AccountRepositoryInterface::class);
                 // new way of user group validation
                 $userGroup        = $this->validateUserGroup($request);
-                if (null !== $userGroup) {
-                    $this->repository->setUserGroup($userGroup);
-                }
+                $this->repository->setUserGroup($userGroup);
 
                 return $next($request);
             }
@@ -58,46 +58,39 @@ class IndexController extends Controller
     }
 
     /**
-     * TODO see autocomplete/accountcontroller for list.
+     * TODO the sort instructions need proper repeatable documentation.
+     * TODO see autocomplete/account controller for list.
      */
     public function index(IndexRequest $request): JsonResponse
     {
         $this->repository->resetAccountOrder();
-        $types        = $request->getAccountTypes();
-        $instructions = $request->getSortInstructions('accounts');
-        $accounts     = $this->repository->getAccountsByType($types, $instructions);
-        $pageSize     = $this->parameters->get('limit');
-        $count        = $accounts->count();
-        $accounts     = $accounts->slice(($this->parameters->get('page') - 1) * $pageSize, $pageSize);
-        $paginator    = new LengthAwarePaginator($accounts, $count, $pageSize, $this->parameters->get('page'));
-        $transformer  = new AccountTransformer();
+        $types             = $request->getAccountTypes();
+        $sorting           = $request->getSortInstructions('accounts');
+        $filters           = $request->getFilterInstructions('accounts');
+        $accounts          = $this->repository->getAccountsByType($types, $sorting, $filters);
+        $pageSize          = $this->parameters->get('limit');
+        $count             = $accounts->count();
 
-        $this->parameters->set('sort', $instructions);
+        // depending on the sort parameters, this list must not be split, because the
+        // order is calculated in the account transformer and by that time it's too late.
+        $first             = array_key_first($sorting);
+        $disablePagination = in_array($first, ['last_activity', 'balance', 'balance_difference'], true);
+        Log::debug(sprintf('Will disable pagination in account index v2? %s', var_export($disablePagination, true)));
+        if (!$disablePagination) {
+            $accounts = $accounts->slice(($this->parameters->get('page') - 1) * $pageSize, $pageSize);
+        }
+        $paginator         = new LengthAwarePaginator($accounts, $count, $pageSize, $this->parameters->get('page'));
+        $transformer       = new AccountTransformer();
+
+        $this->parameters->set('disablePagination', $disablePagination);
+        $this->parameters->set('pageSize', $pageSize);
+        $this->parameters->set('sort', $sorting);
+
+        $this->parameters->set('filters', $filters);
         $transformer->setParameters($this->parameters); // give params to transformer
 
         return response()
             ->json($this->jsonApiList('accounts', $paginator, $transformer))
-            ->header('Content-Type', self::CONTENT_TYPE)
-        ;
-    }
-
-    public function infiniteList(InfiniteListRequest $request): JsonResponse
-    {
-        $this->repository->resetAccountOrder();
-
-        // get accounts of the specified type, and return.
-        $types       = $request->getAccountTypes();
-
-        // get from repository
-        $accounts    = $this->repository->getAccountsInOrder($types, $request->getSortInstructions('accounts'), $request->getStartRow(), $request->getEndRow());
-        $total       = $this->repository->countAccounts($types);
-        $count       = $request->getEndRow() - $request->getStartRow();
-        $paginator   = new LengthAwarePaginator($accounts, $total, $count, $this->parameters->get('page'));
-        $transformer = new AccountTransformer();
-        $transformer->setParameters($this->parameters); // give params to transformer
-
-        return response()
-            ->json($this->jsonApiList(self::RESOURCE_KEY, $paginator, $transformer))
             ->header('Content-Type', self::CONTENT_TYPE)
         ;
     }

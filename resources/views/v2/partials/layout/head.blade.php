@@ -56,8 +56,11 @@
     </script>
 
     <title>
-        @if($subTitle)
+        @if($subTitle && null === ($pageTitle ?? null))
             {{ $subTitle }} »
+        @endif
+        @if(null !== ($pageTitle ?? null))
+            {{ $pageTitle }} »
         @endif
 
         @if($title !== 'Firefly III')
@@ -68,7 +71,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @yield('styles')
-    @vite(['resources/assets/v2/sass/app.scss'])
+    @vite(['src/sass/app.scss'])
 
 
 </head>

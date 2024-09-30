@@ -37,6 +37,12 @@ interface AccountRepositoryInterface
 {
     public function countAccounts(array $types): int;
 
+    public function getAccountTypes(Collection $accounts): Collection;
+
+    public function getLastActivity(Collection $accounts): array;
+
+    public function getMetaValues(Collection $accounts, array $fields): Collection;
+
     public function find(int $accountId): ?Account;
 
     public function findByAccountNumber(string $number, array $types): ?Account;
@@ -47,9 +53,11 @@ interface AccountRepositoryInterface
 
     public function getAccountCurrency(Account $account): ?TransactionCurrency;
 
+    public function getAccountBalances(Account $account): Collection;
+
     public function getAccountsById(array $accountIds): Collection;
 
-    public function getAccountsByType(array $types, ?array $sort = []): Collection;
+    public function getAccountsByType(array $types, ?array $sort = [], ?array $filters = []): Collection;
 
     /**
      * Used in the infinite accounts list.
@@ -63,12 +71,16 @@ interface AccountRepositoryInterface
      */
     public function getMetaValue(Account $account, string $field): ?string;
 
+    public function getObjectGroups(Collection $accounts): array;
+
+    public function getUserGroup(): UserGroup;
+
     /**
      * Reset order types of the mentioned accounts.
      */
     public function resetAccountOrder(): void;
 
-    public function searchAccount(string $query, array $types, int $limit): Collection;
+    public function searchAccount(array $query, array $types, int $limit): Collection;
 
     public function setUser(User $user): void;
 
